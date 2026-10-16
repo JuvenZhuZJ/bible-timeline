@@ -67,7 +67,7 @@ The script merges the curated key figures with the Insight records, links relati
 
 ## Hosting
 
-`.github/workflows/pages.yml` publishes the site to GitHub Pages on every push to `main`. To turn it on once, open the repository's **Settings → Pages** and set **Source** to **GitHub Actions**.
+`.github/workflows/pages.yml` publishes the site to GitHub Pages on every push to the default branch. To turn it on once, open the repository's **Settings → Pages** and set **Source** to **GitHub Actions**.
 
 ## Known gaps
 
