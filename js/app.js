@@ -184,7 +184,7 @@
       class: `dot tier-${c.tier} q-${c.q[0]}${c.line ? " on-line" : ""}`, tabindex: "0", role: "button",
       "aria-label": `${c.name}, ${fmtRange(c)}`,
     }, g.dots);
-    el("rect", { class: "hit", x: -12, y: -14, width: c.labelW + 10, height: 30 }, node);
+    el("rect", { class: "hit", x: -12, y: -15, width: c.labelW + 10, height: 31 }, node);   // as tall as a lane, so neighbours leave no gap
     d.sel = el("circle", { class: "d-sel", r: 10, stroke: "transparent" }, node);
     el("circle", { class: "d-ring", r: c.tier === 1 ? 5.5 : 4.5 }, node);
     if (c.q[0] !== "assumed") el("circle", { class: "d-core", r: c.q[0] === "derived" ? (c.tier === 1 ? 5.5 : 4.5) : 2 }, node);
@@ -473,11 +473,19 @@
     }
     requestRender();
   }
-  function clearHoverSoon() { clearTimeout(hoverTimer); hoverTimer = setTimeout(() => setHover(null), 140); }
+  // People sit close together, so the cursor often brushes past a neighbour or the
+  // thin gap between two names. A short grace period keeps that from fading the
+  // portrait out and back in, or swapping it to whoever was only passed over.
+  const HOVER_LEAVE_MS = 450, HOVER_SWITCH_MS = 90;
+  function clearHoverSoon() { clearTimeout(hoverTimer); hoverTimer = setTimeout(() => setHover(null), HOVER_LEAVE_MS); }
 
   g.dots.addEventListener("pointerover", (e) => {
     if (e.pointerType !== "mouse" || dragging) return;
-    const n = e.target.closest(".dot"); if (n) setHover(n.__c);
+    const n = e.target.closest(".dot"); if (!n) return;
+    const c = n.__c;
+    if (!hoverC || hoverC === c) { setHover(c); return; }
+    clearTimeout(hoverTimer);
+    hoverTimer = setTimeout(() => setHover(c), HOVER_SWITCH_MS);
   });
   g.dots.addEventListener("pointerout", (e) => {
     if (e.pointerType !== "mouse") return;

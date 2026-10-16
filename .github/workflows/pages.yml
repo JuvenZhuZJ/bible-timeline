@@ -27,6 +27,12 @@ jobs:
           mkdir _site
           cp -r index.html css js data _site/
           rm -rf _site/data/source
+          # GitHub Pages lets browsers cache files for 10 minutes, and a reload only
+          # refetches the page itself. Stamping each script and stylesheet link with
+          # the commit makes a reload pick up the new code straight after a deploy.
+          v="${GITHUB_SHA::7}"
+          sed -i -E "s#(src|href)=\"((css|js|data)/[^\"?]+)\"#\1=\"\2?v=$v\"#g" _site/index.html
+          grep -E '\?v=' _site/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
