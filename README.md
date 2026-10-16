@@ -69,6 +69,8 @@ The script merges the curated key figures with the Insight records, links relati
 
 `.github/workflows/pages.yml` publishes the site to GitHub Pages on every push to the default branch. To turn it on once, open the repository's **Settings → Pages** and set **Source** to **GitHub Actions**.
 
+While publishing, the workflow adds the commit to every script and stylesheet link in `index.html` (for example `js/app.js?v=9c834ba`). GitHub Pages lets browsers keep files for 10 minutes, so without this a reload right after a deploy could still run the old code.
+
 ## Known gaps
 
 - Six key figures are not linked to an Insight article yet (Nimrod, Abraham, Barak, Goliath, Zechariah the priest, Mary Magdalene), so they show only their hand-written family.
