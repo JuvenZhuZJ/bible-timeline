@@ -208,12 +208,16 @@
     const span = W / view.ppy;
     const a = tAt(0), b = tAt(W);
     const inside = a >= lastPack.a && b <= lastPack.b;
-    const key = showMode + "|" + wins.map((w) => w.c.id).join(",") + "|" + (hoverC ? hoverC.id : "");
-    if (!force && inside && key === lastPack.key && Math.abs(view.ppy / lastPack.ppy - 1) < 0.12) return;
+    // Hovering or pinning someone who already has a lane must not repack: the dot would
+    // jump away from under the cursor, lose the hover, jump back, and flicker.
+    // Only repack when such a person is in range but has no lane yet.
+    const unplaced = cands.some((d) => d.lane < 0 && (isPinned(d.c) || d.c === hoverC) && d.c.td >= lastPack.a - 40 && d.c.tb <= lastPack.b);
+    const key = showMode;
+    if (!force && !unplaced && inside && key === lastPack.key && Math.abs(view.ppy / lastPack.ppy - 1) < 0.12) return;
     lastPack.key = key; lastPack.ppy = view.ppy; lastPack.a = a - span; lastPack.b = b + span;
     for (const d of dotEls) d.lane = -1;
     const list = cands.filter((d) => d.c.td >= lastPack.a - 40 && d.c.tb <= lastPack.b);
-    list.sort((p, q) => (isPinned(q.c) - isPinned(p.c)) || (q.c === hoverC) - (p.c === hoverC) || prio(p.c) - prio(q.c) || p.c.tb - q.c.tb);
+    list.sort((p, q) => (isPinned(q.c) - isPinned(p.c)) || prio(p.c) - prio(q.c) || p.c.tb - q.c.tb);
     const lanes = Array.from({ length: L.maxLanes }, () => []);   // per lane: [start, labelEnd, lifeEnd]
     const free = (lane, s, e, idx) => lane.every((iv) => e <= iv[0] || s >= iv[idx]);
     for (const d of list) {
