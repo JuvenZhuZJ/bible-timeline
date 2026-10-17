@@ -1,4 +1,4 @@
-# Bible Timeline
+# Bible Family Tree
 
 An interactive timeline of every named person in the Bible, from Adam to the apostles. Zoom and drag along the years, hover over a person to see lines to their family, and open a person's window for their dates, relatives and key scriptures.
 
@@ -12,6 +12,10 @@ Open `index.html` in a browser, or serve the folder:
 python3 -m http.server 8000
 # then open http://localhost:8000
 ```
+
+## Logo
+
+The logo is a small family tree in line art: a trunk on a horizon line (a nod to the timeline), two branches that split again, and gold dots for the people at each tip. The header copy is inline SVG in `index.html` (`.brand-mark`, styled in `css/style.css`); the browser tab uses the same tree, simplified for 16px, from `img/favicon.svg`.
 
 ## Who is shown
 
@@ -64,6 +68,7 @@ Most minor people have no recorded dates. Their place on the timeline is estimat
 ```
 index.html                  page
 css/style.css               styles
+img/favicon.svg             browser-tab icon (tree logo)
 js/portrait.js              procedural line-art portraits
 js/app.js                   timeline, windows, search, People filter
 data/characters.js          134 key figures (hand-written)
@@ -95,7 +100,7 @@ The script merges the curated key figures with the Insight records, links relati
 
 `.github/workflows/pages.yml` publishes the site to GitHub Pages on every push to the default branch. To turn it on once, open the repository's **Settings → Pages** and set **Source** to **GitHub Actions**.
 
-While publishing, the workflow adds the commit to every script and stylesheet link in `index.html` (for example `js/app.js?v=9c834ba`). GitHub Pages lets browsers keep files for 10 minutes, so without this a reload right after a deploy could still run the old code.
+While publishing, the workflow adds the commit to every script, stylesheet and icon link in `index.html` (for example `js/app.js?v=9c834ba`). GitHub Pages lets browsers keep files for 10 minutes, so without this a reload right after a deploy could still run the old code.
 
 ## Known gaps
 
