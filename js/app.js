@@ -60,6 +60,7 @@
   const T0 = A(-4026) - 90;
   const T1 = A(100) + 70;
   const TIER = { 1: 0.45, 2: 1.4, 3: 3.4, 4: 7 };   // px-per-year needed to show each tier
+  const LINE_TIER = { 1: 0, 2: 0.3, 3: 0.9 };       // the same, for the Adam-to-Jesus line filter
   const MAX_PPY = 140;
 
   /* ───────────────────────── DOM ───────────────────────── */
@@ -303,8 +304,9 @@
     });
 
     // characters
-    // with a filter on, fewer people compete for space, so they show up sooner
-    const need = (c) => (showMode === "line" ? 0 : TIER[showMode === "key" ? Math.min(c.tier, 3) : c.tier]);
+    // with a filter on, fewer people compete for space, so they show up sooner;
+    // on the Adam-to-Jesus line the 10 main names always show and the rest unfold as you zoom in
+    const need = (c) => (showMode === "line" ? LINE_TIER[Math.min(c.tier, 3)] : TIER[showMode === "key" ? Math.min(c.tier, 3) : c.tier]);
     const cands = dotEls.filter((d) => isPinned(d.c) || hoverC === d.c || (inMode(d.c) && view.ppy >= need(d.c)));
     packLanes(cands, packForce); packForce = false;
     const relSet = new Set(hoverC ? hoverC.relIds : []);
