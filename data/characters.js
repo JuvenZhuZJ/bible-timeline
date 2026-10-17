@@ -18,6 +18,14 @@
  *    age: "young" | "adult" | "old"
  *    head: "cloth" | "crown" | "priest" | "veil" | "bare" | "turban"
  *    beard: "none" | "short" | "full" | "long"
+ *    hair: "long" etc. (see js/portrait.js), for hair the Bible mentions,
+ *          e.g. Samson (Judges 16:17) or Absalom (2 Samuel 14:26)
+ *    culture: which people's dress to draw, when it differs from the
+ *          person's own nation, e.g. Joseph as ruler in Egypt (Gen 41:14, 42)
+ *          or Nimrod, king in Babel and Assyria (Gen 10:10-11). One of
+ *          israelite (also used for the patriarchs), egyptian, philistine,
+ *          mesopotamian, persian, roman, greek, herodian, canaanite,
+ *          aramean, transjordan, desert, cushite
  * portrait (optional): path to an image file that replaces the
  *    generated drawing, e.g. "portraits/adam.webp"
  * events: [year, description, scripture reference]
@@ -121,14 +129,14 @@ window.TIMELINE_CHARACTERS = [
   events:[[-2370,"Survives the Flood","Genesis 7:13"],[-2369,"Blessed by Noah","Genesis 9:27"]] },
 
 { id:"ham", name:"Ham", meaning:"Hot (?)", born:-2466, died:-2010, q:["assumed","assumed"], tier:3, gender:"m",
-  role:"Son of Noah", look:{age:"adult", head:"cloth", beard:"full"},
+  role:"Son of Noah", look:{age:"adult", head:"cloth", beard:"full", culture:"israelite"},
   summary:"Saw his father's nakedness and reported it; his son Canaan was cursed. Forefather of Cush, Mizraim (Egypt), Put and Canaan.",
   family:"Father: Noah · Sons: Cush, Mizraim, Put, Canaan",
   note:"Birth and death not recorded.",
   events:[[-2370,"Survives the Flood","Genesis 7:13"],[-2369,"Disrespects Noah; Canaan cursed","Genesis 9:22-25"]] },
 
 { id:"nimrod", name:"Nimrod", meaning:"Let us rebel", born:-2300, died:-2150, q:["assumed","assumed"], tier:3, gender:"m",
-  role:"Mighty hunter in opposition to Jehovah", look:{age:"adult", head:"crown", beard:"full"},
+  role:"Mighty hunter in opposition to Jehovah", look:{age:"adult", head:"crown", beard:"full", culture:"mesopotamian"},
   summary:"Grandson of Ham. The first to become a mighty one on earth; founded Babel and other cities — the beginning of human kingdoms in opposition to God.",
   family:"Father: Cush",
   note:"Era inferred from Babel (around the days of Peleg); dates assumed.",
@@ -280,7 +288,7 @@ window.TIMELINE_CHARACTERS = [
   events:[[-1750,"Suggests selling Joseph","Genesis 37:26-27"],[-1729,"Offers himself in place of Benjamin","Genesis 44:18-34"],[-1711,"Blessed: the scepter will not depart","Genesis 49:10"]] },
 
 { id:"joseph-patriarch", name:"Joseph", meaning:"May Jah add", born:-1767, died:-1657, q:["derived","derived"], tier:1, gender:"m",
-  role:"Son of Jacob; ruler in Egypt", look:{age:"adult", head:"bare", beard:"none"},
+  role:"Son of Jacob; ruler in Egypt", look:{age:"adult", head:"bare", beard:"none", culture:"egyptian"},
   summary:"Sold into slavery by jealous brothers, he kept his integrity as a slave and prisoner. At 30 he became food administrator of Egypt and saved his family. He died at 110.",
   family:"Parents: Jacob & Rachel · Sons: Manasseh, Ephraim",
   events:[[-1750,"Sold into slavery at 17","Genesis 37:2, 28"],[-1739,"Imprisoned after refusing Potiphar's wife","Genesis 39:7-20"],[-1737,"Made ruler at 30; interprets Pharaoh's dreams","Genesis 41:46"],[-1728,"Brings Jacob's family to Egypt","Genesis 46:29"],[-1657,"Dies at 110","Genesis 50:26"]] },
@@ -398,7 +406,7 @@ window.TIMELINE_CHARACTERS = [
   events:[[-1173,"Defeats Ammon","Judges 11:29-33"],[-1173,"Fulfills his vow","Judges 11:34-40"],[-1167,"Dies after judging 6 years","Judges 12:7"]] },
 
 { id:"samson", name:"Samson", meaning:"Sun", born:-1160, died:-1118, q:["assumed","assumed"], tier:2, gender:"m",
-  role:"Nazirite judge", look:{age:"adult", head:"bare", beard:"full"},
+  role:"Nazirite judge", look:{age:"adult", head:"bare", hair:"long", beard:"full"},
   summary:"A Nazirite from birth with extraordinary God-given strength. Betrayed by Delilah, blinded by the Philistines, he died bringing down Dagon's temple.",
   family:"Father: Manoah",
   note:"Judged 20 years in the days of the Philistines; dates assumed.",
@@ -440,7 +448,7 @@ window.TIMELINE_CHARACTERS = [
   events:[[-1181,"Prays at Shiloh","1 Samuel 1:10-11"],[-1180,"Bears Samuel","1 Samuel 1:20"],[-1177,"Brings Samuel to the tabernacle; her song","1 Samuel 1:24-2:10"]] },
 
 { id:"samuel", name:"Samuel", meaning:"Name of God", born:-1180, died:-1080, q:["assumed","estimated"], tier:1, gender:"m",
-  role:"Prophet and last judge", look:{age:"old", head:"cloth", beard:"long"},
+  role:"Prophet and last judge", look:{age:"old", head:"bare", hair:"long", beard:"long"},
   summary:"Served at the tabernacle from boyhood. As prophet and judge he anointed Israel's first two kings, Saul and David, and remained faithful throughout his life.",
   family:"Parents: Elkanah & Hannah · Sons: Joel, Abijah",
   note:"Died before David became king (1 Samuel 25:1).",
@@ -489,7 +497,7 @@ window.TIMELINE_CHARACTERS = [
   events:[[-1050,"David's adultery with her","2 Samuel 11:2-4"],[-1037,"Appeals for Solomon's succession","1 Kings 1:15-21"]] },
 
 { id:"absalom", name:"Absalom", meaning:"Father is peace", born:-1074, died:-1046, q:["assumed","assumed"], tier:3, gender:"m",
-  role:"Rebellious son of David", look:{age:"young", head:"bare", beard:"short"},
+  role:"Rebellious son of David", look:{age:"young", head:"bare", hair:"long", beard:"short"},
   summary:"Handsome and ambitious, he 'stole the hearts' of Israel and seized the throne. Killed after his famous hair caught in a tree; David mourned bitterly.",
   family:"Father: David · Sister: Tamar",
   note:"Born in Hebron (1077–1070 B.C.E.); death year assumed.",

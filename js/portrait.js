@@ -1,12 +1,15 @@
 /*
  * Procedural line-art portraits.
- * Each character gets one of 16 male or 16 female portrait designs (PRESETS
- * below), drawn with small per-person differences seeded by its id. The
- * design is picked once for the whole list (assign()) so that relatives and
- * people born close together get different designs. A character's own
- * `look` hints for age and beard win over the design's, and so does a crown or
- * a priest's turban. If a character has
- * a `portrait` image path in the data file, that image is used instead.
+ * Each character is drawn with one of the designs of their own people
+ * (PRESETS below: Israelites, Egyptians, Philistines, Assyrians and
+ * Babylonians, Persians, Romans, Greeks, the Herods, Canaanites, Arameans,
+ * Edom/Moab/Ammon, desert peoples, Cushites), with small per-person
+ * differences seeded by its id. The design is picked once for the whole list
+ * (assign()) so that relatives and people born close together get different
+ * designs. A character's own `look` hints for age, beard and hair win over the
+ * design's, and so does a priest's turban; a crowned king wears his people's
+ * royal headwear. If a character has a `portrait` image path in the data file,
+ * that image is used instead.
  */
 (function () {
   "use strict";
@@ -43,54 +46,168 @@
    * headbands and crescent ornaments (Gen 24:47; Judg 8:21, 24; Isa 3:18-21),
    * braided hair (1 Pet 3:3), the short wrapped turban with a hanging end worn
    * by Judean men on the Lachish reliefs, and the soft cap of Jehu's envoys on
-   * the Black Obelisk. There are no draped head cloths or veils; women are
-   * drawn with their hair showing.
+   * the Black Obelisk. There are no draped head cloths, veils or hair buns;
+   * women are drawn with their hair showing.
+   *
+   * Other peoples follow Insight on the Scriptures ("Dress", "Headdress",
+   * "Hair", "Beard"), the reliefs it cites, and the illustrations in "Lessons
+   * You Can Learn From the Bible" (wol.jw.org): Egyptians shaved (Gen 41:14)
+   * and wore wigs and broad collars (Gen 41:42); Philistines the feathered
+   * headdress of the Medinet Habu reliefs; Assyrians and Persians long curled
+   * hair and tiered beards; Romans cropped hair and no beard; Arameans long
+   * hair under a headband. More head shapes for them:
+   *   head  nemes | feathers | tallcap | fez | fluted | battle | conehelm |
+   *         roundcap | cone | romanhelm | wreath | net
+   *   hair  shaved | wig | longwig | curled | bob | cropped | coils | ringlets | waved
+   *   bs    tiered | false        eye  painted     extras  collar, rosette
+   *   cult  the peoples a design is used for; royal: their kings' headwear
+   *         ("only": never given to anyone else); shaven: no beard even when old
    */
   const PRESETS = {
     m: [
-      { name: "Patriarch", age: "old", head: "bare", hair: "long", beard: "long", face: "long", brow: "heavy", mouth: "stern" },
-      { name: "Young shepherd", age: "young", head: "bare", hair: "curly", beard: "short", face: "round", mouth: "smile" },
-      { name: "Envoy in a soft cap", age: "adult", head: "softcap", beard: "full", bs: "pointed", eye: "narrow" },
-      { name: "Elder in a cap", age: "old", head: "cap", beard: "long", bs: "pointed", face: "long" },
-      { name: "Soldier", age: "adult", head: "helmet", beard: "short", face: "square", brow: "heavy", mouth: "stern" },
-      { name: "Scribe", age: "adult", head: "turban", beard: "full", bs: "pointed", face: "long", eye: "narrow" },
-      { name: "Fisherman", age: "adult", head: "band", hair: "curly", beard: "full", bs: "curly", face: "square" },
-      { name: "Bald elder", age: "old", head: "bare", hair: "bald", beard: "full", face: "round", brow: "heavy" },
-      { name: "Beardless youth", age: "young", head: "bare", hair: "short", beard: "none", mouth: "smile" },
-      { name: "Grey-haired elder", age: "old", head: "bare", hair: "curly", beard: "long", eye: "downcast" },
-      { name: "Levite", age: "adult", head: "cap", beard: "short", face: "round", mouth: "smile" },
-      { name: "Nazirite", age: "adult", head: "bare", hair: "long", beard: "full", face: "long", brow: "heavy" },
-      { name: "Herdsman", age: "adult", head: "band", hair: "long", beard: "short", bs: "curly", face: "round", mouth: "smile" },
-      { name: "Old man in a turban", age: "old", head: "turban", beard: "full", bs: "curly", face: "square", brow: "heavy" },
-      { name: "Merchant", age: "adult", head: "band", hair: "short", beard: "short", bs: "goatee", eye: "narrow", extras: ["earrings", "necklace"] },
-      { name: "Young man with long hair", age: "young", head: "bare", hair: "long", beard: "none", face: "long", eye: "downcast" }
+      // Israelites, and the neighbouring peoples who dressed much like them
+      { name: "Patriarch", cult: ["israelite", "desert", "aramean"], age: "old", head: "bare", hair: "long", beard: "long", face: "long", brow: "heavy", mouth: "stern" },
+      { name: "Young shepherd", cult: ["israelite", "transjordan", "desert"], age: "young", head: "bare", hair: "curly", beard: "short", face: "round", mouth: "smile" },
+      { name: "Envoy in a soft cap", cult: ["israelite", "aramean", "canaanite"], age: "adult", head: "softcap", beard: "full", bs: "pointed", eye: "narrow" },
+      { name: "Elder in a cap", cult: ["israelite", "transjordan"], age: "old", head: "cap", beard: "long", bs: "pointed", face: "long" },
+      { name: "Soldier", cult: ["israelite", "transjordan", "aramean", "canaanite"], age: "adult", head: "helmet", beard: "short", face: "square", brow: "heavy", mouth: "stern" },
+      { name: "Scribe", cult: ["israelite", "aramean"], age: "adult", head: "turban", beard: "full", bs: "pointed", face: "long", eye: "narrow" },
+      { name: "Fisherman", cult: ["israelite"], age: "adult", head: "band", hair: "curly", beard: "full", bs: "curly", face: "square" },
+      { name: "Bald elder", cult: ["israelite", "transjordan", "canaanite"], age: "old", head: "bare", hair: "bald", beard: "full", face: "round", brow: "heavy" },
+      { name: "Beardless youth", cult: ["israelite", "canaanite"], age: "young", head: "bare", hair: "short", beard: "none", mouth: "smile" },
+      { name: "Grey-haired elder", cult: ["israelite", "transjordan", "desert"], age: "old", head: "bare", hair: "curly", beard: "long", eye: "downcast" },
+      { name: "Levite", cult: ["israelite"], age: "adult", head: "cap", beard: "short", face: "round", mouth: "smile" },
+      { name: "Nazirite", cult: ["israelite"], age: "adult", head: "bare", hair: "long", beard: "full", face: "long", brow: "heavy" },
+      { name: "Herdsman", cult: ["israelite", "desert", "aramean", "transjordan"], age: "adult", head: "band", hair: "long", beard: "short", bs: "curly", face: "round", mouth: "smile" },
+      { name: "Old man in a turban", cult: ["israelite", "transjordan"], age: "old", head: "turban", beard: "full", bs: "curly", face: "square", brow: "heavy" },
+      { name: "Merchant", cult: ["israelite", "canaanite", "desert"], age: "adult", head: "band", hair: "short", beard: "short", bs: "goatee", eye: "narrow", extras: ["earrings", "necklace"] },
+      { name: "Young man with long hair", cult: ["israelite", "desert", "aramean"], age: "young", head: "bare", hair: "long", beard: "none", face: "long", eye: "downcast" },
+      // Egyptians: shaved heads or short wigs, clean-shaven, broad collars (Gen 41:14, 42)
+      { name: "Egyptian with a shaved head", cult: ["egyptian"], age: "adult", head: "bare", hair: "shaved", beard: "none", shaven: true, face: "long", extras: ["collar"] },
+      { name: "Egyptian in a short wig", cult: ["egyptian"], age: "adult", head: "bare", hair: "wig", beard: "none", shaven: true, face: "round", extras: ["collar"] },
+      { name: "Egyptian official with a fillet", cult: ["egyptian"], age: "adult", head: "band", hair: "wig", beard: "none", shaven: true, face: "long", eye: "narrow", extras: ["collar", "earrings"] },
+      { name: "Egyptian elder in a wig", cult: ["egyptian"], age: "old", head: "bare", hair: "wig", beard: "none", shaven: true, face: "square", mouth: "stern", extras: ["collar"] },
+      { name: "Pharaoh's striped headdress", cult: ["egyptian"], royal: "only", age: "adult", head: "nemes", beard: "short", bs: "false", shaven: true, face: "square", mouth: "stern", extras: ["collar"] },
+      // Philistines: feathered headdresses, as on the Medinet Habu reliefs
+      { name: "Philistine in a feathered headdress", cult: ["philistine"], royal: true, age: "adult", head: "feathers", beard: "none", shaven: true, face: "square", brow: "heavy", mouth: "stern" },
+      { name: "Philistine with a short beard", cult: ["philistine"], age: "adult", head: "feathers", beard: "short", face: "round" },
+      { name: "Philistine youth", cult: ["philistine"], age: "young", head: "bare", hair: "curly", beard: "none", mouth: "smile" },
+      // Assyrians, Babylonians, Chaldeans: long curled hair and tiered beards
+      { name: "Assyrian with a curled beard", cult: ["mesopotamian"], age: "adult", head: "band", hair: "curled", beard: "long", bs: "tiered", brow: "heavy", extras: ["earrings", "rosette"] },
+      { name: "Babylonian in a tall cap", cult: ["mesopotamian"], age: "adult", head: "tallcap", hair: "curled", beard: "long", bs: "tiered", eye: "narrow" },
+      { name: "Assyrian soldier", cult: ["mesopotamian"], age: "adult", head: "conehelm", hair: "curled", beard: "full", bs: "tiered", face: "square", mouth: "stern" },
+      { name: "Chaldean elder", cult: ["mesopotamian"], age: "old", head: "bare", hair: "curled", beard: "long", bs: "tiered", eye: "downcast" },
+      { name: "King's tall cap", cult: ["mesopotamian"], royal: "only", age: "adult", head: "fez", hair: "curled", beard: "long", bs: "tiered", brow: "heavy", extras: ["earrings"] },
+      // Persians and Medes
+      { name: "Persian in a fluted cap", cult: ["persian"], age: "adult", head: "fluted", hair: "curled", beard: "full", bs: "tiered", face: "long" },
+      { name: "Persian with a headband", cult: ["persian"], age: "adult", head: "band", hair: "curled", beard: "full", bs: "tiered", eye: "narrow", extras: ["earrings"] },
+      { name: "Mede in a rounded cap", cult: ["persian"], age: "adult", head: "roundcap", beard: "full", bs: "curly", face: "round" },
+      { name: "Persian king's crown", cult: ["persian"], royal: "only", age: "adult", head: "battle", hair: "curled", beard: "long", bs: "tiered", brow: "heavy" },
+      // Romans: cropped hair, clean-shaven
+      { name: "Roman with cropped hair", cult: ["roman", "herodian"], age: "adult", head: "bare", hair: "cropped", beard: "none", shaven: true, face: "square" },
+      { name: "Roman officer's helmet", cult: ["roman"], age: "adult", head: "romanhelm", beard: "none", shaven: true, face: "square", mouth: "stern" },
+      { name: "Older Roman", cult: ["roman", "herodian"], age: "old", head: "bare", hair: "cropped", beard: "none", shaven: true, face: "long", brow: "heavy" },
+      { name: "Laurel wreath", cult: ["roman"], royal: "only", age: "adult", head: "wreath", hair: "cropped", beard: "none", shaven: true, face: "long", mouth: "stern" },
+      // Greeks and the Herods
+      { name: "Greek with curly hair", cult: ["greek", "herodian"], age: "adult", head: "bare", hair: "curly", beard: "full", bs: "curly", face: "square" },
+      { name: "Greek youth with a fillet", cult: ["greek", "herodian"], age: "young", head: "band", hair: "curly", beard: "none", mouth: "smile" },
+      { name: "Herodian with a diadem", cult: ["herodian"], royal: true, age: "adult", head: "band", hair: "cropped", beard: "short", face: "long", eye: "narrow" },
+      // Canaanites, Phoenicians, Hittites
+      { name: "Canaanite with a headband", cult: ["canaanite", "aramean", "desert"], age: "adult", head: "band", hair: "bob", beard: "full", bs: "pointed" },
+      { name: "Phoenician in a pointed cap", cult: ["canaanite"], age: "adult", head: "cone", hair: "bob", beard: "full", bs: "pointed", face: "long", eye: "narrow" },
+      { name: "Hittite with long hair", cult: ["canaanite"], age: "adult", head: "bare", hair: "long", beard: "none", shaven: true, face: "long", brow: "heavy" },
+      // Arameans, Edom, Moab, Ammon, and the desert peoples
+      { name: "Aramean with long hair and a headband", cult: ["aramean", "transjordan"], age: "adult", head: "band", hair: "long", beard: "full", bs: "curly", brow: "heavy" },
+      { name: "Moabite in a rounded cap", cult: ["transjordan", "desert"], age: "adult", head: "roundcap", beard: "full", bs: "pointed", face: "long" },
+      { name: "Nomad in a felt cap", cult: ["desert"], age: "adult", head: "roundcap", beard: "full", bs: "curly", brow: "heavy", mouth: "stern" },
+      { name: "Midianite chief with a crescent", cult: ["desert"], age: "adult", head: "band", hair: "long", beard: "full", face: "square", extras: ["crescent", "earrings"] },
+      // Cushites
+      { name: "Cushite with close curls", cult: ["cushite"], age: "adult", head: "bare", hair: "coils", beard: "none", face: "round", extras: ["earrings"] },
+      { name: "Cushite with a short beard", cult: ["cushite"], age: "adult", head: "band", hair: "coils", beard: "short", bs: "curly", face: "square" },
+      { name: "Cushite elder", cult: ["cushite"], age: "old", head: "bare", hair: "coils", beard: "full", bs: "curly", eye: "downcast" }
     ],
     f: [
-      { name: "Wavy hair", age: "adult", head: "bare", hair: "wavy" },
-      { name: "Braids", age: "young", head: "bare", hair: "braids", face: "round", mouth: "smile" },
-      { name: "Hair tied back", age: "adult", head: "bare", hair: "tied", face: "long", extras: ["earrings"] },
-      { name: "Long hair", age: "young", head: "bare", hair: "long", extras: ["necklace"] },
-      { name: "Crescent pendant", age: "adult", head: "bare", hair: "wavy", brow: "arched", extras: ["crescent"] },
-      { name: "Single braid", age: "adult", head: "bare", hair: "sidebraid", face: "round", mouth: "smile" },
-      { name: "Elder, hair tied back", age: "old", head: "bare", hair: "tied", face: "long", mouth: "stern" },
-      { name: "Curls", age: "adult", head: "bare", hair: "curly", extras: ["earrings"] },
-      { name: "Headband and frontlet", age: "adult", head: "band", hair: "wavy", eye: "downcast", extras: ["frontlet"] },
-      { name: "Headband", age: "adult", head: "band", hair: "long", brow: "arched" },
-      { name: "Elder with a braided crown", age: "old", head: "bare", hair: "crownbraid", face: "round" },
-      { name: "Girl with a single braid", age: "young", head: "bare", hair: "sidebraid", face: "long", mouth: "smile", extras: ["earrings"] },
-      { name: "Headband and curls", age: "adult", head: "band", hair: "curly", face: "square", eye: "narrow", extras: ["necklace"] },
-      { name: "Braided crown", age: "adult", head: "bare", hair: "crownbraid", brow: "arched", mouth: "smile" },
-      { name: "Elder with braids", age: "old", head: "bare", hair: "braids", face: "round", eye: "downcast" },
-      { name: "Earrings and nose ring", age: "young", head: "bare", hair: "wavy", face: "round", mouth: "smile", extras: ["earrings", "nosering"] }
+      { name: "Wavy hair", cult: ["israelite", "transjordan"], age: "adult", head: "bare", hair: "wavy" },
+      { name: "Braids", cult: ["israelite", "desert"], age: "young", head: "bare", hair: "braids", face: "round", mouth: "smile" },
+      { name: "Hair tied back", cult: ["israelite", "aramean"], age: "adult", head: "bare", hair: "tied", face: "long", extras: ["earrings"] },
+      { name: "Long hair", cult: ["israelite", "transjordan", "philistine"], age: "young", head: "bare", hair: "long", extras: ["necklace"] },
+      { name: "Crescent pendant", cult: ["israelite", "desert", "canaanite"], age: "adult", head: "bare", hair: "wavy", brow: "arched", extras: ["crescent"] },
+      { name: "Single braid", cult: ["israelite", "transjordan"], age: "adult", head: "bare", hair: "sidebraid", face: "round", mouth: "smile" },
+      { name: "Elder, hair tied back", cult: ["israelite", "aramean"], age: "old", head: "bare", hair: "tied", face: "long", mouth: "stern" },
+      { name: "Curls", cult: ["israelite", "persian", "mesopotamian"], age: "adult", head: "bare", hair: "curly", extras: ["earrings"] },
+      { name: "Headband and frontlet", cult: ["israelite"], age: "adult", head: "band", hair: "wavy", eye: "downcast", extras: ["frontlet"] },
+      { name: "Headband", cult: ["israelite", "transjordan", "philistine"], age: "adult", head: "band", hair: "long", brow: "arched" },
+      { name: "Elder with a braided crown", cult: ["israelite"], age: "old", head: "bare", hair: "crownbraid", face: "round" },
+      { name: "Girl with a single braid", cult: ["israelite", "aramean"], age: "young", head: "bare", hair: "sidebraid", face: "long", mouth: "smile", extras: ["earrings"] },
+      { name: "Headband and curls", cult: ["israelite", "canaanite"], age: "adult", head: "band", hair: "curly", face: "square", eye: "narrow", extras: ["necklace"] },
+      { name: "Braided crown", cult: ["israelite"], age: "adult", head: "bare", hair: "crownbraid", brow: "arched", mouth: "smile" },
+      { name: "Elder with braids", cult: ["israelite", "desert"], age: "old", head: "bare", hair: "braids", face: "round", eye: "downcast" },
+      { name: "Earrings and nose ring", cult: ["israelite", "desert", "transjordan"], age: "young", head: "bare", hair: "wavy", face: "round", mouth: "smile", extras: ["earrings", "nosering"] },
+      { name: "Egyptian braided wig", cult: ["egyptian"], age: "adult", head: "bare", hair: "longwig", eye: "painted", extras: ["collar", "earrings"] },
+      { name: "Egyptian beaded hair net", cult: ["egyptian"], age: "adult", head: "net", hair: "long", eye: "painted", brow: "arched", extras: ["earrings"] },
+      { name: "Egyptian wig with a circlet", cult: ["egyptian"], royal: true, age: "adult", head: "band", hair: "longwig", eye: "painted", face: "long", extras: ["collar", "rosette"] },
+      { name: "Ringlets and a diadem", cult: ["mesopotamian", "persian", "canaanite"], age: "adult", head: "band", hair: "ringlets", extras: ["earrings", "rosette"] },
+      { name: "Ringlets and a necklace", cult: ["persian", "mesopotamian", "aramean"], age: "young", head: "bare", hair: "ringlets", face: "round", mouth: "smile", extras: ["necklace"] },
+      { name: "Painted eyes", cult: ["canaanite"], age: "adult", head: "bare", hair: "ringlets", eye: "painted", brow: "arched", extras: ["earrings", "necklace"] },
+      { name: "Waved hair, parted", cult: ["roman", "herodian", "greek"], age: "adult", head: "bare", hair: "waved", face: "long", extras: ["earrings"] },
+      { name: "Waved hair with a fillet", cult: ["herodian", "greek", "roman"], royal: true, age: "adult", head: "band", hair: "waved", brow: "arched", extras: ["earrings", "necklace"] },
+      { name: "Close curls and large earrings", cult: ["cushite"], age: "adult", head: "bare", hair: "coils", face: "round", extras: ["earrings", "necklace"] },
+      { name: "Headband and braids", cult: ["desert"], age: "adult", head: "band", hair: "braids", face: "long", extras: ["nosering"] }
     ]
   };
   const group = (c) => (c.gender === "f" ? "f" : "m");
 
+  /* ───────────── which people a person belongs to ─────────────
+   * From the nation or tribe Insight gives (the `group` field), else from
+   * words in the role and summary. A `look.culture` hint wins over both. */
+  const NATIONS = [
+    ["egyptian", /^Egyptian$/],
+    ["philistine", /^Philistine$/],
+    ["mesopotamian", /^(Assyrian|Babylonian|Chaldean|Elamite|Mesopotamian)$/],
+    ["persian", /^(Persian|Persian court|Mede)$/],
+    ["roman", /^Roman$/],
+    ["greek", /^(Greek|Ephesian)$/],
+    ["herodian", /^(Herodian|Idumean)$/],
+    ["canaanite", /^(Canaanite|Amorite|Hittite|Hivite|Horite|Tyrian|Sidonian|Phoenician|Gibeonite|Anakim|Rephaim|Hamathite|Geshurite|Maacathite|Horonite|Archite)$/],
+    ["aramean", /^(Syrian|Aramaean|Aramean|Damascene)$/],
+    ["transjordan", /^(Edomite|Moabite|Ammonite|Agagite)$/],
+    ["desert", /^(Midianite|Ishmaelite|Amalekite|Arabian|Hagrite|Dedanite|Keturah's descendants|Keturah's sons|Buzite|Shuhite|Kenite)$/],
+    ["cushite", /^Ethiopian$/]
+  ];
+  const WORDS = [
+    ["egyptian", /Egypt|Pharaoh/], ["philistine", /Philistin|Gath\b|Gaza|Ashdod/], ["persian", /Persia|\bMedes?\b/],
+    ["mesopotamian", /Babylon|Assyri|Chaldea|Elam/], ["roman", /Roman|Caesar|centurion/], ["greek", /Greek|Athen|Corinth/],
+    ["aramean", /Syria|\bAram/], ["transjordan", /Edom|Moab|Ammon/], ["canaanite", /Canaan|Hittite|Amorite|Tyre|Sidon|Jebusite/],
+    ["desert", /Midian|Ishmael|Amalek|Arab/], ["cushite", /Ethiop|Cush/]
+  ];
+  function culture(c) {
+    if (c.look && c.look.culture) return c.look.culture;
+    const g = c.group || "";
+    for (const [k, re] of NATIONS) if (re.test(g)) return k;
+    // Ham's line (Gen 10:6-20) spread to Cush, Egypt and Canaan: go by the summary
+    if (g && g !== "Hamite") return "israelite";
+    const t = (c.role || "") + " " + (c.summary || "");
+    for (const [k, re] of WORDS) if (re.test(t)) return k;
+    return "israelite";
+  }
+  // the designs a people group draws from (kings-only designs left out)
+  function pool(g, k) {
+    const ids = [];
+    PRESETS[g].forEach((p, i) => { if (p.royal !== "only" && p.cult.indexOf(k) >= 0) ids.push(i); });
+    return ids.length ? ids : pool(g, "israelite");
+  }
+  // what a crowned king or queen of that people wears; others keep the plain crown
+  function royal(g, k) {
+    const i = PRESETS[g].findIndex((p) => p.royal && p.cult[0] === k);
+    return i < 0 ? null : PRESETS[g][i];
+  }
+
   /* ───────────── which design each person gets ─────────────
-   * Per sex, people are taken in birth order; each gets the design used
-   * longest ago, skipping any design a parent, child, sibling or spouse
-   * already has. So the 16 people born around the same time all look
-   * different, and so do close relatives. Done once for the whole list. */
+   * Per sex and people group, people are taken in birth order; each gets the
+   * design of their own people used longest ago, skipping any design a
+   * parent, child, sibling or spouse already has. So people born around the
+   * same time look different, and so do close relatives. Done once for the
+   * whole list. */
   let assigned = null;
   function assign(list) {
     assigned = new Map();
@@ -112,35 +229,41 @@
     for (const g of ["m", "f"]) {
       const sex = list.filter((c) => group(c) === g)
         .sort((a, b) => (a.born - b.born) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-      pick(sex.filter((c) => c.key), PRESETS[g], links, true);
-      pick(sex, PRESETS[g], links, false);
+      const byCult = new Map();
+      for (const c of sex) { const k = culture(c); if (!byCult.has(k)) byCult.set(k, []); byCult.get(k).push(c); }
+      for (const [k, people] of byCult) {
+        const ids = pool(g, k);
+        pick(people.filter((c) => c.key), ids, PRESETS[g], links, true);
+        pick(people, ids, PRESETS[g], links, false);
+      }
     }
   }
-  function pick(people, designs, links, spreadHeads) {
-    const n = designs.length, last = new Array(n).fill(-1e7), heads = [];
+  function pick(people, ids, designs, links, spreadHeads) {
+    const last = new Map(ids.map((p) => [p, -1e7])), heads = [];
     people.forEach((c, i) => {
-      if (assigned.has(c.id)) { last[assigned.get(c.id)] = i; return; }
+      if (assigned.has(c.id)) { last.set(assigned.get(c.id), i); return; }
       const taken = new Set(), ahead = new Set();
       for (const id of links.get(c.id) || []) if (assigned.has(id)) taken.add(assigned.get(id));
       for (let j = i + 1; j < Math.min(people.length, i + 12); j++) if (assigned.has(people[j].id)) ahead.add(assigned.get(people[j].id));
-      let best = 0, bestScore = Infinity;
-      for (let p = 0; p < n; p++) {
-        let score = (taken.has(p) ? 1e9 : 0) + (ahead.has(p) ? 1e5 : 0) + last[p] + ((hash(c.id + p) % 1000) / 1e4);
+      let best = ids[0], bestScore = Infinity;
+      for (const p of ids) {
+        let score = (taken.has(p) ? 1e9 : 0) + (ahead.has(p) ? 1e5 : 0) + last.get(p) + ((hash(c.id + p) % 1000) / 1e4);
         if (spreadHeads && heads.indexOf(designs[p].head) >= 0) score += 1e6;
         if (score < bestScore) { bestScore = score; best = p; }
       }
       assigned.set(c.id, best);
-      last[best] = i;
+      last.set(best, i);
       if (spreadHeads) { heads.push(designs[best].head); if (heads.length > 2) heads.shift(); }
     });
   }
   function presetOf(c) {
     if (c._preset != null) return PRESETS[group(c)][c._preset];
     if (!assigned) assign(window.TIMELINE_PEOPLE || window.TIMELINE_CHARACTERS || []);
-    if (!assigned.has(c.id)) return PRESETS[group(c)][hash(c.id) % PRESETS[group(c)].length];
+    if (!assigned.has(c.id)) { const ids = pool(group(c), culture(c)); return PRESETS[group(c)][ids[hash(c.id) % ids.length]]; }
     return PRESETS[group(c)][assigned.get(c.id)];
   }
 
+  const RULER = /^(?:(?:first|second|fourth|last|persian|philistine|egyptian|babylonian|roman)\s+){0,2}(?:king|queen|pharaoh|emperor)\b(?!')/i;
   function defaultLook(c) {
     const fem = c.gender === "f";
     const look = Object.assign({ hair: fem ? "long" : "short", bs: "plain", face: "oval", brow: "soft", mouth: "calm", eye: "open", extras: [] }, presetOf(c));
@@ -148,15 +271,30 @@
     if (hint.age) look.age = hint.age;
     else if (c.died - c.born > 300) look.age = "old";
     // Hand-set headwear only wins when it says something: a king's crown or a
-    // priest's turban. Otherwise the design's headwear gives the variety, except
-    // that only unnamed extras are drawn in a soldier's helmet; a named person
-    // given the soldier design is drawn bareheaded.
-    if (hint.head === "crown" || hint.head === "priest") look.head = hint.head;
-    else if (hint.head && look.head === "helmet") { look.head = "bare"; look.hair = "short"; }
-    if (hint.beard) look.beard = hint.beard;
+    // priest's turban. A crown is drawn the way that king's own people drew
+    // one (a pharaoh's striped headdress, a Persian king's crenellated crown).
+    // Otherwise the design's headwear gives the variety, except that only
+    // unnamed extras are drawn in a soldier's helmet; a named person given the
+    // soldier design is drawn bareheaded.
+    // Foreign rulers whose people had their own royal headwear get it from their
+    // role too ("King of Assyria", "Pharaoh of Egypt", "Roman emperor").
+    let crowned = null;
+    if (c._preset == null && (hint.head === "crown" || RULER.test(c.role || ""))) crowned = royal(group(c), culture(c));
+    if (crowned) {
+      for (const k of ["head", "hair", "bs", "shaven"]) look[k] = crowned[k];
+      look.extras = (crowned.extras || []).slice();
+      if (crowned.shaven || crowned.bs === "false") look.beard = crowned.beard;
+    } else if (hint.head === "crown" || hint.head === "priest") look.head = hint.head;
+    else if (hint.head && /helm/.test(look.head)) { look.head = "bare"; look.hair = look.shaven ? "cropped" : look.hair === "curled" ? "curled" : "short"; }
+    if (look.head === "crown" && (look.hair === "wig" || look.hair === "longwig" || look.hair === "shaved")) look.hair = "short";
+    if (hint.beard && !(crowned && (crowned.shaven || crowned.bs === "false"))) look.beard = hint.beard;
+    // hair the Bible mentions (a Nazirite's, Absalom's) must show, so no hat over it
+    if (hint.hair) { look.hair = hint.hair; if (!/^(crown|band|battle|wreath)$/.test(look.head)) look.head = "bare"; }
     if (!look.beard) look.beard = fem ? "none" : (look.age === "old" ? "long" : "full");
-    // An old man always has a beard, even when his design's is clean-shaven.
-    if (!hint.beard && look.age === "old" && look.beard === "none") look.beard = "full";
+    // An old man always has a beard, even when his design's is clean-shaven,
+    // except among peoples who shaved (Egyptians, Romans).
+    if (!hint.beard && look.age === "old" && look.beard === "none" && !look.shaven) look.beard = "full";
+    if (look.beard === "none" && (look.bs === "tiered" || look.bs === "false")) look.bs = "plain";
     if (fem) look.beard = "none";
     if (look.hair === "bald" && look.age !== "old") look.hair = "short";
     return look;
@@ -210,7 +348,11 @@
       `C${f(cx - rx * jaw)},${f(chin)} ${f(cx - rx * 0.9)},${f(cy + ry * 0.62)} ${f(cx - rx * 0.97)},${f(cy + 8)} ` +
       `C${f(cx - rx * 1.02)},${f(cy - 8)} ${f(cx - rx * 1.05)},${f(top)} ${cx},${f(top)} Z`;
     const hairline = cy - ry * 0.5;
-    const showsHair = head === "bare" || head === "crown" || head === "band";
+    const showsHair = /^(bare|crown|band|battle|wreath|net)$/.test(head);
+    // hats that sit on top of the head, leaving long or curled hair showing behind
+    const hatHair = showsHair || /^(tallcap|fez|fluted|cone|roundcap|feathers|conehelm)$/.test(head);
+    const wig = hair === "wig" || hair === "longwig";
+    const ww = rx + (hair === "longwig" ? 13 : 10), wb = hair === "longwig" ? chin + 40 : chin - 4;
 
     // halo rings (background)
     out.push(`<circle cx="100" cy="112" r="92" stroke-width="0.6" opacity="0.25"/>`);
@@ -230,7 +372,7 @@
     S(`M${cx + 13},${chin - 10} C${cx + 13},${chin + 4} ${cx + 15},${chin + 10} ${cx + 17},${chin + 16}`, 1.1);
 
     // ── back layers: long hair / cloth / veil drape behind the face ──
-    if (showsHair && fem && (hair === "long" || hair === "curly")) {
+    if (showsHair && fem && (hair === "long" || hair === "curly" || hair === "ringlets")) {
       const hl = `M${cx - rx - 4},${cy - 10} C${cx - rx - 14},${cy + 40} ${cx - rx - 14},${chin + 24} ${cx - rx - 18},${chin + 54}${ends(cx - rx - 18, cx + rx + 18, chin + 54, 12, 5)} C${cx + rx + 14},${chin + 24} ${cx + rx + 14},${cy + 40} ${cx + rx + 4},${cy - 10} Z`;
       fillP(hl, 1.1);
       if (hair === "curly") {
@@ -252,6 +394,38 @@
         const s = i % 2 ? 1 : -1, x = cx + s * (rx + r(0, 10));
         P(`M${f(x)},${f(cy + r(-6, 10))} q${f(s * r(1, 5))},${f(r(20, 30))} ${f(s * r(3, 8))},${f(r(40, 56))}`, 0.6, 0.6);
       }
+    }
+    if (!fem && hatHair && hair === "curled") {
+      // Assyrian and Persian style: hair to the shoulders, ending in rows of curls
+      const yb = chin + 12;
+      fillP(`M${cx - rx - 3},${cy - 14} C${cx - rx - 12},${cy + 14} ${cx - rx - 14},${chin - 12} ${cx - rx - 16},${yb} Q${cx},${yb + 14} ${cx + rx + 16},${yb} C${cx + rx + 14},${chin - 12} ${cx + rx + 12},${cy + 14} ${cx + rx + 3},${cy - 14} Z`, 1.1);
+      for (const sg of [-1, 1]) {
+        for (let k = 0; k < 4; k++) P(`M${f(cx + sg * (rx + 2 + k * 2.5))},${f(cy - 8)} c${f(sg * 4)},10 ${f(sg * -2)},18 ${f(sg * 2)},${f(chin - cy - 14)}`, 0.6, 0.6);
+        for (let row = 0; row < 3; row++) for (let k = 0; k < 3; k++) curl(cx + sg * (rx + 1 + k * 5 + row), chin - 14 + row * 9 + k * 2, 2.9, 0.8, 0.85);
+      }
+    }
+    if (!fem && hatHair && hair === "bob") {
+      // hair cut straight at the jaw, standing out at the sides (Canaanites on Egyptian reliefs)
+      const yb = chin - 10;
+      fillP(`M${cx - rx - 3},${cy - 16} C${cx - rx - 14},${cy - 4} ${cx - rx - 17},${yb - 18} ${cx - rx - 15},${yb} L${cx + rx + 15},${yb} C${cx + rx + 17},${yb - 18} ${cx + rx + 14},${cy - 4} ${cx + rx + 3},${cy - 16} Z`, 1.1);
+      for (const sg of [-1, 1]) for (let k = 0; k < 4; k++) P(`M${f(cx + sg * (rx + 1 + k * 3.5))},${f(cy - 10)} q${f(sg * 3)},${f((yb - cy) / 2)} ${f(sg * 1)},${f(yb - cy + 8)}`, 0.6, 0.6);
+    }
+    if (showsHair && wig) {
+      // Egyptian wig, behind the face
+      fillP(`M${f(cx - ww)},${f(wb)} L${f(cx - ww)},${f(cy - 16)} C${f(cx - ww)},${f(top - 16)} ${f(cx + ww)},${f(top - 16)} ${f(cx + ww)},${f(cy - 16)} L${f(cx + ww)},${f(wb)} Z`, 1.2);
+    }
+    if (head === "nemes") {
+      // the royal striped headcloth, spreading behind the shoulders
+      const nb = `M${f(cx - rx - 8)},${f(cy - 16)} C${f(cx - rx - 8)},${f(top - 14)} ${f(cx + rx + 8)},${f(top - 14)} ${f(cx + rx + 8)},${f(cy - 16)} L${f(cx + rx + 26)},${f(chin + 6)} L${f(cx - rx - 26)},${f(chin + 6)} Z`;
+      fillP(nb, 1.2);
+      out.push(`<clipPath id="nb-${uid}"><path d="${nb}"/></clipPath><g clip-path="url(#nb-${uid})">`);
+      for (let y = cy - 10; y < chin + 4; y += 6) P(`M${f(cx - rx - 26)},${f(y)} H${f(cx + rx + 26)}`, 2, 0.55);
+      out.push(`</g>`);
+    }
+    if (showsHair && fem && hair === "waved") {
+      // hair gathered low at the nape, showing either side of the neck
+      fillP(`M${cx - rx - 3},${cy - 6} C${cx - rx - 10},${cy + 14} ${cx - rx - 8},${chin - 6} ${cx - rx + 4},${chin + 2} L${cx + rx - 4},${chin + 2} C${cx + rx + 8},${chin - 6} ${cx + rx + 10},${cy + 14} ${cx + rx + 3},${cy - 6} Z`, 1.1);
+      for (const sg of [-1, 1]) for (let k = 0; k < 3; k++) P(`M${f(cx + sg * (rx + 1 + k * 2))},${f(cy + k * 3)} c${f(sg * 4)},8 ${f(sg * -2)},14 ${f(sg * -1 - k)},${f(chin - cy - 2 - k * 3)}`, 0.6, 0.6);
     }
     if (showsHair && fem && hair === "wavy") {
       // shoulder-length hair with a waved edge
@@ -290,6 +464,17 @@
       }
     }
 
+    // Egyptian broad collar of beads
+    if (has("collar")) {
+      const y0 = chin + 10;
+      fillP(`M${cx - 50},${f(y0 + 2)} Q${cx},${f(y0 + 70)} ${cx + 50},${f(y0 + 2)} L${cx + 22},${f(y0)} Q${cx},${f(y0 + 24)} ${cx - 22},${f(y0)} Z`, 1.1);
+      for (const k of [1, 2, 3]) P(`M${cx - 22 - k * 7},${f(y0 + k * 0.5)} Q${cx},${f(y0 + 24 + k * 11)} ${cx + 22 + k * 7},${f(y0 + k * 0.5)}`, 0.8, 0.75);
+      for (let i = 1; i < 14; i++) {
+        const t = i / 14, x = (1 - t) * (1 - t) * (cx - 50) + 2 * (1 - t) * t * cx + t * t * (cx + 50), y = (1 - t) * (1 - t) * (y0 + 2) + 2 * (1 - t) * t * (y0 + 70) + t * t * (y0 + 2);
+        ring(x, y + 1.5, 1.6, 0.7, 0.8, true);
+      }
+    }
+
     // face
     fillP(face, 1.5);
     out.push(`<path d="${face}" stroke-width="0.7" opacity="0.4" transform="translate(${f(r(-1, 1))} ${f(r(-1, 1))})"/>`);
@@ -305,8 +490,8 @@
 
     // ears (only when not covered)
     const earsShow = fem
-      ? showsHair && (hair === "tied" || hair === "braids" || hair === "sidebraid" || hair === "crownbraid" || hair === "short")
-      : head === "bare" || head === "crown" || head === "turban" || head === "priest" || head === "cap" || head === "softcap" || head === "band" || head === "helmet";
+      ? showsHair && (hair === "tied" || hair === "braids" || hair === "sidebraid" || hair === "crownbraid" || hair === "short" || hair === "coils")
+      : head !== "nemes" && head !== "romanhelm" && hair !== "bob" && !wig;
     if (earsShow) {
       if (fem) {
         S(`M${f(cx - rx * 0.97)},${cy + 2} c-6,-1 -7,13 -1,15`, 1);
@@ -323,10 +508,12 @@
     for (const s of [-1, 1]) {
       const ex = cx + s * es;
       const uy = L.eye === "downcast" ? ey + 1 : ey;
-      S(`M${f(ex - 8)},${f(uy)} C${f(ex - 4)},${f(uy - lid)} ${f(ex + 4)},${f(uy - lid)} ${f(ex + 8)},${f(uy)}`, fem ? 1.5 : 1.3);
+      S(`M${f(ex - 8)},${f(uy)} C${f(ex - 4)},${f(uy - lid)} ${f(ex + 4)},${f(uy - lid)} ${f(ex + 8)},${f(uy)}`, L.eye === "painted" ? 2.2 : fem ? 1.5 : 1.3);
+      // eyes lined with black paint, drawn out at the corner (2 Ki 9:30)
+      if (L.eye === "painted") P(`M${f(ex + s * 8)},${f(uy)} l${f(s * 5.5)},-2.6`, 1.4, 0.9);
       P(`M${f(ex - 7)},${f(ey + 0.5)} C${f(ex - 3)},${f(ey + (L.eye === "narrow" ? 2 : 3))} ${f(ex + 3)},${f(ey + (L.eye === "narrow" ? 2 : 3))} ${f(ex + 7)},${f(ey + 0.5)}`, 0.7, 0.6);
       const iy = L.eye === "downcast" ? ey + 0.9 : L.eye === "narrow" ? ey : ey - 0.5;
-      out.push(`<circle cx="${f(ex + r(-0.5, 0.5))}" cy="${f(iy)}" r="${L.eye === "open" ? 2.3 : 1.9}" fill="currentColor" stroke="none"/>`);
+      out.push(`<circle cx="${f(ex + r(-0.5, 0.5))}" cy="${f(iy)}" r="${L.eye === "open" || L.eye === "painted" ? 2.3 : 1.9}" fill="currentColor" stroke="none"/>`);
       if (L.eye === "downcast") P(`M${f(ex - 6)},${f(uy - lid + 1.6)} Q${f(ex)},${f(uy - lid - 0.6)} ${f(ex + 6)},${f(uy - lid + 1.6)}`, 0.6, 0.6);
       if (fem) for (let k = 0; k < 3; k++) P(`M${f(ex + s * (3 + k * 2))},${f(uy - lid + 1.4 + k * 0.6)} l${f(s * 1.5)},-2`, 0.6, 0.7);
       if (old) {
@@ -356,7 +543,24 @@
       S(`M${cx},${f(my - 7)} C${cx - 8},${f(my - 9)} ${cx - 14},${f(my - 4)} ${cx - 18},${f(my + 3)}`, 1.2);
       S(`M${cx},${f(my - 7)} C${cx + 8},${f(my - 9)} ${cx + 14},${f(my - 4)} ${cx + 18},${f(my + 3)}`, 1.2);
     };
-    if (L.beard !== "none" && L.bs === "goatee") {
+    if (L.beard !== "none" && L.bs === "false") {
+      // a pharaoh's narrow plaited beard, worn on ceremony, no moustache
+      fillP(`M${cx - 5},${f(chin - 3)} L${cx - 6},${f(chin + 22)} Q${cx},${f(chin + 25)} ${cx + 6},${f(chin + 22)} L${cx + 5},${f(chin - 3)} Z`, 1.1);
+      for (let y = chin + 1; y < chin + 22; y += 3.5) P(`M${cx - 5},${f(y)} q5,2 10,0`, 0.6, 0.7);
+    } else if (L.beard !== "none" && L.bs === "tiered") {
+      // long squared beard in rows of curls, as on Assyrian and Persian reliefs
+      const bx = rx * 0.98, bw2 = rx * 0.84;
+      const bottom = chin + (L.beard === "long" ? 46 : L.beard === "full" ? 26 : 12);
+      fillP(`M${f(cx - bx)},${f(cy + 6)} C${f(cx - bx)},${f(cy + 30)} ${f(cx - bw2 - 1)},${f(bottom - 16)} ${f(cx - bw2)},${f(bottom - 2)} Q${cx},${f(bottom + 3)} ${f(cx + bw2)},${f(bottom - 2)} C${f(cx + bw2 + 1)},${f(bottom - 16)} ${f(cx + bx)},${f(cy + 30)} ${f(cx + bx)},${f(cy + 6)} C${f(cx + rx * 0.7)},${f(cy + 22)} ${f(cx + 16)},${f(my - 6)} ${cx},${f(my - 7)} C${f(cx - 16)},${f(my - 6)} ${f(cx - rx * 0.7)},${f(cy + 22)} ${f(cx - bx)},${f(cy + 6)} Z`, 1.2);
+      for (let y = cy + 14; y < my + 6; y += 7.5) for (const sg of [-1, 1]) curl(cx + sg * (bx - 5), y, 2.6, 0.7, 0.75);
+      let row = 0;
+      for (let y = my + 10; y < bottom - 3; y += 8, row++) {
+        const half = bw2 - 4;
+        if (row % 2 === 0) for (let x = -half + (row % 4 ? 3 : 0); x <= half; x += 6) curl(cx + x, y + r(-0.6, 0.6), 2.3, 0.7, old ? 0.55 : 0.8);
+        else for (let x = -half + 2; x <= half; x += 4.2) P(`M${f(cx + x)},${f(y - 4)} q1.8,2.6 0,5.2 q-1.8,2.6 0,5.2`, 0.6, 0.6);
+      }
+      moustache();
+    } else if (L.beard !== "none" && L.bs === "goatee") {
       const gb = chin + (L.beard === "long" ? 26 : L.beard === "full" ? 18 : 12);
       fillP(`M${cx - 9},${f(my + 4)} C${cx - 11},${f(chin + 2)} ${cx - 5},${f(gb - 4)} ${cx},${f(gb)} C${cx + 5},${f(gb - 4)} ${cx + 11},${f(chin + 2)} ${cx + 9},${f(my + 4)} Q${cx},${f(my + 8)} ${cx - 9},${f(my + 4)} Z`, 1.1);
       for (let i = 0; i < 6; i++) { const x = cx + r(-6, 6); P(`M${f(x)},${f(my + 8)} q${f(r(-2, 2))},${f((gb - my) / 2)} ${f((cx - x) * 0.4)},${f(gb - my - 10)}`, 0.6, 0.7); }
@@ -418,10 +622,44 @@
 
     // ── headwear / hair (front layer) ──
     if (showsHair) {
-      if (fem) {
-        const pulled = hair === "tied" || hair === "braids" || hair === "sidebraid" || hair === "crownbraid";
-        S(`M${f(cx - rx - 3)},${f(cy + 6)} C${f(cx - rx - 6)},${f(top - 10)} ${f(cx + rx + 6)},${f(top - 10)} ${f(cx + rx + 3)},${f(cy + 6)} C${f(cx + rx - 4)},${f(hairline - 4)} ${cx + 10},${f(hairline - 8)} ${cx},${f(hairline - 2)} C${cx - 10},${f(hairline - 8)} ${f(cx - rx + 4)},${f(hairline - 4)} ${f(cx - rx - 3)},${f(cy + 6)} Z`, 1.3);
-        if (pulled) {
+      if (hair === "coils") {
+        // close-cropped tight curls (Cushites)
+        const base = cy - 2, peak = top - 7;
+        fillP(`M${f(cx - rx - 1)},${f(base)} C${f(cx - rx - 5)},${f(top - 10)} ${f(cx + rx + 5)},${f(top - 10)} ${f(cx + rx + 1)},${f(base)} C${f(cx + rx - 3)},${f(hairline + 2)} ${f(cx + rx * 0.4)},${f(hairline - 4)} ${cx},${f(hairline - 3)} C${f(cx - rx * 0.4)},${f(hairline - 4)} ${f(cx - rx + 3)},${f(hairline + 2)} ${f(cx - rx - 1)},${f(base)} Z`, 1.3);
+        let row = 0;
+        for (let y = peak + 3; y < base - 2; y += 4.4, row++) {
+          for (let x = cx - rx; x <= cx + rx; x += 5) {
+            const xx = x + (row % 2 ? 2.5 : 0), u = (xx - cx) / (rx - 1), v = (y - base) / (base - peak);
+            if (u * u + v * v > 0.92 || y > hairline - 5 + u * u * (base - hairline)) continue;
+            curl(xx, y, r(1.6, 2.1), 0.6, 0.75);
+          }
+        }
+      } else if (wig) {
+        // Egyptian wig: straight fringe, strands framing the face; the women's
+        // long wig is plaited and falls to the chest
+        const fy = hairline - 1;
+        fillP(`M${f(cx - ww)},${f(wb)} L${f(cx - ww)},${f(cy - 16)} C${f(cx - ww)},${f(top - 16)} ${f(cx + ww)},${f(top - 16)} ${f(cx + ww)},${f(cy - 16)} L${f(cx + ww)},${f(wb)} L${f(cx + rx - 4)},${f(wb)} L${f(cx + rx - 4)},${f(fy)} Q${cx},${f(fy - 3)} ${f(cx - rx + 4)},${f(fy)} L${f(cx - rx + 4)},${f(wb)} Z`, 1.3);
+        for (let i = -6; i <= 6; i++) P(`M${f(cx + i * 1.5)},${f(top - 3)} Q${f(cx + i * rx / 9)},${f(top + 4)} ${f(cx + i * (rx - 5) / 6)},${f(fy - 2)}`, 0.6, 0.6);
+        for (const sg of [-1, 1]) {
+          for (let x = rx - 1; x < ww - 1; x += 3.6) P(`M${f(cx + sg * x)},${f(fy + 2)} V${f(wb - 1)}`, 0.6, 0.6);
+          if (hair === "longwig") for (let y = fy + 6; y < wb - 2; y += 6) P(`M${f(cx + sg * (rx - 3))},${f(y)} H${f(cx + sg * (ww - 1))}`, 0.5, 0.45);
+        }
+        P(`M${f(cx - rx + 4)},${f(fy - 3)} Q${cx},${f(fy - 6)} ${f(cx + rx - 4)},${f(fy - 3)}`, 0.7, 0.6);
+      } else if (fem) {
+        const pulled = hair === "tied" || hair === "braids" || hair === "sidebraid" || hair === "crownbraid" || hair === "ringlets";
+        const femDome = `M${f(cx - rx - 3)},${f(cy + 6)} C${f(cx - rx - 6)},${f(top - 10)} ${f(cx + rx + 6)},${f(top - 10)} ${f(cx + rx + 3)},${f(cy + 6)} C${f(cx + rx - 4)},${f(hairline - 4)} ${cx + 10},${f(hairline - 8)} ${cx},${f(hairline - 2)} C${cx - 10},${f(hairline - 8)} ${f(cx - rx + 4)},${f(hairline - 4)} ${f(cx - rx - 3)},${f(cy + 6)} Z`;
+        S(femDome, 1.3);
+        if (hair === "waved") {
+          // centre parting, hair waved back over the ears to the nape (Greek and Roman women)
+          P(`M${cx},${f(hairline - 2)} Q${cx + 1},${f(top - 2)} ${cx + 2},${f(top - 7)}`, 0.8, 0.7);
+          for (const sg of [-1, 1]) {
+            for (let k = 0; k < 4; k++) {
+              const y0 = hairline - 3 - k * 6;
+              P(`M${f(cx + sg * 2)},${f(y0)} q${f(sg * 6)},-4 ${f(sg * 11)},0 t${f(sg * 10)},1 t${f(sg * (rx - 17 - k * 2))},${f(4 + k * 2)}`, 0.7, 0.7);
+            }
+            curl(cx + sg * (rx + 1), cy + 4, 3.2, 0.8, 0.85);
+          }
+        } else if (pulled) {
           // centre parting, hair combed back
           P(`M${cx},${f(hairline - 2)} Q${cx + 1},${f(top - 2)} ${cx + 2},${f(top - 7)}`, 0.8, 0.7);
           for (const s of [-1, 1]) for (let i = 0; i < 4; i++) P(`M${f(cx + s * 3)},${f(hairline - 1 - i * 2)} q${f(s * (8 + i * 4))},${f(-4 - i * 2)} ${f(s * (rx - 2 - i * 3))},${f(4 + i * 4)}`, 0.6, 0.55);
@@ -463,6 +701,32 @@
             fillP(`M${f(x - 4.5)},${f(y + 3)} Q${f(x)},${f(y - 5)} ${f(x + 4.5)},${f(y + 3)} Q${f(x)},${f(y - 0.5)} ${f(x - 4.5)},${f(y + 3)} Z`, 0.9);
           }
         }
+        if (hair === "ringlets") {
+          // corkscrew ringlets framing the face
+          for (const sg of [-1, 1]) for (let k = 0; k < 10; k++) curl(cx + sg * (rx + 3 + k * 0.7), hairline + 2 + k * 7, 3.1, 0.8, 0.85);
+        }
+        if (head === "net") {
+          // a net of beads over the hair (Egyptian women)
+          const nc = `nc-${uid}`, b1 = cx + top, b2 = cx - top;
+          out.push(`<clipPath id="${nc}"><path d="${femDome}"/></clipPath><g clip-path="url(#${nc})">`);
+          for (let k = -10; k <= 10; k++) {
+            out.push(`<path d="M${f(b1 + k * 12 - 60)},60 l-80,80 M${f(b2 + k * 12 - 20)},40 l80,80" stroke-width="0.6" opacity="0.6"/>`);
+          }
+          for (let i = -8; i <= 8; i++) for (let j = -2; j <= 10; j++) if ((i + j) % 2 === 0) ring(cx + i * 6, top - 10 + j * 6, 1.3, 0.6, 0.85, true);
+          out.push(`</g>`);
+        }
+      } else if (hair === "shaved") {
+        // shaved head: only a faint line where the hair would grow
+        out.push(`<path d="M${f(cx - rx + 2)},${f(cy - 4)} C${f(cx - rx)},${f(hairline - 6)} ${f(cx + rx)},${f(hairline - 6)} ${f(cx + rx - 2)},${f(cy - 4)}" stroke-width="0.7" opacity="0.4" stroke-dasharray="1 3"/>`);
+        P(`M${f(cx - rx * 0.5)},${f(top + 8)} q${f(rx * 0.3)},-5 ${f(rx * 0.6)},-4`, 0.6, 0.4);
+      } else if (hair === "cropped") {
+        // short Roman crop, combed forward to a straight fringe
+        fillP(`M${f(cx - rx - 1)},${f(cy - 4)} C${f(cx - rx - 4)},${f(top - 8)} ${f(cx + rx + 4)},${f(top - 8)} ${f(cx + rx + 1)},${f(cy - 4)} L${f(cx + rx - 3)},${f(hairline + 1)} C${f(cx + rx * 0.5)},${f(hairline - 4)} ${f(cx - rx * 0.5)},${f(hairline - 4)} ${f(cx - rx + 3)},${f(hairline + 1)} Z`, 1.3);
+        for (let i = -6; i <= 6; i++) {
+          const x = cx + i * rx / 7.5;
+          P(`M${f(x + i * 0.8)},${f(hairline - 13 + Math.abs(i) * 0.6)} q1.5,5 -1,${f(9 - Math.abs(i) * 0.3)}`, 0.7, 0.7);
+        }
+        for (let i = 0; i < 8; i++) P(`M${f(cx + r(-6, 6))},${f(top - 4)} q${f(r(-8, 8))},4 ${f(r(-14, 14))},${f(r(8, 12))}`, 0.6, 0.5);
       } else if (hair === "bald") {
         // balding crown with side hair
         for (const s of [-1, 1]) S(`M${f(cx + s * rx * 0.98)},${f(cy + 4)} C${f(cx + s * (rx + 6))},${f(cy - 14)} ${f(cx + s * (rx + 2))},${f(hairline)} ${f(cx + s * rx * 0.6)},${f(top + 6)}`, 1.4);
@@ -476,7 +740,7 @@
             curl(cx - Math.cos(a) * (rx + 1), cy - 2 - Math.sin(a) * (cy - top + 6), r(3, 4.2), 0.8, 0.85);
           }
           for (let i = 0; i < 14; i++) curl(cx + r(-rx * 0.75, rx * 0.75), r(top - 2, hairline - 4), r(2.4, 3.4), 0.7, 0.6);
-        } else if (hair === "long") {
+        } else if (hair === "long" || hair === "curled") {
           P(`M${cx + 2},${f(hairline - 4)} Q${cx + 1},${f(top - 2)} ${cx},${f(top - 8)}`, 0.8, 0.7);
           for (const s of [-1, 1]) for (let i = 0; i < 4; i++) P(`M${f(cx + s * 4)},${f(hairline - 3 - i * 2)} q${f(s * (8 + i * 4))},${f(-3 - i)} ${f(s * (rx - i * 3))},${f(8 + i * 3)}`, 0.6, 0.55);
         } else {
@@ -493,6 +757,11 @@
         // knot and ties at one side
         const s = R() < 0.5 ? -1 : 1, kx = cx + s * (rx + 4);
         P(`M${f(kx)},${f(y + 5)} q${f(s * 6)},10 ${f(s * 3)},22 M${f(kx)},${f(y + 5)} q${f(s * 10)},6 ${f(s * 11)},18`, 0.9, 0.8);
+        if (has("rosette")) {
+          // a rosette at the front of the band (Assyrian and Egyptian diadems)
+          for (let k = 0; k < 6; k++) { const a = (Math.PI * k) / 3; ring(cx + Math.cos(a) * 3.6, y - 2 + Math.sin(a) * 3.6, 1.7, 0.7, 0.9, true); }
+          ring(cx, y - 2, 2, 0.9, 0, true);
+        }
         if (has("frontlet")) {
           P(`M${cx},${f(y - 2)} v4`, 0.7, 0.8);
           fillP(`M${cx},${f(y + 2)} l3.4,4.4 l-3.4,4.4 l-3.4,-4.4 Z`, 0.9);
@@ -515,6 +784,28 @@
         }
         P(`M${f(cx - w + 2)},${f(cyb - 3)} Q${cx},${f(cyb + 2)} ${f(cx + w - 2)},${f(cyb - 3)}`, 0.7, 0.6);
       }
+      if (head === "battle") {
+        // crenellated crown of the Persian kings (Behistun relief)
+        const cyb = top + 4, w = rx * 0.92, n = 7;
+        let d = `M${f(cx - w)},${f(cyb)} L${f(cx - w)},${f(cyb - 16)} `;
+        for (let i = 0; i < n; i++) {
+          const x0 = cx - w + (2 * w * i) / n, x1 = cx - w + (2 * w * (i + 0.5)) / n, x2 = cx - w + (2 * w * (i + 1)) / n;
+          d += `L${f(x1)},${f(cyb - 16)} L${f(x1)},${f(cyb - 9)} L${f(x2)},${f(cyb - 9)} L${f(x2)},${f(cyb - 16)} `;
+          void x0;
+        }
+        d += `L${f(cx + w)},${f(cyb)} Q${cx},${f(cyb + 6)} ${f(cx - w)},${f(cyb)} Z`;
+        fillP(d, 1.3);
+        P(`M${f(cx - w + 2)},${f(cyb - 4)} Q${cx},${f(cyb + 1)} ${f(cx + w - 2)},${f(cyb - 4)}`, 0.7, 0.6);
+        for (let i = 0; i < 5; i++) ring(cx - w * 0.6 + i * w * 0.3, cyb - 5, 1.3, 0.7, 0.8, true);
+      }
+      if (head === "wreath") {
+        // laurel wreath of the Caesars, as on their coins
+        const y = hairline - 7;
+        for (const sg of [-1, 1]) for (let k = 0; k < 7; k++) {
+          const t = 0.04 + k * 0.064, x = cx + sg * (rx + 3) * (1 - 2 * t), py = y + 4 - 12 * (1 - Math.pow(1 - 2 * t, 2)) * 0.5;
+          for (const off of [-1, 1]) fillP(`M${f(x)},${f(py)} q${f(-sg * 4)},${f(off * 6 - 2)} ${f(-sg * 12)},${f(off * 5)} q${f(sg * 5)},${f(-off * 1)} ${f(sg * 12)},${f(-off * 5)} Z`, 0.9);
+        }
+      }
     } else if (head === "softcap") {
       // soft cap whose crown falls forward to a point, as on Jehu's envoys (Black Obelisk)
       for (const sg of [-1, 1]) S(`M${f(cx + sg * (rx + 1))},${f(cy - 2)} C${f(cx + sg * (rx + 3))},${f(hairline + 4)} ${f(cx + sg * (rx - 2))},${f(hairline - 2)} ${f(cx + sg * (rx - 6))},${f(hairline - 6)}`, 1.2);
@@ -529,15 +820,91 @@
       fillP(cap, 1.4);
       P(`M${f(cx - rx)},${f(hairline - 6)} Q${cx},${f(hairline - 14)} ${f(cx + rx)},${f(hairline - 6)}`, 0.8, 0.7);
       for (let i = -2; i <= 2; i++) P(`M${f(cx + i * rx * 0.3)},${f(hairline - 9 - (2 - Math.abs(i)) * 1.5)} Q${f(cx + i * rx * 0.2)},${f(top - 4)} ${cx},${f(top - 8)}`, 0.6, 0.5);
-    } else if (head === "helmet") {
-      // a plain metal helmet rising to a blunt point, no crest (1 Sam 17:5)
-      const dome = `M${f(cx - rx - 4)},${f(hairline + 4)} C${f(cx - rx - 6)},${f(top - 6)} ${f(cx - 10)},${f(top - 22)} ${cx},${f(top - 28)} C${f(cx + 10)},${f(top - 22)} ${f(cx + rx + 6)},${f(top - 6)} ${f(cx + rx + 4)},${f(hairline + 4)} Q${cx},${f(hairline - 5)} ${f(cx - rx - 4)},${f(hairline + 4)} Z`;
+    } else if (head === "helmet" || head === "conehelm") {
+      // a plain metal helmet rising to a blunt point, no crest (1 Sam 17:5);
+      // the Assyrian one rises to a tall point, as on the Lachish reliefs
+      const pk = head === "conehelm" ? 46 : 28;
+      const dome = `M${f(cx - rx - 4)},${f(hairline + 4)} C${f(cx - rx - 6)},${f(top - 6)} ${f(cx - 10)},${f(top - pk + 6)} ${cx},${f(top - pk)} C${f(cx + 10)},${f(top - pk + 6)} ${f(cx + rx + 6)},${f(top - 6)} ${f(cx + rx + 4)},${f(hairline + 4)} Q${cx},${f(hairline - 5)} ${f(cx - rx - 4)},${f(hairline + 4)} Z`;
       fillP(dome, 1.5);
       S(`M${f(cx - rx - 5)},${f(hairline + 4)} Q${cx},${f(hairline - 6)} ${f(cx + rx + 5)},${f(hairline + 4)}`, 2.2);
       P(`M${f(cx - rx - 3)},${f(hairline - 1)} Q${cx},${f(hairline - 11)} ${f(cx + rx + 3)},${f(hairline - 1)}`, 0.8, 0.7);
-      P(`M${cx},${f(top - 26)} L${cx},${f(hairline - 6)}`, 0.8, 0.6);
+      P(`M${cx},${f(top - pk + 2)} L${cx},${f(hairline - 6)}`, 0.8, 0.6);
       // side hair below the rim
       for (const s2 of [-1, 1]) S(`M${f(cx + s2 * (rx + 1))},${f(cy + 2)} C${f(cx + s2 * (rx + 3))},${f(hairline + 8)} ${f(cx + s2 * (rx + 1))},${f(hairline + 6)} ${f(cx + s2 * (rx - 2))},${f(hairline + 3)}`, 1.1);
+    } else if (head === "feathers") {
+      // Philistine headdress: a band with a row of upright feathers (Medinet Habu)
+      const fb = hairline - 4;
+      for (const sg of [-1, 1]) S(`M${f(cx + sg * (rx + 1))},${f(cy - 2)} C${f(cx + sg * (rx + 3))},${f(hairline + 4)} ${f(cx + sg * (rx - 2))},${f(hairline - 2)} ${f(cx + sg * (rx - 6))},${f(hairline - 6)}`, 1.2);
+      fillP(`M${f(cx - rx - 2)},${f(fb + 2)} C${f(cx - rx - 3)},${f(top - 6)} ${f(cx + rx + 3)},${f(top - 6)} ${f(cx + rx + 2)},${f(fb + 2)} Z`, 1.3);
+      for (let i = 0; i <= 12; i++) {
+        const t = i / 12, x = cx - rx + t * 2 * rx, by = fb - Math.sin(Math.PI * t) * 7, a = (t - 0.5) * 0.8, len = 30 + Math.sin(Math.PI * t) * 10;
+        const tx = x + Math.sin(a) * len, ty = by - Math.cos(a) * len, mx = (x + tx) / 2, my2 = (by + ty) / 2;
+        fillP(`M${f(x - 3)},${f(by)} Q${f(mx - 4)},${f(my2)} ${f(tx)},${f(ty)} Q${f(mx + 4)},${f(my2)} ${f(x + 3)},${f(by)} Z`, 0.9);
+        P(`M${f(x)},${f(by)} L${f(x + (tx - x) * 0.85)},${f(by + (ty - by) * 0.85)}`, 0.5, 0.6);
+      }
+      fillP(`M${f(cx - rx - 3)},${f(fb + 5)} Q${cx},${f(fb - 5)} ${f(cx + rx + 3)},${f(fb + 5)} L${f(cx + rx + 3)},${f(fb - 2)} Q${cx},${f(fb - 12)} ${f(cx - rx - 3)},${f(fb - 2)} Z`, 1.2);
+      let zz = "";
+      for (let i = 0; i <= 14; i++) {
+        const t = i / 14, x = (1 - t) * (1 - t) * (cx - rx - 3) + 2 * (1 - t) * t * cx + t * t * (cx + rx + 3), y = (1 - t) * (1 - t) * (fb + 1.5) + 2 * (1 - t) * t * (fb - 8.5) + t * t * (fb + 1.5);
+        zz += `${i ? "L" : "M"}${f(x)},${f(y + (i % 2 ? -2.2 : 2.2))} `;
+      }
+      P(zz, 0.7, 0.8);
+    } else if (head === "tallcap" || head === "fez" || head === "fluted") {
+      // Babylonian tall cap; the Assyrian king's cap with its point;
+      // the Persian fluted cap that widens to the top (Persepolis)
+      const yb = hairline - 1, yt = head === "fez" ? top - 18 : head === "fluted" ? top - 20 : top - 28;
+      const wb2 = head === "fez" ? rx + 3 : rx + 1, wt = head === "fez" ? rx * 0.72 : head === "fluted" ? rx + 4 : rx - 2;
+      for (const sg of [-1, 1]) S(`M${f(cx + sg * (rx + 1))},${f(cy - 2)} C${f(cx + sg * (rx + 3))},${f(hairline + 4)} ${f(cx + sg * (rx - 2))},${f(hairline - 2)} ${f(cx + sg * (rx - 6))},${f(hairline - 6)}`, 1.2);
+      if (head === "fez") fillP(`M${cx - 5},${f(yt + 1)} L${cx},${f(yt - 13)} L${cx + 5},${f(yt + 1)} Z`, 1.1);
+      fillP(`M${f(cx - wb2)},${f(yb)} L${f(cx - wt)},${f(yt)} Q${cx},${f(yt - 6)} ${f(cx + wt)},${f(yt)} L${f(cx + wb2)},${f(yb)} Q${cx},${f(yb - 8)} ${f(cx - wb2)},${f(yb)} Z`, 1.4);
+      P(`M${f(cx - wt)},${f(yt)} Q${cx},${f(yt + 6)} ${f(cx + wt)},${f(yt)}`, 0.8, 0.7);
+      if (head === "fluted") {
+        for (let i = -4; i <= 4; i++) P(`M${f(cx + i * wb2 / 5)},${f(yb - 5)} L${f(cx + i * wt / 5)},${f(yt + 2)}`, 0.7, 0.6);
+      } else {
+        const b1 = yb - 6, b2 = yb - (head === "fez" ? 12 : 15);
+        P(`M${f(cx - wb2 + 1)},${f(b1)} Q${cx},${f(b1 - 8)} ${f(cx + wb2 - 1)},${f(b1)}`, 0.8, 0.75);
+        P(`M${f(cx - wb2 + 2)},${f(b2)} Q${cx},${f(b2 - 8)} ${f(cx + wb2 - 2)},${f(b2)}`, 0.8, 0.75);
+        for (let i = -2; i <= 2; i++) ring(cx + i * rx * 0.36, (b1 + b2) / 2 - 4 + Math.abs(i) * 1.4, 2, 0.7, 0.85);
+      }
+    } else if (head === "roundcap") {
+      // rounded felt cap with a rolled brim (Medes; Midianites in the "Lessons" book)
+      for (const sg of [-1, 1]) S(`M${f(cx + sg * (rx + 1))},${f(cy - 2)} C${f(cx + sg * (rx + 3))},${f(hairline + 4)} ${f(cx + sg * (rx - 2))},${f(hairline - 2)} ${f(cx + sg * (rx - 6))},${f(hairline - 6)}`, 1.2);
+      fillP(`M${f(cx - rx - 3)},${f(hairline)} C${f(cx - rx - 7)},${f(top - 22)} ${f(cx + rx + 7)},${f(top - 22)} ${f(cx + rx + 3)},${f(hairline)} Q${cx},${f(hairline - 9)} ${f(cx - rx - 3)},${f(hairline)} Z`, 1.4);
+      for (let i = -3; i <= 3; i++) P(`M${f(cx + i * rx * 0.28)},${f(hairline - 9 + Math.abs(i))} Q${f(cx + i * rx * 0.24)},${f(top - 8)} ${f(cx + i * 2)},${f(top - 15)}`, 0.6, 0.5);
+      fillP(`M${f(cx - rx - 4)},${f(hairline + 1)} Q${cx},${f(hairline - 9)} ${f(cx + rx + 4)},${f(hairline + 1)} L${f(cx + rx + 4)},${f(hairline - 5)} Q${cx},${f(hairline - 15)} ${f(cx - rx - 4)},${f(hairline - 5)} Z`, 1.2);
+    } else if (head === "cone") {
+      // tall pointed cap, its tip bent forward (Phoenician and Hittite reliefs)
+      for (const sg of [-1, 1]) S(`M${f(cx + sg * (rx + 1))},${f(cy - 2)} C${f(cx + sg * (rx + 3))},${f(hairline + 4)} ${f(cx + sg * (rx - 2))},${f(hairline - 2)} ${f(cx + sg * (rx - 6))},${f(hairline - 6)}`, 1.2);
+      fillP(`M${f(cx - rx - 2)},${f(hairline)} C${f(cx - rx + 2)},${f(top - 12)} ${f(cx - 2)},${f(top - 34)} ${f(cx + 14)},${f(top - 42)} C${f(cx + 10)},${f(top - 28)} ${f(cx + rx + 2)},${f(top - 8)} ${f(cx + rx + 2)},${f(hairline)} Q${cx},${f(hairline - 9)} ${f(cx - rx - 2)},${f(hairline)} Z`, 1.4);
+      S(`M${f(cx - rx - 2)},${f(hairline)} Q${cx},${f(hairline - 9)} ${f(cx + rx + 2)},${f(hairline)}`, 1.6);
+      P(`M${f(cx - rx * 0.4)},${f(hairline - 7)} Q${f(cx - 2)},${f(top - 14)} ${f(cx + 10)},${f(top - 36)}`, 0.6, 0.5);
+    } else if (head === "romanhelm") {
+      // Roman officer's helmet with cheek guards and a short crest
+      // the crest sits across the helmet, so it fans out above it
+      fillP(`M${f(cx - rx * 0.8)},${f(top - 2)} Q${cx},${f(top - 16)} ${f(cx + rx * 0.8)},${f(top - 2)} Q${f(cx + rx * 0.9)},${f(top - 22)} ${cx},${f(top - 30)} Q${f(cx - rx * 0.9)},${f(top - 22)} ${f(cx - rx * 0.8)},${f(top - 2)} Z`, 1.1);
+      for (let i = -7; i <= 7; i++) { const a = i * 0.17; P(`M${f(cx + Math.sin(a) * 12)},${f(top - 10 + Math.abs(i) * 0.4)} L${f(cx + Math.sin(a) * 30)},${f(top - 10 - Math.cos(a) * 18)}`, 0.6, 0.6); }
+      fillP(`M${f(cx - rx - 4)},${f(hairline + 2)} C${f(cx - rx - 6)},${f(top - 14)} ${f(cx + rx + 6)},${f(top - 14)} ${f(cx + rx + 4)},${f(hairline + 2)} Q${cx},${f(hairline - 6)} ${f(cx - rx - 4)},${f(hairline + 2)} Z`, 1.5);
+      S(`M${f(cx - rx - 5)},${f(hairline + 2)} Q${cx},${f(hairline - 7)} ${f(cx + rx + 5)},${f(hairline + 2)}`, 2.2);
+      for (const sg of [-1, 1]) {
+        fillP(`M${f(cx + sg * (rx + 4))},${f(hairline + 1)} L${f(cx + sg * (rx - 4))},${f(hairline + 3)} C${f(cx + sg * (rx - 6))},${f(cy + 12)} ${f(cx + sg * (rx - 9))},${f(cy + 24)} ${f(cx + sg * (rx - 5))},${f(cy + 32)} L${f(cx + sg * (rx + 3))},${f(cy + 28)} C${f(cx + sg * (rx + 5))},${f(cy + 12)} ${f(cx + sg * (rx + 6))},${f(cy)} ${f(cx + sg * (rx + 4))},${f(hairline + 1)} Z`, 1.2);
+        ring(cx + sg * (rx - 1), cy + 8, 1.4, 0.7, 0.8, true);
+      }
+    } else if (head === "nemes") {
+      // front of the striped headcloth: band across the brow, lappets on the chest
+      const hb = hairline;
+      fillP(`M${f(cx - rx - 8)},${f(cy - 10)} L${f(cx - rx - 8)},${f(cy - 16)} C${f(cx - rx - 8)},${f(top - 14)} ${f(cx + rx + 8)},${f(top - 14)} ${f(cx + rx + 8)},${f(cy - 16)} L${f(cx + rx + 8)},${f(cy - 10)} L${f(cx + rx - 2)},${f(cy - 8)} L${f(cx + rx - 3)},${f(hb)} Q${cx},${f(hb - 5)} ${f(cx - rx + 3)},${f(hb)} L${f(cx - rx + 2)},${f(cy - 8)} Z`, 1.3);
+      for (let i = -5; i <= 5; i++) P(`M${f(cx + i * 3)},${f(top - 2)} Q${f(cx + i * rx / 7)},${f(top + 3)} ${f(cx + i * (rx - 3) / 5)},${f(hb - 5)}`, 2, 0.5);
+      S(`M${f(cx - rx + 3)},${f(hb)} Q${cx},${f(hb - 5)} ${f(cx + rx - 3)},${f(hb)}`, 1.8);
+      P(`M${f(cx - rx + 2)},${f(hb - 4)} Q${cx},${f(hb - 9)} ${f(cx + rx - 2)},${f(hb - 4)}`, 0.8, 0.8);
+      for (const sg of [-1, 1]) {
+        fillP(`M${f(cx + sg * (rx - 2))},${f(cy - 8)} L${f(cx + sg * (rx + 10))},${f(cy - 8)} L${f(cx + sg * (rx + 16))},${f(chin + 36)} L${f(cx + sg * (rx + 1))},${f(chin + 36)} Z`, 1.2);
+        for (let y = cy - 3; y < chin + 34; y += 5) {
+          const t = (y - cy + 8) / (chin + 44 - cy);
+          P(`M${f(cx + sg * (rx - 1 + t * 2))},${f(y)} L${f(cx + sg * (rx + 10 + t * 6))},${f(y)}`, 1.6, 0.6);
+        }
+      }
+      // the rearing cobra at the brow
+      fillP(`M${cx - 2.5},${f(hb - 2)} C${cx - 4},${f(hb - 8)} ${cx + 3},${f(hb - 10)} ${cx},${f(hb - 15)} C${cx + 5},${f(hb - 14)} ${cx + 4},${f(hb - 8)} ${cx + 2.5},${f(hb - 2)} Z`, 0.9);
     } else if (head === "turban" || head === "priest") {
       const tall = head === "priest" ? 34 : 12, wide = head === "priest" ? 5 : 6;
       const tb = `M${f(cx - rx - 5)},${f(hairline + 2)} C${f(cx - rx - wide - 8)},${f(hairline - 14)} ${f(cx - rx - wide)},${f(top - tall)} ${cx},${f(top - tall - 2)} C${f(cx + rx + wide)},${f(top - tall)} ${f(cx + rx + wide + 8)},${f(hairline - 14)} ${f(cx + rx + 5)},${f(hairline + 2)} Q${cx},${f(hairline - 8)} ${f(cx - rx - 5)},${f(hairline + 2)} Z`;
@@ -583,6 +950,8 @@
     },
     /** Re-run the design assignment, e.g. after the people list changes. */
     assign,
+    /** Which people's dress a person is drawn in, e.g. "egyptian". */
+    cultureOf: culture,
     /** Name of the design a person is drawn with. */
     designOf(c) { return presetOf(c).name; },
     /** One stand-in person per design, for a contact sheet. */
