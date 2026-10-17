@@ -150,7 +150,10 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .track-line { stroke-width: 1.6; stroke-linecap: round; }
 .track-line.q-assumed { stroke-dasharray: 4 4; }
 .track-end { stroke-width: 1.2; fill: var(--bg); }
-.track-ev { stroke: none; }
+.track-ev { stroke: none; transition: r .15s; }
+.track-act { cursor: pointer; }
+.track-act .hit { fill: transparent; stroke: none; }
+.track-act:hover .track-ev, .track-act.active .track-ev { r: 4.5; stroke: var(--bg); stroke-width: 1.2; }
 .track-name { font: 600 12px var(--serif); letter-spacing: 0.02em; }
 .track-age { fill: var(--muted); font: 300 9px var(--mono); }
 .track-evlabel { fill: var(--fg-2); font: 300 10px var(--sans); }
@@ -169,6 +172,8 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .event-tip .et-year { font: 300 10px var(--mono); color: var(--accent); letter-spacing: 0.1em; }
 .event-tip .et-title { font: 600 18px/1.15 var(--serif); margin: 4px 0 6px; }
 .event-tip .et-text { font-size: 12.5px; line-height: 1.5; color: var(--fg-2); }
+.event-tip .et-act { font-size: 13.5px; line-height: 1.45; margin: 5px 0 2px; }
+.event-tip .et-hint { font: 300 10px var(--sans); color: var(--muted); margin-top: 8px; letter-spacing: 0.04em; }
 .event-tip .et-ref { font: 300 10.5px var(--mono); color: var(--muted); margin-top: 6px; }
 
 /* ------------------------------------------------------------- portrait */
@@ -282,6 +287,8 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .acts li { position: relative; padding: 6px 0 8px 16px; cursor: default; border-radius: 0 6px 6px 0; }
 .acts li::before { content: ""; position: absolute; left: -4px; top: 13px; width: 7px; height: 7px; border-radius: 50%; background: var(--bg); border: 1px solid var(--wc); }
 .acts li:hover { background: rgba(235,231,222,0.04); }
+.acts li.act-hl { animation: act-hl 2.4s ease-out; }
+@keyframes act-hl { 0%, 35% { background: color-mix(in srgb, var(--wc) 22%, transparent); } 100% { background: transparent; } }
 .act-y { font: 300 10.5px var(--mono); color: var(--wc); }
 .act-age { color: var(--muted); }
 .act-t { display: block; }
