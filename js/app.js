@@ -77,10 +77,11 @@
 
   /* ───────────────────────── layout ───────────────────────── */
   let W = 0, H = 0, L = {};
+  const ERA_ROWS = 3;
   function layout() {
     W = stage.clientWidth; H = stage.clientHeight;
     const mobile = W < 760;
-    const top = (mobile ? 56 : 64) + 30;
+    const top = (mobile ? 56 + (ERA_ROWS - 1) * 15 : 64) + 30;   // room for the era names above the people
     const bottom = mobile ? 104 : 108;
     const lineY = Math.round(top + (H - top - bottom) * (mobile ? 0.55 : 0.57));
     const laneStep = mobile ? 28 : 31;
@@ -237,14 +238,28 @@
     const { lineY } = L;
     svg.classList.toggle("has-hover", !!hoverC);
 
-    // eras
-    eraEls.forEach((o) => {
+    // eras: on a wide screen a name shows when it fits inside its band; on a phone the bands are
+    // too narrow for that, so names stack left to right in up to ERA_ROWS rows at the top.
+    if (L.mobile && eraEls[0].mw !== W) eraEls.forEach((o) => { o.mw = W; o.pw = o.lab.offsetWidth; });
+    const eraRows = [];
+    eraEls.map((o) => {
       const xa = X(o.a), xb = X(o.b);
       o.rect.setAttribute("x", xa); o.rect.setAttribute("width", Math.max(0, xb - xa)); o.rect.setAttribute("height", H);
-      const va = Math.max(xa, 0), vb = Math.min(xb, W);
-      const show = vb - va > o.w;
+      return { o, va: Math.max(xa, 0), vb: Math.min(xb, W) };
+    }).forEach(({ o, va, vb }) => {
+      let show = vb - va > o.w, row = 0;
+      const cx = (va + vb) / 2;
+      if (L.mobile) {
+        show = false;
+        const half = o.pw / 2 + 6, lx = Math.min(W - half, Math.max(half, cx));
+        if (vb > va && lx - half < vb && lx + half > va) {
+          for (row = 0; row < ERA_ROWS; row++) {
+            if (!(eraRows[row] || []).some(([p, q]) => lx - half < q && lx + half > p)) { (eraRows[row] = eraRows[row] || []).push([lx - half, lx + half]); show = true; break; }
+          }
+        }
+        if (show) { o.lab.style.left = lx + "px"; o.lab.style.top = ""; o.lab.style.transform = `translate(-50%, ${row * 15}px)`; }
+      } else if (show) { o.lab.style.left = cx + "px"; o.lab.style.transform = ""; }
       o.lab.style.opacity = show ? 1 : 0;
-      if (show) o.lab.style.left = (va + vb) / 2 + "px";
     });
     evEls.forEach((o, i) => {
       const x = X(o.t), s = sepEls[i];

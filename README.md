@@ -27,6 +27,10 @@ All three modes follow the same zoom rule: fully zoomed out you see only the tim
 
 Searching for a person who is hidden by the current mode switches to Everyone. The choice is remembered in the browser.
 
+## Era names
+
+The names of the eras (Before the Flood, The Judges and so on) sit at the top of the screen. On a computer a name shows when it fits inside its era's band. Phones are too narrow for that, so there the names stack left to right in up to three rows at the top, and the people start a little lower to make room. The rows are `ERA_ROWS` in `js/app.js`.
+
 ## Portraits
 
 Hovering (or tapping) a person shows their line-drawn portrait in a dark card, always in the same spot: under the lifespan tracks, between the timeline and the bottom controls, so it never sits on top of the names. The card moves down a little as open windows add tracks, and stops above the minimap and the window dock. The placement is `placePortrait()` in `js/app.js`.
