@@ -173,7 +173,7 @@
 
   /* Dots are created lazily, the first time a person comes into view,
      so thousands of people cost nothing until they are needed. */
-  const dotEls = CHARS.map((c) => ({ c, node: null, life: null, sel: null, visible: false, lane: -1 }));
+  const dotEls = CHARS.map((c) => ({ c, node: null, life: null, sel: null, name: null, gap: 0, visible: false, lane: -1 }));
   const DOT_BY_ID = new Map(dotEls.map((d) => [d.c.id, d]));
   function buildDot(d) {
     const c = d.c;
@@ -188,6 +188,7 @@
     if (c.q[0] !== "assumed") el("circle", { class: "d-core", r: c.q[0] === "derived" ? (c.tier === 1 ? 5.5 : 4.5) : 2 }, node);
     const name = el("text", { class: "d-name", x: 11, y: 4 }, node);
     name.textContent = c.name;
+    d.name = name;
     const yr = el("text", { class: "d-year", x: 11, y: 15 }, node);
     yr.textContent = fmtYear(c.born);
     node.__c = c;
@@ -337,7 +338,9 @@
       }
       const y = laneY(d.lane);
       d.node.setAttribute("transform", `translate(${xb},${y})`);
-      d.life.setAttribute("x1", xb); d.life.setAttribute("x2", xd); d.life.setAttribute("y1", y); d.life.setAttribute("y2", y);
+      // the line starts after the name, so the label never sits on top of it
+      if (!d.gap) d.gap = 11 + d.name.getComputedTextLength() + 6;
+      d.life.setAttribute("x1", Math.min(xb + d.gap, xd)); d.life.setAttribute("x2", xd); d.life.setAttribute("y1", y); d.life.setAttribute("y2", y);
       const pin = pinColor(c);
       d.sel.setAttribute("stroke", pin || "transparent");
       d.node.classList.toggle("pinned", !!pin);
@@ -1011,6 +1014,8 @@
   layout();
   fit();
   render();
+  // names measured with a fallback font are re-measured once the web fonts arrive
+  if (document.fonts) document.fonts.ready.then(() => { dotEls.forEach((d) => { d.gap = 0; }); requestRender(); });
 
   // expose for debugging / tests
   window.Timeline = { setShowMode, view, openWindow: (id) => openWindow(CHAR_BY_ID.get(id)), locate: (id) => locate(CHAR_BY_ID.get(id)), setHover: (id) => setHover(id ? CHAR_BY_ID.get(id) : null), zoomAt, animateTo, A, chars: CHARS, render };
