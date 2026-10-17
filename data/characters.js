@@ -18,6 +18,8 @@
  *    age: "young" | "adult" | "old"
  *    head: "cloth" | "crown" | "priest" | "veil" | "bare" | "turban"
  *    beard: "none" | "short" | "full" | "long"
+ *    hair: "long" etc. (see js/portrait.js), for hair the Bible mentions,
+ *          e.g. Samson (Judges 16:17) or Absalom (2 Samuel 14:26)
  * portrait (optional): path to an image file that replaces the
  *    generated drawing, e.g. "portraits/adam.webp"
  * events: [year, description, scripture reference]
@@ -398,7 +400,7 @@ window.TIMELINE_CHARACTERS = [
   events:[[-1173,"Defeats Ammon","Judges 11:29-33"],[-1173,"Fulfills his vow","Judges 11:34-40"],[-1167,"Dies after judging 6 years","Judges 12:7"]] },
 
 { id:"samson", name:"Samson", meaning:"Sun", born:-1160, died:-1118, q:["assumed","assumed"], tier:2, gender:"m",
-  role:"Nazirite judge", look:{age:"adult", head:"bare", beard:"full"},
+  role:"Nazirite judge", look:{age:"adult", head:"bare", hair:"long", beard:"full"},
   summary:"A Nazirite from birth with extraordinary God-given strength. Betrayed by Delilah, blinded by the Philistines, he died bringing down Dagon's temple.",
   family:"Father: Manoah",
   note:"Judged 20 years in the days of the Philistines; dates assumed.",
@@ -440,7 +442,7 @@ window.TIMELINE_CHARACTERS = [
   events:[[-1181,"Prays at Shiloh","1 Samuel 1:10-11"],[-1180,"Bears Samuel","1 Samuel 1:20"],[-1177,"Brings Samuel to the tabernacle; her song","1 Samuel 1:24-2:10"]] },
 
 { id:"samuel", name:"Samuel", meaning:"Name of God", born:-1180, died:-1080, q:["assumed","estimated"], tier:1, gender:"m",
-  role:"Prophet and last judge", look:{age:"old", head:"cloth", beard:"long"},
+  role:"Prophet and last judge", look:{age:"old", head:"bare", hair:"long", beard:"long"},
   summary:"Served at the tabernacle from boyhood. As prophet and judge he anointed Israel's first two kings, Saul and David, and remained faithful throughout his life.",
   family:"Parents: Elkanah & Hannah · Sons: Joel, Abijah",
   note:"Died before David became king (1 Samuel 25:1).",
@@ -489,7 +491,7 @@ window.TIMELINE_CHARACTERS = [
   events:[[-1050,"David's adultery with her","2 Samuel 11:2-4"],[-1037,"Appeals for Solomon's succession","1 Kings 1:15-21"]] },
 
 { id:"absalom", name:"Absalom", meaning:"Father is peace", born:-1074, died:-1046, q:["assumed","assumed"], tier:3, gender:"m",
-  role:"Rebellious son of David", look:{age:"young", head:"bare", beard:"short"},
+  role:"Rebellious son of David", look:{age:"young", head:"bare", hair:"long", beard:"short"},
   summary:"Handsome and ambitious, he 'stole the hearts' of Israel and seized the throne. Killed after his famous hair caught in a tree; David mourned bitterly.",
   family:"Father: David · Sister: Tamar",
   note:"Born in Hebron (1077–1070 B.C.E.); death year assumed.",

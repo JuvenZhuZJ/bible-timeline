@@ -154,6 +154,8 @@
     if (hint.head === "crown" || hint.head === "priest") look.head = hint.head;
     else if (hint.head && look.head === "helmet") { look.head = "bare"; look.hair = "short"; }
     if (hint.beard) look.beard = hint.beard;
+    // hair the Bible mentions (a Nazirite's, Absalom's) must show, so no hat over it
+    if (hint.hair) { look.hair = hint.hair; if (look.head !== "crown" && look.head !== "band") look.head = "bare"; }
     if (!look.beard) look.beard = fem ? "none" : (look.age === "old" ? "long" : "full");
     // An old man always has a beard, even when his design's is clean-shaven.
     if (!hint.beard && look.age === "old" && look.beard === "none") look.beard = "full";
