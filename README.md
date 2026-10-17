@@ -45,7 +45,7 @@ Portraits are drawn by people group. There are 50 designs for men and 26 for wom
 
 ## Personal timelines and colours
 
-Each open window adds that person's lifespan as a track under the timeline. The small dots on a track are the person's major activities: hover one (or tap it on a phone) to see its date and text, and click it (or tap it again) to open the person's window scrolled to that activity, which is briefly highlighted.
+Each open window adds that person's lifespan as a track under the timeline. The small dots on a track are the person's major activities: hover one (or tap it on a phone) to see its date and text, and click it (or tap it again) to open the person's window scrolled to that activity, which is briefly highlighted. It works the other way too: clicking an activity in a window briefly highlights its dot on the window's own lifespan bar, which stays pinned at the top of the window while you scroll through the activities.
 
 Family links (the dashed curves shown while hovering a person) are coloured by sex at each end: blue for a man, rose for a woman, blending from one to the other along the line, and both the hovered person's dot and each relative's dot get a ring in their colour. So a father's links to his sons end in blue and to his daughters in rose. The 16 Insight entries whose sex is unknown (`gender: "u"`, for example Gog and Junias) keep a gold end. The two colours are `--male` and `--female` in `css/style.css`.
 

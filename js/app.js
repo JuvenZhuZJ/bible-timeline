@@ -753,10 +753,10 @@
     let s = `<svg class="mini-tl" viewBox="0 0 ${w} 44" preserveAspectRatio="none" aria-hidden="true">`;
     s += `<line x1="${pad}" x2="${w - pad}" y1="16" y2="16" stroke="var(--wc)" stroke-width="1.5"${c.assumed ? ' stroke-dasharray="4 3"' : ""}/>`;
     s += `<circle cx="${pad}" cy="16" r="3.5" fill="var(--bg)" stroke="var(--wc)"/><circle cx="${w - pad}" cy="16" r="3.5" fill="var(--bg)" stroke="var(--wc)"/>`;
-    for (const [yr] of c.events) {
+    c.events.forEach(([yr], i) => {
       const x = Math.max(pad, Math.min(w - pad, mx(A(yr))));
-      s += `<circle cx="${x.toFixed(1)}" cy="16" r="2.4" fill="var(--wc)"/>`;
-    }
+      s += `<circle class="mt-ev" data-i="${i}" cx="${x.toFixed(1)}" cy="16" r="2.4" fill="var(--wc)"/>`;
+    });
     s += `<text x="${pad - 2}" y="36">${esc(fmtYear(c.born))}</text><text x="${w - pad + 2}" y="36" text-anchor="end">${esc(fmtYear(c.died))}</text>`;
     s += `<text x="${w / 2}" y="36" text-anchor="middle">${esc(ageText(c))}</text></svg>`;
     return s;
@@ -885,6 +885,9 @@
       const t = +li.dataset.t;
       cursorT = t;
       animateTo(t, Math.max(view.ppy, TIER[w.c.tier] * 1.2), 600);
+      // briefly highlight the matching dot on the window's own lifespan bar
+      const dot = w.el.querySelector(`.mini-tl .mt-ev[data-i="${li.dataset.i}"]`);
+      if (dot) { dot.classList.remove("mt-hl"); void dot.getBoundingClientRect(); dot.classList.add("mt-hl"); }
     });
   }
 
