@@ -21,7 +21,9 @@ The **People** button in the top bar picks who appears:
 | --- | --- |
 | Everyone | All 2,704 people. Minor people appear as you zoom in. |
 | Key figures | 195 people: the 134 hand-written key figures plus everyone on the Adam-to-Jesus line. |
-| Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. Zoomed all the way out you see the 10 main names (Adam, Enoch, Noah, Abraham, Isaac, Jacob, David, Solomon, Mary, Jesus); the rest unfold as you zoom in. |
+| Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
+
+All three modes follow the same zoom rule: fully zoomed out you see only the timeline and its events, and people appear as you zoom in, the most important first. The Key figures and Adam-to-Jesus modes show their people a little sooner, since fewer people compete for space.
 
 Searching for a person who is hidden by the current mode switches to Everyone. The choice is remembered in the browser.
 
