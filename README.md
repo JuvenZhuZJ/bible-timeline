@@ -27,6 +27,10 @@ All three modes follow the same zoom rule: fully zoomed out you see only the tim
 
 Searching for a person who is hidden by the current mode switches to Everyone. The choice is remembered in the browser.
 
+## Portraits
+
+Hovering (or tapping) a person shows their line-drawn portrait in a dark card, placed so it never sits on top of the names. On a wide screen the card goes to the left or right edge, whichever side the person's name and lifespan are not on, and away from any open window. It stays on that side until the person no longer fits beside it, so it does not jump between close neighbours. On a phone it sits in the empty space under the lifespan tracks, and only moves up beside the person when that space is too small. The placement is `placePortrait()` in `js/app.js`.
+
 ## Sources
 
 - **People, relationships and scriptures:** *Insight on the Scriptures*, volumes 1 and 2 (it-1_E.pdf, it-2_E.pdf). Every person article was extracted, one record per numbered sense, into `data/source/insight-people.json`.
