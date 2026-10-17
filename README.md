@@ -51,6 +51,10 @@ Family links (the dashed curves shown while hovering a person) are coloured by s
 
 Gold marks people you are only hovering over. Every opened person gets their own colour (sea green, terracotta, lavender, sage, ivory; no blue or rose, since those mean man and woman on the family links), used for their window, track and ring on the timeline, so an opened person never looks the same as one that is not opened. The palette is `COLORS` in `js/app.js`.
 
+## Scripture links
+
+Every scripture citation in a person's window (the major activities, key scriptures, and any citation in the summary, note or family line) is a link. Clicking it opens that passage in a new tab on the Watchtower ONLINE LIBRARY Bible (wol.jw.org, *New World Translation* Study Edition), with the cited verses highlighted. A citation with several parts links each part: in "Genesis 2:7, 19-20" both "Genesis 2:7" and "19-20" are links, and in "Genesis 47:28; 49" the "49" opens Genesis 49. A chapter-only citation such as "Genesis 27-28" opens its first chapter. Clicking a citation in an activity opens only the passage; clicking elsewhere on the activity still jumps the timeline to it. The links look like the plain citations until you hover (a faint underline marks them on phones). The parsing is `js/scripture.js`; links have the form `https://wol.jw.org/en/wol/b/r1/lp-e/nwtsty/<book>/<chapter>#v=<book>:<chapter>:<verse>-<book>:<chapter>:<verse>`, the same form wol.jw.org uses for its own verse links.
+
 ## Folding and closing all windows
 
 While any window is open, the dock at the bottom of the screen starts with two buttons. **Fold all** minimizes every window into the dock (it then reads **Unfold all** and brings them all back), and **Close all** closes every window and its track, so the colours start again from teal. Minimized windows sit in the dock next to them as name chips. On a phone, dragging or pinching the timeline folds any open windows into the dock by itself, so the timeline is never hidden behind them; tap Unfold all or a name chip to bring them back. The code is `syncDockAll()` in `js/app.js`.
@@ -70,6 +74,7 @@ index.html                  page
 css/style.css               styles
 img/favicon.svg             browser-tab icon (tree logo)
 js/portrait.js              procedural line-art portraits
+js/scripture.js             scripture citations → wol.jw.org links
 js/app.js                   timeline, windows, search, People filter
 data/characters.js          134 key figures (hand-written)
 data/events.js              events and eras

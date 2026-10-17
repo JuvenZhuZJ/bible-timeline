@@ -401,6 +401,10 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .rel-chip:hover, .rel-chip:focus-visible { border-color: var(--wc); color: var(--wc); outline: none; }
 .rel-plain { font: 400 14px/1 var(--serif); color: var(--fg-2); padding: 4px 2px 5px; }
 .win-refs { font: 300 11px/1.7 var(--mono); color: var(--fg-2); }
+/* scripture citations open the passage on wol.jw.org in a new tab; same look until hovered */
+.ref-link { color: inherit; text-decoration: none; text-underline-offset: 2px; text-decoration-thickness: 1px; cursor: pointer; }
+.touch .ref-link { text-decoration: underline; text-decoration-color: var(--faint); }   /* no hover on phones, so a faint hint */
+.ref-link:hover, .ref-link:focus-visible { color: var(--fg); text-decoration: underline; text-decoration-color: var(--wc, var(--hair)); outline: none; }
 
 /* ------------------------------------------------------------- who is shown */
 .show { position: relative; }
