@@ -33,6 +33,8 @@ The names of the eras (Before the Flood, The Judges and so on) sit at the top of
 
 ## Portraits
 
+Each person's lifespan line starts just after their name, so the name never sits on top of its own line. The gap is sized to the measured name width (re-measured once the web fonts load); see `d.gap` in `render()` in `js/app.js`.
+
 Hovering (or tapping) a person shows their line-drawn portrait in a dark card, always in the same spot: under the lifespan tracks, between the timeline and the bottom controls, so it never sits on top of the names. The card moves down a little as open windows add tracks, and stops above the minimap and the window dock. The placement is `placePortrait()` in `js/app.js`.
 
 ## Personal timelines and colours
