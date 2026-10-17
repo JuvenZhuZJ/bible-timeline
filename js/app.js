@@ -359,7 +359,7 @@
 
   /* family links: while hovering a person, curved lines join them to the relatives on screen.
      Each end of a line takes the colour of the person at that end (blue male, rose female),
-     fading to gold in the middle, so father-to-son and father-to-daughter read at a glance. */
+     blending in the middle, so father-to-son and father-to-daughter read at a glance. */
   const SEX_COLOR = { m: "var(--male)", f: "var(--female)" };
   function renderRels() {
     g.rels.textContent = "";
@@ -377,7 +377,7 @@
       const lift = Math.min(60, Math.abs(x1 - x0) * 0.25 + 12);
       const grad = el("linearGradient", { id: "relg" + n, gradientUnits: "userSpaceOnUse", x1: x0, y1: y0, x2: x1, y2: y1 + (x1 === x0 && y1 === y0 ? 1 : 0) }, defs);
       const b = SEX_COLOR[r.c.gender] || "var(--accent)";
-      [[0, a], [0.22, a], [0.38, "var(--accent)"], [0.5, "var(--accent)"], [0.66, b], [1, b]].forEach(([o, col]) => el("stop", { offset: o, style: `stop-color:${col}` }, grad));
+      [[0, a], [0.3, a], [0.7, b], [1, b]].forEach(([o, col]) => el("stop", { offset: o, style: `stop-color:${col}` }, grad));
       el("path", { class: "rel-link", style: `stroke:url(#relg${n})`, d: `M${x0},${y0} C${x0},${Math.min(y0, y1) - lift} ${x1},${Math.min(y0, y1) - lift} ${x1},${y1}` }, g.rels);
       el("circle", { class: "rel-end", cx: x1, cy: y1, r: r.c.tier === 1 ? 8 : 7, style: `stroke:${b}` }, g.rels);
       n++;
