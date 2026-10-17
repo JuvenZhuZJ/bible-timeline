@@ -77,10 +77,11 @@
 
   /* ───────────────────────── layout ───────────────────────── */
   let W = 0, H = 0, L = {};
+  const ERA_ROWS = 3;
   function layout() {
     W = stage.clientWidth; H = stage.clientHeight;
     const mobile = W < 760;
-    const top = (mobile ? 56 : 64) + 30;
+    const top = (mobile ? 56 + (ERA_ROWS - 1) * 15 : 64) + 30;   // room for the era names above the people
     const bottom = mobile ? 104 : 108;
     const lineY = Math.round(top + (H - top - bottom) * (mobile ? 0.55 : 0.57));
     const laneStep = mobile ? 28 : 31;
@@ -237,14 +238,28 @@
     const { lineY } = L;
     svg.classList.toggle("has-hover", !!hoverC);
 
-    // eras
-    eraEls.forEach((o) => {
+    // eras: on a wide screen a name shows when it fits inside its band; on a phone the bands are
+    // too narrow for that, so names stack left to right in up to ERA_ROWS rows at the top.
+    if (L.mobile && eraEls[0].mw !== W) eraEls.forEach((o) => { o.mw = W; o.pw = o.lab.offsetWidth; });
+    const eraRows = [];
+    eraEls.map((o) => {
       const xa = X(o.a), xb = X(o.b);
       o.rect.setAttribute("x", xa); o.rect.setAttribute("width", Math.max(0, xb - xa)); o.rect.setAttribute("height", H);
-      const va = Math.max(xa, 0), vb = Math.min(xb, W);
-      const show = vb - va > o.w;
+      return { o, va: Math.max(xa, 0), vb: Math.min(xb, W) };
+    }).forEach(({ o, va, vb }) => {
+      let show = vb - va > o.w, row = 0;
+      const cx = (va + vb) / 2;
+      if (L.mobile) {
+        show = false;
+        const half = o.pw / 2 + 6, lx = Math.min(W - half, Math.max(half, cx));
+        if (vb > va && lx - half < vb && lx + half > va) {
+          for (row = 0; row < ERA_ROWS; row++) {
+            if (!(eraRows[row] || []).some(([p, q]) => lx - half < q && lx + half > p)) { (eraRows[row] = eraRows[row] || []).push([lx - half, lx + half]); show = true; break; }
+          }
+        }
+        if (show) { o.lab.style.left = lx + "px"; o.lab.style.top = ""; o.lab.style.transform = `translate(-50%, ${row * 15}px)`; }
+      } else if (show) { o.lab.style.left = cx + "px"; o.lab.style.transform = ""; }
       o.lab.style.opacity = show ? 1 : 0;
-      if (show) o.lab.style.left = (va + vb) / 2 + "px";
     });
     evEls.forEach((o, i) => {
       const x = X(o.t), s = sepEls[i];
@@ -477,12 +492,14 @@
   }
   // The portrait gets its own dark card in one fixed spot: under the lifespan tracks, between
   // the timeline and the bottom controls, where it never covers the names. It only moves down
-  // as more windows add tracks, and stops above the minimap, covering the lowest tracks if needed.
+  // as more windows add tracks, and stops above the minimap (or the window dock), covering the lowest tracks if needed.
   function placePortrait() {
     if (!hoverC) return;
     const s = pStage.style, m = L.mobile ? 12 : 24;
     const n = Math.min(L.maxTracks, wins.length + (isPinned(hoverC) ? 0 : 1));
-    const limit = L.mobile ? H - L.bottom - 4 : H - 58, minH = L.mobile ? 130 : 150;
+    let limit = L.mobile ? H - L.bottom - 4 : H - 58;
+    const minH = L.mobile ? 130 : 150;
+    if (wins.length) limit = Math.min(limit, dock.getBoundingClientRect().top - 4);   // stop above the window dock
     const top = Math.min(L.trackY0 + (n - 1) * L.trackStep + 52, limit - minH);   // under the hover track and its event notes
     const h = Math.min(limit - top, L.mobile ? 200 : 220), cw = Math.min(W - 2 * m, 560);
     s.setProperty("--pw", Math.round((h - 20) / 1.2) + "px");
@@ -704,6 +721,7 @@
   const ICON = {
     locate: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>',
     min: '<svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg>',
+    restorePath: "M6 7h12v11H6zM6 10h12",
     close: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   };
   const QLABEL = { derived: "from Bible ages", estimated: "estimated", assumed: "assumed" };
@@ -788,13 +806,14 @@
     const n = wins.length;
     const ww = node.offsetWidth, wh = node.offsetHeight;
     let x, y;
-    if (L.mobile) { x = (W - ww) / 2 + (n % 4) * 6; y = Math.max(60, H - wh - 112) - (n % 4) * 22; }
+    if (L.mobile) { x = (W - ww) / 2 + (n % 4) * 6; y = Math.max(60, H - wh - 150) - (n % 4) * 22; }   // clear of the dock
     else { x = W - ww - 84 - (n % 6) * 34; y = 84 + (n % 6) * 34; }
     w = { c, el: node, color, minimized: false, chip: null };
     place(w, x, y);
     wins.push(w);
     wireWindow(w);
     focusWin(w);
+    syncDockAll();
     requestRender();
   }
 
@@ -860,6 +879,7 @@
     chip.addEventListener("click", () => { restore(w); focusWin(w); });
     dock.appendChild(chip);
     w.chip = chip;
+    syncDockAll();
   }
   function restore(w) {
     if (!w.minimized) return;
@@ -868,6 +888,7 @@
     if (w.chip) w.chip.remove();
     w.chip = null;
     place(w, w.x, w.y);
+    syncDockAll();
   }
   function closeWin(w) {
     const i = wins.indexOf(w);
@@ -875,8 +896,25 @@
     w.el.remove();
     if (w.chip) w.chip.remove();
     cursorT = null;
+    syncDockAll();
     requestRender();
   }
+
+  /* fold or close every window at once; the buttons sit at the start of the dock while any window is open */
+  const dockAll = $("dockAll"), foldAllBtn = $("foldAll");
+  const allFolded = () => wins.every((w) => w.minimized);
+  function syncDockAll() {
+    dockAll.hidden = !wins.length;
+    const unfold = wins.length && allFolded();
+    foldAllBtn.querySelector("span").textContent = unfold ? "Unfold all" : "Fold all";
+    foldAllBtn.setAttribute("aria-label", unfold ? "Restore all windows" : "Minimize all windows");
+    foldAllBtn.querySelector("path").setAttribute("d", unfold ? ICON.restorePath : "M6 12h12");
+  }
+  foldAllBtn.addEventListener("click", () => {
+    if (allFolded()) { wins.forEach(restore); if (wins.length) focusWin(wins[wins.length - 1]); }
+    else wins.forEach(minimize);
+  });
+  $("closeAll").addEventListener("click", () => { [...wins].forEach(closeWin); });
 
   /* ───────────────────────── search ───────────────────────── */
   const sBox = $("search"), sIn = $("searchInput"), sRes = $("searchResults");
