@@ -30,12 +30,20 @@
   /*
    * Portrait designs. Index 0 of each list is the original drawing.
    *   age   young | adult | old         head  cloth | crown | priest | veil | bare | turban
-   *   beard none | short | full | long        | cap | helmet | hood | band | wrap
+   *   beard none | short | full | long        | cap | helmet | hood | band | shawl
    *   bs    beard shape: plain | pointed | curly | goatee
    *   hair  short | curly | long | bald | braids | bun | crownbraid   (shows with bare, crown, band)
    *   face  oval | round | long | square      brow  soft | heavy | arched
    *   mouth calm | smile | stern              eye   open | narrow | downcast
-   *   extras: earrings, necklace, coins (veil), stripes (cloth), vband (band over veil)
+   *   extras: earrings, nosering, necklace, crescent (pendant), stripes (cloth), vband (band over veil)
+   *
+   * Dress follows what the Bible and Iron Age reliefs show, not later fashions:
+   * beards (Lev 19:27), a Nazirite's long hair (Num 6:5), the priest's turban
+   * (Ex 28:4, 39), veils and shawls over women's heads (Gen 24:65; the Judean
+   * women on the Lachish reliefs), helmets without crests (1 Sam 17:5),
+   * earrings, nose rings, headbands and crescent ornaments (Gen 24:47;
+   * Judg 8:21, 24; Isa 3:18-21), braided hair (1 Pet 3:3), and the short
+   * wrapped turban with a hanging end worn by Judean men on the Lachish reliefs.
    */
   const PRESETS = {
     m: [
@@ -61,18 +69,18 @@
       { name: "Braids", age: "young", head: "bare", hair: "braids", face: "round", mouth: "smile" },
       { name: "Hair up", age: "adult", head: "bare", hair: "bun", face: "long", extras: ["earrings"] },
       { name: "Long hair", age: "young", head: "bare", hair: "long", extras: ["necklace"] },
-      { name: "Coin veil", age: "adult", head: "veil", brow: "arched", extras: ["coins"] },
-      { name: "Headscarf", age: "adult", head: "wrap", face: "round", mouth: "smile" },
+      { name: "Veil and crescent pendant", age: "adult", head: "veil", brow: "arched", extras: ["crescent"] },
+      { name: "Shawl", age: "adult", head: "shawl", face: "round", mouth: "smile" },
       { name: "Veiled elder", age: "old", head: "veil", face: "long", mouth: "stern" },
       { name: "Curls", age: "adult", head: "bare", hair: "curly", extras: ["earrings"] },
       { name: "Mantle", age: "adult", head: "hood", eye: "downcast" },
       { name: "Headband", age: "adult", head: "band", hair: "long", brow: "arched" },
-      { name: "Elder in a headscarf", age: "old", head: "wrap", face: "round" },
-      { name: "Girl in a headscarf", age: "young", head: "wrap", face: "long", mouth: "smile", extras: ["earrings"] },
+      { name: "Elder in a shawl", age: "old", head: "shawl", face: "round" },
+      { name: "Girl in a shawl", age: "young", head: "shawl", face: "long", mouth: "smile", extras: ["earrings"] },
       { name: "Veil and headband", age: "adult", head: "veil", face: "square", eye: "narrow", extras: ["vband", "necklace"] },
       { name: "Braided crown", age: "adult", head: "bare", hair: "crownbraid", brow: "arched", mouth: "smile" },
       { name: "Elder with hair up", age: "old", head: "bare", hair: "bun", face: "round", eye: "downcast" },
-      { name: "Veil and earrings", age: "young", head: "veil", face: "round", mouth: "smile", extras: ["earrings"] }
+      { name: "Veil, earrings and nose ring", age: "young", head: "veil", face: "round", mouth: "smile", extras: ["earrings", "nosering"] }
     ]
   };
   const group = (c) => (c.gender === "f" ? "f" : "m");
@@ -234,8 +242,8 @@
       }
     }
     if (showsHair && fem && hair === "bun") {
-      const by = top - 6;
-      ring(cx + r(-3, 3), by, 14 + r(-1, 2), 1.3, 0, true);
+      const by = top - 1;
+      ring(cx + r(-3, 3), by, 11 + r(-1, 1.5), 1.3, 0, true);
       for (let i = 0; i < 3; i++) P(`M${f(cx - 10 + i * 3)},${f(by - 2 - i * 3)} q${f(10 - i * 2)},${f(-6 + i)} ${f(18 - i * 5)},${f(4 - i)}`, 0.6, 0.6);
     }
     if (head === "cloth" || head === "veil" || head === "hood") {
@@ -253,20 +261,19 @@
         }
       }
     }
-    let knotX = cx;
-    if (head === "wrap") {
-      // the scarf's tied tails hang behind one shoulder
-      const s = R() < 0.5 ? -1 : 1, kx = cx + s * (rx - 2), ky = top + 2;
-      knotX = kx;
-      fillP(`M${f(kx)},${f(ky)} C${f(kx + s * 22)},${f(ky + 20)} ${f(kx + s * 16)},${f(cy + 34)} ${f(kx + s * 30)},${f(chin + 20)} L${f(kx + s * 14)},${f(chin + 26)} C${f(kx + s * 8)},${f(cy + 34)} ${f(kx + s * 10)},${f(ky + 24)} ${f(kx)},${f(ky + 14)} Z`, 1.2);
-      P(`M${f(kx + s * 8)},${f(ky + 18)} q${f(s * 8)},20 ${f(s * 12)},50`, 0.6, 0.55);
+    if (head === "shawl") {
+      // the shawl falls long over one shoulder and short over the other
+      const s2 = R() < 0.5 ? -1 : 1, lo = (k) => (k === s2 ? chin + 56 : chin + 26), ww = (k) => (k === s2 ? 24 : 12);
+      const sh2 = `M${cx},${f(top - 12)} C${f(cx + rx + 14)},${f(top - 10)} ${f(cx + rx + 12)},${f(cy + 20)} ${f(cx + rx + ww(1))},${f(lo(1))} C${f(cx + rx * 0.4)},${f(lo(1) + 4)} ${f(cx - rx * 0.4)},${f(lo(-1) + 4)} ${f(cx - rx - ww(-1))},${f(lo(-1))} C${f(cx - rx - 12)},${f(cy + 20)} ${f(cx - rx - 14)},${f(top - 10)} ${cx},${f(top - 12)} Z`;
+      fillP(sh2, 1.3);
+      for (let i = 0; i < 4; i++) P(`M${f(cx + s2 * (rx + r(4, 14)))},${f(cy + r(0, 16))} q${f(s2 * r(2, 6))},${f(r(20, 30))} ${f(s2 * r(6, 14))},${f(r(40, 56))}`, 0.7, 0.55);
     }
-    if (head === "helmet") {
-      // neck guard
-      fillP(`M${f(cx - rx - 5)},${f(cy - 6)} C${f(cx - rx - 9)},${f(cy + 18)} ${f(cx - rx - 6)},${f(cy + 30)} ${f(cx - rx - 12)},${f(cy + 36)} L${f(cx + rx + 12)},${f(cy + 36)} C${f(cx + rx + 6)},${f(cy + 30)} ${f(cx + rx + 9)},${f(cy + 18)} ${f(cx + rx + 5)},${f(cy - 6)} Z`, 1.2);
-      for (let i = 0; i < 3; i++) for (const s of [-1, 1]) P(`M${f(cx + s * (rx + 3))},${f(cy + 4 + i * 10)} l${f(s * 6)},2`, 0.6, 0.55);
+    // crescent pendant on a cord (Isa 3:18; Judg 8:21)
+    if (has("crescent")) {
+      const py = chin + 30;
+      P(`M${cx - 18},${f(chin + 12)} Q${cx},${f(py + 2)} ${cx + 18},${f(chin + 12)}`, 0.7, 0.75);
+      fillP(`M${cx - 7},${f(py)} A7,7 0 0,0 ${cx + 7},${f(py)} A5.4,5.4 0 0,1 ${cx - 7},${f(py)} Z`, 1);
     }
-
     // necklace (behind the face and beard, over the robe and drape)
     if (has("necklace")) {
       const ny = chin + 18;
@@ -293,7 +300,7 @@
     // ears (only when not covered)
     const earsShow = fem
       ? showsHair && (hair === "bun" || hair === "braids" || hair === "crownbraid" || hair === "short")
-      : head === "bare" || head === "crown" || head === "turban" || head === "priest" || head === "cap" || head === "band";
+      : head === "bare" || head === "crown" || head === "turban" || head === "priest" || head === "cap" || head === "band" || head === "helmet";
     if (earsShow) {
       if (fem) {
         S(`M${f(cx - rx * 0.97)},${cy + 2} c-6,-1 -7,13 -1,15`, 1);
@@ -489,11 +496,12 @@
         P(`M${f(cx - w + 2)},${f(cyb - 3)} Q${cx},${f(cyb + 2)} ${f(cx + w - 2)},${f(cyb - 3)}`, 0.7, 0.6);
       }
     } else if (head === "cloth") {
-      // band (agal) and the cloth's inner edge framing the face
-      S(`M${f(cx - rx - 6)},${f(hairline - 4)} Q${cx},${f(hairline - 16)} ${f(cx + rx + 6)},${f(hairline - 4)}`, 2.2);
-      S(`M${f(cx - rx - 6)},${f(hairline + 1)} Q${cx},${f(hairline - 11)} ${f(cx + rx + 6)},${f(hairline + 1)}`, 1.2);
+      // a plain cloth over the head, its folded front edge framing the face
+      // (no cord ring: that is a later Bedouin fashion)
       const cap = `M${f(cx - rx - 6)},${f(hairline - 4)} Q${cx},${f(hairline - 16)} ${f(cx + rx + 6)},${f(hairline - 4)} C${f(cx + rx + 10)},${f(top - 4)} ${f(cx + 12)},${f(top - 14)} ${cx},${f(top - 12)} C${f(cx - 12)},${f(top - 14)} ${f(cx - rx - 10)},${f(top - 4)} ${f(cx - rx - 6)},${f(hairline - 4)} Z`;
       fillP(cap, 1.3);
+      S(`M${f(cx - rx - 6)},${f(hairline - 4)} Q${cx},${f(hairline - 16)} ${f(cx + rx + 6)},${f(hairline - 4)}`, 1.4);
+      P(`M${f(cx - rx - 4)},${f(hairline - 8)} Q${cx},${f(hairline - 19)} ${f(cx + rx + 4)},${f(hairline - 8)}`, 0.7, 0.55);
       for (let i = 0; i < 5; i++) P(`M${f(cx + r(-rx, rx))},${f(top - 8)} q${f(r(-4, 4))},${f(r(6, 10))} ${f(r(-3, 3))},${f(r(12, 18))}`, 0.6, 0.45);
     } else if (head === "veil") {
       const cap = `M${f(cx - rx - 4)},${f(cy - 2)} C${f(cx - rx - 6)},${f(top - 6)} ${f(cx + rx + 6)},${f(top - 6)} ${f(cx + rx + 4)},${f(cy - 2)} C${f(cx + rx - 2)},${f(hairline - 8)} ${f(cx - rx + 2)},${f(hairline - 8)} ${f(cx - rx - 4)},${f(cy - 2)} Z`;
@@ -503,15 +511,6 @@
       if (has("vband")) {
         S(`M${f(cx - rx - 3)},${f(hairline - 2)} Q${cx},${f(hairline - 16)} ${f(cx + rx + 3)},${f(hairline - 2)}`, 1.8);
         P(`M${f(cx - rx - 3)},${f(hairline + 1.5)} Q${cx},${f(hairline - 12.5)} ${f(cx + rx + 3)},${f(hairline + 1.5)}`, 0.8, 0.7);
-      }
-      if (has("coins")) {
-        for (let k = 0; k <= 8; k++) {
-          const t = k / 8, x = cx - rx * 0.78 + t * rx * 1.56;
-          const y = hairline - 4.5 - Math.sin(Math.PI * t) * 3.5;
-          P(`M${f(x)},${f(y - 3)} v2.4`, 0.5, 0.7);
-          ring(x, y + 1.6, 2.1, 0.8, 0, true);
-        }
-        P(`M${f(cx - rx * 0.82)},${f(hairline - 7)} Q${cx},${f(hairline - 14)} ${f(cx + rx * 0.82)},${f(hairline - 7)}`, 0.7, 0.7);
       }
     } else if (head === "hood") {
       // peaked hood with a thick hem framing the face
@@ -523,22 +522,13 @@
         S(`M${f(cx + s * (rx + 2))},${f(cy + 4)} C${f(cx + s * (rx + 6))},${f(cy + 30)} ${f(cx + s * (rx + 2))},${f(chin + 10)} ${f(cx + s * 18)},${f(chin + 26)}`, 1.2);
       }
       if (!fem) for (let i = 0; i < 6; i++) P(`M${f(cx - rx * 0.6 + i * rx * 0.24)},${f(hairline - 4)} l${f(r(-2, 2))},${f(r(4, 7))}`, 0.6, 0.6);
-    } else if (head === "wrap") {
-      const cap = `M${f(cx - rx - 3)},${f(cy - 2)} C${f(cx - rx - 9)},${f(top - 16)} ${f(cx + rx + 9)},${f(top - 16)} ${f(cx + rx + 3)},${f(cy - 2)} C${f(cx + rx - 2)},${f(hairline - 7)} ${f(cx - rx + 2)},${f(hairline - 7)} ${f(cx - rx - 3)},${f(cy - 2)} Z`;
+    } else if (head === "shawl") {
+      const cap = `M${f(cx - rx - 4)},${f(cy + 2)} C${f(cx - rx - 8)},${f(top - 12)} ${f(cx + rx + 8)},${f(top - 12)} ${f(cx + rx + 4)},${f(cy + 2)} C${f(cx + rx - 2)},${f(hairline - 6)} ${f(cx - rx + 2)},${f(hairline - 6)} ${f(cx - rx - 4)},${f(cy + 2)} Z`;
       fillP(cap, 1.3);
-      // wound folds, kept inside the scarf
-      out.push(`<clipPath id="wc-${uid}"><path d="${cap}"/></clipPath><g clip-path="url(#wc-${uid})">`);
-      for (let i = 0; i < 4; i++) {
-        const y = hairline - 6 - i * 7;
-        P(`M${f(cx - rx - 4)},${f(y + 8)} Q${f(cx + r(-4, 4))},${f(y - 8)} ${f(cx + rx + 4)},${f(y - 2 - i * 2)}`, 0.8, 0.65);
-      }
-      out.push(`</g>`);
-      // knot on the side the tails hang from (same draw as the back layer)
-      const kx = knotX, ky = top + 2;
-      ring(kx, ky, 6.5, 1.2, 0, true);
-      P(`M${f(kx - 4)},${f(ky - 2)} q4,4 8,0 M${f(kx - 3)},${f(ky + 2)} q3,-3 6,0`, 0.7, 0.7);
-      // a little hair at the temples
-      for (const t of [-1, 1]) P(`M${f(cx + t * (rx - 1))},${f(cy - 4)} q${f(t * 2)},6 ${f(t * 1)},12`, 0.7, 0.6);
+      S(`M${f(cx - rx - 1)},${f(cy)} C${f(cx - rx + 3)},${f(hairline - 3)} ${f(cx + rx - 3)},${f(hairline - 3)} ${f(cx + rx + 1)},${f(cy)}`, 1.1);
+      for (const t of [-1, 1]) P(`M${f(cx + t * 6)},${f(top - 8)} q${f(t * 14)},6 ${f(t * (rx + 2))},${f(hairline - top + 10)}`, 0.7, 0.5);
+      // hair showing at the parting
+      for (const t of [-1, 1]) P(`M${f(cx + t * 2)},${f(hairline - 4)} q${f(t * 8)},1 ${f(t * (rx - 8))},8`, 0.7, 0.6);
     } else if (head === "cap") {
       // side hair below the cap
       for (const s of [-1, 1]) S(`M${f(cx + s * (rx + 1))},${f(cy - 2)} C${f(cx + s * (rx + 3))},${f(hairline + 4)} ${f(cx + s * (rx - 2))},${f(hairline - 2)} ${f(cx + s * (rx - 6))},${f(hairline - 6)}`, 1.2);
@@ -547,20 +537,16 @@
       P(`M${f(cx - rx)},${f(hairline - 6)} Q${cx},${f(hairline - 14)} ${f(cx + rx)},${f(hairline - 6)}`, 0.8, 0.7);
       for (let i = -2; i <= 2; i++) P(`M${f(cx + i * rx * 0.3)},${f(hairline - 9 - (2 - Math.abs(i)) * 1.5)} Q${f(cx + i * rx * 0.2)},${f(top - 4)} ${cx},${f(top - 8)}`, 0.6, 0.5);
     } else if (head === "helmet") {
-      const dome = `M${f(cx - rx - 5)},${f(hairline + 4)} C${f(cx - rx - 7)},${f(top - 22)} ${f(cx + rx + 7)},${f(top - 22)} ${f(cx + rx + 5)},${f(hairline + 4)} Q${cx},${f(hairline - 5)} ${f(cx - rx - 5)},${f(hairline + 4)} Z`;
+      // a plain metal helmet rising to a blunt point, no crest (1 Sam 17:5)
+      const dome = `M${f(cx - rx - 4)},${f(hairline + 4)} C${f(cx - rx - 6)},${f(top - 6)} ${f(cx - 10)},${f(top - 22)} ${cx},${f(top - 28)} C${f(cx + 10)},${f(top - 22)} ${f(cx + rx + 6)},${f(top - 6)} ${f(cx + rx + 4)},${f(hairline + 4)} Q${cx},${f(hairline - 5)} ${f(cx - rx - 4)},${f(hairline + 4)} Z`;
       fillP(dome, 1.5);
-      S(`M${f(cx - rx - 6)},${f(hairline + 4)} Q${cx},${f(hairline - 6)} ${f(cx + rx + 6)},${f(hairline + 4)}`, 2.2);
-      P(`M${cx},${f(top - 14)} L${cx},${f(hairline - 2)}`, 0.9, 0.7);
-      // crest
-      fillP(`M${cx - 4},${f(top - 12)} C${cx - 18},${f(top - 30)} ${cx + 14},${f(top - 40)} ${cx + 36},${f(top - 18)} C${cx + 22},${f(top - 26)} ${cx + 6},${f(top - 22)} ${cx + 4},${f(top - 12)} Z`, 1.1);
-      for (let i = 0; i < 5; i++) P(`M${f(cx - 2 + i * 2)},${f(top - 14 - i)} q${f(8 + i * 3)},${f(-14 + i * 2)} ${f(18 + i * 4)},${f(-8 + i * 3)}`, 0.6, 0.6);
-      // cheek guards
-      for (const s of [-1, 1]) {
-        fillP(`M${f(cx + s * (rx + 5))},${f(hairline + 3)} L${f(cx + s * (rx - 5))},${f(hairline + 5)} Q${f(cx + s * (rx - 7))},${f(cy + 10)} ${f(cx + s * (rx - 3))},${f(cy + 26)} L${f(cx + s * (rx + 3))},${f(cy + 24)} Q${f(cx + s * (rx + 6))},${f(cy + 6)} ${f(cx + s * (rx + 5))},${f(hairline + 3)} Z`, 1.2);
-        ring(cx + s * rx, cy + 4, 1.3, 0.8, 0.7);
-      }
+      S(`M${f(cx - rx - 5)},${f(hairline + 4)} Q${cx},${f(hairline - 6)} ${f(cx + rx + 5)},${f(hairline + 4)}`, 2.2);
+      P(`M${f(cx - rx - 3)},${f(hairline - 1)} Q${cx},${f(hairline - 11)} ${f(cx + rx + 3)},${f(hairline - 1)}`, 0.8, 0.7);
+      P(`M${cx},${f(top - 26)} L${cx},${f(hairline - 6)}`, 0.8, 0.6);
+      // side hair below the rim
+      for (const s2 of [-1, 1]) S(`M${f(cx + s2 * (rx + 1))},${f(cy + 2)} C${f(cx + s2 * (rx + 3))},${f(hairline + 8)} ${f(cx + s2 * (rx + 1))},${f(hairline + 6)} ${f(cx + s2 * (rx - 2))},${f(hairline + 3)}`, 1.1);
     } else if (head === "turban" || head === "priest") {
-      const tall = head === "priest" ? 34 : 22, wide = head === "priest" ? 5 : 12;
+      const tall = head === "priest" ? 34 : 12, wide = head === "priest" ? 5 : 6;
       const tb = `M${f(cx - rx - 5)},${f(hairline + 2)} C${f(cx - rx - wide - 8)},${f(hairline - 14)} ${f(cx - rx - wide)},${f(top - tall)} ${cx},${f(top - tall - 2)} C${f(cx + rx + wide)},${f(top - tall)} ${f(cx + rx + wide + 8)},${f(hairline - 14)} ${f(cx + rx + 5)},${f(hairline + 2)} Q${cx},${f(hairline - 8)} ${f(cx - rx - 5)},${f(hairline + 2)} Z`;
       fillP(tb, 1.4);
       for (let i = 0; i < 4; i++) {
@@ -568,12 +554,19 @@
         const ww = rx + (head === "priest" ? 2 : wide - 2) - i * 4;
         S(`M${f(cx - ww)},${f(y + 6 - i * 2)} Q${f(cx + r(-6, 6))},${f(y - 6 - r(0, 6))} ${f(cx + ww)},${f(y - 6 + i * 2)}`, 0.9, 0.8);
       }
+      if (head === "turban") {
+        const s2 = hash(c.id + "t") % 2 ? 1 : -1, tx = cx + s2 * (rx + 4);
+        fillP(`M${f(tx - s2 * 4)},${f(hairline - 2)} C${f(tx + s2 * 6)},${f(cy + 6)} ${f(tx + s2 * 2)},${f(chin - 4)} ${f(tx + s2 * 10)},${f(chin + 14)} L${f(tx + s2 * 18)},${f(chin + 10)} C${f(tx + s2 * 12)},${f(chin - 8)} ${f(tx + s2 * 14)},${f(cy + 4)} ${f(tx + s2 * 4)},${f(hairline - 6)} Z`, 1.1);
+        P(`M${f(tx + s2 * 4)},${f(cy)} q${f(s2 * 3)},20 ${f(s2 * 9)},${f(chin + 8 - cy)}`, 0.6, 0.55);
+      }
       if (head === "priest") {
         out.push(`<rect x="${cx - 8}" y="${f(hairline - 14)}" width="16" height="8" rx="1" stroke-width="1.1"/>`);
         P(`M${cx - 5},${f(hairline - 10)} h10`, 0.6, 0.7);
       }
     }
 
+    // nose ring on one nostril (Gen 24:47; Isa 3:21)
+    if (has("nosering")) ring(cx + 5.5, ey + nl + 3.2, 2.6, 0.9, 0.9);
     // earrings hang below the ear, or just below the veil's edge
     if (has("earrings")) {
       for (const s of [-1, 1]) {
