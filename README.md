@@ -41,9 +41,9 @@ Hovering (or tapping) a person shows their line-drawn portrait in a dark card, a
 
 Each open window adds that person's lifespan as a track under the timeline. The small dots on a track are the person's major activities: hover one (or tap it on a phone) to see its date and text, and click it (or tap it again) to open the person's window scrolled to that activity, which is briefly highlighted.
 
-Family links (the dashed curves shown while hovering a person) are coloured by sex at each end: blue for a man, rose for a woman, gold in the middle, and the relative's dot gets a ring in the same colour. So a father's links to his sons end in blue and to his daughters in rose. The 16 Insight entries whose sex is unknown (`gender: "u"`, for example Gog and Junias) keep a plain gold end. The two colours are `--male` and `--female` in `css/style.css`.
+Family links (the dashed curves shown while hovering a person) are coloured by sex at each end: blue for a man, rose for a woman, gold in the middle, and both the hovered person's dot and each relative's dot get a ring in their colour. So a father's links to his sons end in blue and to his daughters in rose. The 16 Insight entries whose sex is unknown (`gender: "u"`, for example Gog and Junias) keep a plain gold end. The two colours are `--male` and `--female` in `css/style.css`.
 
-Gold marks people you are only hovering over. Every opened person gets their own colour (teal, terracotta, sage, lavender, ivory, blue, rose), used for their window, track and ring on the timeline, so an opened person never looks the same as one that is not opened. The palette is `COLORS` in `js/app.js`.
+Gold marks people you are only hovering over. Every opened person gets their own colour (sea green, terracotta, lavender, sage, ivory; no blue or rose, since those mean man and woman on the family links), used for their window, track and ring on the timeline, so an opened person never looks the same as one that is not opened. The palette is `COLORS` in `js/app.js`.
 
 ## Folding and closing all windows
 
