@@ -128,6 +128,8 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .ev-stem { stroke: var(--faint); stroke-width: 1; }
 .ev-label { fill: var(--fg-2); font: 500 9.5px var(--sans); letter-spacing: 0.18em; text-transform: uppercase; }
 .ev-year { fill: var(--muted); font: 300 9.5px var(--mono); }
+/* a thin outline in the page colour cuts any dotted line passing behind a label */
+.ev-label, .ev-year { paint-order: stroke; stroke: var(--bg); stroke-width: 4px; stroke-linejoin: round; }
 
 .dot { cursor: pointer; transition: opacity .35s; }
 .dot .hit { fill: transparent; stroke: none; }

@@ -35,6 +35,12 @@ Searching for a person who is hidden by the current mode switches to Everyone. T
 
 The names of the eras (Before the Flood, The Judges and so on) sit at the top of the screen. On a computer a name shows when it fits inside its era's band. Phones are too narrow for that, so there the names stack left to right in up to three rows at the top, and the people start a little lower to make room. The rows are `ERA_ROWS` in `js/app.js`.
 
+## Event labels
+
+Major event names sit in rows under the axis: three rows on a computer, two on a phone (`evRows` in `layout()` in `js/app.js`). Each label hangs from its dot by a straight stem, and the layout never lets a stem run through another label: a label may sit centred on its stem or slide to one side, and it takes a lower row only when the rows above are clear at its stem. A label that has no clear spot stays hidden until you zoom in; its dot still shows the details on hover or tap. Labels have a thin outline in the page colour, so dotted lines behind them are cut cleanly.
+
+The personal lifespan tracks (hover and open windows) start below the event label rows, so they never cover an event name.
+
 ## Portraits
 
 Each person's lifespan line starts just after their name, so the name never sits on top of its own line. The gap is sized to the measured name width (re-measured once the web fonts load); see `d.gap` in `render()` in `js/app.js`.
