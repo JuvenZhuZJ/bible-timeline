@@ -774,14 +774,14 @@
       return `<div class="rel-row"><span class="rel-k">${lab}</span><span class="rel-v">${chips.concat(plain).join("")}</span></div>`;
     }).join("");
     if (rows) return `<div class="win-h">Family</div><div class="rel">${rows}</div>`;
-    return c.family ? `<div class="win-family">${esc(c.family)}</div>` : "";
+    return c.family ? `<div class="win-family">${Scripture.linkText(c.family)}</div>` : "";
   }
 
   function windowHTML(c) {
     const acts = c.events.map(([yr, text, ref], i) => {
       const age = A(yr) - c.tb;
       const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${c.q[0] === "derived" ? "" : "~"}age ${age}</span>` : "";
-      return `<li data-t="${A(yr)}" data-i="${i}"><span class="act-y">${esc(fmtYear(yr, true))}${ageS}</span><span class="act-t">${esc(text)}</span><span class="act-r">${esc(ref)}</span></li>`;
+      return `<li data-t="${A(yr)}" data-i="${i}"><span class="act-y">${esc(fmtYear(yr, true))}${ageS}</span><span class="act-t">${esc(text)}</span><span class="act-r">${Scripture.linkRefs(ref)}</span></li>`;
     }).join("");
     return `
       <div class="win-head">
@@ -800,13 +800,13 @@
           <span class="badge${c.q[0] === "assumed" ? " assumed" : ""}">Birth: ${QLABEL[c.q[0]]}</span>
           <span class="badge${c.q[1] === "assumed" ? " assumed" : ""}">Death: ${QLABEL[c.q[1]]}</span>
         </div>
-        ${c.note ? `<p class="win-note">${c.assumed ? "⚑ " : ""}${esc(c.note)}</p>` : ""}
-        <p class="win-summary">${esc(c.summary)}</p>
+        ${c.note ? `<p class="win-note">${c.assumed ? "⚑ " : ""}${Scripture.linkText(c.note)}</p>` : ""}
+        <p class="win-summary">${Scripture.linkText(c.summary)}</p>
         ${familyHTML(c)}
         <div class="win-h">Lifespan</div>
         ${miniTimeline(c)}
         ${acts ? `<div class="win-h">Major activities</div><ul class="acts">${acts}</ul>` : ""}
-        ${c.refs.length ? `<div class="win-h">Key scriptures</div><div class="win-refs">${c.refs.map(esc).join(" · ")}</div>` : ""}
+        ${c.refs.length ? `<div class="win-h">Key scriptures</div><div class="win-refs">${c.refs.map(Scripture.linkRefs).join(" · ")}</div>` : ""}
         <div class="win-src">Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”</div>
       </div>`;
   }
@@ -881,6 +881,7 @@
     if (acts) acts.addEventListener("pointerover", (e) => { const li = e.target.closest("li"); if (li) { cursorT = +li.dataset.t; requestRender(); } });
     if (acts) acts.addEventListener("pointerleave", () => { cursorT = null; requestRender(); });
     if (acts) acts.addEventListener("click", (e) => {
+      if (e.target.closest(".ref-link")) return;   // the citation opens wol.jw.org in a new tab instead
       const li = e.target.closest("li"); if (!li) return;
       const t = +li.dataset.t;
       cursorT = t;
