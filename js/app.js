@@ -608,14 +608,18 @@
     } else if (pointers.size === 2) {
       const [p, q] = [...pointers.values()];
       gesture = { type: "pinch", d: Math.hypot(p.x - q.x, p.y - q.y) || 1, mx: (p.x + q.x) / 2, ppy: view.ppy, t: tAt((p.x + q.x) / 2), moved: true };
+      foldForGesture();
     }
   });
+  // On a phone the open windows cover most of the timeline, so dragging or pinching it folds them
+  // into the dock; Unfold all (or a name chip) brings them back.
+  function foldForGesture() { if (L.mobile) wins.forEach(minimize); }
   stage.addEventListener("pointermove", (e) => {
     if (!pointers.has(e.pointerId) || !gesture) return;
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (gesture.type === "pan") {
       const dx = e.clientX - gesture.x;
-      if (!gesture.moved && Math.abs(dx) > (e.pointerType === "mouse" ? 4 : 8)) { gesture.moved = true; dragging = true; stage.classList.add("dragging"); hideTip(); hideHint(); }
+      if (!gesture.moved && Math.abs(dx) > (e.pointerType === "mouse" ? 4 : 8)) { gesture.moved = true; dragging = true; stage.classList.add("dragging"); hideTip(); hideHint(); foldForGesture(); }
       if (gesture.moved) { view.t0 = gesture.t0 - dx / view.ppy; clampView(); requestRender(); }
     } else if (gesture.type === "pinch" && pointers.size >= 2) {
       const [p, q] = [...pointers.values()];
