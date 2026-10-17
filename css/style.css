@@ -194,6 +194,11 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .portrait-stage .portrait-caption { text-align: left; margin-top: 0; min-width: 0; }
 .portrait-stage .pc-years { letter-spacing: 0.04em; }
 .portrait-stage.show { opacity: 1; }
+/* short of room (several tracks open): name and dates only, so the tracks above stay clear */
+.portrait-stage.compact { padding: 8px 14px; }
+.portrait-stage.compact .portrait-frame, .portrait-stage.compact .pc-role { display: none; }
+.portrait-stage.compact .pc-name { font-size: 22px; }
+.portrait-stage.compact .pc-years, .portrait-stage.compact .pc-hint { margin-top: 4px; }
 .portrait-frame {
   width: var(--pw, 300px); height: calc(var(--pw, 300px) * 1.2); color: var(--fg); opacity: 0.9;
   transform: scale(0.96); transition: transform .5s cubic-bezier(.2,.7,.2,1);
