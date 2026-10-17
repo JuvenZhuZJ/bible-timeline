@@ -83,12 +83,14 @@
     const mobile = W < 760;
     const top = (mobile ? 56 + (ERA_ROWS - 1) * 15 : 64) + 30;   // room for the era names above the people
     const bottom = mobile ? 104 : 108;
-    const lineY = Math.round(top + (H - top - bottom) * (mobile ? 0.55 : 0.57));
+    const lineY = Math.round(top + (H - top - bottom) * (mobile ? 0.5 : 0.55));
     const laneStep = mobile ? 28 : 31;
+    // event labels sit in a fixed band of rows under the axis; the personal tracks start below it
+    const evRows = mobile ? 2 : 3, evRow0 = lineY + 40, evRowStep = 22;
     L = {
-      mobile, top, bottom, lineY, laneStep,
+      mobile, top, bottom, lineY, laneStep, evRows, evRow0, evRowStep,
       maxLanes: Math.max(3, Math.floor((lineY - top - 22) / laneStep)),
-      trackY0: lineY + (mobile ? 84 : 96),
+      trackY0: evRow0 + (evRows - 1) * evRowStep + 11 + 22,
       trackStep: mobile ? 30 : 34,
     };
     L.maxTracks = Math.max(1, Math.floor((H - bottom - L.trackY0 + 6) / L.trackStep) + 1);
@@ -291,19 +293,43 @@
       el("text", { class: "axis-label", x: x, y: lineY + 21, "text-anchor": "middle" }, g.axis).textContent = fmtT(t);
     }
 
-    // events: nodes + staggered labels
-    const rows = [[], [], []];
-    const rowY = (r) => lineY + 42 + r * 24;
-    evEls.forEach((o) => {
-      const x = X(o.t);
+    // events: nodes + labels in rows under the axis. Each label's stem drops straight down from
+    // its dot, so a label may only go in a row if its stem crosses no label in the rows above,
+    // and no deeper label's stem runs through it. A label may sit centred on its stem or slide
+    // left or right of it to fit; one that fits nowhere waits for more zoom (its dot still
+    // shows the details on hover or tap).
+    const rows = Array.from({ length: L.evRows }, () => []);   // [a, b] of each placed label
+    const stems = [];                                            // [x, row] of each placed label
+    const rowY = (r) => L.evRow0 + r * L.evRowStep;
+    const PAD = 10;
+    const xs = evEls.map((o) => X(o.t));
+    evEls.forEach((o, i) => {
+      const x = xs[i];
       const on = x > -60 && x < W + 60;
       o.node.style.display = on ? "" : "none";
       o.node.setAttribute("transform", `translate(${x},${lineY})`);
-      let row = -1;
-      const lx = Math.min(W - o.w / 2 - 6, Math.max(o.w / 2 + 6, x));
+      let row = -1, lx = x;
+      if (on && !o.mw) { o.label.style.display = ""; const m = o.label.getComputedTextLength(); if (m) o.w = o.mw = m + 14; }
+      const fits = (r, cx) => {
+        const a = cx - o.w / 2, b = cx + o.w / 2;
+        if (x < a + 4 || x > b - 4) return false;
+        if (rows[r].some(([p, q]) => a < q + PAD && b > p - PAD)) return false;
+        for (let k = 0; k < r; k++) if (rows[k].some(([p, q]) => x > p - 6 && x < q + 6)) return false;
+        return !stems.some(([sx, sr]) => sr > r && sx > a - 6 && sx < b + 6);
+      };
+      const clampX = (cx) => Math.min(W - o.w / 2 - 6, Math.max(o.w / 2 + 6, cx));
       if (on) {
-        const a = lx - o.w / 2, b = lx + o.w / 2;
-        for (let r = 0; r < rows.length; r++) if (!rows[r].some(([p, q]) => a < q + 10 && b > p - 10)) { row = r; rows[r].push([a, b]); break; }
+        // prefer a spot that leaves the dots still to come uncovered, so their stems can pass
+        let best = Infinity;
+        const tries = [clampX(x), clampX(x + o.w / 2 - 14), clampX(x - o.w / 2 + 14)];
+        for (let r = 0; r < L.evRows; r++) tries.forEach((cx, k) => {
+          if (!fits(r, cx)) return;
+          const a = cx - o.w / 2 - 6, b = cx + o.w / 2 + 6;
+          const blocks = xs.filter((ox, j) => j > i && ox > a && ox < b).length;
+          const score = blocks * 2 + r + (k ? 0.5 : 0);
+          if (score < best) { best = score; row = r; lx = cx; }
+        });
+        if (row >= 0) { rows[row].push([lx - o.w / 2, lx + o.w / 2]); stems.push([x, row]); }
       }
       const vis = row >= 0;
       o.label.style.display = o.year.style.display = o.stem.style.display = vis ? "" : "none";
@@ -1033,7 +1059,7 @@
   fit();
   render();
   // names measured with a fallback font are re-measured once the web fonts arrive
-  if (document.fonts) document.fonts.ready.then(() => { dotEls.forEach((d) => { d.gap = 0; }); requestRender(); });
+  if (document.fonts) document.fonts.ready.then(() => { dotEls.forEach((d) => { d.gap = 0; }); evEls.forEach((o) => { o.mw = 0; }); requestRender(); });
 
   // expose for debugging / tests
   window.Timeline = { setShowMode, view, openWindow: (id) => openWindow(CHAR_BY_ID.get(id)), locate: (id) => locate(CHAR_BY_ID.get(id)), setHover: (id) => setHover(id ? CHAR_BY_ID.get(id) : null), zoomAt, animateTo, A, chars: CHARS, render };
