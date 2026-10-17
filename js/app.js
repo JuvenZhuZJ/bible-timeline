@@ -357,19 +357,29 @@
     renderMinimap();
   }
 
-  /* family links: while hovering a person, curved lines join them to the relatives on screen */
+  /* family links: while hovering a person, curved lines join them to the relatives on screen.
+     Each end of a line takes the colour of the person at that end (blue male, rose female),
+     fading to gold in the middle, so father-to-son and father-to-daughter read at a glance. */
+  const SEX_COLOR = { m: "var(--male)", f: "var(--female)" };
   function renderRels() {
     g.rels.textContent = "";
     if (!hoverC) return;
     const h = DOT_BY_ID.get(hoverC.id);
     if (!h || !h.visible) return;
     const x0 = X(hoverC.tb), y0 = h.y;
+    const defs = el("defs", {}, g.rels);
+    let n = 0;
     for (const id of hoverC.relIds) {
       const r = DOT_BY_ID.get(id);
       if (!r || !r.visible) continue;
       const x1 = X(r.c.tb), y1 = r.y;
       const lift = Math.min(60, Math.abs(x1 - x0) * 0.25 + 12);
-      el("path", { class: "rel-link", d: `M${x0},${y0} C${x0},${Math.min(y0, y1) - lift} ${x1},${Math.min(y0, y1) - lift} ${x1},${y1}` }, g.rels);
+      const grad = el("linearGradient", { id: "relg" + n, gradientUnits: "userSpaceOnUse", x1: x0, y1: y0, x2: x1, y2: y1 + (x1 === x0 && y1 === y0 ? 1 : 0) }, defs);
+      const a = SEX_COLOR[hoverC.gender] || "var(--accent)", b = SEX_COLOR[r.c.gender] || "var(--accent)";
+      [[0, a], [0.12, "var(--accent)"], [0.4, "var(--accent)"], [0.65, b], [1, b]].forEach(([o, col]) => el("stop", { offset: o, style: `stop-color:${col}` }, grad));
+      el("path", { class: "rel-link", style: `stroke:url(#relg${n})`, d: `M${x0},${y0} C${x0},${Math.min(y0, y1) - lift} ${x1},${Math.min(y0, y1) - lift} ${x1},${y1}` }, g.rels);
+      el("circle", { class: "rel-end", cx: x1, cy: y1, r: r.c.tier === 1 ? 8 : 7, style: `stroke:${b}` }, g.rels);
+      n++;
     }
   }
 
