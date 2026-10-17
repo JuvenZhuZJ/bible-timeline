@@ -399,9 +399,12 @@
 
       const showLabels = active && i === lastIdx;
       const rowsEnd = [-Infinity, -Infinity];
-      c.events.forEach(([yr, text]) => {
+      c.events.forEach(([yr, text], k) => {
         const x = X(A(yr));
-        el("circle", { class: "track-ev", cx: x, cy: y, r: 2.6, fill: o.color }, grp);
+        const act = el("g", { class: "track-act" + (tipAct && tipAct.c === c && tipAct.k === k ? " active" : "") }, grp);
+        act.__act = { c, k, x, y, color: o.color };
+        el("circle", { class: "hit", cx: x, cy: y, r: L.mobile ? 11 : 8 }, act);
+        el("circle", { class: "track-ev", cx: x, cy: y, r: 2.6, fill: o.color }, act);
         if (!showLabels) return;
         const label = text.length > 34 ? text.slice(0, 33) + "…" : text;
         const w = label.length * 5.6 + 50;
@@ -523,13 +526,57 @@
     tip.classList.add("show");
     evEls.forEach((o) => o.node.classList.toggle("active", o.ev === ev));
   }
-  function hideTip() { tipEv = null; tip.classList.remove("show"); evEls.forEach((o) => o.node.classList.remove("active")); }
+  function hideTip() { tipEv = null; tip.classList.remove("show"); evEls.forEach((o) => o.node.classList.remove("active")); hideActTip(); }
   g.events.addEventListener("pointerover", (e) => { if (e.pointerType === "mouse") { const n = e.target.closest(".ev-node"); if (n) showTip(n.__ev); } });
   g.events.addEventListener("pointerout", (e) => { if (e.pointerType === "mouse" && e.target.closest(".ev-node")) hideTip(); });
   g.events.addEventListener("focusin", (e) => { const n = e.target.closest(".ev-node"); if (n) showTip(n.__ev); });
   g.events.addEventListener("focusout", hideTip);
   g.events.addEventListener("keydown", (e) => { const n = e.target.closest(".ev-node"); if (n && e.key === "Enter") zoomToEvent(n.__ev); });
   function zoomToEvent(ev) { animateTo(A(ev.year), Math.max(view.ppy * 1.8, TIER[1] * 1.6)); }
+
+  /* major-activity dots on the personal lifespan tracks: hover (or tap) for the date and
+     activity, click (or tap again) to open the person's window at that activity */
+  let tipAct = null;
+  function showActTip(a, touch) {
+    hideTip();
+    tipAct = a;
+    const [yr, text, ref] = a.c.events[a.k];
+    tip.innerHTML = `<div class="et-year" style="color:${esc(a.color)}">${esc(fmtYear(yr, true))} · ${esc(a.c.name)}</div><div class="et-act">${esc(text)}</div><div class="et-ref">${esc(ref)}</div><div class="et-hint">${touch ? "Tap again" : "Click"} to open in ${esc(a.c.name)}’s window</div>`;
+    tip.style.left = Math.min(W - 150, Math.max(150, a.x)) + "px";
+    tip.style.top = Math.max(L.top, a.y - 14 - tip.offsetHeight) + "px";
+    tip.classList.add("show");
+    g.tracks.querySelectorAll(".track-act").forEach((n) => n.classList.toggle("active", n.__act.c === a.c && n.__act.k === a.k));
+  }
+  function hideActTip() {
+    if (!tipAct) return;
+    tipAct = null;
+    if (!tipEv) tip.classList.remove("show");
+    g.tracks.querySelectorAll(".track-act.active").forEach((n) => n.classList.remove("active"));
+  }
+  function openActivity(c, k) {
+    hideActTip();
+    openWindow(c);
+    const w = wins.find((x) => x.c === c);
+    const li = w && w.el.querySelector(`.acts li[data-i="${k}"]`);
+    if (!li) return;
+    const body = w.el.querySelector(".win-body");
+    const top = body.scrollTop + li.getBoundingClientRect().top - body.getBoundingClientRect().top;
+    body.scrollTo({ top: top - (body.clientHeight - li.offsetHeight) / 2, behavior: "smooth" });
+    w.el.querySelectorAll(".acts li.act-hl").forEach((o) => o.classList.remove("act-hl"));
+    void li.offsetWidth; li.classList.add("act-hl");
+    cursorT = +li.dataset.t; requestRender();
+  }
+  g.tracks.addEventListener("pointerover", (e) => {
+    const n = e.target.closest(".track-act"); if (!n || e.pointerType !== "mouse" || dragging) return;
+    if (n.__act.c === hoverC) clearTimeout(hoverTimer);   // keep a hover-only track alive while it is used
+    showActTip(n.__act, false);
+  });
+  g.tracks.addEventListener("pointerout", (e) => {
+    const n = e.target.closest(".track-act"); if (!n || e.pointerType !== "mouse") return;
+    if (e.relatedTarget && n.contains(e.relatedTarget)) return;
+    hideActTip();
+    if (n.__act.c === hoverC && !isPinned(hoverC)) clearHoverSoon();
+  });
 
   /* ───────────────────────── pointer: pan, pinch, tap ───────────────────────── */
   const pointers = new Map();
@@ -578,6 +625,14 @@
   function handleTap(target, type) {
     const dot = target && target.closest && target.closest(".dot");
     const ev = target && target.closest && target.closest(".ev-node");
+    const act = target && target.closest && target.closest(".track-act");
+    if (act) {
+      const a = act.__act;
+      if (type === "mouse" || (tipAct && tipAct.c === a.c && tipAct.k === a.k)) openActivity(a.c, a.k);
+      else showActTip(a, true);
+      return;
+    }
+    hideActTip();
     if (dot) {
       const c = dot.__c;
       if (type === "mouse") { setHover(c); openWindow(c); }
@@ -639,7 +694,8 @@
 
   /* ───────────────────────── floating windows ───────────────────────── */
   const winBox = $("windows"), dock = $("dock");
-  const COLORS = ["#d9b56f", "#7fb7c9", "#d4897a", "#9fc38a", "#b69ad8", "#e3ded3", "#6f9fd9", "#cfc66a"];
+  // Gold (--accent) marks people who are hovered but not opened, so opened windows use other hues.
+  const COLORS = ["#7fb7c9", "#d4897a", "#9fc38a", "#b69ad8", "#e3ded3", "#6f9fd9", "#d99ab8"];
   const wins = [];
   let zTop = 10;
   const isPinned = (c) => wins.some((w) => w.c === c);
@@ -683,10 +739,10 @@
   }
 
   function windowHTML(c) {
-    const acts = c.events.map(([yr, text, ref]) => {
+    const acts = c.events.map(([yr, text, ref], i) => {
       const age = A(yr) - c.tb;
       const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${c.q[0] === "derived" ? "" : "~"}age ${age}</span>` : "";
-      return `<li data-t="${A(yr)}"><span class="act-y">${esc(fmtYear(yr, true))}${ageS}</span><span class="act-t">${esc(text)}</span><span class="act-r">${esc(ref)}</span></li>`;
+      return `<li data-t="${A(yr)}" data-i="${i}"><span class="act-y">${esc(fmtYear(yr, true))}${ageS}</span><span class="act-t">${esc(text)}</span><span class="act-r">${esc(ref)}</span></li>`;
     }).join("");
     return `
       <div class="win-head">

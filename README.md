@@ -31,6 +31,12 @@ Searching for a person who is hidden by the current mode switches to Everyone. T
 
 Hovering (or tapping) a person shows their line-drawn portrait in a dark card, always in the same spot: under the lifespan tracks, between the timeline and the bottom controls, so it never sits on top of the names. The card moves down a little as open windows add tracks, and stops above the minimap. The placement is `placePortrait()` in `js/app.js`.
 
+## Personal timelines and colours
+
+Each open window adds that person's lifespan as a track under the timeline. The small dots on a track are the person's major activities: hover one (or tap it on a phone) to see its date and text, and click it (or tap it again) to open the person's window scrolled to that activity, which is briefly highlighted.
+
+Gold marks people you are only hovering over. Every opened person gets their own colour (teal, terracotta, sage, lavender, ivory, blue, rose), used for their window, track and ring on the timeline, so an opened person never looks the same as one that is not opened. The palette is `COLORS` in `js/app.js`.
+
 ## Sources
 
 - **People, relationships and scriptures:** *Insight on the Scriptures*, volumes 1 and 2 (it-1_E.pdf, it-2_E.pdf). Every person article was extracted, one record per numbered sense, into `data/source/insight-people.json`.
