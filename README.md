@@ -29,7 +29,7 @@ Searching for a person who is hidden by the current mode switches to Everyone. T
 
 ## Portraits
 
-Hovering (or tapping) a person shows their line-drawn portrait in a dark card, placed so it never sits on top of the names. On a wide screen the card goes to the left or right edge, whichever side the person's name and lifespan are not on, and away from any open window. It stays on that side until the person no longer fits beside it, so it does not jump between close neighbours. On a phone it sits in the empty space under the lifespan tracks, and only moves up beside the person when that space is too small. The placement is `placePortrait()` in `js/app.js`.
+Hovering (or tapping) a person shows their line-drawn portrait in a dark card, always in the same spot: under the lifespan tracks, between the timeline and the bottom controls, so it never sits on top of the names. The card moves down a little as open windows add tracks, and stops above the minimap. The placement is `placePortrait()` in `js/app.js`.
 
 ## Sources
 
