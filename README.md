@@ -15,7 +15,7 @@ python3 -m http.server 8000
 
 ## Logo
 
-The logo is a small family tree in line art: a trunk on a horizon line (a nod to the timeline), two branches that split again, and gold dots for the people at each tip. The header copy is inline SVG in `index.html` (`.brand-mark`, styled in `css/style.css`); the browser tab uses the same tree, simplified for 16px, from `img/favicon.svg`.
+The logo is a small family tree in line art: a trunk on a horizon line (a nod to the timeline), two branches that split again, and gold dots for the people at each tip. The header copy is inline SVG in `index.html` (`.brand-mark`, styled in `css/style.css`); the browser tab uses the same tree, simplified for 16px, from `img/favicon.svg`. The tab icon has no background circle so the tree fills the space: it is bright gold when the browser is in dark mode and a deeper gold in light mode (a `prefers-color-scheme` rule inside the SVG), so it stays visible on any tab bar.
 
 ## Who is shown
 
