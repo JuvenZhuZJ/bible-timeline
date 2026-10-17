@@ -29,13 +29,17 @@ Searching for a person who is hidden by the current mode switches to Everyone. T
 
 ## Portraits
 
-Hovering (or tapping) a person shows their line-drawn portrait in a dark card, always in the same spot: under the lifespan tracks, between the timeline and the bottom controls, so it never sits on top of the names. The card moves down a little as open windows add tracks, and stops above the minimap. The placement is `placePortrait()` in `js/app.js`.
+Hovering (or tapping) a person shows their line-drawn portrait in a dark card, always in the same spot: under the lifespan tracks, between the timeline and the bottom controls, so it never sits on top of the names. The card moves down a little as open windows add tracks, and stops above the minimap and the window dock. The placement is `placePortrait()` in `js/app.js`.
 
 ## Personal timelines and colours
 
 Each open window adds that person's lifespan as a track under the timeline. The small dots on a track are the person's major activities: hover one (or tap it on a phone) to see its date and text, and click it (or tap it again) to open the person's window scrolled to that activity, which is briefly highlighted.
 
 Gold marks people you are only hovering over. Every opened person gets their own colour (teal, terracotta, sage, lavender, ivory, blue, rose), used for their window, track and ring on the timeline, so an opened person never looks the same as one that is not opened. The palette is `COLORS` in `js/app.js`.
+
+## Folding and closing all windows
+
+While any window is open, the dock at the bottom of the screen starts with two buttons. **Fold all** minimizes every window into the dock (it then reads **Unfold all** and brings them all back), and **Close all** closes every window and its track, so the colours start again from teal. Minimized windows sit in the dock next to them as name chips. The code is `syncDockAll()` in `js/app.js`.
 
 ## Sources
 

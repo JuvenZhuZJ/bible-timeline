@@ -109,13 +109,18 @@
   </div>
 
   <div id="windows" class="windows"></div>
-  <div id="dock" class="dock" aria-label="Minimized windows"></div>
+  <div id="dock" class="dock" aria-label="Open windows">
+    <div class="dock-all" id="dockAll" role="group" aria-label="All windows" hidden>
+      <button class="dock-btn" id="foldAll"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg><span>Fold all</span></button>
+      <button class="dock-btn" id="closeAll"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Close all</span></button>
+    </div>
+  </div>
 
   <div class="modal" id="about" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <button class="icon-btn modal-close" id="aboutClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <h2 id="aboutTitle">About this timeline</h2>
-      <p>Every dot is a person; every large node is a turning point in Bible history. Zoom in to reveal more people. Hover (or tap) a dot to see their portrait, lifespan and family links; click (or tap again) to open a window. Open several windows to compare lives side by side. Their lifespans stay pinned under the main line. In a window, tap a relative to open theirs.</p>
+      <p>Every dot is a person; every large node is a turning point in Bible history. Zoom in to reveal more people. Hover (or tap) a dot to see their portrait, lifespan and family links; click (or tap again) to open a window. Open several windows to compare lives side by side, and use <strong>Fold all</strong> or <strong>Close all</strong> at the bottom to tidy them up at once. Their lifespans stay pinned under the main line. In a window, tap a relative to open theirs.</p>
       <h3>Who is shown</h3>
       <p>The people button in the top bar switches between <strong>everyone</strong> named in the Bible, the <strong>key figures</strong>, and only the <strong>line from Adam to Jesus</strong> (Luke 3:23-38; Matthew 1:1-16).</p>
       <h3>Bible text</h3>
