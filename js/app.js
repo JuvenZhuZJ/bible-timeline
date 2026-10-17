@@ -150,7 +150,8 @@
     eraLabelBox.appendChild(lab);
     return { e, rect, lab, w: e.name.length * 7.4 + 24, a: A(e.from), b: A(e.to) };
   });
-  const sepEls = EVENTS.map(() => el("line", { class: "era-sep" }, g.eras));
+  // dotted lines mark era boundaries only; events inside an era already have their own node and label
+  const sepEls = [...new Set(ERAS.flatMap((e) => [A(e.from), A(e.to)]))].map((t) => ({ t, line: el("line", { class: "era-sep" }, g.eras) }));
 
   const mainGlow = el("line", { class: "main-line-glow" }, g.main);
   const mainLine = el("line", { class: "main-line" }, g.main);
@@ -264,8 +265,8 @@
       } else if (show) { o.lab.style.left = cx + "px"; o.lab.style.transform = ""; }
       o.lab.style.opacity = show ? 1 : 0;
     });
-    evEls.forEach((o, i) => {
-      const x = X(o.t), s = sepEls[i];
+    sepEls.forEach(({ t, line: s }) => {
+      const x = X(t);
       s.setAttribute("x1", x); s.setAttribute("x2", x); s.setAttribute("y1", L.top - 4); s.setAttribute("y2", H - L.bottom + 20);
     });
 

@@ -33,7 +33,7 @@ Searching for a person who is hidden by the current mode switches to Everyone. T
 
 ## Era names
 
-The names of the eras (Before the Flood, The Judges and so on) sit at the top of the screen. On a computer a name shows when it fits inside its era's band. Phones are too narrow for that, so there the names stack left to right in up to three rows at the top, and the people start a little lower to make room. The rows are `ERA_ROWS` in `js/app.js`.
+The names of the eras (Before the Flood, The Judges and so on) sit at the top of the screen. On a computer a name shows when it fits inside its era's band. Phones are too narrow for that, so there the names stack left to right in up to three rows at the top, and the people start a little lower to make room. The rows are `ERA_ROWS` in `js/app.js`. A dotted line runs down the screen at each boundary between eras, and only there: a major event inside an era (such as Solomon's Temple Completed in the United Kingdom) has its dot and name on the timeline but no dotted line, so the lines always match the eras in `TIMELINE_ERAS` in `data/events.js`.
 
 ## Event labels
 
