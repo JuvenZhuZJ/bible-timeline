@@ -37,6 +37,8 @@ Each person's lifespan line starts just after their name, so the name never sits
 
 Hovering (or tapping) a person shows their line-drawn portrait in a dark card, always in the same spot: under the lifespan tracks, between the timeline and the bottom controls, so it never sits on top of the names. The card moves down a little as open windows add tracks, and stops above the minimap and the window dock. The placement is `placePortrait()` in `js/app.js`.
 
+There are 16 portrait designs for men and 16 for women (headcloth, helmet, turban, cap, hood, braids, hair up, headscarf, coin veil and so on, listed as `PRESETS` in `js/portrait.js`). Each person gets one design, picked once for the whole list: people are taken in birth order, each gets the design used longest ago, and a design a parent, child, sibling or spouse already has is skipped. Key figures are picked first among themselves, so neighbouring key figures also differ in headwear. A person's own `look` hints in `data/characters.js` still set age and beard, and a crown or priest's turban always wins; other headwear comes from the design. Small differences are then drawn from each person's id, so two people with the same design never look exactly alike.
+
 ## Personal timelines and colours
 
 Each open window adds that person's lifespan as a track under the timeline. The small dots on a track are the person's major activities: hover one (or tap it on a phone) to see its date and text, and click it (or tap it again) to open the person's window scrolled to that activity, which is briefly highlighted.
