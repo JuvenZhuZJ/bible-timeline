@@ -369,18 +369,21 @@
     const x0 = X(hoverC.tb), y0 = h.y;
     const defs = el("defs", {}, g.rels);
     let n = 0;
+    const a = SEX_COLOR[hoverC.gender] || "var(--accent)";
     for (const id of hoverC.relIds) {
       const r = DOT_BY_ID.get(id);
       if (!r || !r.visible) continue;
       const x1 = X(r.c.tb), y1 = r.y;
       const lift = Math.min(60, Math.abs(x1 - x0) * 0.25 + 12);
       const grad = el("linearGradient", { id: "relg" + n, gradientUnits: "userSpaceOnUse", x1: x0, y1: y0, x2: x1, y2: y1 + (x1 === x0 && y1 === y0 ? 1 : 0) }, defs);
-      const a = SEX_COLOR[hoverC.gender] || "var(--accent)", b = SEX_COLOR[r.c.gender] || "var(--accent)";
-      [[0, a], [0.12, "var(--accent)"], [0.4, "var(--accent)"], [0.65, b], [1, b]].forEach(([o, col]) => el("stop", { offset: o, style: `stop-color:${col}` }, grad));
+      const b = SEX_COLOR[r.c.gender] || "var(--accent)";
+      [[0, a], [0.22, a], [0.38, "var(--accent)"], [0.5, "var(--accent)"], [0.66, b], [1, b]].forEach(([o, col]) => el("stop", { offset: o, style: `stop-color:${col}` }, grad));
       el("path", { class: "rel-link", style: `stroke:url(#relg${n})`, d: `M${x0},${y0} C${x0},${Math.min(y0, y1) - lift} ${x1},${Math.min(y0, y1) - lift} ${x1},${y1}` }, g.rels);
       el("circle", { class: "rel-end", cx: x1, cy: y1, r: r.c.tier === 1 ? 8 : 7, style: `stroke:${b}` }, g.rels);
       n++;
     }
+    // the hovered person's own end: a ring in their colour, so the hub of the links is easy to find
+    if (n) el("circle", { class: "rel-end rel-hub", cx: x0, cy: y0, r: hoverC.tier === 1 ? 8.5 : 7.5, style: `stroke:${a}` }, g.rels);
   }
 
   /* personal timelines (hover + pinned windows), juxtaposed under the main line */
@@ -729,7 +732,8 @@
   /* ───────────────────────── floating windows ───────────────────────── */
   const winBox = $("windows"), dock = $("dock");
   // Gold (--accent) marks people who are hovered but not opened, so opened windows use other hues.
-  const COLORS = ["#7fb7c9", "#d4897a", "#9fc38a", "#b69ad8", "#e3ded3", "#6f9fd9", "#d99ab8"];
+  // no blue or rose here: those mean man / woman on the family links
+  const COLORS = ["#6fc2a4", "#d98a64", "#b69ad8", "#9fc38a", "#e3ded3"];
   const wins = [];
   let zTop = 10;
   const isPinned = (c) => wins.some((w) => w.c === c);
