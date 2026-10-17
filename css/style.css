@@ -172,11 +172,17 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .event-tip .et-ref { font: 300 10.5px var(--mono); color: var(--muted); margin-top: 6px; }
 
 /* ------------------------------------------------------------- portrait */
+/* a dark card above the timeline, placed by placePortrait() in js/app.js so it never lands on the hovered person */
 .portrait-stage {
-  position: absolute; left: 50%; top: calc(var(--top) + 4px); z-index: 0; transform: translateX(-50%);
+  position: absolute; z-index: 1; padding: 8px 14px 14px; border-radius: 18px;
+  background: var(--bg); box-shadow: 0 0 20px 10px var(--bg);
   display: flex; flex-direction: column; align-items: center; pointer-events: none;
   opacity: 0; transition: opacity .35s ease;
 }
+.portrait-stage.row { flex-direction: row; gap: 14px; padding: 10px 12px; }
+.portrait-stage.row .portrait-frame { flex: none; }
+.portrait-stage.row .portrait-caption { text-align: left; margin-top: 0; min-width: 0; }
+.portrait-stage.row .pc-years { letter-spacing: 0.04em; }
 .portrait-stage.show { opacity: 1; }
 .portrait-frame {
   width: var(--pw, 300px); height: calc(var(--pw, 300px) * 1.2); color: var(--fg); opacity: 0.9;
@@ -190,7 +196,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .portrait-frame svg path, .portrait-frame svg circle { animation: none; stroke-dashoffset: 0; } }
 .portrait-caption { text-align: center; margin-top: -6px; text-shadow: 0 0 12px #000, 0 0 4px #000; }
-.pc-name { font: 500 clamp(26px, 3.4vw, 40px)/1 var(--serif); letter-spacing: 0.04em; }
+.pc-name { font: 500 clamp(26px, 3vw, 36px)/1 var(--serif); letter-spacing: 0.04em; overflow-wrap: anywhere; }
 .pc-years { font: 300 11px var(--mono); color: var(--accent); letter-spacing: 0.12em; margin-top: 8px; }
 .pc-role { font: 400 10.5px var(--sans); letter-spacing: 0.26em; text-transform: uppercase; color: var(--fg-2); margin-top: 6px; }
 .pc-hint { font: 300 11px var(--sans); color: var(--muted); margin-top: 8px; display: none; }

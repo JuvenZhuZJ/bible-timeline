@@ -93,8 +93,8 @@
     L.maxTracks = Math.max(1, Math.floor((H - bottom - L.trackY0 + 6) / L.trackStep) + 1);
     const capH = mobile ? 96 : 104;   // caption below the drawing
     lastPack.key = "";
-    const pw = Math.max(120, Math.min(W * (mobile ? 0.62 : 0.3), (lineY - (top - 26) - capH - 8) / 1.2, 360));
-    $("portraitStage").style.setProperty("--pw", pw + "px");
+    // the portrait card runs from just under the era names to just above the main line
+    L.pw = Math.round(Math.max(110, Math.min(W * (mobile ? 0.46 : 0.22), (lineY - 12 - top - capH - 22) / 1.2, 300)));
   }
 
   /* ───────────────────────── view ───────────────────────── */
@@ -335,6 +335,7 @@
       d.y = y;
     }
 
+    placePortrait();
     renderRels();
     renderTracks();
     renderCursor();
@@ -467,11 +468,52 @@
       $("pcYears").textContent = `${fmtRange(c)} · ${ageText(c)}`;
       $("pcRole").textContent = c.role || "";
       $("pcHint").textContent = isPinned(c) ? "Tap again to bring its window forward" : "Tap again for details";
+      placePortrait();
       pStage.classList.add("show");
     } else {
       pStage.classList.remove("show");
     }
     requestRender();
+  }
+  // The portrait gets its own dark card, placed where it hides neither the person you are
+  // pointing at nor their lifespan: on the far side of the screen from them, or on phones in
+  // the empty space under the lifespan tracks when that has room. The card keeps its side
+  // while the person still fits beside it, so it does not hop between close neighbours.
+  let pSide = 0;   // -1 left, 1 right
+  function placePortrait() {
+    if (!hoverC) return;
+    const s = pStage.style, m = L.mobile ? 12 : 24, gap = 30;   // gap clears the card's soft edge
+    if (L.mobile) {
+      const n = Math.min(L.maxTracks, wins.length + (isPinned(hoverC) ? 0 : 1));
+      const top = L.trackY0 + (n - 1) * L.trackStep + 44;   // under the hover track and its event notes
+      const h = Math.min(H - L.bottom - 4 - top, 200);
+      if (h >= 130) {
+        pStage.classList.add("row");
+        s.setProperty("--pw", Math.round((h - 20) / 1.2) + "px");
+        s.left = m + "px"; s.top = top + "px"; s.width = W - 2 * m + "px";
+        return;
+      }
+    }
+    pStage.classList.remove("row");
+    s.setProperty("--pw", L.pw + "px");
+    const cw = L.pw + (L.mobile ? 28 : 110), xb = X(hoverC.tb), lo = xb - 16;
+    const fits = (hi) => [cw <= lo - gap - m, cw <= W - m - gap - hi];
+    let [l, r] = fits(Math.max(xb + hoverC.labelW, X(hoverC.td) + 56));   // name, lifespan and age
+    if (!l && !r) [l, r] = fits(xb + hoverC.labelW);                     // at least the name
+    // an open window over one side counts against it too
+    const ch = L.lineY - 12 - L.top, at = (side) => (side < 0 ? m : W - m - cw);
+    const hidden = (side) => wins.reduce((a, w) => {
+      const b = w.el.getBoundingClientRect(), x = at(side);
+      return a + Math.max(0, Math.min(x + cw, b.right) - Math.max(x, b.left)) * Math.max(0, Math.min(L.top + ch, b.bottom) - Math.max(L.top, b.top));
+    }, 0) / (cw * ch);
+    const far = xb > W / 2 ? -1 : 1, fit = { "-1": l, 1: r };
+    const good = (side) => fit[side] && hidden(side) < 0.3;
+    if (!(pSide && good(pSide))) {
+      if (good(far) || good(-far)) pSide = good(far) ? far : -far;
+      else if (l !== r) pSide = l ? -1 : 1;
+      else pSide = hidden(-far) < hidden(far) ? -far : far;
+    }
+    s.left = at(pSide) + "px"; s.top = L.top + "px"; s.width = cw + "px";
   }
   // People sit close together, so the cursor often brushes past a neighbour or the
   // thin gap between two names. A short grace period keeps that from fading the
