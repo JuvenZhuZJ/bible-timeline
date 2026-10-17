@@ -1,5 +1,5 @@
 /*
- * From Adam to John: interactive timeline engine.
+ * Bible Family Tree: interactive timeline engine.
  * Plain JS, no build step. Data comes from data/events.js and data/characters.js.
  */
 (function () {

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   From Adam to John: timeline styles
+   Bible Family Tree: timeline styles
    Monochrome, cinematic, hairline graphics (after the "Dark" series site)
    ========================================================================== */
 :root {
@@ -65,7 +65,9 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 }
 .brand { display: flex; align-items: center; gap: 12px; color: var(--fg); text-decoration: none; margin-right: auto; min-width: 0; }
 .brand-mark { width: 30px; height: 30px; fill: none; stroke: var(--fg); stroke-width: 1; flex: none; }
-.brand-mark .solid { fill: var(--fg); stroke: none; }
+.brand-mark circle { fill: var(--bg); }
+.brand-mark circle:first-child { fill: none; }
+.brand-mark .leaf { fill: var(--accent); stroke: none; }
 .brand-text { display: flex; flex-direction: column; min-width: 0; }
 .brand-title { font-family: var(--sans); font-weight: 500; font-size: 13px; letter-spacing: 0.32em; text-transform: uppercase; white-space: nowrap; }
 .brand-sub { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--muted); margin-top: 3px; }
