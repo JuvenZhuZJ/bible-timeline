@@ -12,6 +12,8 @@
   --faint: rgba(235, 231, 222, 0.16);
   --hair: rgba(235, 231, 222, 0.28);
   --accent: #d9b56f;
+  --male: #86a6c8;
+  --female: #d08f9c;
   --portrait-fill: #050505;
   --serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
   --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -368,11 +370,15 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 }
 
 /* ------------------------------------------------------------- family links */
-.rel-link { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.7; }
+.rel-link { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 3 3; opacity: 0.85; }
+.rel-end { fill: none; stroke-width: 1.3; opacity: 0.95; }
 .has-hover .dot.is-rel { opacity: 0.85; }
 .dot.is-rel .d-name { fill: var(--fg); }
 .dot.on-line .d-ring { stroke: var(--accent); }
 .lg-rel { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 2 2; }
+.lg-end { fill: none; stroke-width: 1.2; }
+.lg-m { stroke: var(--male); }
+.lg-f { stroke: var(--female); }
 .rel { display: flex; flex-direction: column; gap: 6px; }
 .rel-row { display: grid; grid-template-columns: 74px 1fr; gap: 8px; align-items: baseline; }
 .rel-k { font: 500 9.5px var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
