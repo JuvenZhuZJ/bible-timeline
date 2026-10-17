@@ -93,7 +93,6 @@
       trackY0: evRow0 + (evRows - 1) * evRowStep + 11 + 22,
       trackStep: mobile ? 30 : 34,
     };
-    L.maxTracks = Math.max(1, Math.floor((H - bottom - L.trackY0 + 6) / L.trackStep) + 1);
     lastPack.key = "";
   }
 
@@ -236,6 +235,7 @@
 
   /* ───────────────────────── render ───────────────────────── */
   let hoverC = null, cursorT = null, packForce = false;
+  let cardTop = Infinity;   // the hover card's top edge; track notes stop above it
 
   function render() {
     const { lineY } = L;
@@ -417,7 +417,8 @@
     g.tracks.textContent = "";
     const list = wins.map((w) => ({ c: w.c, color: w.color }));
     if (hoverC && !list.some((o) => o.c === hoverC)) list.push({ c: hoverC, color: "var(--accent)", hover: true });
-    while (list.length > L.maxTracks) list.splice(list.length - 2, 1);   // keep hover track visible
+    const fit = trackFit(list.length);
+    while (list.length > fit.n) list.splice(list.findIndex((o) => o.c !== hoverC), 1);   // drop the oldest, keep the hover track
     const lastIdx = list.length - 1;
 
     if (hoverC) {
@@ -428,7 +429,7 @@
     } else spanHl.style.display = "none";
 
     list.forEach((o, i) => {
-      const c = o.c, y = L.trackY0 + i * L.trackStep;
+      const c = o.c, y = L.trackY0 + i * fit.step;
       const xb = X(c.tb), xd = Math.max(X(c.td), xb + 3);
       const active = o.hover || c === hoverC;
       const grp = el("g", { opacity: active || !hoverC ? 1 : 0.45 }, g.tracks);
@@ -469,7 +470,7 @@
         if (r < 0) return;
         rowsEnd[r] = x + w;
         const ty = y + 16 + r * 13;
-        if (ty > H - L.bottom + 18) return;
+        if (ty > Math.min(H - L.bottom + 18, cardTop - 6)) return;
         const t1 = el("text", { class: "track-evyear", x, y: ty }, grp);
         t1.textContent = fmtYear(yr);
         const t2 = el("text", { class: "track-evlabel", x: x + fmtYear(yr).length * 5.6 + 6, y: ty }, grp);
@@ -533,16 +534,32 @@
     requestRender();
   }
   // The portrait gets its own dark card in one fixed spot: under the lifespan tracks, between
-  // the timeline and the bottom controls, where it never covers the names. It only moves down
-  // as more windows add tracks, and stops above the minimap (or the window dock), covering the lowest tracks if needed.
+  // the timeline and the bottom controls, where it never covers the names. It moves down as
+  // more windows add tracks and stops above the minimap (or the window dock). When there is no
+  // longer room for the drawing, the card shrinks to just the name and dates, so the tracks
+  // above it stay visible.
+  const CARD_FULL = () => (L.mobile ? 130 : 150), CARD_SMALL = () => (L.mobile ? 76 : 58);
+  function bottomLimit() {
+    const limit = L.mobile ? H - L.bottom - 4 : H - 58;
+    return wins.length ? Math.min(limit, dock.getBoundingClientRect().top - 4) : limit;   // stop above the window dock
+  }
+  // How many personal tracks fit, and how far apart: with a hover card, leave room for the small
+  // card. Tracks squeeze a little closer before any is left out.
+  function trackFit(want) {
+    const room = bottomLimit() - L.trackY0 - (hoverC ? 14 + CARD_SMALL() : 16);
+    const step = want > 1 ? Math.max(20, Math.min(L.trackStep, room / (want - 1))) : L.trackStep;
+    return { n: Math.max(1, Math.min(want, Math.floor(room / step) + 1)), step };
+  }
   function placePortrait() {
+    cardTop = Infinity;
     if (!hoverC) return;
-    const s = pStage.style, m = L.mobile ? 12 : 24;
-    const n = Math.min(L.maxTracks, wins.length + (isPinned(hoverC) ? 0 : 1));
-    let limit = L.mobile ? H - L.bottom - 4 : H - 58;
-    const minH = L.mobile ? 130 : 150;
-    if (wins.length) limit = Math.min(limit, dock.getBoundingClientRect().top - 4);   // stop above the window dock
-    const top = Math.min(L.trackY0 + (n - 1) * L.trackStep + 52, limit - minH);   // under the hover track and its event notes
+    const s = pStage.style, m = L.mobile ? 12 : 24, limit = bottomLimit();
+    const { n, step } = trackFit(wins.length + (isPinned(hoverC) ? 0 : 1));
+    // under the last track and the hover track's event notes, or just under the track if the notes don't fit
+    let top = Math.min(L.trackY0 + (n - 1) * step + 52, limit - CARD_SMALL());
+    const small = limit - top < CARD_FULL();
+    cardTop = top;
+    pStage.classList.toggle("compact", small);
     const h = Math.min(limit - top, L.mobile ? 200 : 220), cw = Math.min(W - 2 * m, 560);
     s.setProperty("--pw", Math.round((h - 20) / 1.2) + "px");
     s.left = (W - cw) / 2 + "px"; s.top = top + "px"; s.width = cw + "px";
