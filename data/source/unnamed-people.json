@@ -1,0 +1,898 @@
+[
+ {
+  "key": "UNNAMED:CAIN-WIFE",
+  "name": "Cain's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Cain",
+  "summary": "A daughter of Adam and Eve, so Cain's sister or other close relative, who went with him to the land of Nod and bore Enoch.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Cain"
+  ],
+  "children": [
+   "Enoch"
+  ],
+  "siblings": [],
+  "relHints": "daughter of Adam and Eve (Genesis 5:4); husband CAIN; son ENOCH#1",
+  "group": "",
+  "year": -3700,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 4:17",
+   "Genesis 5:4"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:NOAH-WIFE",
+  "name": "Noah's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Noah",
+  "summary": "One of the eight people saved in the ark; mother of Shem, Ham and Japheth.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Noah"
+  ],
+  "children": [
+   "Shem",
+   "Ham",
+   "Japheth"
+  ],
+  "siblings": [],
+  "relHints": "husband NOAH#1; sons SHEM, HAM#1, JAPHETH",
+  "group": "",
+  "year": -2530,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 7:7, 13",
+   "1 Peter 3:20"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:SHEM-WIFE",
+  "name": "Shem's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Shem",
+  "summary": "Entered the ark with her husband and survived the Flood.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Shem"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -2380,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 7:13",
+   "1 Peter 3:20"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:HAM-WIFE",
+  "name": "Ham's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Ham",
+  "summary": "Entered the ark with her husband and survived the Flood.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Ham"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -2380,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 7:13",
+   "1 Peter 3:20"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:JAPHETH-WIFE",
+  "name": "Japheth's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Japheth",
+  "summary": "Entered the ark with her husband and survived the Flood.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Japheth"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -2380,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 7:13",
+   "1 Peter 3:20"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:LOT-WIFE",
+  "name": "Lot's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Lot",
+  "summary": "Fled Sodom with her family but looked back and became a pillar of salt. Jesus warned: 'Remember the wife of Lot.'",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Lot"
+  ],
+  "children": [
+   "Lot's older daughter",
+   "Lot's younger daughter"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -1940,
+  "born": null,
+  "died": -1919,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 19:15-26",
+   "Luke 17:32"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:LOT-DAUGHTER-1",
+  "name": "Lot's older daughter",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Mother of Moab",
+  "summary": "Escaped Sodom with her father. In a cave near Zoar she made Lot drunk and conceived by him; her son Moab became the father of the Moabites.",
+  "father": "Lot",
+  "mother": "",
+  "spouses": [],
+  "children": [
+   "Moab"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "Moabite",
+  "year": -1915,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 19:15-16, 30-37"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:LOT-DAUGHTER-2",
+  "name": "Lot's younger daughter",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Mother of Ben-ammi (Ammon)",
+  "summary": "Escaped Sodom with her father and, like her sister, conceived by him; her son Ben-ammi became the father of the Ammonites.",
+  "father": "Lot",
+  "mother": "",
+  "spouses": [],
+  "children": [
+   "Ben-ammi"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "Ammonite",
+  "year": -1915,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 19:15-16, 30-38"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:POTIPHAR-WIFE",
+  "name": "Potiphar's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Potiphar",
+  "summary": "Tried day after day to seduce Joseph; when he fled, she falsely accused him and had him put in prison.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Potiphar"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "Egyptian",
+  "year": -1745,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 39:7-20"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:PHARAOH-JOSEPH",
+  "name": "Pharaoh of Joseph's day",
+  "aka": [],
+  "gender": "m",
+  "meaning": "",
+  "role": "King of Egypt",
+  "summary": "Dreamed of the seven fat and seven thin cows; he made Joseph food administrator over Egypt and welcomed Jacob's family to Goshen.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "Egyptian",
+  "year": -1735,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Genesis 41:14-46",
+   "Genesis 47:1-10"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:PHARAOH-DAUGHTER-MOSES",
+  "name": "Pharaoh's daughter (who adopted Moses)",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Adoptive mother of Moses",
+  "summary": "Found baby Moses in a papyrus basket by the Nile, had Jochebed nurse him, and raised him as her own son.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "adoptive mother of MOSES",
+  "group": "Egyptian",
+  "year": -1590,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Exodus 2:5-10",
+   "Acts 7:21",
+   "Hebrews 11:24"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:PHARAOH-EXODUS",
+  "name": "Pharaoh of the Exodus",
+  "aka": [],
+  "gender": "m",
+  "meaning": "",
+  "role": "King of Egypt",
+  "summary": "Refused to let Israel go, saying 'Who is Jehovah?' After ten plagues he released them, then pursued them and died with his army in the Red Sea.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "Egyptian",
+  "year": -1513,
+  "born": null,
+  "died": -1513,
+  "dateQ": "estimated",
+  "refs": [
+   "Exodus 5:1-2",
+   "Exodus 14:5-28",
+   "Psalm 136:15"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:JEPHTHAH-DAUGHTER",
+  "name": "Jephthah's daughter",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Devoted to sanctuary service",
+  "summary": "Jephthah's only child. She came out to meet him after his victory and willingly let him keep his vow: she served at Jehovah's house for life and never married. Israel's young women went yearly to commend her.",
+  "father": "Jephthah",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -1170,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Judges 11:34-40"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:MANOAH-WIFE",
+  "name": "Manoah's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Mother of Samson",
+  "summary": "A barren woman to whom Jehovah's angel appeared, foretelling a son who would be a Nazirite from birth; she bore Samson.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Manoah"
+  ],
+  "children": [
+   "Samson"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -1165,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Judges 13:2-24"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:SAMSON-WIFE",
+  "name": "Samson's wife (from Timnah)",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Philistine wife of Samson",
+  "summary": "A Philistine woman of Timnah whom Samson married; pressed by her people, she coaxed out his riddle, and the Philistines later burned her.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Samson"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "Philistine",
+  "year": -1140,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Judges 14:1-20",
+   "Judges 15:1-6"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:JOB-WIFE",
+  "name": "Job's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Job",
+  "summary": "After Job lost his children, possessions and health, she told him: 'Curse God and die!' Job answered that she spoke like a senseless woman.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Job"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -1600,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Job 2:9-10",
+   "Job 19:17"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:MEDIUM-ENDOR",
+  "name": "Spirit medium of En-dor",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Spirit medium consulted by Saul",
+  "summary": "A woman who practiced spiritism, which the Law forbade. Saul, in disguise, asked her to bring up Samuel the night before he died at Gilboa.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -1078,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "1 Samuel 28:7-25",
+   "1 Chronicles 10:13"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:PHARAOH-DAUGHTER-SOLOMON",
+  "name": "Pharaoh's daughter (Solomon's wife)",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Egyptian wife of Solomon",
+  "summary": "Married Solomon early in his reign as part of an alliance with Egypt; he later built her a house of her own.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Solomon"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "Egyptian",
+  "year": -1035,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "1 Kings 3:1",
+   "1 Kings 7:8",
+   "1 Kings 9:24"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:QUEEN-SHEBA",
+  "name": "Queen of Sheba",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Visitor to Solomon",
+  "summary": "Came from Sheba with costly gifts to test Solomon with questions, and said she had not been told the half of his wisdom. Jesus said she would condemn his generation.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -1010,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "1 Kings 10:1-13",
+   "Matthew 12:42"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:JEROBOAM-WIFE",
+  "name": "Jeroboam's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of King Jeroboam",
+  "summary": "Went in disguise to the prophet Ahijah about her sick son Abijah; the blind prophet knew her and foretold the boy's death and the end of Jeroboam's house.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Jeroboam"
+  ],
+  "children": [
+   "Abijah"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -990,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "1 Kings 14:1-17"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:WIDOW-ZAREPHATH",
+  "name": "Widow of Zarephath",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Elijah's hostess in Phoenicia",
+  "summary": "During the drought she used her last flour and oil to feed Elijah; the jar and jug did not run out, and Elijah raised her son from the dead.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "Phoenician",
+  "year": -932,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "1 Kings 17:8-24",
+   "Luke 4:25-26"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:ISRAELITE-GIRL",
+  "name": "Israelite girl in Naaman's house",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Captive servant girl",
+  "summary": "Taken captive by Syrian raiders, she served Naaman's wife and spoke up about the prophet in Samaria who could cure his leprosy.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -890,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "2 Kings 5:2-4"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:ISAIAH-WIFE",
+  "name": "Isaiah's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "The prophetess",
+  "summary": "Called 'the prophetess'; she bore Maher-shalal-hash-baz, whose name was a sign of Assyria's coming plunder.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Isaiah"
+  ],
+  "children": [
+   "Maher-shalal-hash-baz"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -780,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Isaiah 8:3-4"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:EZEKIEL-WIFE",
+  "name": "Ezekiel's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Ezekiel",
+  "summary": "'The delight of his eyes.' She died in 609 B.C.E., the year the siege of Jerusalem began, and Ezekiel was told not to mourn as a sign to the exiles.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Ezekiel"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -640,
+  "born": null,
+  "died": -609,
+  "dateQ": "estimated",
+  "refs": [
+   "Ezekiel 24:15-18"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:PETER-WIFE",
+  "name": "Peter's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of the apostle Peter",
+  "summary": "Accompanied Peter on his travels as a believing wife.",
+  "father": "",
+  "mother": "Peter's mother-in-law",
+  "spouses": [
+   "Peter"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": 10,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "1 Corinthians 9:5",
+   "Matthew 8:14"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:PETER-MOTHER-IN-LAW",
+  "name": "Peter's mother-in-law",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Healed by Jesus",
+  "summary": "Lay sick with a high fever in Capernaum; Jesus touched her hand, the fever left, and she got up and ministered to them.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [
+   "Peter's wife"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": -15,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Matthew 8:14-15",
+   "Mark 1:29-31",
+   "Luke 4:38-39"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:SAMARITAN-WOMAN",
+  "name": "Samaritan woman at the well",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Witness in Sychar",
+  "summary": "Jesus asked her for a drink at Jacob's fountain and told her plainly that he was the Messiah; she went into the city and many Samaritans believed.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": 30,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "John 4:7-42"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:JAIRUS-DAUGHTER",
+  "name": "Jairus' daughter",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Raised from the dead",
+  "summary": "The 12-year-old only daughter of Jairus. She died while Jesus was on his way; he took her by the hand and said 'Talitha cumi,' and she got up.",
+  "father": "Jairus",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": 31,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Mark 5:22-24, 35-43",
+   "Luke 8:41-42, 49-56"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:POOR-WIDOW",
+  "name": "Poor widow at the temple",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Gave all she had",
+  "summary": "Dropped two small coins into the temple treasury chests; Jesus said she had put in more than all the others, for she gave all she had to live on.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": 33,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Mark 12:41-44",
+   "Luke 21:1-4"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:REPENTANT-EVILDOER",
+  "name": "Evildoer beside Jesus",
+  "aka": [],
+  "gender": "m",
+  "meaning": "",
+  "role": "Executed with Jesus",
+  "summary": "One of the two criminals executed beside Jesus. He rebuked the other and asked to be remembered; Jesus promised: 'You will be with me in Paradise.'",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": 20,
+  "born": null,
+  "died": 33,
+  "dateQ": "estimated",
+  "refs": [
+   "Luke 23:39-43"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:PILATE-WIFE",
+  "name": "Pilate's wife",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Wife of Pontius Pilate",
+  "summary": "Sent word to Pilate during Jesus' trial: 'Have nothing to do with that righteous man,' because of a dream about him.",
+  "father": "",
+  "mother": "",
+  "spouses": [
+   "Pontius Pilate"
+  ],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "Roman",
+  "year": 10,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Matthew 27:19"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:PAUL-SISTER",
+  "name": "Paul's sister",
+  "aka": [],
+  "gender": "f",
+  "meaning": "",
+  "role": "Sister of the apostle Paul",
+  "summary": "Lived, it seems, in Jerusalem; her son warned of a plot to kill Paul.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [
+   "Paul's nephew"
+  ],
+  "siblings": [
+   "Paul"
+  ],
+  "relHints": "",
+  "group": "",
+  "year": 20,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Acts 23:16"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:PAUL-NEPHEW",
+  "name": "Paul's nephew",
+  "aka": [],
+  "gender": "m",
+  "meaning": "",
+  "role": "Saved Paul from a plot",
+  "summary": "Son of Paul's sister. He heard of a plot by more than 40 Jews to ambush Paul and reported it to Paul and the military commander, who sent Paul to Caesarea under guard.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "",
+  "year": 40,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Acts 23:16-22"
+  ],
+  "unnamed": true
+ },
+ {
+  "key": "UNNAMED:ETHIOPIAN-EUNUCH",
+  "name": "Ethiopian eunuch",
+  "aka": [],
+  "gender": "m",
+  "meaning": "",
+  "role": "Official of Queen Candace",
+  "summary": "A court official in charge of the Ethiopian queen's treasure. Reading Isaiah in his chariot, he was taught by Philip about Jesus and was baptized on the road to Gaza.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "",
+  "group": "Cushite",
+  "year": 34,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Acts 8:26-39"
+  ],
+  "unnamed": true
+ }
+]

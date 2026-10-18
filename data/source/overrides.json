@@ -1,12 +1,95 @@
 {
-  "curated": { "john-baptist": "JOHN#1", "abigail": "ABIGAIL#1", "mephibosheth": "MEPHIBOSHETH#2", "jehoiada": "JEHOIADA#3", "mary-bethany": "MARY#2", "jochebed": "JOCHEBED", "jael": "JAEL" },
+  "curated": {
+    "john-baptist": "JOHN#1",
+    "abigail": "ABIGAIL#1",
+    "mephibosheth": "MEPHIBOSHETH#2",
+    "jehoiada": "JEHOIADA#3",
+    "mary-bethany": "MARY#2",
+    "jochebed": "JOCHEBED",
+    "jael": "JAEL",
+    "james-zebedee": "JAMES#2",
+    "john": "JOHN#3",
+    "james-brother": "JAMES#5",
+    "jehu": "JEHU#3",
+    "micah": "MICAH#7",
+    "mordecai": "MORDECAI#2",
+    "nehemiah": "NEHEMIAH#3",
+    "ehud": null,
+    "jeremiah": null
+  },
+  "drop": [
+    "AMMON",
+    "MORDECAI#3",
+    "JEDIDIAH"
+  ],
   "dates": {
-    "nahshon": [-1570, -1475],
-    "salmon": [-1510, -1420],
-    "elimelech": [-1440, -1370],
-    "mahlon": [-1400, -1365],
-    "chilion": [-1400, -1365],
-    "orpah": [-1390, -1320],
-    "obed-1b": [-1359, -1270]
+    "nahshon": [
+      -1570,
+      -1475
+    ],
+    "salmon": [
+      -1510,
+      -1420
+    ],
+    "elimelech": [
+      -1440,
+      -1370
+    ],
+    "mahlon": [
+      -1400,
+      -1365
+    ],
+    "chilion": [
+      -1400,
+      -1365
+    ],
+    "orpah": [
+      -1390,
+      -1320
+    ],
+    "obed-1b": [
+      -1359,
+      -1270
+    ],
+    "moab-1": [
+      -1918,
+      -1850
+    ],
+    "ben-ammi": [
+      -1918,
+      -1850
+    ],
+    "cain-s-wife": [
+      -3990,
+      -3900
+    ],
+    "noah-s-wife": [
+      -2560,
+      -2300
+    ],
+    "shem-s-wife": [
+      -2440,
+      -2300
+    ],
+    "ham-s-wife": [
+      -2440,
+      -2300
+    ],
+    "japheth-s-wife": [
+      -2440,
+      -2300
+    ],
+    "jairus-daughter": [
+      19,
+      80
+    ],
+    "widow-of-zarephath": [
+      -970,
+      -900
+    ],
+    "israelite-girl-in-naaman-s-house": [
+      -925,
+      -825
+    ]
   }
 }
