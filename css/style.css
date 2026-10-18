@@ -492,7 +492,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bm-sw:hover, .bm-hide:hover, .bm-sw:focus-visible, .bm-hide:focus-visible { color: var(--fg); outline: none; }
 .bm-sw[aria-pressed="true"] { color: var(--fg); border-color: var(--wc, var(--accent)); }
 .bm-hide { margin-left: auto; }
-.bm-views[data-v="all"] .bm-v-canaan, .bm-views[data-v="canaan"] .bm-v-all { display: none; }
+.bm-views[data-v="0"] .bm-v:not([data-k="0"]), .bm-views[data-v="1"] .bm-v:not([data-k="1"]), .bm-views[data-v="2"] .bm-v:not([data-k="2"]) { display: none; }
 .bm-views.folded .bm-v, .bm-views.folded .bm-cap { display: none; }
 .bm-views.folded .bm-bar { margin-bottom: 0; }
 .bm-cap { font: 300 11px/1.45 var(--sans); color: var(--muted); min-height: 3em; margin-top: 7px; }
