@@ -61,6 +61,20 @@ Gold marks people you are only hovering over. Every opened person gets their own
 
 Every scripture citation in a person's window (the major activities, key scriptures, and any citation in the summary, note or family line) is a link. Clicking it opens that passage in a new tab on the Watchtower ONLINE LIBRARY Bible (wol.jw.org, *New World Translation* Study Edition), with the cited verses highlighted. A citation with several parts links each part: in "Genesis 2:7, 19-20" both "Genesis 2:7" and "19-20" are links, and in "Genesis 47:28; 49" the "49" opens Genesis 49. A chapter-only citation such as "Genesis 27-28" opens its first chapter. Clicking a citation in an activity opens only the passage; clicking elsewhere on the activity still jumps the timeline to it. The links look like the plain citations until you hover (a faint underline marks them on phones). The parsing is `js/scripture.js`; links have the form `https://wol.jw.org/en/wol/b/r1/lp-e/nwtsty/<book>/<chapter>#v=<book>:<chapter>:<verse>-<book>:<chapter>:<verse>`, the same form wol.jw.org uses for its own verse links.
 
+## Places map
+
+Each key figure's window has a **Places** section under the lifespan: a small map of the places the Bible puts that person, with a numbered pin for each place in the order of their life and a dashed line joining them, and below it a list of the places with what happened at each and the scripture. Hover a pin, a place or an activity and the pin lights up; click a pin to jump to that place in the list, click a line in the list to move the timeline to that year, and click an activity's place tag to see it on the map. Places closer together than a pin (Hebron, Mamre and the cave of Machpelah) share one pin. When a life ranges far beyond Canaan (Abraham from Ur, Paul to Rome), the first map shows the whole journey and a second, closer map shows the places in and around Canaan. Every major event with a known place also shows a small locator map in its tooltip. A dashed pin means the location is uncertain, and the list says "likely site" or "location uncertain" with the reason. People the Bible gives no place for (most of those before the Flood) have no map.
+
+The data is `data/places.js`, written by hand and easy to edit:
+
+- `BIBLE_PLACES` lists each place with its longitude and latitude, how sure the location is (`known`, `likely`, `possible`) and a note on how it is identified.
+- `PERSON_PLACES` lists each person's places in order. `["haran", 0]` ties activity 0 of that person in `data/characters.js` to Haran; `["ur", -2018, "Grows up in Ur of the Chaldeans", "Genesis 11:28, 31; Acts 7:2"]` adds a place that is not one of the activities.
+- `EVENT_PLACES` gives the place of each major event in `data/events.js`.
+
+**Where the locations come from.** Which place goes with which activity comes from the scripture cited for it. The coordinates come from the [OpenBible.info Bible Geocoding Data](https://github.com/openbibleinfo/Bible-Geocoding-Data) (CC BY 4.0), which also scores how confident scholars are; each place keeps its OpenBible id (`ob`), so you can look it up at `https://www.openbible.info/geo/ancient/<ob>`. Disputed sites were checked against *Insight on the Scriptures* on wol.jw.org and the maps in the *New World Translation* (nwt_E.pdf: Appendix A7 maps 1 to 6 and maps B2, B3 and B10), and where they prefer another site, that site is used: Kadesh at ʽAin Qedeis, Mount Sinai at Ras Safsafa (traditional site), Mount Hor at Jebel Madurah, Samuel's Ramah at Rentis, Cana at Khirbet Qana, the Red Sea crossing near the north end of the Gulf of Suez, the transfiguration probably on Mount Hermon, and Sodom at the south end of the Salt Sea. 78 of the 123 places are certain, 19 likely and 26 uncertain.
+
+The base map (`data/basemap.js`, generated) is the Natural Earth 1:10m coastline (public domain) with the Jordan, Euphrates, Tigris and Nile, the Dead Sea and the Sea of Galilee from OpenBible.info (from OpenStreetMap). The coastline and lakes are today's, so the Dead Sea and the head of the Persian Gulf look as they do now, not as they did in Bible times. `tools/build-basemap.mjs` rebuilds it; its first lines say what to download. The drawing code is `js/map.js`; the window and tooltip wiring is `placesHTML()`, `wirePlaces()` and `showTip()` in `js/app.js`.
+
 ## Folding and closing all windows
 
 While any window is open, the dock at the bottom of the screen starts with two buttons. **Fold all** minimizes every window into the dock (it then reads **Unfold all** and brings them all back), and **Close all** closes every window and its track, so the colours start again from teal. Minimized windows sit in the dock next to them as name chips. On a phone, dragging or pinching the timeline folds any open windows into the dock by itself, so the timeline is never hidden behind them; tap Unfold all or a name chip to bring them back. The code is `syncDockAll()` in `js/app.js`.
@@ -69,6 +83,7 @@ While any window is open, the dock at the bottom of the screen starts with two b
 
 - **People, relationships and scriptures:** *Insight on the Scriptures*, volumes 1 and 2 (it-1_E.pdf, it-2_E.pdf). Every person article was extracted, one record per numbered sense, into `data/source/insight-people.json`.
 - **Line of descent:** Luke 3:23-38 and Matthew 1:1-16, from the *New World Translation Study Edition* (nwtsty1_E.pdf) and the matching Insight articles.
+- **Places:** OpenBible.info Bible Geocoding Data (CC BY 4.0) for coordinates, checked against *Insight on the Scriptures* and the maps in the *New World Translation* (nwt_E.pdf). Coastline: Natural Earth (public domain). See [Places map](#places-map).
 - **Key figures and events:** `data/characters.js` and `data/events.js`, written by hand from the same sources.
 
 Most minor people have no recorded dates. Their place on the timeline is estimated from their generation or the period in which they appear, and their window says so. `data/ASSUMED_DATES.md` lists every assumed date.
@@ -81,13 +96,17 @@ css/style.css               styles
 img/favicon.svg             browser-tab icon (tree logo)
 js/portrait.js              procedural line-art portraits
 js/scripture.js             scripture citations → wol.jw.org links
+js/map.js                   the small place maps in windows and event tooltips
 js/app.js                   timeline, windows, search, People filter
 data/characters.js          134 key figures (hand-written)
 data/events.js              events and eras
+data/places.js              places of key figures and events (hand-written)
+data/basemap.js             coastline, rivers and lakes for the maps (generated)
 data/people.js              all people (generated, do not edit)
 data/ASSUMED_DATES.md       generated list of placeholder dates
 data/source/                extracted Insight records and manual overrides
 tools/build-people.mjs      builds data/people.js
+tools/build-basemap.mjs     builds data/basemap.js
 ```
 
 ## Rebuild the people data
