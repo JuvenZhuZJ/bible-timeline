@@ -1013,7 +1013,7 @@
   function gmapLink(pl) {
     const [lon, lat] = pl.ll, z = pl.r ? 7 : 14;
     const url = `https://www.google.com/maps/place/${lat},${lon}/@${lat},${lon},${z}z/data=!3m1!1e3`;
-    const text = pl.s === "known" ? "Open in Google Maps" : "Suggested site in Google Maps";
+    const text = pl.s === "known" ? "Open in Google Maps" : "Google Maps";
     return `<a class="bm-gmap" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(pl.n)} in Google Maps (opens a new tab)">${text} ↗</a>`;
   }
   // the caption under the map keeps the last place pointed at, so its Google Maps link can be reached
