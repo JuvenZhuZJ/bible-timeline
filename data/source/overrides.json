@@ -1,1 +1,12 @@
-{ "curated": { "john-baptist": "JOHN#1" } }
+{
+  "curated": { "john-baptist": "JOHN#1", "abigail": "ABIGAIL#1", "mephibosheth": "MEPHIBOSHETH#2", "jehoiada": "JEHOIADA#3", "mary-bethany": "MARY#2", "jochebed": "JOCHEBED", "jael": "JAEL" },
+  "dates": {
+    "nahshon": [-1570, -1475],
+    "salmon": [-1510, -1420],
+    "elimelech": [-1440, -1370],
+    "mahlon": [-1400, -1365],
+    "chilion": [-1400, -1365],
+    "orpah": [-1390, -1320],
+    "obed-1b": [-1359, -1270]
+  }
+}

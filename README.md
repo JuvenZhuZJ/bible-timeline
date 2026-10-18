@@ -24,7 +24,7 @@ The **People** button in the top bar picks who appears:
 | Mode | Shows |
 | --- | --- |
 | Everyone | All 2,704 people. Minor people appear as you zoom in. |
-| Key figures | 195 people: the 134 hand-written key figures plus everyone on the Adam-to-Jesus line. |
+| Key figures | 201 people: the 140 hand-written key figures plus everyone on the Adam-to-Jesus line. |
 | Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
 
 All three modes follow the same zoom rule: fully zoomed out you see only the timeline and its events, and people appear as you zoom in, the most important first. The Key figures and Adam-to-Jesus modes show their people a little sooner, since fewer people compete for space.
@@ -87,6 +87,7 @@ While any window is open, the dock at the bottom of the screen starts with two b
 - **Line of descent:** Luke 3:23-38 and Matthew 1:1-16, from the *New World Translation Study Edition* (nwtsty1_E.pdf) and the matching Insight articles.
 - **Places:** OpenBible.info Bible Geocoding Data (CC BY 4.0) for coordinates, checked against *Insight on the Scriptures* and the maps in the *New World Translation* (nwt_E.pdf). Coastline: Natural Earth (public domain). See [Places map](#places-map).
 - **Key figures and events:** `data/characters.js` and `data/events.js`, written by hand from the same sources.
+- **Dates checked against:** the *New World Translation* (nwt_E.pdf): the table of Bible books (when each book was written and the years it covers), Appendix A6 (chart of the kings and prophets of Judah and Israel) and Appendix A7 (main events of Jesus' life); *Walk Courageously With God* (2025), whose section timelines give approximate life spans for the people in its 54 chapters; *Imitate Their Faith*, whose opening timeline dates Ruth, Hannah, Abigail, Elijah, Jonah, Esther and others; and *"Bearing Thorough Witness" About God's Kingdom* for the dates in Acts. Where a key figure's date is not recorded in the Bible and one of these books gives an approximate year, the site uses that year and the person's window note names the source. Where they differ from older *Insight* dates, the newer NWT chart is followed (Hezekiah died in 716 B.C.E., Manasseh in 661 and Josiah in 628, as in Appendix A6 and *Walk Courageously With God*).
 
 Most minor people have no recorded dates. Their place on the timeline is estimated from their generation or the period in which they appear, and their window says so. `data/ASSUMED_DATES.md` lists every assumed date.
 
@@ -100,7 +101,7 @@ js/portrait.js              procedural line-art portraits
 js/scripture.js             scripture citations → wol.jw.org links
 js/map.js                   the small place maps in windows and event tooltips
 js/app.js                   timeline, windows, search, People filter
-data/characters.js          134 key figures (hand-written)
+data/characters.js          140 key figures (hand-written)
 data/events.js              events and eras
 data/places.js              places of key figures and events (hand-written)
 data/basemap.js             coastline, rivers and lakes for the maps (generated)
@@ -127,6 +128,7 @@ The script merges the curated key figures with the Insight records, links relati
 - `drop`: Insight keys to leave out.
 - `line`, `notLine`: person ids to add to or remove from the Adam-to-Jesus line.
 - `tier`: `{ "id": 1-4 }` sets how far you must zoom in before a person appears (1 is always shown).
+- `dates`: `{ "id": [born, died] }` replaces a placeholder life span that the generation estimate gets wrong (Ruth's family, for example: Obed is born when Ruth marries Boaz, not a generation later).
 
 ## Hosting
 
@@ -138,3 +140,4 @@ While publishing, the workflow adds the commit to every script, stylesheet and i
 
 - Six key figures are not linked to an Insight article yet (Nimrod, Abraham, Barak, Goliath, Zechariah the priest, Mary Magdalene), so they show only their hand-written family.
 - Three names in Luke's list (Maath, Naggai, Amos) are not on the line yet.
+- The years of the Judges are uncertain: the periods the book of Judges gives add up to more than the time between the entry into Canaan (1473 B.C.E.) and Saul (1117 B.C.E.), so some overlapped. The site keeps Jephthah at about 1173 B.C.E. (Judges 11:26), places Gideon at least 88 years earlier (Judges 8:28; 9:22; 10:2-3) and Deborah 47 years before Gideon, and lets Ehud's 80 years of rest overlap. Ruth, Naomi and Boaz follow *Insight* and *Imitate Their Faith* (about the 14th century B.C.E.), which leaves a long gap from Obed to Jesse.
