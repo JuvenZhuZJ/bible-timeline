@@ -46,7 +46,9 @@
     const list = stops.filter((s) => P[s.id]);
     if (!list.length) return "";
     const pts = list.map((s) => proj(P[s.id].ll));
-    const v = view(pts, w, h, opt.minSpan && opt.minSpan * KY);
+    // a lone place (Job in Uz, Noah at Ararat) is shown with its surroundings, not a blank close-up
+    const span = opt.minSpan || (new Set(list.map((s) => s.id)).size === 1 ? 7 : 0);
+    const v = view(pts, w, h, span && span * KY);
     const u = v.w / w;                       // map units per screen pixel
     const X = (x) => ((x - v.x) / u).toFixed(1), Y = (y) => ((y - v.y) / u).toFixed(1);
     let s = `<svg class="bmap ${opt.cls || ""}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opt.label || "Map")}">`;
