@@ -359,6 +359,9 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
   .search.open input::placeholder { color: var(--muted); }
   .search.open { position: absolute; left: 12px; right: 58px; z-index: 2; }
   .search-results { width: calc(100vw - 24px); right: auto; left: 0; }
+  /* the open search box covers the title and the People button, so hide them while searching */
+  .brand, .show { transition: opacity .2s; }
+  .topbar:has(.search.open) :is(.brand, .show) { opacity: 0; visibility: hidden; pointer-events: none; }
   .legend { left: 12px; bottom: calc(56px + var(--safe-b)); }
   .legend-toggle {
     display: block; border: 1px solid var(--faint); background: rgba(5,5,5,0.7); border-radius: 14px; padding: 5px 12px;
