@@ -54,54 +54,97 @@
     s += `<g transform="scale(${(1 / u).toFixed(5)}) translate(${(-v.x).toFixed(2)} ${(-v.y).toFixed(2)})">`;
     s += `<path class="bm-land" d="${B.land}"/><path class="bm-lake" d="${B.lakes}"/><path class="bm-river" d="${B.rivers}"/></g>`;
 
-    // route through the stops, in order of the person's life
-    const seq = list.map((x, i) => pts[i]).filter((p, i, a) => !i || p[0] !== a[i - 1][0] || p[1] !== a[i - 1][1]);
-    if (opt.route && seq.length > 1) s += `<path class="bm-route" d="M${seq.map((p) => X(p[0]) + " " + Y(p[1])).join(" L")}"/>`;
-
     // one pin per place, numbered by first visit
-    const seen = new Map();
-    list.forEach((st, i) => { if (!seen.has(st.id)) seen.set(st.id, { st, p: pts[i] }); });
-    const boxes = [];
-    // places closer together than a pin (Hebron, Mamre and Machpelah; Salem and Moriah) share one pin
-    const pins = [];
-    for (const { st, p } of seen.values()) {
-      const x = +X(p[0]), y = +Y(p[1]);
-      const near = !(opt.near && opt.near.includes(st.id)) && pins.find((q) => !q.far && Math.hypot(q.x - x, q.y - y) < 11);
-      if (near) { near.ids.push(st.id); near.names.push(P[st.id].n); continue; }
-      pins.push({ st, x, y, pl: P[st.id], ids: [st.id], names: [P[st.id].n], far: !!(opt.near && opt.near.includes(st.id)) });
+    const isNear = (id) => !!(opt.near && opt.near.includes(id));
+    const pins = [], byId = new Map();
+    list.forEach((st, i) => {
+      if (byId.has(st.id)) return;
+      const q = { st, x: +X(pts[i][0]), y: +Y(pts[i][1]), pl: P[st.id], small: isNear(st.id) };
+      q.ax = q.x; q.ay = q.y;           // where the place really is
+      pins.push(q); byId.set(st.id, q);
+    });
+    // places closer together than a pin (Jericho and Gilgal; Hebron, Mamre and Machpelah) are pushed
+    // apart just enough to show each pin with its own number and name, each keeping its direction from
+    // the others, with a fine line back to a dot where the place really is
+    const big = pins.filter((q) => !q.small), GAP = 14.5;
+    for (let it = 0; it < 120; it++) {
+      let moved = false;
+      for (let a = 0; a < big.length; a++) for (let b = a + 1; b < big.length; b++) {
+        const p1 = big[a], p2 = big[b];
+        let ddx = p2.x - p1.x, ddy = p2.y - p1.y, d = Math.hypot(ddx, ddy);
+        if (d >= GAP) continue;
+        if (d < 0.01) { const an = (a * 2.4 + b) % (2 * Math.PI); ddx = Math.cos(an); ddy = Math.sin(an); d = 1; }
+        const push = (GAP - d) / 2 + 0.05;
+        p1.x -= (ddx / d) * push; p1.y -= (ddy / d) * push;
+        p2.x += (ddx / d) * push; p2.y += (ddy / d) * push;
+        moved = true;
+      }
+      for (const q of big) { q.x = Math.min(w - 9, Math.max(9, q.x)); q.y = Math.min(h - 9, Math.max(9, q.y)); }
+      if (!moved) break;
     }
-    pins.forEach((q) => boxes.push([q.x - 7, q.y - 7, q.x + 7, q.y + 7]));
-    const hits = (b) => b[0] < 2 || b[2] > w - 2 || b[1] < 2 || b[3] > h - 2 || boxes.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+    for (const q of big) {
+      q.x = +q.x.toFixed(1); q.y = +q.y.toFixed(1);
+      const d = Math.hypot(q.x - q.ax, q.y - q.ay);
+      if (d > 1.5) { q.dx = (q.x - q.ax) / d; q.dy = (q.y - q.ay) / d; }
+    }
+
+    // route through the stops, in order of the person's life, joining the pins as drawn
+    const seq = list.map((st) => byId.get(st.id)).filter((q, i, a) => !i || q !== a[i - 1]);
+    if (opt.route && seq.length > 1) s += `<path class="bm-route" d="M${seq.map((q) => q.x + " " + q.y).join(" L")}"/>`;
+
+    const boxes = pins.filter((q) => !q.small).map((q) => [q.x - 7, q.y - 7, q.x + 7, q.y + 7]);
+    const labelBoxes = [];
+    const out = (b) => b[0] < 2 || b[2] > w - 2 || b[1] < 2 || b[3] > h - 2;
+    const over = (b, list) => list.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+    const hits = (b) => out(b) || over(b, boxes) || over(b, labelBoxes);
+    const km = niceKm(v.w / KX * 111 * B.k * 0.25), px = km / (111 * B.k) * KX / u;
+    labelBoxes.push([w - 14 - px, h - 22, w - 6, h - 6]);   // the scale bar, bottom right
 
     let marks = "", labels = "";
     if (opt.near) {    // the Canaan stops are drawn in the detail map; here they are one marked area
-      const nb = pins.filter((q) => opt.near.includes(q.st.id));
+      const nb = pins.filter((q) => q.small);
       const xs = nb.map((q) => q.x), ys = nb.map((q) => q.y);
       const bx = Math.min(...xs) - 8, by = Math.min(...ys) - 8, bw = Math.max(...xs) - bx + 8, bh = Math.max(...ys) - by + 8;
       s += `<rect class="bm-inset" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="4"/>`;
       const lb = [bx + bw + 3, by + bh / 2 - 6, bx + bw + 60, by + bh / 2 + 5];
-      if (!hits(lb)) { s += `<text class="bm-label bm-inset-t" x="${(bx + bw + 4).toFixed(1)}" y="${(by + bh / 2 + 3).toFixed(1)}">Canaan ↓</text>`; boxes.push(lb); }
-      for (const q of nb) q.small = true;
+      if (!hits(lb)) { s += `<text class="bm-label bm-inset-t" x="${(bx + bw + 4).toFixed(1)}" y="${(by + bh / 2 + 3).toFixed(1)}">Canaan ↓</text>`; labelBoxes.push(lb); }
     }
-    for (const { st, x, y, pl, small, ids, names } of pins) {
-      const grp = esc(ids.join(" "));
-      if (small) { marks += `<g class="bm-pin small s-${pl.s}" data-place="${esc(st.id)}" data-group="${grp}" transform="translate(${x} ${y})"><title>${esc(pl.n)}</title><circle class="bm-ring" r="2.4"/></g>`; continue; }
+    for (const q of pins) if (q.dx != null) marks += `<path class="bm-lead" d="M${q.ax} ${q.ay} L${q.x} ${q.y}"/><circle class="bm-at" cx="${q.ax}" cy="${q.ay}" r="1.5"/>`;
+    for (const { st, x, y, pl, small, dx, dy } of pins) {
+      const id = esc(st.id);
+      if (small) { marks += `<g class="bm-pin small s-${pl.s}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}</title><circle class="bm-ring" r="2.4"/></g>`; continue; }
       const cls = `bm-pin s-${pl.s}${pl.r ? " region" : ""}${st.hl ? " hl" : ""}`;
-      marks += `<g class="${cls}" data-place="${esc(st.id)}" data-group="${grp}" transform="translate(${x} ${y})"><title>${esc(names.join(" · "))}${ids.length > 1 ? "" : pl.s === "known" ? "" : pl.s === "likely" ? " (likely site)" : " (location uncertain)"}</title>`;
+      marks += `<g class="${cls}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}${pl.s === "known" ? "" : pl.s === "likely" ? " (likely site)" : " (location uncertain)"}</title>`;
       if (pl.r) marks += `<circle class="bm-area" r="11"/>`;
       marks += `<circle class="bm-ring" r="${st.n != null ? 6.5 : 5}"/>`;
       marks += st.n != null ? `<text class="bm-n" y="2.6" text-anchor="middle">${st.n}</text>` : `<circle class="bm-dot" r="2"/>`;
       marks += `</g>`;
-      // label: try right, left, above, below
-      if (opt.labels === false || (opt.near && opt.near.includes(st.id))) continue;
-      const all = names.map(shortName).join(", ");
-      const name = all.length <= 18 ? all : shortName(names[0]) + (names.length > 1 ? ` +${names.length - 1}` : ""), tw = name.length * 5.4 + 2;
-      const cand = [[x + 9, y + 3.5, "start", [x + 8, y - 5, x + 9 + tw, y + 5]], [x - 9, y + 3.5, "end", [x - 9 - tw, y - 5, x - 8, y + 5]],
-        [x, y - 10, "middle", [x - tw / 2, y - 18, x + tw / 2, y - 8]], [x, y + 17, "middle", [x - tw / 2, y + 8, x + tw / 2, y + 19]]];
-      const c = cand.find((k) => !hits(k[3]));
+      if (opt.labels === false) continue;
+      // label: beside the pin, on the side away from its neighbours when it was spread apart
+      const name = shortName(pl.n), tw = name.length * 5.4 + 2;
+      const R = [x + 9, y + 3.5, "start", [x + 8, y - 5, x + 9 + tw, y + 5]], Lf = [x - 9, y + 3.5, "end", [x - 9 - tw, y - 5, x - 8, y + 5]];
+      const U = [x, y - 10, "middle", [x - tw / 2, y - 18, x + tw / 2, y - 8]], D = [x, y + 17, "middle", [x - tw / 2, y + 8, x + tw / 2, y + 19]];
+      const UR = [x + 6, y - 7, "start", [x + 5, y - 16, x + 6 + tw, y - 5]], DR = [x + 6, y + 14, "start", [x + 5, y + 5, x + 6 + tw, y + 16]];
+      const UL = [x - 6, y - 7, "end", [x - 6 - tw, y - 16, x - 5, y - 5]], DL = [x - 6, y + 14, "end", [x - 6 - tw, y + 5, x - 5, y + 16]];
+      let cand = [R, Lf, U, D, UR, DR, UL, DL];
+      if (dx != null) {
+        const side = Math.abs(dy) > Math.abs(dx) * 1.4 ? (dy < 0 ? [U, UR, UL] : [D, DR, DL]) : dx < 0 ? [Lf, UL, DL] : [R, UR, DR];
+        cand = side.concat(cand.filter((k) => !side.includes(k)));
+      }
+      // farther out, joined to the pin by a fine line, for a crowded spot
+      for (const [ux, uy] of [[1, 0], [-1, 0], [0, -1], [0, 1], [0.8, -0.8], [0.8, 0.8], [-0.8, -0.8], [-0.8, 0.8]]) for (const d of [24, 36]) {
+        const ex = x + ux * d, ey = y + uy * d, anc = ux > 0.3 ? "start" : ux < -0.3 ? "end" : "middle";
+        const bx0 = anc === "start" ? ex : anc === "end" ? ex - tw : ex - tw / 2;
+        cand.push([ex, ey + 3.5, anc, [bx0, ey - 5, bx0 + tw, ey + 5], [x + ux * 7, y + uy * 7, ex - ux * 2, ey - uy * 2]]);
+      }
+      // a name never covers another name or leaves the map; failing a free spot, it crosses as few pins as it can
+      const nPins = (b) => boxes.filter((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]).length;
+      let c = cand.find((k) => !hits(k[3]));
+      if (!c) c = cand.filter((k) => !out(k[3]) && !over(k[3], labelBoxes)).sort((k1, k2) => nPins(k1[3]) - nPins(k2[3]))[0];
       if (!c) continue;
-      boxes.push(c[3]);
-      labels += `<text class="bm-label${st.hl ? " hl" : ""}" data-place="${esc(st.id)}" data-group="${grp}" x="${c[0].toFixed(1)}" y="${c[1].toFixed(1)}" text-anchor="${c[2]}">${esc(name)}</text>`;
+      labelBoxes.push(c[3]);
+      if (c[4]) { const [x1, y1, x2, y2] = c[4].map((v) => v.toFixed(1)); labels += `<path class="bm-lead" d="M${x1} ${y1} L${x2} ${y2}"/>`; }
+      labels += `<text class="bm-label${st.hl ? " hl" : ""}" data-place="${id}" x="${c[0].toFixed(1)}" y="${c[1].toFixed(1)}" text-anchor="${c[2]}">${esc(name)}</text>`;
     }
     for (const sea of SEAS) {
       if (sea.max && v.h > sea.max) continue;
@@ -110,12 +153,11 @@
         const b = [x - tw / 2, y - 7, x + tw / 2, y + 4];
         if (x < 0 || x > w || y < 0 || y > h || hits(b)) continue;
         labels = `<text class="bm-sea-t" x="${x}" y="${y}" text-anchor="middle">${esc(sea.t)}</text>` + labels;
-        boxes.push(b); break;
+        labelBoxes.push(b); break;
       }
     }
     s += marks + labels;
     // scale bar
-    const km = niceKm(v.w / KX * 111 * B.k * 0.25), px = km / (111 * B.k) * KX / u;
     s += `<g class="bm-scale" transform="translate(${w - 10 - px} ${h - 10})"><path d="M0 -3 V0 H${px.toFixed(1)} V-3"/><text x="${(px / 2).toFixed(1)}" y="-5" text-anchor="middle">${km} km</text></g>`;
     return s + `</svg>`;
   }
