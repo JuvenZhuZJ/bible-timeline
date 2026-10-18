@@ -410,8 +410,8 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 /* contemporaries: collapsed under its heading until opened */
 .contemp summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; }
 .contemp summary::-webkit-details-marker { display: none; }
-.contemp summary::before { content: ""; width: 5px; height: 5px; border: solid currentColor; border-width: 0 1px 1px 0; transform: rotate(-45deg); transition: transform 0.15s; }
-.contemp[open] summary::before { transform: rotate(45deg); }
+.contemp summary::after { content: ""; width: 5px; height: 5px; border: solid currentColor; border-width: 0 1px 1px 0; transform: rotate(-45deg); transition: transform 0.15s; }
+.contemp[open] summary::after { transform: rotate(45deg); }
 .contemp summary:hover, .contemp summary:focus-visible { color: var(--fg-2); outline: none; }
 .contemp-n { letter-spacing: 0.1em; color: var(--fg-2); }
 .contemp-more { font: 500 9.5px var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); background: none; border: 0; cursor: pointer; padding: 4px 4px 5px; }
