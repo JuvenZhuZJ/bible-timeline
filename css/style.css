@@ -171,6 +171,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 .event-tip.show { opacity: 1; transform: translate(-50%, 0); }
+.event-tip.show.live { pointer-events: auto; }   /* a major event's tooltip can be clicked into */
 .event-tip .et-year { font: 300 10px var(--mono); color: var(--accent); letter-spacing: 0.1em; }
 .event-tip .et-title { font: 600 18px/1.15 var(--serif); margin: 4px 0 6px; }
 .event-tip .et-text { font-size: 12.5px; line-height: 1.5; color: var(--fg-2); }
