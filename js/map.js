@@ -189,19 +189,50 @@
     const n = ids(stops).size, k = best ? ids(best).size : 0;
     return k >= 3 && k < n && k >= n / 2 && spanOf(stops) > 1.6 * spanOf(best) ? best : null;
   }
+  /* what the land of the map was called in the person's day: Canaan before the kings (Joshua 14:1),
+     Israel under Saul, David and Solomon, Israel and Judah once the kingdom split (1 Kings 12:19-20),
+     and Galilee, Samaria and Judea in Jesus' day (Luke 3:1; Acts 9:31), with Syria for Damascus;
+     a map mostly outside the land before the kings (Kadesh, the plains of Moab) is Near Canaan */
+  function partOf(ll, y) {
+    const [lon, lat] = ll;
+    if (lat > 33.3 && lon < 35.5) return "Phoenicia";
+    if (lat > 33.3 || lon > 35.9) return y < -63 ? "Aram" : "Syria";
+    if (y < -1117) return lon < 35.58 && lat > 31.0 ? "Canaan" : "";
+    if (y < -997) return "Israel";
+    if (y < -63) return lat >= 31.85 || lon >= 35.58 ? "Israel" : "Judah";
+    return lat >= 32.55 ? "Galilee" : lat >= 32.1 && lon > 35.0 ? "Samaria" : "Judea";
+  }
+  const ORDER = ["Canaan", "Israel", "Judah", "Galilee", "Samaria", "Judea", "Phoenicia", "Aram", "Syria"];
+  function areaName(stops, y) {
+    const n = new Map(), uniq = [...ids(stops)].filter((id) => P[id]);
+    for (const id of uniq) { const k = partOf(P[id].ll, y); n.set(k, (n.get(k) || 0) + 1); }
+    const total = uniq.length;
+    // the parts that hold the place; a lone outlier (Zarephath, Caesarea Philippi) does not rename the map
+    const parts = ORDER.filter((k) => n.get(k) && (n.get(k) >= 2 || n.get(k) === total));
+    if (!parts.length || (n.get("") || 0) * 2 > total) return "";
+    return parts.length === 1 ? parts[0] : parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1];
+  }
+  const midYear = (stops) => { const y = stops.map((s) => s.y).filter((v) => v != null).sort((a, b) => a - b); return y.length ? y[y.length >> 1] : 0; };
   function levels(stops) {
-    const out = [{ stops, name: "Whole journey" }];
+    // "Whole journey" only for a life that took the person far from home (Abraham from Ur, Paul to Rome)
+    const far = spanOf(stops) > 6;
+    const out = [{ stops, name: far ? "Whole journey" : "All places" }];
     if (!stops.some((s) => P[s.id])) return out;
     const inL = (s) => { const p = P[s.id] && P[s.id].ll; return p && p[0] >= LEVANT[0] && p[0] <= LEVANT[2] && p[1] >= LEVANT[1] && p[1] <= LEVANT[3]; };
     const near = stops.filter(inL);
     let mid = spanOf(stops) > 2.6 && ids(near).size >= 3 && near.length < stops.length ? near : null;
     const c = core(mid || stops);
-    // a Canaan map that only adds a place or two to the close-up (Kadesh) is left out: those stay on the whole journey
+    // a region map that only adds a place or two to the close-up (Kadesh) is left out: those stay on the first map
     if (mid && c && ids(c).size >= ids(mid).size * 2 / 3 && ids(mid).size - ids(c).size <= 2) mid = null;
-    if (mid) out.push({ stops: mid, name: "Canaan" });
-    if (c) out.push({ stops: c, close: true, name: mid ? "Close-up" : c.every(inL) && !stops.every(inL) ? "Canaan" : "Close-up" });
+    const y = midYear(stops);
+    if (mid) out.push({ stops: mid, name: areaName(mid, y) || (y < -1117 ? "Near Canaan" : "Close-up") });
+    if (c) {
+      const name = areaName(c, y);
+      out.push({ stops: c, close: true, name: name && !out.some((l) => l.name === name) ? name : "Close-up" });
+    }
     return out;
   }
+
 
   window.BibleMap = { svg, levels, place: (id) => P[id], shortName };
 })();
