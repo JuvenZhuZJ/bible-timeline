@@ -138,9 +138,13 @@ window.BIBLE_PLACES = {
   "hermon": {"n":"A lofty mountain, perhaps Hermon","ll":[35.85,33.4],"s":"possible","note":"“Probably Mt. Hermon” (NWT Appendix A7, map 4); Insight: near Caesarea Philippi, not Tabor","ob":"a341fe8"},
   "magdala": {"n":"Magdala","ll":[35.514,32.827],"s":"likely","note":"Identified with Majdal","ob":"af75e9e"},
   "rameses": {"n":"Rameses","ll":[31.834,30.799],"s":"likely","note":"Identified with Qantir","ob":"a079b21"},
+  "eden": {"n":"Eden","ll":[42.4,38.3],"s":"possible","r":1,"note":"Site conjectural; the traditional location is the mountains a few km south of Lake Van, near where the Euphrates and Tigris rise (Insight, “Eden”)"},
+  "uz": {"n":"Land of Uz","ll":[37.4,30.2],"s":"possible","r":1,"note":"Exact location unknown; east of the Promised Land near Edom, somewhere in northern Arabia, open to Sabeans from the south and Chaldeans from the east (Insight, “Uz” No. 4; Job 1:15, 17; Lamentations 4:21)"},
 };
 
 window.PERSON_PLACES = {
+  "adam": [["eden",0], ["eden",1]],
+  "eve": [["eden",0], ["eden",1]],
   "noah": [["ararat",2]],
   "shem": [["ararat",-2369,"The ark comes to rest on the mountains of Ararat","Genesis 8:4"]],
   "ham": [["ararat",-2369,"The ark comes to rest on the mountains of Ararat","Genesis 8:4"]],
@@ -167,6 +171,7 @@ window.PERSON_PLACES = {
   "benjamin": [["bethlehem",0], ["egypt",1]],
   "miriam": [["egypt",0], ["redsea",1], ["hazeroth",2], ["kadesh",3]],
   "aaron": [["egypt",0], ["sinai",1], ["sinai",2], ["hor",3]],
+  "job": [["uz",-1610,"Lives in the land of Uz, upright and wealthy","Job 1:1-3"], ["uz",0], ["uz",2]],
   "moses": [["egypt",0], ["midian",1], ["sinai",2], ["redsea",-1513,"Israel crosses the Red Sea","Exodus 14:21-22"], ["sinai",3], ["kadesh",-1512,"Sends 12 spies from Kadesh","Numbers 13:3, 26"], ["shittim",-1473,"Speaks Deuteronomy on the plains of Moab","Deuteronomy 1:5"], ["nebo",4]],
   "jethro": [["midian",0], ["sinai",1]],
   "balaam": [["moab",0], ["midian",1]],
