@@ -43,7 +43,9 @@ The names of the eras (Before the Flood, The Judges and so on) sit at the top of
 
 ## Event labels
 
-Major event names sit in rows under the axis: three rows on a computer, two on a phone (`evRows` in `layout()` in `js/app.js`). Each label hangs from its dot by a straight stem, and the layout never lets a stem run through another label: a label may sit centred on its stem or slide to one side, and it takes a lower row only when the rows above are clear at its stem. A label that has no clear spot stays hidden until you zoom in; its dot still shows the details on hover or tap. Labels have a thin outline in the page colour, so dotted lines behind them are cut cleanly.
+Major event names sit in rows under the axis: three rows on a computer, two on a phone (`evRows` in `layout()` in `js/app.js`). Each label hangs from its dot by a straight stem, and the layout never lets a stem run through another label: a label may sit centred on its stem or slide to one side, and it takes a lower row only when the rows above are clear at its stem. A label that has no clear spot stays hidden until you zoom in; its dot still shows the details on hover or tap.
+
+A major event's details open in a tooltip above the axis: point at the event on a computer, or tap it on a phone (tap it again to zoom in). Its scripture citation links to the passage on wol.jw.org and, when the event has a known place, a Google Maps link sits under its locator map. On a computer the tooltip stays open while the pointer moves from the event up into it (`hideTipSoon()` in `js/app.js` gives a short grace delay) and closes once the pointer has left both; on a phone it stays until you tap somewhere else. Labels have a thin outline in the page colour, so dotted lines behind them are cut cleanly.
 
 The personal lifespan tracks (hover and open windows) start below the event label rows, so they never cover an event name.
 

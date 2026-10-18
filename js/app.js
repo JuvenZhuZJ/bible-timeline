@@ -635,24 +635,34 @@
     if (n && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openWindow(n.__c); }
   });
 
-  /* event tooltip */
-  let tipEv = null;
+  /* event tooltip: its scripture citations and Google Maps link can be clicked, so with a mouse it
+     stays open while the pointer travels from the event into it (a short grace delay) and closes once
+     the pointer has left both; on a phone a tap opens it and it stays until a tap elsewhere */
+  let tipEv = null, tipTimer = 0;
   function showTip(ev) {
+    clearTimeout(tipTimer);
+    if (tipEv === ev && tip.classList.contains("show")) return;
     tipEv = ev;
     const pid = (window.EVENT_PLACES || {})[ev.id], pl = pid && window.BibleMap && BibleMap.place(pid);
-    const map = pl ? `<div class="et-map">${BibleMap.svg([{ id: pid }], { w: 252, h: 112, cls: "bm-tip", labels: false, minSpan: 7, label: pl.n })}<div class="et-place">${esc(pl.n)}${pl.s === "known" ? "" : `<span class="pl-s s-${pl.s}">${pl.s === "likely" ? "likely site" : "location uncertain"}</span>`}</div></div>` : "";
-    tip.innerHTML = `<div class="et-year">${esc(fmtYear(ev.year, true))}</div><div class="et-title">${esc(ev.title)}</div><div class="et-text">${esc(ev.text)}</div><div class="et-ref">${esc(ev.ref)}</div>${map}`;
+    const map = pl ? `<div class="et-map">${BibleMap.svg([{ id: pid }], { w: 252, h: 112, cls: "bm-tip", labels: false, minSpan: 7, label: pl.n })}<div class="et-place">${esc(pl.n)}${pl.s === "known" ? "" : `<span class="pl-s s-${pl.s}">${pl.s === "likely" ? "likely site" : "location uncertain"}</span>`} ${gmapLink(pl)}</div></div>` : "";
+    tip.innerHTML = `<div class="et-year">${esc(fmtYear(ev.year, true))}</div><div class="et-title">${esc(ev.title)}</div><div class="et-text">${esc(ev.text)}</div><div class="et-ref">${Scripture.linkRefs(ev.ref)}</div>${map}`;
     const x = Math.min(W - 150, Math.max(150, X(A(ev.year))));
     tip.style.left = x + "px";
     tip.style.top = Math.max(L.top, L.lineY - 26 - tip.offsetHeight) + "px";
-    tip.classList.add("show");
+    tip.classList.add("show", "live");
     evEls.forEach((o) => o.node.classList.toggle("active", o.ev === ev));
   }
-  function hideTip() { tipEv = null; tip.classList.remove("show"); evEls.forEach((o) => o.node.classList.remove("active")); hideActTip(); }
+  function hideTip() { clearTimeout(tipTimer); tipEv = null; tip.classList.remove("show", "live"); evEls.forEach((o) => o.node.classList.remove("active")); hideActTip(); }
+  function hideTipSoon() { clearTimeout(tipTimer); tipTimer = setTimeout(hideTip, 350); }
   g.events.addEventListener("pointerover", (e) => { if (e.pointerType === "mouse") { const n = e.target.closest(".ev-node"); if (n) showTip(n.__ev); } });
-  g.events.addEventListener("pointerout", (e) => { if (e.pointerType === "mouse" && e.target.closest(".ev-node")) hideTip(); });
+  g.events.addEventListener("pointerout", (e) => { if (e.pointerType === "mouse" && e.target.closest(".ev-node") && tipEv) hideTipSoon(); });
   g.events.addEventListener("focusin", (e) => { const n = e.target.closest(".ev-node"); if (n) showTip(n.__ev); });
-  g.events.addEventListener("focusout", hideTip);
+  g.events.addEventListener("focusout", (e) => { if (!tip.contains(e.relatedTarget)) hideTip(); });
+  tip.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse" && tipEv) clearTimeout(tipTimer); });
+  tip.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse" && tipEv) hideTipSoon(); });
+  tip.addEventListener("focusout", (e) => { if (tipEv && !tip.contains(e.relatedTarget) && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(".ev-node"))) hideTip(); });
+  // a press inside the tooltip is not a timeline drag or tap, so its links get the click
+  tip.addEventListener("pointerdown", (e) => e.stopPropagation());
   g.events.addEventListener("keydown", (e) => { const n = e.target.closest(".ev-node"); if (n && e.key === "Enter") zoomToEvent(n.__ev); });
   function zoomToEvent(ev) { animateTo(A(ev.year), Math.max(view.ppy * 1.8, TIER[1] * 1.6)); }
 
