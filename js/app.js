@@ -1007,7 +1007,7 @@
   /* places: hovering an activity with a place tag, or a pin, lights the pin and the activities there;
      clicking a pin scrolls the window to the first activity there, and clicking a place tag shows it */
   const mapBoxes = (w) => [w.el.querySelector(".win-map"), mapW.c === w.c && !L.mobile ? mapW.body : null].filter(Boolean);
-  const hasId = (n, id) => (n.dataset.group || n.dataset.place || "").split(" ").includes(id);
+  const hasId = (n, id) => (n.dataset.place || "").split(" ").includes(id);
   function markPlace(w, id) {
     for (const box of mapBoxes(w)) {
       box.querySelectorAll(".bm-pin, .bm-label").forEach((n) => n.classList.toggle("hl", !!id && hasId(n, id)));

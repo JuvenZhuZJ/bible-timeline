@@ -456,6 +456,8 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bm-n { font: 500 8.5px var(--sans); fill: var(--fg); pointer-events: none; }
 .bm-pin.hl .bm-ring { fill: var(--wc, var(--accent)); stroke: var(--fg); }
 .bm-pin.hl .bm-n { fill: var(--bg); }
+.bm-lead { fill: none; stroke: var(--wc, var(--accent)); stroke-width: 0.8; opacity: 0.7; }
+.bm-at { fill: var(--wc, var(--accent)); }
 .bm-label { font: 400 9.5px var(--sans); fill: var(--fg-2); paint-order: stroke; stroke: #0b0a08; stroke-width: 3px; stroke-linejoin: round; cursor: pointer; }
 .bm-label.hl { fill: var(--fg); }
 .bm-scale path { fill: none; stroke: var(--muted); stroke-width: 1; }
