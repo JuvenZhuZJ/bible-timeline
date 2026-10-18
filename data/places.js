@@ -1,5 +1,5 @@
 /*
- * PLACES — where key figures were and where major events happened (shown on the map in each window).
+ * PLACES — where key figures were and where major events happened (shown on the map of the person window in use).
  * ------------------------------------------------------------------
  * BIBLE_PLACES  id: { n: name, ll: [longitude, latitude], s: how sure the location is, r: 1 if a region,
  *                    note: identification notes, ob: OpenBible.info place id }
@@ -11,7 +11,7 @@
  *   (Kadesh, Mount Sinai, Mount Hor, Samuel's Ramah, Cana), its choice is used and the note says so.
  * PERSON_PLACES id: list of places in that person's life, in order:
  *   [place, k]                  activity k of the person (data/characters.js) happened there
- *   [place, year, text, ref]    another time the Bible puts them there
+ *   [place, year, text, ref]    another time the Bible puts them there (also listed as an activity)
  * EVENT_PLACES  event id (data/events.js): place
  */
 window.BIBLE_PLACES = {
