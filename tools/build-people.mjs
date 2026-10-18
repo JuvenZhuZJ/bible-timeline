@@ -270,6 +270,11 @@ function spread(line, endBorn) {
 }
 spread(lukeLine, -2 - 30);
 spread(mattLine, -2 - 30);
+/* placeholder dates fixed by hand (overrides.json "dates"), applied after the spacing above */
+for (const [id, [b, d]] of Object.entries(OVR.dates || {})) {
+  const p = byId.get(id);
+  if (p) { p.born = b; p.died = d; p.year = Math.round((b + d) / 2); }
+}
 const missing = [];
 lukeLine.forEach((p, i) => { if (p) p.line = true; else missing.push("Luke: " + LUKE[i]); });
 mattLine.forEach((p, i) => { if (p) p.line = true; else missing.push("Matthew: " + MATT[i + 1]); });
