@@ -903,9 +903,9 @@
   function mapViews(c, phone) {
     const lv = BibleMap.levels(c.places), h0 = phone ? 150 : 210, h1 = phone ? 150 : 230;
     const maps = lv.map((l, k) => {
-      const next = lv[k + 1];
-      return `<div class="bm-v" data-k="${k}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
-        + BibleMap.svg(l.stops, { w: 340, h: k ? h1 : h0, route: true, labels: next ? "far" : true, near: next && next.stops.map((s) => s.id), inset: next && next.name, minSpan: l.close ? 0.8 : 0,
+      const insets = lv.map((m, j) => ({ m, j })).filter(({ m }) => m.parent === k).map(({ m, j }) => ({ ids: [...new Set(m.stops.map((s) => s.id))], name: m.name, k: j }));
+      return `<div class="bm-v" data-k="${k}" data-d="${l.depth}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
+        + BibleMap.svg(l.stops, { w: 340, h: k ? h1 : h0, route: true, labels: insets.length ? "far" : true, insets, minSpan: l.minSpan || 0,
           label: k ? `${l.name} map of places in the life of ${c.name}` : `Places in the life of ${c.name}` }) + `</div>`;
     }).join("");
     const sw = lv.length > 1 ? lv.map((l, k) => `<button class="bm-sw" data-v="${k}" aria-pressed="${!k}">${esc(l.name)}</button>`).join("") : "";
@@ -1103,7 +1103,7 @@
     for (const box of mapBoxes(w)) {
       const views = box.querySelector(".bm-views");
       // the closest map that has the place on it
-      if (views) setMapView(box, [...views.querySelectorAll(".bm-v")].filter((m) => m.dataset.ids.split(" ").includes(id)).pop()?.dataset.k || "0");
+      if (views) setMapView(box, [...views.querySelectorAll(".bm-v")].filter((m) => m.dataset.ids.split(" ").includes(id)).sort((a, b) => b.dataset.d - a.dataset.d)[0]?.dataset.k || "0");
     }
   }
   function showPlace(w, id) {
@@ -1145,7 +1145,8 @@
         hb.textContent = fold ? "Show map" : "Hide map"; hb.setAttribute("aria-expanded", !fold);
         return;
       }
-      if (e.target.closest(".bm-inset-t")) { setMapView(box, String(+box.querySelector(".bm-views").dataset.v + 1)); return; }
+      const it = e.target.closest(".bm-inset-t");
+      if (it) { setMapView(box, it.dataset.k); return; }
       const n = e.target.closest(".bm-pin, .bm-label");
       if (n) { markPlace(w, n.dataset.place); goToPlace(w, n.dataset.place); }
     });

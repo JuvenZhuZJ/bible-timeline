@@ -26,7 +26,8 @@
   function view(pts, w, h, minSpan) {
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     for (const [x, y] of pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
-    let vw = (x1 - x0) * 1.3 + 4, vh = (y1 - y0) * 1.3 + 4;
+    const pad = Math.min(4, minSpan || 4);   // a close-up keeps a narrower margin
+    let vw = (x1 - x0) * 1.3 + pad, vh = (y1 - y0) * 1.3 + pad;
     const ar = w / h;
     vh = Math.max(vh, minSpan || MIN_SPAN, vw / ar); vw = vh * ar;
     let cx = (x0 + x1) / 2, cy = (y0 + y1) / 2 + vh * 0.03;
@@ -57,7 +58,7 @@
     s += `<path class="bm-land" d="${B.land}"/><path class="bm-lake" d="${B.lakes}"/><path class="bm-river" d="${B.rivers}"/></g>`;
 
     // one pin per place, numbered by first visit
-    const isNear = (id) => !!(opt.near && opt.near.includes(id));
+    const near = (opt.insets || []).flatMap((i) => i.ids), isNear = (id) => near.includes(id);
     const pins = [], byId = new Map();
     list.forEach((st, i) => {
       if (byId.has(st.id)) return;
@@ -103,13 +104,21 @@
     labelBoxes.push([w - 14 - px, h - 22, w - 6, h - 6]);   // the scale bar, bottom right
 
     let marks = "", labels = "";
-    if (opt.near) {    // the stops of the next, closer map are drawn there; here they are one marked area
-      const nb = pins.filter((q) => q.small);
+    // the stops of each closer map are drawn there; here each closer map is one marked area,
+    // with its name to click
+    for (const ins of opt.insets || []) {
+      const nb = pins.filter((q) => q.small && ins.ids.includes(q.st.id));
+      if (!nb.length) continue;
       const xs = nb.map((q) => q.x), ys = nb.map((q) => q.y);
       const bx = Math.min(...xs) - 8, by = Math.min(...ys) - 8, bw = Math.max(...xs) - bx + 8, bh = Math.max(...ys) - by + 8;
       s += `<rect class="bm-inset" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="4"/>`;
-      const lb = [bx + bw + 3, by + bh / 2 - 6, bx + bw + 14 + 6 * (opt.inset || "Closer").length, by + bh / 2 + 5];
-      if (!hits(lb)) { s += `<text class="bm-label bm-inset-t" x="${(bx + bw + 4).toFixed(1)}" y="${(by + bh / 2 + 3).toFixed(1)}">${esc(opt.inset || "Closer")} ↓</text>`; labelBoxes.push(lb); }
+      const tw = 14 + 6 * ins.name.length;
+      const cands = [[bx + bw + 4, by + bh / 2 + 3], [bx - tw - 2, by + bh / 2 + 3], [bx, by - 4], [bx, by + bh + 10]];
+      for (const [tx, ty] of cands) {
+        const lb = [tx - 1, ty - 9, tx + tw, ty + 2];
+        if (hits(lb)) continue;
+        s += `<text class="bm-label bm-inset-t" data-k="${ins.k}" x="${tx.toFixed(1)}" y="${ty.toFixed(1)}">${esc(ins.name)} ↓</text>`; labelBoxes.push(lb); break;
+      }
     }
     for (const q of pins) if (q.dx != null) marks += `<path class="bm-lead" d="M${q.ax} ${q.ay} L${q.x} ${q.y}"/><circle class="bm-at" cx="${q.ax}" cy="${q.ay}" r="1.5"/>`;
     for (const { st, x, y, pl, small, dx, dy } of pins) {
@@ -168,26 +177,37 @@
 
   /* the maps of a person's places, widest first: the whole journey; for a life that ranges far
      beyond Canaan (Abraham from Ur, Paul to Rome) a closer map of the stops in and around Canaan;
-     and where at least half the stops crowd into one small area (Joshua at Jericho, Ai, Gibeon and Shiloh, with
-     Kadesh far to the south) a close-up of that area, so its towns are big enough to read.
-     Places left out of a closer map stay on the wider one. Returns [{ stops, name, close }];
-     a close-up may zoom in further than other maps (minSpan 0.8°). */
+     then a close-up of each small area where three or more places crowd together (Jesus in Galilee
+     and in Judea), and inside a close-up, a closer one still where places lie only a few km apart
+     (Jerusalem, the Mount of Olives and Bethany), up to five maps in all, so the towns are big enough
+     to read and the trail is easy to follow. Places left out of a closer map stay on the wider one.
+     Returns [{ stops, name, depth, parent, minSpan }] in the order of the switch. */
   const LEVANT = [33.6, 29.3, 36.9, 33.7];
-  const CORE = [0.65, 0.55];    // half the close-up's width and height, in degrees (about 120 km across)
+  const WINDOWS = [[0.65, 0.55], [0.15, 0.12]];   // half a close-up's width and height, in degrees (about 120 km, then 25 km across)
+  const MIN_SPANS = [0.8, 0.12];                  // and how far in it may zoom
+  const MAX_MAPS = 5;
   const lls = (stops) => stops.map((s) => P[s.id] && P[s.id].ll).filter(Boolean);
   function spanOf(stops) {
     const ll = lls(stops), lat = ll.map((p) => p[1]), lon = ll.map((p) => p[0]);
     return Math.max(Math.max(...lat) - Math.min(...lat), (Math.max(...lon) - Math.min(...lon)) * 0.6);
   }
   const ids = (stops) => new Set(stops.map((s) => s.id));
-  function core(stops) {
-    let best = null;
-    for (const [cx, cy] of lls(stops)) {
-      const inn = stops.filter((s) => { const p = P[s.id] && P[s.id].ll; return p && Math.abs(p[0] - cx) <= CORE[0] && Math.abs(p[1] - cy) <= CORE[1]; });
-      if (!best || ids(inn).size > ids(best).size) best = inn;
+  // the busiest small areas of a map, busiest first, each with three or more places
+  function clusters(stops, win) {
+    const out = [], n = ids(stops).size, span = spanOf(stops);
+    let rest = stops;
+    while (out.length < 3) {
+      let best = null;
+      for (const [cx, cy] of lls(rest)) {
+        const inn = rest.filter((s) => { const p = P[s.id] && P[s.id].ll; return p && Math.abs(p[0] - cx) <= win[0] && Math.abs(p[1] - cy) <= win[1]; });
+        if (!best || ids(inn).size > ids(best).size) best = inn;
+      }
+      const k = best ? ids(best).size : 0;
+      if (k < 3 || k >= n || span <= 1.6 * spanOf(best)) break;
+      out.push(best);
+      const got = ids(best); rest = rest.filter((s) => !got.has(s.id));
     }
-    const n = ids(stops).size, k = best ? ids(best).size : 0;
-    return k >= 3 && k < n && k >= n / 2 && spanOf(stops) > 1.6 * spanOf(best) ? best : null;
+    return out;
   }
   /* what the land of the map was called in the person's day: Canaan before the kings (Joshua 14:1),
      Israel under Saul, David and Solomon, Israel and Judah once the kingdom split (1 Kings 12:19-20),
@@ -204,10 +224,10 @@
   }
   const ORDER = ["Canaan", "Israel", "Judah", "Galilee", "Samaria", "Judea", "Phoenicia", "Aram", "Syria"];
   function areaName(stops, y) {
-    const n = new Map(), uniq = [...ids(stops)].filter((id) => P[id]);
-    for (const id of uniq) { const k = partOf(P[id].ll, y); n.set(k, (n.get(k) || 0) + 1); }
-    const total = uniq.length;
-    // the parts that hold the place; a lone outlier (Zarephath, Caesarea Philippi) does not rename the map
+    const n = new Map(), seen = stops.filter((s) => P[s.id]);
+    for (const s of seen) { const k = partOf(P[s.id].ll, y); n.set(k, (n.get(k) || 0) + 1); }
+    const total = seen.length;
+    // the parts the person was in more than once; a single visit (Zarephath, Caesarea Philippi) does not rename the map
     const parts = ORDER.filter((k) => n.get(k) && (n.get(k) >= 2 || n.get(k) === total));
     if (!parts.length || (n.get("") || 0) * 2 > total) return "";
     return parts.length === 1 ? parts[0] : parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1];
@@ -216,22 +236,44 @@
   function levels(stops) {
     // "Whole journey" only for a life that took the person far from home (Abraham from Ur, Paul to Rome)
     const far = spanOf(stops) > 6;
-    const out = [{ stops, name: far ? "Whole journey" : "All places" }];
+    const out = [{ stops, name: far ? "Whole journey" : "All places", depth: 0, parent: -1 }];
     if (!stops.some((s) => P[s.id])) return out;
+    const y = midYear(stops);
     const inL = (s) => { const p = P[s.id] && P[s.id].ll; return p && p[0] >= LEVANT[0] && p[0] <= LEVANT[2] && p[1] >= LEVANT[1] && p[1] <= LEVANT[3]; };
     const near = stops.filter(inL);
     let mid = spanOf(stops) > 2.6 && ids(near).size >= 3 && near.length < stops.length ? near : null;
-    const c = core(mid || stops);
-    // a region map that only adds a place or two to the close-up (Kadesh) is left out: those stay on the first map
-    if (mid && c && ids(c).size >= ids(mid).size * 2 / 3 && ids(mid).size - ids(c).size <= 2) mid = null;
-    const y = midYear(stops);
-    if (mid) out.push({ stops: mid, name: areaName(mid, y) || (y < -1117 ? "Near Canaan" : "Close-up") });
-    if (c) {
-      const name = areaName(c, y);
-      out.push({ stops: c, close: true, name: name && !out.some((l) => l.name === name) ? name : "Close-up" });
+    let cs = clusters(mid || stops, WINDOWS[0]);
+    // a region map that only adds a place or two to its one close-up (Kadesh) is left out: those stay on the first map
+    if (mid && cs.length === 1 && ids(cs[0]).size >= ids(mid).size * 2 / 3 && ids(mid).size - ids(cs[0]).size <= 2) mid = null;
+    if (mid) out.push({ stops: mid, name: areaName(mid, y) || (y < -1117 ? "Near Canaan" : "Close-up"), depth: 1, parent: 0 });
+    const used = new Set(out.map((l) => l.name));
+    const around = (c) => {    // named for the place visited most often there
+      const n = new Map(); for (const s of c) n.set(s.id, (n.get(s.id) || 0) + 1);
+      return "Around " + shortName(P[[...n].sort((a, b) => b[1] - a[1])[0][0]].n);
+    };
+    const add = (c, w, parent) => {
+      if (out.length >= MAX_MAPS) return;
+      let name = w ? "" : areaName(c, y);
+      if (!name || used.has(name)) name = around(c);
+      used.add(name);
+      out.push({ stops: c, name, depth: out[parent].depth + 1, parent, minSpan: MIN_SPANS[w] });
+      return out.length - 1;
+    };
+    // close-ups in the order the person first went there, each followed by a closer map still
+    // inside it; past five maps, the busiest areas keep theirs
+    const first = (c) => Math.min(...c.map((s) => (s.k == null ? Infinity : s.k)));
+    const subs = cs.map((c) => clusters(c, WINDOWS[1]));
+    let room = Math.max(0, MAX_MAPS - out.length - cs.length);
+    const order = cs.map((c, i) => i).sort((a, b) => first(cs[a]) - first(cs[b]));
+    const top = mid ? 1 : 0;
+    for (const i of order) {
+      const k = add(cs[i], 0, top);
+      if (k == null) continue;
+      for (const c of subs[i].slice(0, room)) { add(c, 1, k); room--; }
     }
     return out;
   }
+
 
 
   window.BibleMap = { svg, levels, place: (id) => P[id], shortName };
