@@ -200,7 +200,7 @@
   const DOT_BY_ID = new Map(dotEls.map((d) => [d.c.id, d]));
   function buildDot(d) {
     const c = d.c;
-    d.life = el("line", { class: "life" + (c.q[1] === "assumed" ? " q-assumed" : "") }, g.life);
+    d.life = el("path", { class: "life" + (c.q[1] === "assumed" ? " q-assumed" : "") }, g.life);
     const node = el("g", {
       class: `dot tier-${c.tier} q-${c.q[0]}${c.line ? " on-line" : ""}`, tabindex: "0", role: "button",
       "aria-label": `${c.name}, ${fmtRange(c)}`,
@@ -388,21 +388,43 @@
       d.node.setAttribute("transform", `translate(${xb},${y})`);
       // the line starts after the name, so the label never sits on top of it
       if (!d.gap) d.gap = 11 + d.name.getComputedTextLength() + 6;
-      d.life.setAttribute("x1", Math.min(xb + d.gap, xd)); d.life.setAttribute("x2", xd); d.life.setAttribute("y1", y); d.life.setAttribute("y2", y);
       const pin = pinColor(c);
       d.sel.setAttribute("stroke", pin || "transparent");
       d.node.classList.toggle("pinned", !!pin);
       d.node.classList.toggle("is-hover", hoverC === c);
       d.life.classList.toggle("is-hover", hoverC === c);
       d.node.classList.toggle("is-rel", relSet.has(c.id));
-      d.y = y;
+      d.y = y; d.xb = xb; d.xd = xd;
     }
+    cutLifeLines();
 
     placePortrait();
     renderRels();
     renderTracks();
     renderCursor();
     renderMinimap();
+  }
+
+  /* A lifespan line starts after its own name, and is also cut wherever another person's name
+     sits on it (packing lets a short-lived person's name share a lane with a long line). */
+  function cutLifeLines() {
+    const byLane = new Map();
+    for (const d of dotEls) {
+      if (!d.visible) continue;
+      if (!byLane.has(d.lane)) byLane.set(d.lane, []);
+      byLane.get(d.lane).push(d);
+    }
+    for (const ds of byLane.values()) {
+      for (const d of ds) {
+        let segs = [[Math.min(d.xb + d.gap, d.xd), d.xd]];
+        for (const o of ds) {
+          if (o === d) continue;
+          const a = o.xb - 8, b = o.xb + o.gap - 3;
+          segs = segs.flatMap(([s, e]) => (b <= s || a >= e) ? [[s, e]] : [[s, a], [b, e]].filter(([p, q]) => q - p > 0.5));
+        }
+        d.life.setAttribute("d", segs.map(([s, e]) => `M${s},${d.y}H${e}`).join(""));
+      }
+    }
   }
 
   /* family links: while hovering a person, curved lines join them to the relatives on screen.
