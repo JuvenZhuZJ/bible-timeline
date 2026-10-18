@@ -439,3 +439,50 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
   .show-menu { position: fixed; top: 56px; left: 12px; right: 12px; width: auto; }
   .rel-row { grid-template-columns: 64px 1fr; }
 }
+
+/* ------------------------------------------------------------- maps (js/map.js) */
+.bmap { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--faint); }
+.bm-sea { fill: #0a0c0e; }
+.bm-land { fill: #1a1712; stroke: rgba(217, 181, 111, 0.32); stroke-width: 0.8px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.bm-lake { fill: #0a0c0e; stroke: rgba(217, 181, 111, 0.32); stroke-width: 0.8px; vector-effect: non-scaling-stroke; }
+.bm-river { fill: none; stroke: rgba(120, 150, 160, 0.55); stroke-width: 1px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.bm-route { fill: none; stroke: var(--wc, var(--accent)); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.55; }
+.bm-sea-t { font: italic 400 11px var(--serif); fill: rgba(235, 231, 222, 0.32); letter-spacing: 0.08em; }
+.bm-pin { cursor: pointer; }
+.bm-pin .bm-ring { fill: var(--bg); stroke: var(--wc, var(--accent)); stroke-width: 1.2; }
+.bm-pin.s-possible .bm-ring { stroke-dasharray: 2.2 1.6; }
+.bm-pin .bm-area { fill: color-mix(in srgb, var(--wc, var(--accent)) 10%, transparent); stroke: var(--wc, var(--accent)); stroke-width: 0.6; stroke-dasharray: 2 2; opacity: 0.6; }
+.bm-pin .bm-dot { fill: var(--wc, var(--accent)); }
+.bm-n { font: 500 8.5px var(--sans); fill: var(--fg); pointer-events: none; }
+.bm-pin.hl .bm-ring { fill: var(--wc, var(--accent)); stroke: var(--fg); }
+.bm-pin.hl .bm-n { fill: var(--bg); }
+.bm-label { font: 400 9.5px var(--sans); fill: var(--fg-2); paint-order: stroke; stroke: #0b0a08; stroke-width: 3px; stroke-linejoin: round; cursor: pointer; }
+.bm-label.hl { fill: var(--fg); }
+.bm-scale path { fill: none; stroke: var(--muted); stroke-width: 1; }
+.bm-scale text { font: 300 8px var(--mono); fill: var(--muted); }
+.win-map { position: relative; }
+.places { margin-top: 10px; }
+.pl-row { padding: 6px 8px 6px 6px; border-radius: 6px; }
+.pl-row.hl { background: rgba(235, 231, 222, 0.05); }
+.pl-row.flash-row { animation: act-hl 2.4s ease-out; }
+.pl-h { display: flex; align-items: center; gap: 8px; }
+.pl-n { flex: none; width: 17px; height: 17px; border-radius: 50%; border: 1px solid var(--wc); display: grid; place-items: center; font: 500 9px var(--sans); color: var(--fg); }
+.pl-n.s-possible { border-style: dashed; }
+.pl-name { font: 600 15px/1.2 var(--serif); }
+.pl-s { font: 300 9.5px var(--mono); color: var(--muted); border: 1px solid var(--faint); border-radius: 9px; padding: 0 6px; white-space: nowrap; }
+.pl-note { font-size: 11px; color: var(--muted); margin: 2px 0 0 25px; line-height: 1.4; }
+.pl-row ul { list-style: none; margin: 3px 0 0 25px; padding: 0; }
+.pl-row li { font-size: 12px; line-height: 1.45; color: var(--fg-2); padding: 1px 0; cursor: pointer; }
+.pl-row li:hover { color: var(--fg); }
+.pl-y { font: 300 10px var(--mono); color: var(--wc); white-space: nowrap; }
+.pl-r { font: 300 10px var(--mono); color: var(--muted); white-space: nowrap; }
+.act-p { margin-left: 6px; padding: 0 6px 0 2px; border: 1px solid var(--faint); border-radius: 9px; background: none; color: var(--muted); font: 300 9.5px var(--sans); cursor: pointer; vertical-align: 1px; }
+.act-p b { display: inline-grid; place-items: center; width: 12px; height: 12px; margin-right: 4px; border-radius: 50%; border: 1px solid var(--wc); font: 500 7.5px var(--sans); color: var(--fg); }
+.act-p:hover, .act-p:focus-visible { color: var(--fg); border-color: var(--wc); outline: none; }
+.acts li[data-place]:hover .act-p { color: var(--fg-2); }
+.et-map { margin-top: 10px; }
+.et-map .bmap { border-radius: 6px; }
+.et-place { font: 300 10.5px var(--sans); color: var(--fg-2); margin-top: 5px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.bm-inset { fill: none; stroke: var(--wc, var(--accent)); stroke-width: 0.8; stroke-dasharray: 2 2; opacity: 0.7; }
+.bm-inset-t { font-size: 9px; fill: var(--muted); }
+.map-cap { font: 300 9.5px var(--mono); color: var(--muted); letter-spacing: 0.06em; margin: 8px 0 4px; }

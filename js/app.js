@@ -37,12 +37,32 @@
     c.td = A(c.died);
     c.assumed = c.q.includes("assumed");
     c.tier = c.tier || 3;
-    c.events = (c.events || []).slice().sort((a, b) => a[0] - b[0]);
+    const rawEvents = c.events || [];
+    c.events = rawEvents.slice().sort((a, b) => a[0] - b[0]);
+    c.places = placesOf(c, rawEvents);
     c.labelW = c.name.length * (c.tier === 1 ? 7.6 : 6.3) + 16;
     c.rel = c.rel || {};
     c.refs = c.refs || [];
   });
   const CHAR_BY_ID = new Map(CHARS.map((c) => [c.id, c]));
+
+  /* places in a person's life (data/places.js): each stop is { id, n, k, y, text, ref }, where k is the
+     index of the matching activity in c.events (null for a visit that is not one of the activities)
+     and n is the number on that place's pin, counted by first visit */
+  function placesOf(c, rawEvents) {
+    const list = (window.PERSON_PLACES || {})[c.id];
+    if (!list || !window.BibleMap) return null;
+    const nums = new Map();
+    return list.map(([id, a, text, ref]) => {
+      if (!BibleMap.place(id)) return null;
+      if (!nums.has(id)) nums.set(id, nums.size + 1);
+      if (text === undefined) {
+        const ev = rawEvents[a], k = c.events.indexOf(ev);
+        return ev ? { id, n: nums.get(id), k, y: ev[0], text: ev[1], ref: ev[2] } : null;
+      }
+      return { id, n: nums.get(id), k: null, y: a, text, ref };
+    }).filter(Boolean);
+  }
   const REL_KEYS = [["father", "Father"], ["mother", "Mother"], ["spouses", "Spouse"], ["siblings", "Sibling"], ["children", "Child"]];
   CHARS.forEach((c) => {
     const ids = new Set();
@@ -596,7 +616,9 @@
   let tipEv = null;
   function showTip(ev) {
     tipEv = ev;
-    tip.innerHTML = `<div class="et-year">${esc(fmtYear(ev.year, true))}</div><div class="et-title">${esc(ev.title)}</div><div class="et-text">${esc(ev.text)}</div><div class="et-ref">${esc(ev.ref)}</div>`;
+    const pid = (window.EVENT_PLACES || {})[ev.id], pl = pid && window.BibleMap && BibleMap.place(pid);
+    const map = pl ? `<div class="et-map">${BibleMap.svg([{ id: pid }], { w: 252, h: 112, cls: "bm-tip", labels: false, minSpan: 7, label: pl.n })}<div class="et-place">${esc(pl.n)}${pl.s === "known" ? "" : `<span class="pl-s s-${pl.s}">${pl.s === "likely" ? "likely site" : "location uncertain"}</span>`}</div></div>` : "";
+    tip.innerHTML = `<div class="et-year">${esc(fmtYear(ev.year, true))}</div><div class="et-title">${esc(ev.title)}</div><div class="et-text">${esc(ev.text)}</div><div class="et-ref">${esc(ev.ref)}</div>${map}`;
     const x = Math.min(W - 150, Math.max(150, X(A(ev.year))));
     tip.style.left = x + "px";
     tip.style.top = Math.max(L.top, L.lineY - 26 - tip.offsetHeight) + "px";
@@ -821,11 +843,29 @@
     return c.family ? `<div class="win-family">${Scripture.linkText(c.family)}</div>` : "";
   }
 
+  const SURE = { likely: "likely site", possible: "location uncertain" };
+  function placesHTML(c) {
+    if (!c.places || !c.places.length) return "";
+    const near = BibleMap.detail(c.places);
+    const map = BibleMap.svg(c.places, { w: 340, h: 210, route: true, labels: near ? "far" : true, near: near && near.map((s) => s.id), label: `Places in the life of ${c.name}` })
+      + (near ? `<div class="map-cap">In and around Canaan</div>` + BibleMap.svg(near, { w: 340, h: 230, route: true, label: `Places in Canaan in the life of ${c.name}` }) : "");
+    const byPlace = new Map();
+    c.places.forEach((st) => { if (!byPlace.has(st.id)) byPlace.set(st.id, []); byPlace.get(st.id).push(st); });
+    const rows = [...byPlace].map(([id, sts]) => {
+      const pl = BibleMap.place(id);
+      const lines = sts.map((st) => `<li${st.k != null ? ` data-i="${st.k}"` : ""} data-t="${A(st.y)}"><span class="pl-y">${esc(fmtYear(st.y, true))}</span> ${esc(st.text)} <span class="pl-r">${Scripture.linkRefs(st.ref)}</span></li>`).join("");
+      return `<div class="pl-row" data-place="${esc(id)}"><div class="pl-h"><b class="pl-n s-${pl.s}">${sts[0].n}</b><span class="pl-name">${esc(pl.n)}</span>${SURE[pl.s] ? `<span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>` : ""}</div>${pl.note ? `<div class="pl-note">${esc(pl.note)}</div>` : ""}<ul>${lines}</ul></div>`;
+    }).join("");
+    return `<div class="win-h">Places</div><div class="win-map">${map}</div><div class="places">${rows}</div>`;
+  }
+
   function windowHTML(c) {
     const acts = c.events.map(([yr, text, ref], i) => {
       const age = A(yr) - c.tb;
       const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${c.q[0] === "derived" ? "" : "~"}age ${age}</span>` : "";
-      return `<li data-t="${A(yr)}" data-i="${i}"><span class="act-y">${esc(fmtYear(yr, true))}${ageS}</span><span class="act-t">${esc(text)}</span><span class="act-r">${Scripture.linkRefs(ref)}</span></li>`;
+      const st = c.places && c.places.find((p) => p.k === i);
+      const pl = st ? ` <button class="act-p" data-place="${esc(st.id)}" title="Show on the map"><b>${st.n}</b>${esc(BibleMap.shortName(BibleMap.place(st.id).n))}</button>` : "";
+      return `<li data-t="${A(yr)}" data-i="${i}"${st ? ` data-place="${esc(st.id)}"` : ""}><span class="act-y">${esc(fmtYear(yr, true))}${ageS}${pl}</span><span class="act-t">${esc(text)}</span><span class="act-r">${Scripture.linkRefs(ref)}</span></li>`;
     }).join("");
     return `
       <div class="win-head">
@@ -849,9 +889,10 @@
         ${familyHTML(c)}
         <div class="win-h">Lifespan</div>
         ${miniTimeline(c)}
+        ${placesHTML(c)}
         ${acts ? `<div class="win-h">Major activities</div><ul class="acts">${acts}</ul>` : ""}
         ${c.refs.length ? `<div class="win-h">Key scriptures</div><div class="win-refs">${c.refs.map(Scripture.linkRefs).join(" · ")}</div>` : ""}
-        <div class="win-src">Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”</div>
+        <div class="win-src">Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”${c.places && c.places.length ? " Places: OpenBible.info Bible Geocoding Data (CC BY 4.0), checked against <em>Insight</em> and the maps in the <em>New World Translation</em> (Appendix A7 and B)." : ""}</div>
       </div>`;
   }
 
@@ -921,11 +962,14 @@
       const r = CHAR_BY_ID.get(b.dataset.rel); if (!r) return;
       openWindow(r); locate(r);
     }));
+    wirePlaces(w);
     const acts = w.el.querySelector(".acts");
     if (acts) acts.addEventListener("pointerover", (e) => { const li = e.target.closest("li"); if (li) { cursorT = +li.dataset.t; requestRender(); } });
     if (acts) acts.addEventListener("pointerleave", () => { cursorT = null; requestRender(); });
     if (acts) acts.addEventListener("click", (e) => {
       if (e.target.closest(".ref-link")) return;   // the citation opens wol.jw.org in a new tab instead
+      const tag = e.target.closest(".act-p");
+      if (tag) { showPlace(w, tag.dataset.place, true); return; }
       const li = e.target.closest("li"); if (!li) return;
       const t = +li.dataset.t;
       cursorT = t;
@@ -933,6 +977,44 @@
       // briefly highlight the matching dot on the window's own lifespan bar
       const dot = w.el.querySelector(`.mini-tl .mt-ev[data-i="${li.dataset.i}"]`);
       if (dot) { dot.classList.remove("mt-hl"); void dot.getBoundingClientRect(); dot.classList.add("mt-hl"); }
+    });
+  }
+
+  /* the Places map: hovering a place (pin, list row or an activity's place tag) lights its pin;
+     clicking a pin scrolls to that place in the list, and a list line jumps the timeline to its year */
+  function markPlace(w, id) {
+    w.el.querySelectorAll(".bm-pin, .bm-label").forEach((n) => n.classList.toggle("hl", !!id && (n.dataset.group || n.dataset.place || "").split(" ").includes(id)));
+    w.el.querySelectorAll(".pl-row").forEach((n) => n.classList.toggle("hl", n.dataset.place === id));
+  }
+  function showPlace(w, id, scroll) {
+    markPlace(w, id);
+    const body = w.el.querySelector(".win-body");
+    const target = scroll === true ? w.el.querySelector(".win-map") : w.el.querySelector(`.pl-row[data-place="${id}"]`);
+    if (!target) return;
+    const top = body.scrollTop + target.getBoundingClientRect().top - body.getBoundingClientRect().top;
+    body.scrollTo({ top: top - 36, behavior: "smooth" });
+    if (scroll !== true) { target.classList.remove("flash-row"); void target.offsetWidth; target.classList.add("flash-row"); }
+  }
+  function wirePlaces(w) {
+    const box = w.el.querySelector(".win-map"), list = w.el.querySelector(".places");
+    if (!box) return;
+    const over = (e) => {
+      const n = e.target.closest("[data-place]");
+      markPlace(w, n ? n.dataset.place : null);
+    };
+    for (const n of [box, list, w.el.querySelector(".acts")]) if (n) {
+      n.addEventListener("pointerover", over);
+      n.addEventListener("pointerleave", () => markPlace(w, null));
+    }
+    box.addEventListener("click", (e) => { const n = e.target.closest(".bm-pin, .bm-label"); if (n) showPlace(w, n.dataset.place); });
+    list.addEventListener("pointerover", (e) => { const li = e.target.closest("li[data-t]"); if (li) { cursorT = +li.dataset.t; requestRender(); } });
+    list.addEventListener("pointerleave", () => { cursorT = null; requestRender(); });
+    list.addEventListener("click", (e) => {
+      if (e.target.closest(".ref-link")) return;
+      const li = e.target.closest("li[data-t]"); if (!li) return;
+      if (li.dataset.i != null) { openActivity(w.c, +li.dataset.i); return; }
+      cursorT = +li.dataset.t;
+      animateTo(cursorT, Math.max(view.ppy, TIER[w.c.tier] * 1.2), 600);
     });
   }
 
