@@ -230,13 +230,14 @@
     // the parts the person was in more than once; a single visit (Zarephath, Caesarea Philippi) does not rename the map
     const parts = ORDER.filter((k) => n.get(k) && (n.get(k) >= 2 || n.get(k) === total));
     if (!parts.length || (n.get("") || 0) * 2 > total) return "";
-    return parts.length === 1 ? parts[0] : parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1];
+    return parts.join(" + ");    // short, so the map switch stays on one line
   }
   const midYear = (stops) => { const y = stops.map((s) => s.y).filter((v) => v != null).sort((a, b) => a - b); return y.length ? y[y.length >> 1] : 0; };
   function levels(stops) {
-    // "Whole journey" only for a life that took the person far from home (Abraham from Ur, Paul to Rome)
+    // "Journey" (the whole journey) only for a life that took the person far from home (Abraham from Ur,
+    // Paul to Rome); names are kept short so the switch fits on one line, with the full name as its tooltip
     const far = spanOf(stops) > 6;
-    const out = [{ stops, name: far ? "Whole journey" : "All places", depth: 0, parent: -1 }];
+    const out = [{ stops, name: far ? "Journey" : "All", full: far ? "Whole journey" : "All places", depth: 0, parent: -1 }];
     if (!stops.some((s) => P[s.id])) return out;
     const y = midYear(stops);
     const inL = (s) => { const p = P[s.id] && P[s.id].ll; return p && p[0] >= LEVANT[0] && p[0] <= LEVANT[2] && p[1] >= LEVANT[1] && p[1] <= LEVANT[3]; };
@@ -249,14 +250,15 @@
     const used = new Set(out.map((l) => l.name));
     const around = (c) => {    // named for the place visited most often there
       const n = new Map(); for (const s of c) n.set(s.id, (n.get(s.id) || 0) + 1);
-      return "Around " + shortName(P[[...n].sort((a, b) => b[1] - a[1])[0][0]].n);
+      return shortName(P[[...n].sort((a, b) => b[1] - a[1])[0][0]].n);
     };
     const add = (c, w, parent) => {
       if (out.length >= MAX_MAPS) return;
       let name = w ? "" : areaName(c, y);
-      if (!name || used.has(name)) name = around(c);
+      let full = name;
+      if (!name || used.has(name)) { name = around(c); full = "Around " + name; }
       used.add(name);
-      out.push({ stops: c, name, depth: out[parent].depth + 1, parent, minSpan: MIN_SPANS[w] });
+      out.push({ stops: c, name, full, depth: out[parent].depth + 1, parent, minSpan: MIN_SPANS[w] });
       return out.length - 1;
     };
     // close-ups in the order the person first went there, each followed by a closer map still

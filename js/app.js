@@ -906,10 +906,10 @@
       const insets = lv.map((m, j) => ({ m, j })).filter(({ m }) => m.parent === k).map(({ m, j }) => ({ ids: [...new Set(m.stops.map((s) => s.id))], name: m.name, k: j }));
       return `<div class="bm-v" data-k="${k}" data-d="${l.depth}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
         + BibleMap.svg(l.stops, { w: 340, h: k ? h1 : h0, route: true, labels: insets.length ? "far" : true, insets, minSpan: l.minSpan || 0,
-          label: k ? `${l.name} map of places in the life of ${c.name}` : `Places in the life of ${c.name}` }) + `</div>`;
+          label: k ? `${l.full || l.name} map of places in the life of ${c.name}` : `Places in the life of ${c.name}` }) + `</div>`;
     }).join("");
-    const sw = lv.length > 1 ? lv.map((l, k) => `<button class="bm-sw" data-v="${k}" aria-pressed="${!k}">${esc(l.name)}</button>`).join("") : "";
-    const hide = phone ? `<button class="bm-hide" aria-expanded="true">Hide map</button>` : "";
+    const sw = lv.length > 1 ? lv.map((l, k) => `<button class="bm-sw" data-v="${k}" aria-pressed="${!k}" title="${esc(l.full || l.name)}">${esc(l.name)}</button>`).join("") : "";
+    const hide = phone ? `<button class="bm-hide" aria-expanded="true" aria-label="Hide map" title="Hide map">▴</button>` : "";
     return `<div class="bm-views" data-v="0">` + (sw || hide ? `<div class="bm-bar">${sw}${hide}</div>` : "") + maps + `<div class="bm-cap"></div></div>`;
   }
   const placeNote = (pl) => (pl.note || "").replace(/^Identified with /, "Usually placed at ");
@@ -1112,7 +1112,7 @@
       const views = box.querySelector(".bm-views");
       if (views) {
         views.classList.remove("folded");
-        const hb = views.querySelector(".bm-hide"); if (hb) { hb.textContent = "Hide map"; hb.setAttribute("aria-expanded", "true"); }
+        const hb = views.querySelector(".bm-hide"); if (hb) { hb.textContent = "▴"; hb.setAttribute("aria-label", "Hide map"); hb.title = "Hide map"; hb.setAttribute("aria-expanded", "true"); }
       }
     }
     followView(w, id);
@@ -1142,7 +1142,7 @@
       if (hb) {
         const views = box.querySelector(".bm-views"), fold = !views.classList.contains("folded");
         views.classList.toggle("folded", fold);
-        hb.textContent = fold ? "Show map" : "Hide map"; hb.setAttribute("aria-expanded", !fold);
+        hb.textContent = fold ? "Show map ▾" : "▴"; hb.setAttribute("aria-label", fold ? "Show map" : "Hide map"); hb.title = fold ? "Show map" : "Hide map"; hb.setAttribute("aria-expanded", !fold);
         return;
       }
       const it = e.target.closest(".bm-inset-t");
