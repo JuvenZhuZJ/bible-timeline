@@ -412,8 +412,9 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .contemp summary::-webkit-details-marker { display: none; }
 .contemp summary::after { content: ""; width: 5px; height: 5px; border: solid currentColor; border-width: 0 1px 1px 0; transform: rotate(-45deg); transition: transform 0.15s; }
 .contemp[open] summary::after { transform: rotate(45deg); }
-.contemp summary:hover, .contemp summary:focus-visible { color: var(--fg-2); outline: none; }
-.contemp-n { letter-spacing: 0.1em; color: var(--fg-2); }
+.contemp summary:focus { outline: none; }
+.contemp summary:hover::after, .contemp summary:focus-visible::after { border-color: var(--fg-2); }
+.contemp-n { letter-spacing: 0.1em; }
 .contemp-more { font: 500 9.5px var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); background: none; border: 0; cursor: pointer; padding: 4px 4px 5px; }
 .contemp-more:hover, .contemp-more:focus-visible { color: var(--wc); outline: none; }
 .contemp-note { font-size: 11px; color: var(--muted); margin-top: 6px; }
