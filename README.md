@@ -49,7 +49,7 @@ The personal lifespan tracks (hover and open windows) start below the event labe
 
 ## Portraits
 
-Each person's lifespan line starts just after their name, so the name never sits on top of its own line. The gap is sized to the measured name width (re-measured once the web fonts load); see `d.gap` in `render()` in `js/app.js`.
+Each person's lifespan line, solid or dotted, starts just after their name, and it also breaks wherever another person's name sits on it (a short-lived person's name may share a lane with a long line). So no name ever sits on top of a line. The gaps are sized to the measured name width (re-measured once the web fonts load); see `cutLifeLines()` in `js/app.js`.
 
 Hovering (or tapping) a person shows their line-drawn portrait in a dark card, always in the same spot: under the lifespan tracks, between the timeline and the bottom controls, so it never sits on top of the names. The card moves down a little as open windows add tracks, and stops above the minimap and the window dock. When several people are open and there is no room left for the drawing, the card shrinks to just the name and dates, the tracks move a little closer together, and the hovered person's event notes are left out, so every lifespan line stays visible. Only if even that is not enough is the oldest open person's track left out (their window stays in the dock). The placement is `placePortrait()` and `trackFit()` in `js/app.js`.
 
