@@ -487,12 +487,15 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .acts li.at-place { background: rgba(235, 231, 222, 0.05); }
 /* the map: in the map window on a computer, pinned under the lifespan bar in the window on a phone */
 .win-map { display: none; }
-.bm-bar { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
-.bm-sw, .bm-hide { font: 300 10px var(--sans); color: var(--muted); background: none; border: 1px solid var(--faint); border-radius: 10px; padding: 2px 9px; cursor: pointer; }
+.bm-bar { display: flex; gap: 5px; align-items: center; margin-bottom: 6px; overflow-x: auto; scrollbar-width: none; }
+.bm-bar::-webkit-scrollbar { display: none; }
+.bm-sw, .bm-hide { font: 300 10px var(--sans); color: var(--muted); background: none; border: 1px solid var(--faint); border-radius: 10px; padding: 2px 8px; cursor: pointer; white-space: nowrap; flex: none; }
 .bm-sw:hover, .bm-hide:hover, .bm-sw:focus-visible, .bm-hide:focus-visible { color: var(--fg); outline: none; }
 .bm-sw[aria-pressed="true"] { color: var(--fg); border-color: var(--wc, var(--accent)); }
-.bm-hide { margin-left: auto; }
-.bm-views[data-v="0"] .bm-v:not([data-k="0"]), .bm-views[data-v="1"] .bm-v:not([data-k="1"]), .bm-views[data-v="2"] .bm-v:not([data-k="2"]) { display: none; }
+.bm-hide { margin-left: auto; padding: 2px 7px; }
+@media (max-width: 760px) { .bm-bar { gap: 4px; } .bm-sw { padding: 2px 6px; } }
+.bm-views[data-v="0"] .bm-v:not([data-k="0"]), .bm-views[data-v="1"] .bm-v:not([data-k="1"]), .bm-views[data-v="2"] .bm-v:not([data-k="2"]),
+.bm-views[data-v="3"] .bm-v:not([data-k="3"]), .bm-views[data-v="4"] .bm-v:not([data-k="4"]) { display: none; }
 .bm-views.folded .bm-v, .bm-views.folded .bm-cap { display: none; }
 .bm-views.folded .bm-bar { margin-bottom: 0; }
 .bm-cap { font: 300 11px/1.45 var(--sans); color: var(--muted); min-height: 3em; margin-top: 7px; }
