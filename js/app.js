@@ -1008,11 +1008,23 @@
      clicking a pin scrolls the window to the first activity there, and clicking a place tag shows it */
   const mapBoxes = (w) => [w.el.querySelector(".win-map"), mapW.c === w.c && !L.mobile ? mapW.body : null].filter(Boolean);
   const hasId = (n, id) => (n.dataset.place || "").split(" ").includes(id);
+  // Google Maps at the place, satellite view; an uncertain site opens at the spot used here, which the
+  // link says is the suggested one
+  function gmapLink(pl) {
+    const [lon, lat] = pl.ll, z = pl.r ? 7 : 14;
+    const url = `https://www.google.com/maps/place/${lat},${lon}/@${lat},${lon},${z}z/data=!3m1!1e3`;
+    const text = pl.s === "known" ? "Open in Google Maps" : "Suggested site in Google Maps";
+    return `<a class="bm-gmap" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(pl.n)} in Google Maps (opens a new tab)">${text} ↗</a>`;
+  }
+  // the caption under the map keeps the last place pointed at, so its Google Maps link can be reached
   function markPlace(w, id) {
+    if (id) w.capId = id;
     for (const box of mapBoxes(w)) {
       box.querySelectorAll(".bm-pin, .bm-label").forEach((n) => n.classList.toggle("hl", !!id && hasId(n, id)));
-      const cap = box.querySelector(".bm-cap"), pl = id && BibleMap.place(id);
-      if (cap) cap.innerHTML = pl ? `<b>${esc(pl.n)}</b>${SURE[pl.s] ? ` <span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>` : ""}${placeNote(pl) ? ` <span>${esc(placeNote(pl))}</span>` : ""}` : capHint(box, w.c);
+      const cap = box.querySelector(".bm-cap"), pl = w.capId && BibleMap.place(w.capId);
+      if (!cap || cap.dataset.id === (w.capId || "")) continue;   // unchanged: keep the link under the pointer
+      cap.dataset.id = w.capId || "";
+      cap.innerHTML = pl ? `<b>${esc(pl.n)}</b>${SURE[pl.s] ? ` <span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>` : ""}${placeNote(pl) ? ` <span>${esc(placeNote(pl))}</span>` : ""} ${gmapLink(pl)}` : capHint(box, w.c);
     }
     w.el.querySelectorAll(".acts li[data-place]").forEach((n) => n.classList.toggle("at-place", !!id && hasId(n, id)));
   }
@@ -1127,7 +1139,7 @@
       mapW.c = w.c;
       mapW.el.querySelector(".mw-who").textContent = w.c.name;
       mapW.body.innerHTML = w.c.places ? mapViews(w.c, false) : `<p class="mw-empty">The Bible names no places for ${esc(w.c.name)}.</p>`;
-      if (w.c.places) mapW.body.querySelector(".bm-cap").textContent = capHint(mapW.body, w.c);
+      if (w.c.places) { mapW.body.querySelector(".bm-cap").textContent = capHint(mapW.body, w.c); if (w.capId) markPlace(w, null); }
     }
     if (!mapW.el.hidden && !mapW.placed) { mapW.placed = true; place(mapW, 24, 84); }
   }

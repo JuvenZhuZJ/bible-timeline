@@ -480,6 +480,8 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bm-views.folded .bm-v, .bm-views.folded .bm-cap { display: none; }
 .bm-views.folded .bm-bar { margin-bottom: 0; }
 .bm-cap { font: 300 11px/1.45 var(--sans); color: var(--muted); min-height: 3em; margin-top: 7px; }
+.bm-gmap { color: var(--fg-2); text-decoration: underline; text-decoration-color: var(--faint); text-underline-offset: 2px; white-space: nowrap; margin-left: 2px; }
+.bm-gmap:hover, .bm-gmap:focus-visible { color: var(--fg); text-decoration-color: var(--wc, var(--accent)); outline: none; }
 .bm-cap b { font: 600 14px var(--serif); color: var(--fg); margin-right: 2px; }
 .bm-pin.ping .bm-ring { animation: pin-ping 1.6s ease-out; }
 @keyframes pin-ping { 0%, 45% { stroke: var(--fg); stroke-width: 3.5; } 100% { stroke-width: 1.2; } }
