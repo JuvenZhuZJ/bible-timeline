@@ -23,7 +23,7 @@ The **People** button in the top bar picks who appears:
 
 | Mode | Shows |
 | --- | --- |
-| Everyone | All 2,704 people. Minor people appear as you zoom in. |
+| Everyone | All 2,737 people, including 34 the Bible does not name (see below). Minor people appear as you zoom in. |
 | Key figures | 201 people: the 140 hand-written key figures plus everyone on the Adam-to-Jesus line. |
 | Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
 
@@ -32,6 +32,10 @@ All three modes follow the same zoom rule: fully zoomed out you see only the tim
 Searching for a person who is hidden by the current mode switches to Everyone. The choice is remembered in the browser.
 
 On a phone the search box opens across the top bar, so the site title and the People button are hidden while it is open and come back when it closes (a CSS rule in the phone section of `css/style.css`). On a computer the search box sits beside the title and nothing is hidden.
+
+## People the Bible does not name
+
+The people list is built from the person articles in *Insight on the Scriptures*, and Insight writes an article only for a name. So people the Bible never names were missing, and their families had gaps: Ammon (Ben-ammi) had no mother. `data/source/unnamed-people.json` adds 34 of them, in the same shape as the Insight records, with a label for a name ("Lot's younger daughter", "Noah's wife", "Pharaoh of the Exodus") and the verses that mention them. A person is included when they have a clear family link to someone on the timeline (the wives of Cain, Noah, his sons, Lot, Potiphar, Manoah, Job, Jeroboam, Isaiah, Ezekiel, Peter and Pilate; Lot's daughters; Jephthah's and Jairus' daughters; Paul's sister and nephew) or a notable part in a Bible account (the Pharaohs of Joseph's day and of the Exodus, the Pharaoh's daughter who adopted Moses, the queen of Sheba, the widow of Zarephath, the Israelite girl in Naaman's house, the medium of En-dor, the Samaritan woman, the poor widow, the evildoer beside Jesus, the Ethiopian eunuch). Anonymous crowds, unnamed children and passing mentions are left out. A few unnamed people already had an Insight article and were there before (the Shunammite woman). Their windows cite only the Bible, not *Insight*.
 
 ## Era names
 
@@ -86,6 +90,7 @@ While any window is open, the dock at the bottom of the screen starts with two b
 - **People, relationships and scriptures:** *Insight on the Scriptures*, volumes 1 and 2 (it-1_E.pdf, it-2_E.pdf). Every person article was extracted, one record per numbered sense, into `data/source/insight-people.json`.
 - **Line of descent:** Luke 3:23-38 and Matthew 1:1-16, from the *New World Translation Study Edition* (nwtsty1_E.pdf) and the matching Insight articles.
 - **Places:** OpenBible.info Bible Geocoding Data (CC BY 4.0) for coordinates, checked against *Insight on the Scriptures* and the maps in the *New World Translation* (nwt_E.pdf). Coastline: Natural Earth (public domain). See [Places map](#places-map).
+- **Unnamed people:** `data/source/unnamed-people.json`, written by hand from the verses each record cites (see [People the Bible does not name](#people-the-bible-does-not-name)).
 - **Key figures and events:** `data/characters.js` and `data/events.js`, written by hand from the same sources.
 - **Dates checked against:** the *New World Translation* (nwt_E.pdf): the table of Bible books (when each book was written and the years it covers), Appendix A6 (chart of the kings and prophets of Judah and Israel) and Appendix A7 (main events of Jesus' life); *Walk Courageously With God* (2025), whose section timelines give approximate life spans for the people in its 54 chapters; *Imitate Their Faith*, whose opening timeline dates Ruth, Hannah, Abigail, Elijah, Jonah, Esther and others; and *"Bearing Thorough Witness" About God's Kingdom* for the dates in Acts. Where a key figure's date is not recorded in the Bible and one of these books gives an approximate year, the site uses that year and the person's window note names the source. Where they differ from older *Insight* dates, the newer NWT chart is followed (Hezekiah died in 716 B.C.E., Manasseh in 661 and Josiah in 628, as in Appendix A6 and *Walk Courageously With God*).
 
@@ -107,7 +112,7 @@ data/places.js              places of key figures and events (hand-written)
 data/basemap.js             coastline, rivers and lakes for the maps (generated)
 data/people.js              all people (generated, do not edit)
 data/ASSUMED_DATES.md       generated list of placeholder dates
-data/source/                extracted Insight records and manual overrides
+data/source/                extracted Insight records, unnamed people and manual overrides
 tools/build-people.mjs      builds data/people.js
 tools/build-basemap.mjs     builds data/basemap.js
 ```
@@ -120,12 +125,14 @@ After editing `data/characters.js`, `data/source/insight-people.json` or `data/s
 node tools/build-people.mjs
 ```
 
+`node tools/build-people.mjs --matches` lists which Insight article each key figure was linked to, so a wrong link (a namesake) is easy to spot and fix in `overrides.json`.
+
 The script merges the curated key figures with the Insight records, links relatives in both directions, finds the Adam-to-Jesus line, fills in placeholder dates and writes `data/people.js` and `data/ASSUMED_DATES.md`. It prints any key figures or line names it could not match.
 
 `data/source/overrides.json` fixes matches by hand. Supported keys:
 
 - `curated`: `{ "key-figure-id": "INSIGHT#N" }` forces a match, or `null` to stop one.
-- `drop`: Insight keys to leave out.
+- `drop`: Insight keys to leave out (duplicates such as AMMON, the same man as Ben-ammi, and JEDIDIAH, Solomon's other name).
 - `line`, `notLine`: person ids to add to or remove from the Adam-to-Jesus line.
 - `tier`: `{ "id": 1-4 }` sets how far you must zoom in before a person appears (1 is always shown).
 - `dates`: `{ "id": [born, died] }` replaces a placeholder life span that the generation estimate gets wrong (Ruth's family, for example: Obed is born when Ruth marries Boaz, not a generation later).
@@ -138,6 +145,6 @@ While publishing, the workflow adds the commit to every script, stylesheet and i
 
 ## Known gaps
 
-- Six key figures are not linked to an Insight article yet (Nimrod, Abraham, Barak, Goliath, Zechariah the priest, Mary Magdalene), so they show only their hand-written family.
+- Eight key figures are not linked to an Insight article yet (Nimrod, Abraham, Ehud, Barak, Goliath, Jeremiah, Zechariah the priest, Mary Magdalene), so they show only their hand-written family. The extracted Insight records have no entry for the judge Ehud or the prophet Jeremiah, so they are left unlinked rather than tied to a namesake.
 - Three names in Luke's list (Maath, Naggai, Amos) are not on the line yet.
 - The years of the Judges are uncertain: the periods the book of Judges gives add up to more than the time between the entry into Canaan (1473 B.C.E.) and Saul (1117 B.C.E.), so some overlapped. The site keeps Jephthah at about 1173 B.C.E. (Judges 11:26), places Gideon at least 88 years earlier (Judges 8:28; 9:22; 10:2-3) and Deborah 47 years before Gideon, and lets Ehud's 80 years of rest overlap. Ruth, Naomi and Boaz follow *Insight* and *Imitate Their Faith* (about the 14th century B.C.E.), which leaves a long gap from Obed to Jesse.

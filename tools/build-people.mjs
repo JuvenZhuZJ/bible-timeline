@@ -8,6 +8,9 @@
  *   data/characters.js               hand-written key figures (dates, events, look)
  *   data/source/insight-people.json  every person article in "Insight on the
  *                                    Scriptures", summarised for this site
+ *   data/source/unnamed-people.json  people the Bible does not name (Lot's wife and
+ *                                    daughters, Noah's wife, Jephthah's daughter ...),
+ *                                    written by hand in the same shape
  *   data/source/overrides.json       manual fixes (optional)
  * Outputs
  *   data/people.js                   window.TIMELINE_PEOPLE, read by js/app.js
@@ -24,7 +27,8 @@ const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
 const sandbox = { window: {} };
 vm.runInNewContext(read("data/characters.js"), sandbox);
 const CURATED = sandbox.window.TIMELINE_CHARACTERS;
-const INSIGHT = JSON.parse(read("data/source/insight-people.json"));
+const INSIGHT = JSON.parse(read("data/source/insight-people.json"))
+  .concat(fs.existsSync(path.join(ROOT, "data/source/unnamed-people.json")) ? JSON.parse(read("data/source/unnamed-people.json")) : []);
 const OVR = fs.existsSync(path.join(ROOT, "data/source/overrides.json")) ? JSON.parse(read("data/source/overrides.json")) : {};
 
 const MIN_Y = -4026, MAX_Y = 100;
@@ -99,7 +103,7 @@ for (const p of INSIGHT) {
     gender: p.gender === "f" || p.gender === "u" ? p.gender : "m", meaning: p.meaning || "", role: p.role || "", summary: p.summary || "",
     born, died, year: clampY(year), q: [qB, qD], group: p.group || "", refs: (p.refs || []).slice(0, 4),
     raw: { father: p.father, mother: p.mother, spouses: p.spouses || [], children: p.children || [], siblings: p.siblings || [], hints: p.relHints || "" },
-    src: head0.charAt(0) + head0.slice(1).toLowerCase().replace(/(^|[\s\-])([a-z])/g, (m, a, b) => a + b.toUpperCase()) + sense,
+    src: p.unnamed ? "" : head0.charAt(0) + head0.slice(1).toLowerCase().replace(/(^|[\s\-])([a-z])/g, (m, a, b) => a + b.toUpperCase()) + sense,
     tier: 4,
   });
 }
@@ -325,6 +329,9 @@ console.log(`${outList.length} people (${outList.filter((p) => p.key).length} ke
 const unmatched = CURATED.filter((c) => !people.find((p) => p.id === c.id && p.ikey)).map((c) => c.id);
 if (unmatched.length) console.log("Key figures not matched to an Insight article:", unmatched.join(", "));
 if (missing.length) console.log("Line of descent, not found:", missing.join(", "));
+if (process.argv.includes("--matches")) {
+  for (const c of CURATED) { const p = people.find((x) => x.id === c.id); const r = p && p.ikey && byKey.get(p.ikey.split("#").slice(0, 2).join("#")); console.log(`${c.id} = ${p && p.ikey || "-"}: ${r ? r.summary : ""}`); }
+}
 if (process.argv.includes("--line")) {
   console.log("Luke:", lukeLine.map((p, i) => p ? `${p.name}(${p.id},${p.year})` : `?${LUKE[i]}`).join(" > "));
   console.log("Matthew:", mattLine.map((p, i) => p ? `${p.name}(${p.id},${p.year})` : `?${MATT[i + 1]}`).join(" > "));
