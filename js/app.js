@@ -994,6 +994,7 @@
       const tag = e.target.closest(".act-p");
       if (tag) { showPlace(w, tag.dataset.place); return; }
       const li = e.target.closest("li"); if (!li) return;
+      if (li.dataset.place) { const id = li.dataset.place.split(" ")[0]; followView(w, id); markPlace(w, id); }
       const t = +li.dataset.t;
       cursorT = t;
       animateTo(t, Math.max(view.ppy, TIER[w.c.tier] * 1.2), 600);
@@ -1023,6 +1024,12 @@
     views.dataset.v = v;
     views.querySelectorAll(".bm-sw").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === v));
   }
+  function followView(w, id) {
+    for (const box of mapBoxes(w)) {
+      const views = box.querySelector(".bm-views");
+      if (views) setMapView(box, views.dataset.near.split(" ").includes(id) ? "canaan" : "all");
+    }
+  }
   function showPlace(w, id) {
     if (!L.mobile && mapW.min) { mapW.min = false; syncMap(); }
     for (const box of mapBoxes(w)) {
@@ -1030,9 +1037,9 @@
       if (views) {
         views.classList.remove("folded");
         const hb = views.querySelector(".bm-hide"); if (hb) { hb.textContent = "Hide map"; hb.setAttribute("aria-expanded", "true"); }
-        setMapView(box, views.dataset.near.split(" ").includes(id) ? "canaan" : "all");
       }
     }
+    followView(w, id);
     markPlace(w, id);
     for (const box of mapBoxes(w)) box.querySelectorAll(".bm-pin").forEach((n) => {
       if (!hasId(n, id)) return;
@@ -1071,7 +1078,13 @@
     const box = w.el.querySelector(".win-map"), acts = w.el.querySelector(".acts");
     if (box) wireMapBox(box, () => w);
     if (!acts || !w.c.places) return;
-    acts.addEventListener("pointerover", (e) => { const li = e.target.closest("li[data-place]"); markPlace(w, li ? (e.target.closest(".act-p") || li).dataset.place.split(" ")[0] : null); });
+    // pointing at an activity (tapping it on a phone) also turns the map to the view its place is on:
+    // the Canaan close-up for a place in Canaan, the whole journey for one beyond it (Haran, Egypt)
+    acts.addEventListener("pointerover", (e) => {
+      const li = e.target.closest("li[data-place]"), id = li && (e.target.closest(".act-p") || li).dataset.place.split(" ")[0];
+      if (id) followView(w, id);
+      markPlace(w, id || null);
+    });
     acts.addEventListener("pointerleave", () => markPlace(w, null));
   }
 
