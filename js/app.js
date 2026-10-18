@@ -897,17 +897,20 @@
   /* the map of a person's places: on a computer it is drawn in the map window (mapW, below), which
      follows the window in use; on a phone it is drawn in the person's own window and stays pinned
      under the lifespan bar while the activities scroll. A life that ranges far beyond Canaan
-     (Abraham from Ur, Paul to Rome) gets a second, closer map of Canaan, chosen with a switch. */
+     (Abraham from Ur, Paul to Rome) gets a closer map of Canaan, and stops crowded into one small
+     area get a close-up (BibleMap.levels), chosen with a switch. */
   const SURE = { likely: "likely site", possible: "location uncertain" };
   function mapViews(c, phone) {
-    const near = BibleMap.detail(c.places), h = phone ? 150 : 210;
-    const all = BibleMap.svg(c.places, { w: 340, h, route: true, labels: near ? "far" : true, near: near && near.map((s) => s.id), label: `Places in the life of ${c.name}` });
-    const canaan = near ? BibleMap.svg(near, { w: 340, h: phone ? 150 : 230, route: true, label: `Places in Canaan in the life of ${c.name}` }) : "";
-    const sw = near ? `<button class="bm-sw" data-v="all" aria-pressed="true">Whole journey</button><button class="bm-sw" data-v="canaan" aria-pressed="false">Canaan</button>` : "";
+    const lv = BibleMap.levels(c.places), h0 = phone ? 150 : 210, h1 = phone ? 150 : 230;
+    const maps = lv.map((l, k) => {
+      const next = lv[k + 1];
+      return `<div class="bm-v" data-k="${k}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
+        + BibleMap.svg(l.stops, { w: 340, h: k ? h1 : h0, route: true, labels: next ? "far" : true, near: next && next.stops.map((s) => s.id), inset: next && next.name, minSpan: l.close ? 0.8 : 0,
+          label: k ? `${l.name} map of places in the life of ${c.name}` : `Places in the life of ${c.name}` }) + `</div>`;
+    }).join("");
+    const sw = lv.length > 1 ? lv.map((l, k) => `<button class="bm-sw" data-v="${k}" aria-pressed="${!k}">${esc(l.name)}</button>`).join("") : "";
     const hide = phone ? `<button class="bm-hide" aria-expanded="true">Hide map</button>` : "";
-    return `<div class="bm-views" data-v="all" data-near="${near ? esc([...new Set(near.map((s) => s.id))].join(" ")) : ""}">`
-      + (sw || hide ? `<div class="bm-bar">${sw}${hide}</div>` : "")
-      + `<div class="bm-v bm-v-all">${all}</div>${canaan ? `<div class="bm-v bm-v-canaan">${canaan}</div>` : ""}<div class="bm-cap"></div></div>`;
+    return `<div class="bm-views" data-v="0">` + (sw || hide ? `<div class="bm-bar">${sw}${hide}</div>` : "") + maps + `<div class="bm-cap"></div></div>`;
   }
   const placeNote = (pl) => (pl.note || "").replace(/^Identified with /, "Usually placed at ");
   function placeTitle(pl) {
@@ -1092,14 +1095,15 @@
   const capHint = (box, c) => (box === mapW.body ? `${new Set(c.places.map((s) => s.id)).size} places · point at a pin or an activity’s place tag` : "");
   function setMapView(box, v) {
     const views = box.querySelector(".bm-views");
-    if (!views || !views.querySelector(".bm-v-canaan")) return;
+    if (!views || !views.querySelector('.bm-v[data-k="1"]')) return;
     views.dataset.v = v;
     views.querySelectorAll(".bm-sw").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === v));
   }
   function followView(w, id) {
     for (const box of mapBoxes(w)) {
       const views = box.querySelector(".bm-views");
-      if (views) setMapView(box, views.dataset.near.split(" ").includes(id) ? "canaan" : "all");
+      // the closest map that has the place on it
+      if (views) setMapView(box, [...views.querySelectorAll(".bm-v")].filter((m) => m.dataset.ids.split(" ").includes(id)).pop()?.dataset.k || "0");
     }
   }
   function showPlace(w, id) {
@@ -1141,7 +1145,7 @@
         hb.textContent = fold ? "Show map" : "Hide map"; hb.setAttribute("aria-expanded", !fold);
         return;
       }
-      if (e.target.closest(".bm-inset-t")) { setMapView(box, "canaan"); return; }
+      if (e.target.closest(".bm-inset-t")) { setMapView(box, String(+box.querySelector(".bm-views").dataset.v + 1)); return; }
       const n = e.target.closest(".bm-pin, .bm-label");
       if (n) { markPlace(w, n.dataset.place); goToPlace(w, n.dataset.place); }
     });
@@ -1151,7 +1155,7 @@
     if (box) wireMapBox(box, () => w);
     if (!acts || !w.c.places) return;
     // pointing at an activity (tapping it on a phone) also turns the map to the view its place is on:
-    // the Canaan close-up for a place in Canaan, the whole journey for one beyond it (Haran, Egypt)
+    // the closest map that has its place (the close-up for Jericho, the whole journey for Haran or Egypt)
     acts.addEventListener("pointerover", (e) => {
       const li = e.target.closest("li[data-place]"), id = li && (e.target.closest(".act-p") || li).dataset.place.split(" ")[0];
       if (id) followView(w, id);
