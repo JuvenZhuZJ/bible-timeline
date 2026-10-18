@@ -37,31 +37,32 @@
     c.td = A(c.died);
     c.assumed = c.q.includes("assumed");
     c.tier = c.tier || 3;
-    const rawEvents = c.events || [];
+    // the places in data/places.js that are not one of the activities become activities too, so the
+    // window has one list
+    const rawEvents = (c.events || []).slice();
+    const visits = ((window.PERSON_PLACES || {})[c.id] || []).map(([id, a, text, ref]) => {
+      if (text === undefined) return [id, rawEvents[a]];
+      const ev = [a, text, ref];
+      rawEvents.push(ev);
+      return [id, ev];
+    });
     c.events = rawEvents.slice().sort((a, b) => a[0] - b[0]);
-    c.places = placesOf(c, rawEvents);
+    c.places = placesOf(c, visits);
     c.labelW = c.name.length * (c.tier === 1 ? 7.6 : 6.3) + 16;
     c.rel = c.rel || {};
     c.refs = c.refs || [];
   });
   const CHAR_BY_ID = new Map(CHARS.map((c) => [c.id, c]));
 
-  /* places in a person's life (data/places.js): each stop is { id, n, k, y, text, ref }, where k is the
-     index of the matching activity in c.events (null for a visit that is not one of the activities)
-     and n is the number on that place's pin, counted by first visit */
-  function placesOf(c, rawEvents) {
-    const list = (window.PERSON_PLACES || {})[c.id];
-    if (!list || !window.BibleMap) return null;
+  /* places in a person's life (data/places.js): each stop is { id, n, k, y }, where k is the index of
+     its activity in c.events and n is the number on that place's pin, counted by first visit */
+  function placesOf(c, visits) {
+    if (!visits.length || !window.BibleMap) return null;
+    const stops = visits.map(([id, ev]) => (ev && BibleMap.place(id) ? { id, k: c.events.indexOf(ev), y: ev[0] } : null))
+      .filter(Boolean).sort((a, b) => a.k - b.k);
     const nums = new Map();
-    return list.map(([id, a, text, ref]) => {
-      if (!BibleMap.place(id)) return null;
-      if (!nums.has(id)) nums.set(id, nums.size + 1);
-      if (text === undefined) {
-        const ev = rawEvents[a], k = c.events.indexOf(ev);
-        return ev ? { id, n: nums.get(id), k, y: ev[0], text: ev[1], ref: ev[2] } : null;
-      }
-      return { id, n: nums.get(id), k: null, y: a, text, ref };
-    }).filter(Boolean);
+    stops.forEach((st) => { if (!nums.has(st.id)) nums.set(st.id, nums.size + 1); st.n = nums.get(st.id); });
+    return stops.length ? stops : null;
   }
   const REL_KEYS = [["father", "Father"], ["mother", "Mother"], ["spouses", "Spouse"], ["siblings", "Sibling"], ["children", "Child"]];
   CHARS.forEach((c) => {
@@ -658,9 +659,7 @@
     const w = wins.find((x) => x.c === c);
     const li = w && w.el.querySelector(`.acts li[data-i="${k}"]`);
     if (!li) return;
-    const body = w.el.querySelector(".win-body");
-    const top = body.scrollTop + li.getBoundingClientRect().top - body.getBoundingClientRect().top;
-    body.scrollTo({ top: top - (body.clientHeight - li.offsetHeight) / 2, behavior: "smooth" });
+    scrollToRow(w, li);
     w.el.querySelectorAll(".acts li.act-hl").forEach((o) => o.classList.remove("act-hl"));
     void li.offsetWidth; li.classList.add("act-hl");
     cursorT = +li.dataset.t; requestRender();
@@ -843,29 +842,34 @@
     return c.family ? `<div class="win-family">${Scripture.linkText(c.family)}</div>` : "";
   }
 
+  /* the map of a person's places: on a computer it is drawn in the map window (mapW, below), which
+     follows the window in use; on a phone it is drawn in the person's own window and stays pinned
+     under the lifespan bar while the activities scroll. A life that ranges far beyond Canaan
+     (Abraham from Ur, Paul to Rome) gets a second, closer map of Canaan, chosen with a switch. */
   const SURE = { likely: "likely site", possible: "location uncertain" };
-  function placesHTML(c) {
-    if (!c.places || !c.places.length) return "";
-    const near = BibleMap.detail(c.places);
-    const map = BibleMap.svg(c.places, { w: 340, h: 210, route: true, labels: near ? "far" : true, near: near && near.map((s) => s.id), label: `Places in the life of ${c.name}` })
-      + (near ? `<div class="map-cap">In and around Canaan</div>` + BibleMap.svg(near, { w: 340, h: 230, route: true, label: `Places in Canaan in the life of ${c.name}` }) : "");
-    const byPlace = new Map();
-    c.places.forEach((st) => { if (!byPlace.has(st.id)) byPlace.set(st.id, []); byPlace.get(st.id).push(st); });
-    const rows = [...byPlace].map(([id, sts]) => {
-      const pl = BibleMap.place(id);
-      const lines = sts.map((st) => `<li${st.k != null ? ` data-i="${st.k}"` : ""} data-t="${A(st.y)}"><span class="pl-y">${esc(fmtYear(st.y, true))}</span> ${esc(st.text)} <span class="pl-r">${Scripture.linkRefs(st.ref)}</span></li>`).join("");
-      return `<div class="pl-row" data-place="${esc(id)}"><div class="pl-h"><b class="pl-n s-${pl.s}">${sts[0].n}</b><span class="pl-name">${esc(pl.n)}</span>${SURE[pl.s] ? `<span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>` : ""}</div>${pl.note ? `<div class="pl-note">${esc(pl.note)}</div>` : ""}<ul>${lines}</ul></div>`;
-    }).join("");
-    return `<div class="win-h">Places</div><div class="win-map">${map}</div><div class="places">${rows}</div>`;
+  function mapViews(c, phone) {
+    const near = BibleMap.detail(c.places), h = phone ? 150 : 210;
+    const all = BibleMap.svg(c.places, { w: 340, h, route: true, labels: near ? "far" : true, near: near && near.map((s) => s.id), label: `Places in the life of ${c.name}` });
+    const canaan = near ? BibleMap.svg(near, { w: 340, h: phone ? 150 : 230, route: true, label: `Places in Canaan in the life of ${c.name}` }) : "";
+    const sw = near ? `<button class="bm-sw" data-v="all" aria-pressed="true">Whole journey</button><button class="bm-sw" data-v="canaan" aria-pressed="false">Canaan</button>` : "";
+    const hide = phone ? `<button class="bm-hide" aria-expanded="true">Hide map</button>` : "";
+    return `<div class="bm-views" data-v="all" data-near="${near ? esc([...new Set(near.map((s) => s.id))].join(" ")) : ""}">`
+      + (sw || hide ? `<div class="bm-bar">${sw}${hide}</div>` : "")
+      + `<div class="bm-v bm-v-all">${all}</div>${canaan ? `<div class="bm-v bm-v-canaan">${canaan}</div>` : ""}<div class="bm-cap"></div></div>`;
+  }
+  const placeNote = (pl) => (pl.note || "").replace(/^Identified with /, "Usually placed at ");
+  function placeTitle(pl) {
+    const sure = SURE[pl.s] ? ` (${SURE[pl.s]})` : "", note = placeNote(pl);
+    return pl.n + sure + (note ? `. ${note}` : "");
   }
 
   function windowHTML(c) {
     const acts = c.events.map(([yr, text, ref], i) => {
       const age = A(yr) - c.tb;
       const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${c.q[0] === "derived" ? "" : "~"}age ${age}</span>` : "";
-      const st = c.places && c.places.find((p) => p.k === i);
-      const pl = st ? ` <button class="act-p" data-place="${esc(st.id)}" title="Show on the map"><b>${st.n}</b>${esc(BibleMap.shortName(BibleMap.place(st.id).n))}</button>` : "";
-      return `<li data-t="${A(yr)}" data-i="${i}"${st ? ` data-place="${esc(st.id)}"` : ""}><span class="act-y">${esc(fmtYear(yr, true))}${ageS}${pl}</span><span class="act-t">${esc(text)}</span><span class="act-r">${Scripture.linkRefs(ref)}</span></li>`;
+      const sts = c.places ? c.places.filter((p) => p.k === i) : [];
+      const pl = sts.map((st) => { const p = BibleMap.place(st.id); return ` <button class="act-p s-${p.s}" data-place="${esc(st.id)}" title="${esc(placeTitle(p))}"><b>${st.n}</b>${esc(BibleMap.shortName(p.n))}${p.s === "possible" ? "?" : ""}</button>`; }).join("");
+      return `<li data-t="${A(yr)}" data-i="${i}"${sts.length ? ` data-place="${esc(sts.map((st) => st.id).join(" "))}"` : ""}><span class="act-y">${esc(fmtYear(yr, true))}${ageS}${pl}</span><span class="act-t">${esc(text)}</span><span class="act-r">${Scripture.linkRefs(ref)}</span></li>`;
     }).join("");
     return `
       <div class="win-head">
@@ -889,7 +893,7 @@
         ${familyHTML(c)}
         <div class="win-h">Lifespan</div>
         ${miniTimeline(c)}
-        ${placesHTML(c)}
+        ${c.places ? `<div class="win-map">${mapViews(c, true)}</div>` : ""}
         ${acts ? `<div class="win-h">Major activities</div><ul class="acts">${acts}</ul>` : ""}
         ${c.refs.length ? `<div class="win-h">Key scriptures</div><div class="win-refs">${c.refs.map(Scripture.linkRefs).join(" · ")}</div>` : ""}
         <div class="win-src">Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”${c.places && c.places.length ? " Places: OpenBible.info Bible Geocoding Data (CC BY 4.0), checked against <em>Insight</em> and the maps in the <em>New World Translation</em> (Appendix A7 and B)." : ""}</div>
@@ -933,15 +937,28 @@
     void wh;
   }
 
+  let focusedW = null;
   function focusWin(w) {
     wins.forEach((o) => o.el.classList.toggle("focused", o === w));
     w.el.style.zIndex = ++zTop;
+    focusedW = w;
+    syncMap();
   }
 
-  function wireWindow(w) {
+  /* scroll a window's activity row into the middle of what can be seen of the list, below the
+     lifespan bar and (on a phone) the map pinned under it */
+  function scrollToRow(w, li) {
+    const body = w.el.querySelector(".win-body"), br = body.getBoundingClientRect();
+    let pinned = 0;
+    for (const n of w.el.querySelectorAll(".mini-tl, .win-map")) if (n.offsetParent) pinned += n.offsetHeight;
+    const top = body.scrollTop + li.getBoundingClientRect().top - br.top;
+    const room = Math.max(li.offsetHeight, body.clientHeight - pinned);
+    body.scrollTo({ top: top - pinned - (room - li.offsetHeight) / 2, behavior: "smooth" });
+  }
+
+  function wireDrag(w) {
     const head = w.el.querySelector(".win-head");
     let drag = null;
-    w.el.addEventListener("pointerdown", () => focusWin(w));
     head.addEventListener("pointerdown", (e) => {
       if (e.target.closest(".win-btn")) return;
       drag = { id: e.pointerId, dx: e.clientX - w.x, dy: e.clientY - w.y };
@@ -952,6 +969,12 @@
     const end = (e) => { if (drag && e.pointerId === drag.id) drag = null; };
     head.addEventListener("pointerup", end);
     head.addEventListener("pointercancel", end);
+  }
+
+  function wireWindow(w) {
+    const head = w.el.querySelector(".win-head");
+    w.el.addEventListener("pointerdown", () => focusWin(w));
+    wireDrag(w);
     head.addEventListener("dblclick", (e) => { if (!e.target.closest(".win-btn")) minimize(w); });
 
     w.el.querySelector('[data-act="close"]').addEventListener("click", () => closeWin(w));
@@ -969,7 +992,7 @@
     if (acts) acts.addEventListener("click", (e) => {
       if (e.target.closest(".ref-link")) return;   // the citation opens wol.jw.org in a new tab instead
       const tag = e.target.closest(".act-p");
-      if (tag) { showPlace(w, tag.dataset.place, true); return; }
+      if (tag) { showPlace(w, tag.dataset.place); return; }
       const li = e.target.closest("li"); if (!li) return;
       const t = +li.dataset.t;
       cursorT = t;
@@ -980,42 +1003,120 @@
     });
   }
 
-  /* the Places map: hovering a place (pin, list row or an activity's place tag) lights its pin;
-     clicking a pin scrolls to that place in the list, and a list line jumps the timeline to its year */
+  /* places: hovering an activity with a place tag, or a pin, lights the pin and the activities there;
+     clicking a pin scrolls the window to the first activity there, and clicking a place tag shows it */
+  const mapBoxes = (w) => [w.el.querySelector(".win-map"), mapW.c === w.c && !L.mobile ? mapW.body : null].filter(Boolean);
+  const hasId = (n, id) => (n.dataset.group || n.dataset.place || "").split(" ").includes(id);
   function markPlace(w, id) {
-    w.el.querySelectorAll(".bm-pin, .bm-label").forEach((n) => n.classList.toggle("hl", !!id && (n.dataset.group || n.dataset.place || "").split(" ").includes(id)));
-    w.el.querySelectorAll(".pl-row").forEach((n) => n.classList.toggle("hl", n.dataset.place === id));
+    for (const box of mapBoxes(w)) {
+      box.querySelectorAll(".bm-pin, .bm-label").forEach((n) => n.classList.toggle("hl", !!id && hasId(n, id)));
+      const cap = box.querySelector(".bm-cap"), pl = id && BibleMap.place(id);
+      if (cap) cap.innerHTML = pl ? `<b>${esc(pl.n)}</b>${SURE[pl.s] ? ` <span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>` : ""}${placeNote(pl) ? ` <span>${esc(placeNote(pl))}</span>` : ""}` : capHint(box, w.c);
+    }
+    w.el.querySelectorAll(".acts li[data-place]").forEach((n) => n.classList.toggle("at-place", !!id && hasId(n, id)));
   }
-  function showPlace(w, id, scroll) {
+  // with nothing hovered, the map window says what it can do; a phone has no room for that
+  const capHint = (box, c) => (box === mapW.body ? `${new Set(c.places.map((s) => s.id)).size} places · point at a pin or an activity’s place tag` : "");
+  function setMapView(box, v) {
+    const views = box.querySelector(".bm-views");
+    if (!views || !views.querySelector(".bm-v-canaan")) return;
+    views.dataset.v = v;
+    views.querySelectorAll(".bm-sw").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === v));
+  }
+  function showPlace(w, id) {
+    if (!L.mobile && mapW.min) { mapW.min = false; syncMap(); }
+    for (const box of mapBoxes(w)) {
+      const views = box.querySelector(".bm-views");
+      if (views) {
+        views.classList.remove("folded");
+        const hb = views.querySelector(".bm-hide"); if (hb) { hb.textContent = "Hide map"; hb.setAttribute("aria-expanded", "true"); }
+        setMapView(box, views.dataset.near.split(" ").includes(id) ? "canaan" : "all");
+      }
+    }
     markPlace(w, id);
-    const body = w.el.querySelector(".win-body");
-    const target = scroll === true ? w.el.querySelector(".win-map") : w.el.querySelector(`.pl-row[data-place="${id}"]`);
-    if (!target) return;
-    const top = body.scrollTop + target.getBoundingClientRect().top - body.getBoundingClientRect().top;
-    body.scrollTo({ top: top - 36, behavior: "smooth" });
-    if (scroll !== true) { target.classList.remove("flash-row"); void target.offsetWidth; target.classList.add("flash-row"); }
+    for (const box of mapBoxes(w)) box.querySelectorAll(".bm-pin").forEach((n) => {
+      if (!hasId(n, id)) return;
+      n.classList.remove("ping"); void n.getBoundingClientRect(); n.classList.add("ping");
+    });
+  }
+  function rowsAt(w, id) { return [...w.el.querySelectorAll(".acts li[data-place]")].filter((n) => hasId(n, id)); }
+  function goToPlace(w, id) {
+    const rows = rowsAt(w, id);
+    if (!rows.length) return;
+    scrollToRow(w, rows[0]);
+    w.el.querySelectorAll(".acts li.act-hl").forEach((o) => o.classList.remove("act-hl"));
+    rows.forEach((li) => { void li.offsetWidth; li.classList.add("act-hl"); });
+  }
+  // the map's own controls and pins, in a window (phone) or in the map window (computer)
+  function wireMapBox(box, who) {
+    box.addEventListener("pointerover", (e) => { const n = e.target.closest(".bm-pin, .bm-label"); const w = who(); if (w) markPlace(w, n ? n.dataset.place : null); });
+    box.addEventListener("pointerleave", () => { const w = who(); if (w) markPlace(w, null); });
+    box.addEventListener("click", (e) => {
+      const w = who(); if (!w) return;
+      const sw = e.target.closest(".bm-sw");
+      if (sw) { setMapView(box, sw.dataset.v); return; }
+      const hb = e.target.closest(".bm-hide");
+      if (hb) {
+        const views = box.querySelector(".bm-views"), fold = !views.classList.contains("folded");
+        views.classList.toggle("folded", fold);
+        hb.textContent = fold ? "Show map" : "Hide map"; hb.setAttribute("aria-expanded", !fold);
+        return;
+      }
+      if (e.target.closest(".bm-inset-t")) { setMapView(box, "canaan"); return; }
+      const n = e.target.closest(".bm-pin, .bm-label");
+      if (n) { markPlace(w, n.dataset.place); goToPlace(w, n.dataset.place); }
+    });
   }
   function wirePlaces(w) {
-    const box = w.el.querySelector(".win-map"), list = w.el.querySelector(".places");
-    if (!box) return;
-    const over = (e) => {
-      const n = e.target.closest("[data-place]");
-      markPlace(w, n ? n.dataset.place : null);
-    };
-    for (const n of [box, list, w.el.querySelector(".acts")]) if (n) {
-      n.addEventListener("pointerover", over);
-      n.addEventListener("pointerleave", () => markPlace(w, null));
+    const box = w.el.querySelector(".win-map"), acts = w.el.querySelector(".acts");
+    if (box) wireMapBox(box, () => w);
+    if (!acts || !w.c.places) return;
+    acts.addEventListener("pointerover", (e) => { const li = e.target.closest("li[data-place]"); markPlace(w, li ? (e.target.closest(".act-p") || li).dataset.place.split(" ")[0] : null); });
+    acts.addEventListener("pointerleave", () => markPlace(w, null));
+  }
+
+  /* the map window (computer only): one window that shows the places of the person window in use,
+     the focused one, or the last one opened that is not folded away. It can be minimized to the dock. */
+  const dockAll = $("dockAll"), foldAllBtn = $("foldAll");
+  const mapW = { el: document.createElement("section"), c: undefined, min: false, x: 0, y: 0, placed: false };
+  mapW.el.className = "win mapwin";
+  mapW.el.setAttribute("role", "dialog");
+  mapW.el.setAttribute("aria-label", "Map of places");
+  mapW.el.hidden = true;
+  mapW.el.innerHTML = `<div class="win-head"><div class="mw-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg></div>`
+    + `<div class="win-title"><div class="win-name">Places</div><div class="win-dates"><span class="mw-who"></span></div></div>`
+    + `<div class="win-btns"><button class="win-btn" data-act="min" aria-label="Minimize the map" title="Minimize">${ICON.min}</button></div></div><div class="win-body mw-body"></div>`;
+  winBox.appendChild(mapW.el);
+  mapW.body = mapW.el.querySelector(".mw-body");
+  const mapChip = document.createElement("button");
+  mapChip.className = "chip map-chip";
+  mapChip.hidden = true;
+  mapChip.addEventListener("click", () => { mapW.min = false; syncMap(); mapW.el.style.zIndex = ++zTop; });
+  dockAll.after(mapChip);
+  mapW.el.addEventListener("pointerdown", () => { mapW.el.style.zIndex = ++zTop; });
+  mapW.el.querySelector('[data-act="min"]').addEventListener("click", () => { mapW.min = true; syncMap(); });
+  mapW.el.querySelector(".win-head").addEventListener("dblclick", (e) => { if (!e.target.closest(".win-btn")) { mapW.min = true; syncMap(); } });
+  wireDrag(mapW);
+  const mapFor = () => wins.find((w) => w.c === mapW.c && !w.minimized);
+  wireMapBox(mapW.body, mapFor);
+
+  function syncMap() {
+    const open = wins.filter((w) => !w.minimized);
+    const w = L.mobile ? null : focusedW && open.includes(focusedW) ? focusedW : open[open.length - 1];
+    mapW.el.hidden = !w || mapW.min;
+    mapChip.hidden = !w || !mapW.min;
+    if (!w) return;
+    mapW.el.style.setProperty("--wc", w.color);
+    mapChip.style.setProperty("--wc", w.color);
+    mapChip.innerHTML = `<i></i>Map · ${esc(w.c.name)}`;
+    mapChip.setAttribute("aria-label", `Show the map of ${w.c.name}`);
+    if (mapW.c !== w.c) {
+      mapW.c = w.c;
+      mapW.el.querySelector(".mw-who").textContent = w.c.name;
+      mapW.body.innerHTML = w.c.places ? mapViews(w.c, false) : `<p class="mw-empty">The Bible names no places for ${esc(w.c.name)}.</p>`;
+      if (w.c.places) mapW.body.querySelector(".bm-cap").textContent = capHint(mapW.body, w.c);
     }
-    box.addEventListener("click", (e) => { const n = e.target.closest(".bm-pin, .bm-label"); if (n) showPlace(w, n.dataset.place); });
-    list.addEventListener("pointerover", (e) => { const li = e.target.closest("li[data-t]"); if (li) { cursorT = +li.dataset.t; requestRender(); } });
-    list.addEventListener("pointerleave", () => { cursorT = null; requestRender(); });
-    list.addEventListener("click", (e) => {
-      if (e.target.closest(".ref-link")) return;
-      const li = e.target.closest("li[data-t]"); if (!li) return;
-      if (li.dataset.i != null) { openActivity(w.c, +li.dataset.i); return; }
-      cursorT = +li.dataset.t;
-      animateTo(cursorT, Math.max(view.ppy, TIER[w.c.tier] * 1.2), 600);
-    });
+    if (!mapW.el.hidden && !mapW.placed) { mapW.placed = true; place(mapW, 24, 84); }
   }
 
   function minimize(w) {
@@ -1046,13 +1147,13 @@
     if (i >= 0) wins.splice(i, 1);
     w.el.remove();
     if (w.chip) w.chip.remove();
+    if (focusedW === w) focusedW = null;
     cursorT = null;
     syncDockAll();
     requestRender();
   }
 
   /* fold or close every window at once; the buttons sit at the start of the dock while any window is open */
-  const dockAll = $("dockAll"), foldAllBtn = $("foldAll");
   const allFolded = () => wins.every((w) => w.minimized);
   function syncDockAll() {
     dockAll.hidden = !wins.length;
@@ -1060,6 +1161,7 @@
     foldAllBtn.querySelector("span").textContent = unfold ? "Unfold all" : "Fold all";
     foldAllBtn.setAttribute("aria-label", unfold ? "Restore all windows" : "Minimize all windows");
     foldAllBtn.querySelector("path").setAttribute("d", unfold ? ICON.restorePath : "M6 12h12");
+    syncMap();
   }
   foldAllBtn.addEventListener("click", () => {
     if (allFolded()) { wins.forEach(restore); if (wins.length) focusWin(wins[wins.length - 1]); }
@@ -1151,6 +1253,8 @@
       layout();
       view.ppy = fitPpy() * rel; view.t0 = c - W / 2 / view.ppy; clampView();
       wins.forEach((w) => place(w, w.x, w.y));
+      if (mapW.placed) place(mapW, mapW.x, mapW.y);
+      syncMap();
       render();
     }, 80);
   });
