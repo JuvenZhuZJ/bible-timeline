@@ -874,6 +874,26 @@
     return c.family ? `<div class="win-family">${Scripture.linkText(c.family)}</div>` : "";
   }
 
+  /* contemporaries: other key figures whose lifespans overlap this key figure's, family left out
+     (it is listed above), most years shared first. Most of them have dates estimated from their
+     generation, so the list is a guide; their chips are dashed. Collapsed until opened. */
+  const CONTEMP_SHOWN = 8;
+  function contemporariesHTML(c) {
+    if (!c.key) return "";
+    const fam = new Set(c.relIds), shared = (o) => Math.min(o.td, c.td) - Math.max(o.tb, c.tb);
+    const list = CHARS.filter((o) => o.key && o !== c && !fam.has(o.id) && shared(o) > 0)
+      .sort((a, b) => shared(b) - shared(a) || a.tier - b.tier);
+    if (!list.length) return "";
+    const chips = list.map((o, i) => {
+      const yrs = shared(o), approx = c.assumed || o.assumed;
+      const tip = `${o.role || ""}${o.role ? ". " : ""}Lifespans overlap ${approx ? "about " : ""}${yrs} year${yrs > 1 ? "s" : ""}${o.assumed ? " (dates approximate)" : ""}`;
+      return `<button class="rel-chip${o.assumed ? " approx" : ""}" data-rel="${esc(o.id)}" title="${esc(tip)}"${i >= CONTEMP_SHOWN ? " hidden" : ""}>${esc(o.name)}</button>`;
+    }).join("");
+    const more = list.length > CONTEMP_SHOWN ? `<button class="contemp-more" aria-expanded="false">Show all ${list.length}</button>` : "";
+    return `<details class="contemp"><summary class="win-h">Contemporaries <span class="contemp-n">${list.length}</span></summary>`
+      + `<div class="rel-v">${chips}${more}</div><div class="contemp-note">Key figures alive at the same time, most years shared first. Dashed: dates estimated.</div></details>`;
+  }
+
   /* the map of a person's places: on a computer it is drawn in the map window (mapW, below), which
      follows the window in use; on a phone it is drawn in the person's own window and stays pinned
      under the lifespan bar while the activities scroll. A life that ranges far beyond Canaan
@@ -923,6 +943,7 @@
         ${c.note ? `<p class="win-note">${c.assumed ? "⚑ " : ""}${Scripture.linkText(c.note)}</p>` : ""}
         <p class="win-summary">${Scripture.linkText(c.summary)}</p>
         ${familyHTML(c)}
+        ${contemporariesHTML(c)}
         <div class="win-h">Lifespan</div>
         ${miniTimeline(c)}
         ${c.places ? `<div class="win-map">${mapViews(c, true)}</div>` : ""}
@@ -1017,6 +1038,13 @@
       const r = CHAR_BY_ID.get(b.dataset.rel); if (!r) return;
       openWindow(r); locate(r);
     }));
+    const more = w.el.querySelector(".contemp-more");
+    if (more) more.addEventListener("click", () => {
+      const open = more.getAttribute("aria-expanded") !== "true";
+      w.el.querySelectorAll(".contemp .rel-chip").forEach((b, i) => { b.hidden = !open && i >= CONTEMP_SHOWN; });
+      more.setAttribute("aria-expanded", open);
+      more.textContent = open ? "Show fewer" : `Show all ${w.el.querySelectorAll(".contemp .rel-chip").length}`;
+    });
     wirePlaces(w);
     const acts = w.el.querySelector(".acts");
     if (acts) acts.addEventListener("pointerover", (e) => { const li = e.target.closest("li"); if (li) { cursorT = +li.dataset.t; requestRender(); } });
