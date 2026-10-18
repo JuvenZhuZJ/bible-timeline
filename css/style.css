@@ -406,6 +406,17 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
   border: 1px solid var(--faint); border-radius: 12px; padding: 4px 9px 5px;
 }
 .rel-chip:hover, .rel-chip:focus-visible { border-color: var(--wc); color: var(--wc); outline: none; }
+.rel-chip.approx { border-style: dashed; }
+/* contemporaries: collapsed under its heading until opened */
+.contemp summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; }
+.contemp summary::-webkit-details-marker { display: none; }
+.contemp summary::before { content: ""; width: 5px; height: 5px; border: solid currentColor; border-width: 0 1px 1px 0; transform: rotate(-45deg); transition: transform 0.15s; }
+.contemp[open] summary::before { transform: rotate(45deg); }
+.contemp summary:hover, .contemp summary:focus-visible { color: var(--fg-2); outline: none; }
+.contemp-n { letter-spacing: 0.1em; color: var(--fg-2); }
+.contemp-more { font: 500 9.5px var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); background: none; border: 0; cursor: pointer; padding: 4px 4px 5px; }
+.contemp-more:hover, .contemp-more:focus-visible { color: var(--wc); outline: none; }
+.contemp-note { font-size: 11px; color: var(--muted); margin-top: 6px; }
 .rel-plain { font: 400 14px/1 var(--serif); color: var(--fg-2); padding: 4px 2px 5px; }
 .win-refs { font: 300 11px/1.7 var(--mono); color: var(--fg-2); }
 /* scripture citations open the passage on wol.jw.org in a new tab; same look until hovered */
