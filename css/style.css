@@ -565,3 +565,16 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
   .settings { transition: opacity .2s; }
   .topbar:has(.search.open) .settings { opacity: 0; visibility: hidden; pointer-events: none; }
 }
+@media (max-width: 760px) {
+  .settings-menu { width: auto; }
+  .brand-sub { white-space: nowrap; }
+  .lang-zh .brand-title { font-size: 13px; letter-spacing: 0.18em; }
+  .lang-zh .brand-sub { letter-spacing: 0.04em; }
+}
+@media (max-width: 760px) {
+  /* four round buttons now share the top bar with the title (search, people, settings, about) */
+  .topbar { gap: 6px; }
+  .topbar > .icon-btn, .topbar .show-btn, .topbar #settingsBtn, .topbar .search-toggle { width: 34px; height: 34px; }
+  .search input { width: 34px; height: 34px; }
+  .brand-sub { letter-spacing: 0.06em; }
+}

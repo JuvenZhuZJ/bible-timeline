@@ -15,6 +15,10 @@
   const KX = B.k * B.sc, KY = B.sc;
   const proj = ([lon, lat]) => [lon * KX, -lat * KY];
   const MIN_SPAN = 1.5 * KY;    // never zoom closer than about 1.5° of latitude, so the coast stays in view
+  // in Chinese (js/i18n.js), map words come from data/zh/places.js; tlen sizes labels (a Chinese character is about two letters)
+  const ZHM = !!(window.I18N && window.I18N.zh), ZMAP = (window.ZH && window.ZH.map) || {};
+  const TR = (s) => (ZHM && ZMAP[s.trim()] ? ZMAP[s.trim()] : s);
+  const tlen = window.I18N ? window.I18N.tlen : (s) => String(s).length;
 
   // sea labels: the first candidate inside the view and clear of the pins is used
   const SEAS = [
@@ -22,6 +26,7 @@
     { t: "Salt Sea", at: [[35.62, 31.38]], max: 3.2 * KY },
     { t: "Red Sea", at: [[33.35, 28.35], [34.75, 28.75], [37.6, 22.6]] },
   ];
+  SEAS.forEach((sea) => { sea.t = TR(sea.t); });
 
   function view(pts, w, h, minSpan) {
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
@@ -152,14 +157,14 @@
       const id = esc(st.id);
       if (small) { marks += `<g class="bm-pin small s-${pl.s}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}</title><circle class="bm-ring" r="2.4"/></g>`; continue; }
       const cls = `bm-pin s-${pl.s}${pl.r ? " region" : ""}${st.hl ? " hl" : ""}`;
-      marks += `<g class="${cls}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}${pl.s === "known" ? "" : pl.s === "likely" ? " (likely site)" : " (location uncertain)"}</title>`;
+      marks += `<g class="${cls}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}${pl.s === "known" ? "" : pl.s === "likely" ? TR(" (likely site)") : TR(" (location uncertain)")}</title>`;
       if (pl.r) marks += `<circle class="bm-area" r="11"/>`;
       marks += `<circle class="bm-ring" r="${st.n != null ? 6.5 : 5}"/>`;
       marks += st.n != null ? `<text class="bm-n" y="2.6" text-anchor="middle">${st.n}</text>` : `<circle class="bm-dot" r="2"/>`;
       marks += `</g>`;
       if (opt.labels === false) continue;
       // label: beside the pin, on the side away from its neighbours when it was spread apart
-      const name = shortName(pl.n), tw = name.length * 5.4 + 2;
+      const name = shortName(pl.n), tw = tlen(name) * 5.4 + 2;
       const R = [x + 9, y + 3.5, "start", [x + 8, y - 5, x + 9 + tw, y + 5]], Lf = [x - 9, y + 3.5, "end", [x - 9 - tw, y - 5, x - 8, y + 5]];
       const U = [x, y - 10, "middle", [x - tw / 2, y - 18, x + tw / 2, y - 8]], D = [x, y + 17, "middle", [x - tw / 2, y + 8, x + tw / 2, y + 19]];
       const UR = [x + 6, y - 7, "start", [x + 5, y - 16, x + 6 + tw, y - 5]], DR = [x + 6, y + 14, "start", [x + 5, y + 5, x + 6 + tw, y + 16]];
@@ -195,7 +200,7 @@
     for (const sea of SEAS) {
       if (sea.max && v.h > sea.max) continue;
       for (const at of sea.at) {
-        const [mx, my] = proj(at), x = +X(mx), y = +Y(my), tw = sea.t.length * 5.6;
+        const [mx, my] = proj(at), x = +X(mx), y = +Y(my), tw = tlen(sea.t) * 5.6;
         const b = [x - tw / 2, y - 7, x + tw / 2, y + 4];
         if (x < 0 || x > w || y < 0 || y > h || hitsR(b)) continue;
         labels = `<text class="bm-sea-t" x="${x}" y="${y}" text-anchor="middle">${esc(sea.t)}</text>` + labels;
@@ -300,7 +305,7 @@
     let sand = "", peaks = "", names = "";
     // a name goes at its spot, or a little above, below or beside it, where it covers no pin, name or route
     const name = (t, [x0, y0], cls, shift) => {
-      const tw = t.length * (cls === "bm-river-t" ? 4.6 : 4.9);
+      const tw = tlen(t) * (cls === "bm-river-t" ? 4.6 : 4.9);
       for (const [ox, oy] of shift === false ? [[0, 0]] : [[0, 0], [0, -9], [0, 9], [-tw / 3, 0], [tw / 3, 0]]) {
         const x = x0 + ox, y = y0 + oy, b = [x - tw / 2, y - 7, x + tw / 2, y + 3];
         if (!inView([x, y]) || hits(b)) continue;
@@ -331,7 +336,7 @@
       const [x, y] = scr(pk.ll);
       if (!inView([x, y]) || boxes.some((o) => x > o[0] - 3 && x < o[2] + 3 && y > o[1] - 3 && y < o[3] + 3)) continue;
       peaks += `<path class="bm-peak" d="M${(x - 3.5).toFixed(1)} ${(y + 2.5).toFixed(1)}l3.5 -5.5l3.5 5.5z"/>`;
-      const tw = pk.n.length * 4.9;
+      const tw = tlen(pk.n) * 4.9;
       for (const [tx, ty] of [[x + 6 + tw / 2, y + 3], [x - 6 - tw / 2, y + 3], [x, y - 5], [x, y + 11]]) if (name(pk.n, [tx, ty], "bm-ter-t", false)) break;
       boxes.push([x - 4, y - 4, x + 4, y + 3]);
     }
@@ -441,7 +446,7 @@
   }
 
   const niceKm = (k) => [5, 10, 20, 50, 100, 200, 500, 1000].reduce((a, b) => (Math.abs(b - k) < Math.abs(a - k) ? b : a));
-  const shortName = (n) => n.replace(/ \(.*\)$/, "").replace(/, (near|by|plains of|Cyprus|Hebron).*$/i, "").replace(/^(Torrent valley of|A city in the land of) /, "");
+  const shortName = (n) => n.replace(/ \(.*\)$/, "").replace(/（.*）$/, "").replace(/, (near|by|plains of|Cyprus|Hebron).*$/i, "").replace(/^(Torrent valley of|A city in the land of) /, "");
 
   /* the maps of a person's places, widest first: the whole journey; for a life that ranges far
      beyond Canaan (Abraham from Ur, Paul to Rome) a closer map of the stops in and around Canaan;
@@ -498,14 +503,14 @@
     // the parts the person was in more than once; a single visit (Zarephath, Caesarea Philippi) does not rename the map
     const parts = ORDER.filter((k) => n.get(k) && (n.get(k) >= 2 || n.get(k) === total));
     if (!parts.length || (n.get("") || 0) * 2 > total) return "";
-    return parts.join(" + ");    // short, so the map switch stays on one line
+    return parts.map(TR).join(ZHM ? "＋" : " + ");    // short, so the map switch stays on one line
   }
   const midYear = (stops) => { const y = stops.map((s) => s.y).filter((v) => v != null).sort((a, b) => a - b); return y.length ? y[y.length >> 1] : 0; };
   function levels(stops) {
     // "Journey" (the whole journey) only for a life that took the person far from home (Abraham from Ur,
     // Paul to Rome); names are kept short so the switch fits on one line, with the full name as its tooltip
     const far = spanOf(stops) > 6;
-    const out = [{ stops, name: far ? "Journey" : "All", full: far ? "Whole journey" : "All places", depth: 0, parent: -1 }];
+    const out = [{ stops, name: TR(far ? "Journey" : "All"), full: TR(far ? "Whole journey" : "All places"), depth: 0, parent: -1 }];
     if (!stops.some((s) => P[s.id])) return out;
     const y = midYear(stops);
     const inL = (s) => { const p = P[s.id] && P[s.id].ll; return p && p[0] >= LEVANT[0] && p[0] <= LEVANT[2] && p[1] >= LEVANT[1] && p[1] <= LEVANT[3]; };
@@ -514,7 +519,7 @@
     let cs = clusters(mid || stops, WINDOWS[0]);
     // a region map that only adds a place or two to its one close-up (Kadesh) is left out: those stay on the first map
     if (mid && cs.length === 1 && ids(cs[0]).size >= ids(mid).size * 2 / 3 && ids(mid).size - ids(cs[0]).size <= 2) mid = null;
-    if (mid) out.push({ stops: mid, name: areaName(mid, y) || (y < -1117 ? "Near Canaan" : "Close-up"), depth: 1, parent: 0 });
+    if (mid) out.push({ stops: mid, name: areaName(mid, y) || TR(y < -1117 ? "Near Canaan" : "Close-up"), depth: 1, parent: 0 });
     const used = new Set(out.map((l) => l.name));
     const around = (c) => {    // named for the place visited most often there
       const n = new Map(); for (const s of c) n.set(s.id, (n.get(s.id) || 0) + 1);
@@ -524,7 +529,7 @@
       if (out.length >= MAX_MAPS) return;
       let name = w ? "" : areaName(c, y);
       let full = name;
-      if (!name || used.has(name)) { name = around(c); full = "Around " + name; }
+      if (!name || used.has(name)) { name = around(c); full = ZHM ? name + "一帶" : "Around " + name; }
       used.add(name);
       out.push({ stops: c, name, full, depth: out[parent].depth + 1, parent, minSpan: MIN_SPANS[w] });
       return out.length - 1;
