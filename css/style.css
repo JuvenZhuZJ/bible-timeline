@@ -547,3 +547,21 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .et-place { font: 300 10.5px var(--sans); color: var(--fg-2); margin-top: 5px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .bm-inset { fill: none; stroke: var(--wc, var(--accent)); stroke-width: 0.8; stroke-dasharray: 2 2; opacity: 0.7; }
 .bm-inset-t { font-size: 9px; fill: var(--muted); }
+
+/* ------------------------------------------------------------- settings (language) */
+.settings { position: relative; }
+.settings.open .show-menu { display: block; animation: winIn .2s; }
+.settings-menu { width: 270px; }
+.zh-only { display: none; }
+.lang-zh .zh-only { display: block; }
+/* Chinese: Latin letters and digits keep the site's fonts, Chinese characters fall through to Noto TC */
+.lang-zh {
+  --serif: "Cormorant Garamond", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --sans: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+.lang-zh .brand-title { letter-spacing: 0.24em; font-size: 14px; }
+.lang-zh .sm-h, .lang-zh .legend-toggle { letter-spacing: 0.12em; }
+@media (max-width: 760px) {
+  .settings { transition: opacity .2s; }
+  .topbar:has(.search.open) .settings { opacity: 0; visibility: hidden; pointer-events: none; }
+}

@@ -5,6 +5,10 @@
 (function () {
   "use strict";
 
+  // interface text: T(key, vars, English) gives the Chinese of js/i18n.js when the site is in Chinese
+  const I18 = window.I18N || { t: () => null, tlen: (s) => String(s).length, zh: false };
+  const T = (k, v, en) => { const s = I18.t(k, v); return s == null ? en : s; };
+  const tlen = I18.tlen;
   const EVENTS = window.TIMELINE_EVENTS || [];
   const ERAS = window.TIMELINE_ERAS || [];
   const CHARS = window.TIMELINE_PEOPLE || window.TIMELINE_CHARACTERS || [];
@@ -18,18 +22,24 @@
      Internally we use astronomical years (t) so spans are continuous. */
   const A = (y) => (y < 0 ? y + 1 : y);
   const fromA = (t) => (t <= 0 ? t - 1 : t);
-  const fmtYear = (y, long) => (y < 0 ? `${-y} ${long ? "B.C.E." : "BCE"}` : `${y} ${long ? "C.E." : "CE"}`);
+  const fmtYear = (y, long) => (I18.zh ? T((y < 0 ? "bce." : "ce.") + (long ? "long" : "short"), { y: Math.abs(y) })
+    : y < 0 ? `${-y} ${long ? "B.C.E." : "BCE"}` : `${y} ${long ? "C.E." : "CE"}`);
   const fmtT = (t, long) => fmtYear(fromA(Math.round(t)), long);
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 
   function fmtRange(c) {
-    const pb = c.q[0] === "derived" ? "" : "c. ";
-    const pd = c.q[1] === "derived" ? "" : "c. ";
+    const ca = T("c.", null, "c. ");
+    const pb = c.q[0] === "derived" ? "" : ca;
+    const pd = c.q[1] === "derived" ? "" : ca;
+    if (I18.zh) {
+      const v = { pb, pd, b: Math.abs(c.born), d: Math.abs(c.died) };
+      return T(c.born < 0 && c.died < 0 ? "range.bce" : c.born < 0 ? "range.cross" : "range.ce", v);
+    }
     if (c.born < 0 && c.died < 0) return `${pb}${-c.born} – ${pd}${-c.died} B.C.E.`;
     if (c.born < 0) return `${pb}${-c.born} B.C.E. – ${pd}${c.died} C.E.`;
     return `${pb}${c.born} – ${pd}${c.died} C.E.`;
   }
-  const ageText = (c) => `${c.assumed ? "~" : ""}${c.td - c.tb} yrs`;
+  const ageText = (c) => T("age", { a: c.assumed ? T("age.approx") : "", n: c.td - c.tb }, `${c.assumed ? "~" : ""}${c.td - c.tb} yrs`);
 
   CHARS.forEach((c) => {
     c.q = c.q || ["assumed", "assumed"];
@@ -48,7 +58,7 @@
     });
     c.events = rawEvents.slice().sort((a, b) => a[0] - b[0]);
     c.places = placesOf(c, visits);
-    c.labelW = c.name.length * (c.tier === 1 ? 7.6 : 6.3) + 16;
+    c.labelW = tlen(c.name) * (c.tier === 1 ? 7.6 : 6.3) + 16;
     c.rel = c.rel || {};
     c.refs = c.refs || [];
   });
@@ -73,7 +83,7 @@
   });
 
   /* who is shown: everyone, key figures only, or only the line from Adam to Jesus */
-  const SHOW_MODES = { all: "Everyone", key: "Key figures", line: "Adam to Jesus line" };
+  const SHOW_MODES = { all: T("show.all", null, "Everyone"), key: T("show.key", null, "Key figures"), line: T("show.line", null, "Adam to Jesus line") };
   let showMode = "all";
   try { const m = localStorage.getItem("bt-show"); if (SHOW_MODES[m]) showMode = m; } catch (_) {}
   const inMode = (c) => showMode === "all" || (showMode === "line" ? !!c.line : !!(c.key || c.line));
@@ -169,7 +179,7 @@
     const lab = document.createElement("div");
     lab.className = "era-label"; lab.textContent = e.name;
     eraLabelBox.appendChild(lab);
-    return { e, rect, lab, w: e.name.length * 7.4 + 24, a: A(e.from), b: A(e.to) };
+    return { e, rect, lab, w: tlen(e.name) * 7.4 + 24, a: A(e.from), b: A(e.to) };
   });
   // dotted lines mark era boundaries only; events inside an era already have their own node and label
   const sepEls = [...new Set(ERAS.flatMap((e) => [A(e.from), A(e.to)]))].map((t) => ({ t, line: el("line", { class: "era-sep" }, g.eras) }));
@@ -191,7 +201,7 @@
     const year = el("text", { class: "ev-year" }, g.events);
     year.textContent = fmtYear(ev.year);
     node.__ev = ev;
-    return { ev, t, stem, node, label, year, w: ev.title.length * 7.3 + 14 };
+    return { ev, t, stem, node, label, year, w: tlen(ev.title) * 7.3 + 14 };
   });
 
   /* Dots are created lazily, the first time a person comes into view,
@@ -487,7 +497,7 @@
       // name label: left of the track if room, otherwise above its start
       const nm = el("text", { class: "track-name", fill: o.color }, grp);
       nm.textContent = c.name;
-      const nw = c.name.length * 7 + 10;
+      const nw = tlen(c.name) * 7 + 10;
       if (xd < 0 || xb > W) {   // whole life off-screen: point toward it
         const left = xd < 0;
         nm.textContent = `${left ? "‹ " : ""}${c.name} · ${fmtYear(c.born)}${left ? "" : " ›"}`;
@@ -508,8 +518,9 @@
         el("circle", { class: "hit", cx: x, cy: y, r: L.mobile ? 11 : 8 }, act);
         el("circle", { class: "track-ev", cx: x, cy: y, r: 2.6, fill: o.color }, act);
         if (!showLabels) return;
-        const label = text.length > 34 ? text.slice(0, 33) + "…" : text;
-        const w = label.length * 5.6 + 50;
+        const max = I18.zh ? 20 : 34;   // a Chinese character is about two letters wide
+        const label = text.length > max ? text.slice(0, max - 1) + "…" : text;
+        const w = tlen(label) * 5.6 + 50;
         const r = rowsEnd.findIndex((e) => e < x - 4);
         if (r < 0) return;
         rowsEnd[r] = x + w;
@@ -517,7 +528,7 @@
         if (ty > Math.min(H - L.bottom + 18, cardTop - 6)) return;
         const t1 = el("text", { class: "track-evyear", x, y: ty }, grp);
         t1.textContent = fmtYear(yr);
-        const t2 = el("text", { class: "track-evlabel", x: x + fmtYear(yr).length * 5.6 + 6, y: ty }, grp);
+        const t2 = el("text", { class: "track-evlabel", x: x + tlen(fmtYear(yr)) * 5.6 + 6, y: ty }, grp);
         t2.textContent = label;
       });
     });
@@ -569,7 +580,7 @@
       $("pcName").textContent = c.name;
       $("pcYears").textContent = `${fmtRange(c)} · ${ageText(c)}`;
       $("pcRole").textContent = c.role || "";
-      $("pcHint").textContent = isPinned(c) ? "Tap again to bring its window forward" : "Tap again for details";
+      $("pcHint").textContent = isPinned(c) ? T("hint.front", null, "Tap again to bring its window forward") : T("hint.again", null, "Tap again for details");
       placePortrait();
       pStage.classList.add("show");
     } else {
@@ -644,7 +655,7 @@
     if (tipEv === ev && tip.classList.contains("show")) return;
     tipEv = ev;
     const pid = (window.EVENT_PLACES || {})[ev.id], pl = pid && window.BibleMap && BibleMap.place(pid);
-    const map = pl ? `<div class="et-map">${BibleMap.svg([{ id: pid }], { w: 252, h: 112, cls: "bm-tip", labels: false, minSpan: 7, label: pl.n })}<div class="et-place">${esc(pl.n)}${pl.s === "known" ? "" : `<span class="pl-s s-${pl.s}">${pl.s === "likely" ? "likely site" : "location uncertain"}</span>`} ${gmapLink(pl)}</div></div>` : "";
+    const map = pl ? `<div class="et-map">${BibleMap.svg([{ id: pid }], { w: 252, h: 112, cls: "bm-tip", labels: false, minSpan: 7, label: pl.n })}<div class="et-place">${esc(pl.n)}${pl.s === "known" ? "" : `<span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>`} ${gmapLink(pl)}</div></div>` : "";
     tip.innerHTML = `<div class="et-year">${esc(fmtYear(ev.year, true))}</div><div class="et-title">${esc(ev.title)}</div><div class="et-text">${esc(ev.text)}</div><div class="et-ref">${Scripture.linkRefs(ev.ref)}</div>${map}`;
     const x = Math.min(W - 150, Math.max(150, X(A(ev.year))));
     tip.style.left = x + "px";
@@ -673,7 +684,7 @@
     hideTip();
     tipAct = a;
     const [yr, text, ref] = a.c.events[a.k];
-    tip.innerHTML = `<div class="et-year" style="color:${esc(a.color)}">${esc(fmtYear(yr, true))} · ${esc(a.c.name)}</div><div class="et-act">${esc(text)}</div><div class="et-ref">${esc(ref)}</div><div class="et-hint">${touch ? "Tap again" : "Click"} to open in ${esc(a.c.name)}’s window</div>`;
+    tip.innerHTML = `<div class="et-year" style="color:${esc(a.color)}">${esc(fmtYear(yr, true))} · ${esc(a.c.name)}</div><div class="et-act">${esc(text)}</div><div class="et-ref">${esc(Scripture.label(ref))}</div><div class="et-hint">${esc(T(touch ? "act.hint.tap" : "act.hint.click", { name: a.c.name }, `${touch ? "Tap again" : "Click"} to open in ${a.c.name}’s window`))}</div>`;
     tip.style.left = Math.min(W - 150, Math.max(150, a.x)) + "px";
     tip.style.top = Math.max(L.top, a.y - 14 - tip.offsetHeight) + "px";
     tip.classList.add("show");
@@ -861,7 +872,7 @@
     restorePath: "M6 7h12v11H6zM6 10h12",
     close: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   };
-  const QLABEL = { derived: "from Bible ages", estimated: "estimated", assumed: "assumed" };
+  const QLABEL = { derived: T("q.derived", null, "from Bible ages"), estimated: T("q.estimated", null, "estimated"), assumed: T("q.assumed", null, "assumed") };
 
   function miniTimeline(c) {
     const a = c.tb, b = Math.max(c.td, c.tb + 1), w = 300, pad = 12;
@@ -886,10 +897,10 @@
       const chips = ids.map((id) => { const r = CHAR_BY_ID.get(id); return `<button class="rel-chip" data-rel="${esc(id)}" title="${esc(r.role || "")}">${esc(r.name)}</button>`; });
       const plain = extra.map((n) => `<span class="rel-plain">${esc(n)}</span>`);
       const n = ids.length + extra.length;
-      const lab = label === "Child" ? (n > 1 ? "Children" : "Child") : label + (n > 1 ? "s" : "");
+      const lab = I18.zh ? T("rel." + k) : label === "Child" ? (n > 1 ? "Children" : "Child") : label + (n > 1 ? "s" : "");
       return `<div class="rel-row"><span class="rel-k">${lab}</span><span class="rel-v">${chips.concat(plain).join("")}</span></div>`;
     }).join("");
-    if (rows) return `<div class="win-h">Family</div><div class="rel">${rows}</div>`;
+    if (rows) return `<div class="win-h">${T("family", null, "Family")}</div><div class="rel">${rows}</div>`;
     return c.family ? `<div class="win-family">${Scripture.linkText(c.family)}</div>` : "";
   }
 
@@ -905,12 +916,13 @@
     if (!list.length) return "";
     const chips = list.map((o, i) => {
       const yrs = shared(o), approx = c.assumed || o.assumed;
-      const tip = `${o.role || ""}${o.role ? ". " : ""}Lifespans overlap ${approx ? "about " : ""}${yrs} year${yrs > 1 ? "s" : ""}${o.assumed ? " (dates approximate)" : ""}`;
+      const tip = I18.zh ? `${o.role || ""}${o.role ? "。" : ""}${T("overlap", { a: approx ? T("overlap.about") : "", n: yrs, q: o.assumed ? T("overlap.approx") : "" })}`
+        : `${o.role || ""}${o.role ? ". " : ""}Lifespans overlap ${approx ? "about " : ""}${yrs} year${yrs > 1 ? "s" : ""}${o.assumed ? " (dates approximate)" : ""}`;
       return `<button class="rel-chip${o.assumed ? " approx" : ""}" data-rel="${esc(o.id)}" title="${esc(tip)}"${i >= CONTEMP_SHOWN ? " hidden" : ""}>${esc(o.name)}</button>`;
     }).join("");
-    const more = list.length > CONTEMP_SHOWN ? `<button class="contemp-more" aria-expanded="false">Show all ${list.length}</button>` : "";
-    return `<details class="contemp"><summary class="win-h">Contemporaries <span class="contemp-n">${list.length}</span></summary>`
-      + `<div class="rel-v">${chips}${more}</div><div class="contemp-note">Key figures alive at the same time, most years shared first. Dashed: dates estimated.</div></details>`;
+    const more = list.length > CONTEMP_SHOWN ? `<button class="contemp-more" aria-expanded="false">${T("show.all.n", { n: list.length }, `Show all ${list.length}`)}</button>` : "";
+    return `<details class="contemp"><summary class="win-h">${T("contemp", null, "Contemporaries")} <span class="contemp-n">${list.length}</span></summary>`
+      + `<div class="rel-v">${chips}${more}</div><div class="contemp-note">${T("contemp.note", null, "Key figures alive at the same time, most years shared first. Dashed: dates estimated.")}</div></details>`;
   }
 
   /* the map of a person's places: on a computer it is drawn in the map window (mapW, below), which
@@ -918,29 +930,30 @@
      under the lifespan bar while the activities scroll. A life that ranges far beyond Canaan
      (Abraham from Ur, Paul to Rome) gets a closer map of Canaan, and stops crowded into one small
      area get a close-up (BibleMap.levels), chosen with a switch. */
-  const SURE = { likely: "likely site", possible: "location uncertain" };
+  const SURE = { likely: T("site.likely", null, "likely site"), possible: T("site.possible", null, "location uncertain") };
   function mapViews(c, phone) {
     const lv = BibleMap.levels(c.places), h0 = phone ? 150 : 210, h1 = phone ? 150 : 230;
     const maps = lv.map((l, k) => {
       const insets = lv.map((m, j) => ({ m, j })).filter(({ m }) => m.parent === k).map(({ m, j }) => ({ ids: [...new Set(m.stops.map((s) => s.id))], name: m.name, k: j }));
       return `<div class="bm-v" data-k="${k}" data-d="${l.depth}" data-p="${l.parent}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
         + BibleMap.svg(l.stops, { w: 340, h: k ? h1 : h0, route: true, labels: insets.length ? "far" : true, insets, minSpan: l.minSpan || 0,
-          label: k ? `${l.full || l.name} map of places in the life of ${c.name}` : `Places in the life of ${c.name}` }) + `</div>`;
+          label: k ? T("map.label.k", { map: l.full || l.name, name: c.name }, `${l.full || l.name} map of places in the life of ${c.name}`) : T("map.label", { name: c.name }, `Places in the life of ${c.name}`) }) + `</div>`;
     }).join("");
     const sw = lv.length > 1 ? lv.map((l, k) => `<button class="bm-sw" data-v="${k}" aria-pressed="${!k}" title="${esc(l.full || l.name)}">${esc(l.name)}</button>`).join("") : "";
-    const hide = phone ? `<button class="bm-hide" aria-expanded="true" aria-label="Hide map" title="Hide map">▴</button>` : "";
+    const hide = phone ? `<button class="bm-hide" aria-expanded="true" aria-label="${HIDE_MAP}" title="${HIDE_MAP}">▴</button>` : "";
     return `<div class="bm-views" data-v="0">` + (sw || hide ? `<div class="bm-bar">${sw}${hide}</div>` : "") + maps + `<div class="bm-cap"></div></div>`;
   }
-  const placeNote = (pl) => (pl.note || "").replace(/^Identified with /, "Usually placed at ");
+  const HIDE_MAP = T("map.hide", null, "Hide map");
+  const placeNote = (pl) => (pl.note || "").replace(/^Identified with /, T("usually", null, "Usually placed at ")).replace(/^認定為\s*/, T("usually", null, ""));
   function placeTitle(pl) {
     const sure = SURE[pl.s] ? ` (${SURE[pl.s]})` : "", note = placeNote(pl);
-    return pl.n + sure + (note ? `. ${note}` : "");
+    return pl.n + sure + (note ? (I18.zh ? `。${note}` : `. ${note}`) : "");
   }
 
   function windowHTML(c) {
     const acts = c.events.map(([yr, text, ref], i) => {
       const age = A(yr) - c.tb;
-      const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${c.q[0] === "derived" ? "" : "~"}age ${age}</span>` : "";
+      const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${T("age.at", { a: c.q[0] === "derived" ? "" : T("age.approx"), n: age }, `${c.q[0] === "derived" ? "" : "~"}age ${age}`)}</span>` : "";
       const sts = c.places ? c.places.filter((p) => p.k === i) : [];
       const pl = sts.map((st) => { const p = BibleMap.place(st.id); return ` <button class="act-p s-${p.s}" data-place="${esc(st.id)}" title="${esc(placeTitle(p))}"><b>${st.n}</b>${esc(BibleMap.shortName(p.n))}${p.s === "possible" ? "?" : ""}</button>`; }).join("");
       return `<li data-t="${A(yr)}" data-i="${i}"${sts.length ? ` data-place="${esc(sts.map((st) => st.id).join(" "))}"` : ""}><span class="act-y">${esc(fmtYear(yr, true))}${ageS}${pl}</span><span class="act-t">${esc(text)}</span><span class="act-r">${Scripture.linkRefs(ref)}</span></li>`;
@@ -950,29 +963,35 @@
         <div class="win-thumb">${window.Portrait.html(c)}</div>
         <div class="win-title"><div class="win-name">${esc(c.name)}</div><div class="win-dates"><span>${esc(fmtRange(c))}</span> · <span>${esc(ageText(c))}</span></div></div>
         <div class="win-btns">
-          <button class="win-btn" data-act="locate" aria-label="Show ${esc(c.name)} on the timeline" title="Show on timeline">${ICON.locate}</button>
-          <button class="win-btn" data-act="min" aria-label="Minimize" title="Minimize">${ICON.min}</button>
-          <button class="win-btn" data-act="close" aria-label="Close" title="Close">${ICON.close}</button>
+          <button class="win-btn" data-act="locate" aria-label="${esc(T("locate", { name: c.name }, `Show ${c.name} on the timeline`))}" title="${esc(T("locate.t", null, "Show on timeline"))}">${ICON.locate}</button>
+          <button class="win-btn" data-act="min" aria-label="${T("min", null, "Minimize")}" title="${T("min", null, "Minimize")}">${ICON.min}</button>
+          <button class="win-btn" data-act="close" aria-label="${T("close", null, "Close")}" title="${T("close", null, "Close")}">${ICON.close}</button>
         </div>
       </div>
       <div class="win-body">
         <div class="win-role">${esc(c.role)}</div>
-        ${c.meaning ? `<div class="win-meaning">“${esc(c.meaning)}”</div>` : ""}
+        ${c.meaning ? `<div class="win-meaning">${I18.zh ? "「" : "“"}${esc(c.meaning)}${I18.zh ? "」" : "”"}</div>` : ""}
         <div class="badges">
-          <span class="badge${c.q[0] === "assumed" ? " assumed" : ""}">Birth: ${QLABEL[c.q[0]]}</span>
-          <span class="badge${c.q[1] === "assumed" ? " assumed" : ""}">Death: ${QLABEL[c.q[1]]}</span>
+          <span class="badge${c.q[0] === "assumed" ? " assumed" : ""}">${T("birth", { q: QLABEL[c.q[0]] }, `Birth: ${QLABEL[c.q[0]]}`)}</span>
+          <span class="badge${c.q[1] === "assumed" ? " assumed" : ""}">${T("death", { q: QLABEL[c.q[1]] }, `Death: ${QLABEL[c.q[1]]}`)}</span>
         </div>
         ${c.note ? `<p class="win-note">${c.assumed ? "⚑ " : ""}${Scripture.linkText(c.note)}</p>` : ""}
         <p class="win-summary">${Scripture.linkText(c.summary)}</p>
         ${familyHTML(c)}
         ${contemporariesHTML(c)}
-        <div class="win-h">Lifespan</div>
+        <div class="win-h">${T("lifespan", null, "Lifespan")}</div>
         ${miniTimeline(c)}
         ${c.places ? `<div class="win-map">${mapViews(c, true)}</div>` : ""}
-        ${acts ? `<div class="win-h">Major activities</div><ul class="acts">${acts}</ul>` : ""}
-        ${c.refs.length ? `<div class="win-h">Key scriptures</div><div class="win-refs">${c.refs.map(Scripture.linkRefs).join(" · ")}</div>` : ""}
-        <div class="win-src">Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”${c.places && c.places.length ? " Places: OpenBible.info Bible Geocoding Data (CC BY 4.0), checked against <em>Insight</em> and the maps in the <em>New World Translation</em> (Appendix A7 and B)." : ""}</div>
+        ${acts ? `<div class="win-h">${T("acts", null, "Major activities")}</div><ul class="acts">${acts}</ul>` : ""}
+        ${c.refs.length ? `<div class="win-h">${T("keyrefs", null, "Key scriptures")}</div><div class="win-refs">${c.refs.map(Scripture.linkRefs).join(" · ")}</div>` : ""}
+        ${I18.zh ? sourcesZh(c) : `<div class="win-src">Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”${c.places && c.places.length ? " Places: OpenBible.info Bible Geocoding Data (CC BY 4.0), checked against <em>Insight</em> and the maps in the <em>New World Translation</em> (Appendix A7 and B)." : ""}</div>`}
       </div>`;
+  }
+
+  // the sources line in Chinese; the person's Insight article is linked on wol.jw.org when known
+  function sourcesZh(c) {
+    const art = c.srcZh ? (c.srcZh.d ? `<a class="ref-link" href="https://wol.jw.org/cmn-Hant/wol/d/r24/lp-ch/${esc(c.srcZh.d)}" target="_blank" rel="noopener">${esc(c.srcZh.t)}</a>` : esc(c.srcZh.t)) : "";
+    return `<div class="win-src">${T("src.bible")}${art ? T("src.person", { a: art }) : ""}${T("src.chron")}${c.places && c.places.length ? T("src.places") : ""}${T("src.zh")}</div>`;
   }
 
   function openWindow(c) {
@@ -1065,7 +1084,8 @@
       const open = more.getAttribute("aria-expanded") !== "true";
       w.el.querySelectorAll(".contemp .rel-chip").forEach((b, i) => { b.hidden = !open && i >= CONTEMP_SHOWN; });
       more.setAttribute("aria-expanded", open);
-      more.textContent = open ? "Show fewer" : `Show all ${w.el.querySelectorAll(".contemp .rel-chip").length}`;
+      const n = w.el.querySelectorAll(".contemp .rel-chip").length;
+      more.textContent = open ? T("show.fewer", null, "Show fewer") : T("show.all.n", { n }, `Show all ${n}`);
     });
     wirePlaces(w);
     const acts = w.el.querySelector(".acts");
@@ -1095,8 +1115,8 @@
   function gmapLink(pl) {
     const [lon, lat] = pl.ll, z = pl.r ? 7 : 14;
     const url = `https://www.google.com/maps/place/${lat},${lon}/@${lat},${lon},${z}z/data=!3m1!1e3`;
-    const text = pl.s === "known" ? "Open in Google Maps" : "Google Maps";
-    return `<a class="bm-gmap" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(pl.n)} in Google Maps (opens a new tab)">${text} ↗</a>`;
+    const text = pl.s === "known" ? T("gmap", null, "Open in Google Maps") : T("gmap.short", null, "Google Maps");
+    return `<a class="bm-gmap" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(T("gmap.title", { place: pl.n }, `${pl.n} in Google Maps (opens a new tab)`))}">${text} ↗</a>`;
   }
   // the caption under the map keeps the last place pointed at, so its Google Maps link can be reached
   function markPlace(w, id) {
@@ -1111,7 +1131,7 @@
     w.el.querySelectorAll(".acts li[data-place]").forEach((n) => n.classList.toggle("at-place", !!id && hasId(n, id)));
   }
   // with nothing hovered, the map window says what it can do; a phone has no room for that
-  const capHint = (box, c) => (box === mapW.body ? `${new Set(c.places.map((s) => s.id)).size} places · point at a pin or an activity’s place tag` : "");
+  const capHint = (box, c) => { if (box !== mapW.body) return ""; const n = new Set(c.places.map((s) => s.id)).size; return T("map.places", { n }, `${n} places · point at a pin or an activity’s place tag`); };
   /* turning the map to another of its maps moves the view there, so the eye can follow: going to a
      closer map, the place (or the closer map's dashed box) lights up first and the view then zooms into
      it; going back out, the view zooms out and the box just left and the place light up on the wider
@@ -1235,7 +1255,7 @@
       const views = box.querySelector(".bm-views");
       if (views) {
         views.classList.remove("folded");
-        const hb = views.querySelector(".bm-hide"); if (hb) { hb.textContent = "▴"; hb.setAttribute("aria-label", "Hide map"); hb.title = "Hide map"; hb.setAttribute("aria-expanded", "true"); }
+        const hb = views.querySelector(".bm-hide"); if (hb) { hb.textContent = "▴"; hb.setAttribute("aria-label", HIDE_MAP); hb.title = HIDE_MAP; hb.setAttribute("aria-expanded", "true"); }
       }
     }
     followView(w, id);
@@ -1265,7 +1285,8 @@
       if (hb) {
         const views = box.querySelector(".bm-views"), fold = !views.classList.contains("folded");
         views.classList.toggle("folded", fold);
-        hb.textContent = fold ? "Show map ▾" : "▴"; hb.setAttribute("aria-label", fold ? "Show map" : "Hide map"); hb.title = fold ? "Show map" : "Hide map"; hb.setAttribute("aria-expanded", !fold);
+        const showS = T("map.show.aria", null, "Show map");
+        hb.textContent = fold ? T("map.show", null, "Show map ▾") : "▴"; hb.setAttribute("aria-label", fold ? showS : HIDE_MAP); hb.title = fold ? showS : HIDE_MAP; hb.setAttribute("aria-expanded", !fold);
         return;
       }
       const it = e.target.closest(".bm-inset-t");
@@ -1317,11 +1338,11 @@
   const mapW = { el: document.createElement("section"), c: undefined, min: false, x: 0, y: 0, placed: false };
   mapW.el.className = "win mapwin";
   mapW.el.setAttribute("role", "dialog");
-  mapW.el.setAttribute("aria-label", "Map of places");
+  mapW.el.setAttribute("aria-label", T("map.aria", null, "Map of places"));
   mapW.el.hidden = true;
   mapW.el.innerHTML = `<div class="win-head"><div class="mw-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg></div>`
-    + `<div class="win-title"><div class="win-name">Places</div><div class="win-dates"><span class="mw-who"></span></div></div>`
-    + `<div class="win-btns"><button class="win-btn" data-act="min" aria-label="Minimize the map" title="Minimize">${ICON.min}</button></div></div><div class="win-body mw-body"></div>`;
+    + `<div class="win-title"><div class="win-name">${T("map.title", null, "Places")}</div><div class="win-dates"><span class="mw-who"></span></div></div>`
+    + `<div class="win-btns"><button class="win-btn" data-act="min" aria-label="${T("map.min", null, "Minimize the map")}" title="${T("min", null, "Minimize")}">${ICON.min}</button></div></div><div class="win-body mw-body"></div>`;
   winBox.appendChild(mapW.el);
   mapW.body = mapW.el.querySelector(".mw-body");
   const mapChip = document.createElement("button");
@@ -1344,12 +1365,12 @@
     if (!w) return;
     mapW.el.style.setProperty("--wc", w.color);
     mapChip.style.setProperty("--wc", w.color);
-    mapChip.innerHTML = `<i></i>Map · ${esc(w.c.name)}`;
-    mapChip.setAttribute("aria-label", `Show the map of ${w.c.name}`);
+    mapChip.innerHTML = `<i></i>${esc(T("map.chip", { name: w.c.name }, `Map · ${w.c.name}`))}`;
+    mapChip.setAttribute("aria-label", T("map.chip.aria", { name: w.c.name }, `Show the map of ${w.c.name}`));
     if (mapW.c !== w.c) {
       mapW.c = w.c;
       mapW.el.querySelector(".mw-who").textContent = w.c.name;
-      mapW.body.innerHTML = w.c.places ? mapViews(w.c, false) : `<p class="mw-empty">The Bible names no places for ${esc(w.c.name)}.</p>`;
+      mapW.body.innerHTML = w.c.places ? mapViews(w.c, false) : `<p class="mw-empty">${esc(T("map.none", { name: w.c.name }, `The Bible names no places for ${w.c.name}.`))}</p>`;
       if (w.c.places) { mapW.body.querySelector(".bm-cap").textContent = capHint(mapW.body, w.c); if (w.capId) markPlace(w, null); }
     }
     if (!mapW.el.hidden && !mapW.placed) { mapW.placed = true; place(mapW, 24, 84); }
@@ -1363,7 +1384,7 @@
     chip.className = "chip";
     chip.style.setProperty("--wc", w.color);
     chip.innerHTML = `<i></i>${esc(w.c.name)}`;
-    chip.setAttribute("aria-label", `Restore ${w.c.name}`);
+    chip.setAttribute("aria-label", T("restore", { name: w.c.name }, `Restore ${w.c.name}`));
     chip.addEventListener("click", () => { restore(w); focusWin(w); });
     dock.appendChild(chip);
     w.chip = chip;
@@ -1394,8 +1415,8 @@
   function syncDockAll() {
     dockAll.hidden = !wins.length;
     const unfold = wins.length && allFolded();
-    foldAllBtn.querySelector("span").textContent = unfold ? "Unfold all" : "Fold all";
-    foldAllBtn.setAttribute("aria-label", unfold ? "Restore all windows" : "Minimize all windows");
+    foldAllBtn.querySelector("span").textContent = unfold ? T("unfold.all", null, "Unfold all") : T("fold.all", null, "Fold all");
+    foldAllBtn.setAttribute("aria-label", unfold ? T("unfold.all.aria", null, "Restore all windows") : T("fold.all.aria", null, "Minimize all windows"));
     foldAllBtn.querySelector("path").setAttribute("d", unfold ? ICON.restorePath : "M6 12h12");
     syncMap();
   }
@@ -1411,15 +1432,17 @@
   function runSearch() {
     const q = sIn.value.trim().toLowerCase();
     if (!q) { sRes.classList.remove("open"); sList = []; return; }
-    const named = (c) => c.name.toLowerCase().includes(q) || (c.aka || []).some((n) => n.toLowerCase().includes(q));
-    const starts = (c) => (c.name.toLowerCase().startsWith(q) ? 0 : (c.aka || []).some((n) => n.toLowerCase().startsWith(q)) ? 1 : 2);
+    // in Chinese, the English name and other names still find the person
+    const alts = (c) => (c.aka || []).concat(c.akaZh || [], c.en && c.en !== c.name ? [c.en] : []);
+    const named = (c) => c.name.toLowerCase().includes(q) || alts(c).some((n) => n.toLowerCase().includes(q));
+    const starts = (c) => (c.name.toLowerCase().startsWith(q) ? 0 : alts(c).some((n) => n.toLowerCase().startsWith(q)) ? 1 : 2);
     sList = CHARS.filter((c) => named(c) || (c.role || "").toLowerCase().includes(q))
       .sort((a, b) => (named(b) - named(a)) || starts(a) - starts(b) || prio(a) - prio(b) || a.tb - b.tb)
       .slice(0, 20);
     sSel = 0;
     sRes.innerHTML = sList.length
       ? sList.map((c, i) => `<li role="option" data-id="${c.id}" aria-selected="${i === sSel}"><span class="sr-n">${esc(c.name)}<small>${esc(c.role || "")}</small></span><span class="sr-y">${esc(fmtYear(c.born))}</span></li>`).join("")
-      : `<li aria-disabled="true"><span>No match</span></li>`;
+      : `<li aria-disabled="true"><span>${T("search.none", null, "No match")}</span></li>`;
     sRes.classList.add("open");
   }
   function pick(c) {
@@ -1453,7 +1476,8 @@
   $("aboutClose").addEventListener("click", closeAbout);
   about.addEventListener("click", (e) => { if (e.target === about) closeAbout(); });
   const nAssumed = CHARS.filter((c) => c.assumed).length;
-  $("aboutStats").textContent = `${CHARS.length.toLocaleString()} people · ${EVENTS.length} major events · ${nAssumed.toLocaleString()} people with at least one assumed date.`;
+  $("aboutStats").textContent = T("about.stats", { n: CHARS.length.toLocaleString(), e: EVENTS.length, a: nAssumed.toLocaleString() },
+    `${CHARS.length.toLocaleString()} people · ${EVENTS.length} major events · ${nAssumed.toLocaleString()} people with at least one assumed date.`);
 
   /* show: everyone / key figures / Adam-to-Jesus line */
   const showBox = $("show"), showBtn = $("showBtn"), showMenu = $("showMenu");
@@ -1461,7 +1485,7 @@
     showMode = m;
     try { localStorage.setItem("bt-show", m); } catch (_) {}
     showBox.classList.toggle("filtered", m !== "all");
-    showBtn.setAttribute("aria-label", `Showing: ${SHOW_MODES[m]}. Change who is shown`);
+    showBtn.setAttribute("aria-label", T("show.current", { m: SHOW_MODES[m] }, `Showing: ${SHOW_MODES[m]}. Change who is shown`));
     $("showLabel").textContent = SHOW_MODES[m];
     showMenu.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-checked", b.dataset.mode === m));
     packForce = true; requestRender();
@@ -1477,6 +1501,15 @@
     showBox.classList.toggle("open", open); showBtn.setAttribute("aria-expanded", open);
   });
   document.addEventListener("pointerdown", (e) => { if (!showBox.contains(e.target)) { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); } });
+
+  /* settings: the language menu (its buttons are wired in js/i18n.js) */
+  const setBox = $("settings"), setBtn = $("settingsBtn");
+  setBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = !setBox.classList.contains("open");
+    setBox.classList.toggle("open", open); setBtn.setAttribute("aria-expanded", open);
+  });
+  document.addEventListener("pointerdown", (e) => { if (!setBox.contains(e.target)) { setBox.classList.remove("open"); setBtn.setAttribute("aria-expanded", "false"); } });
   setShowMode(showMode);
 
   /* ───────────────────────── boot ───────────────────────── */

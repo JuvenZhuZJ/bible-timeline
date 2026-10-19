@@ -161,9 +161,6 @@
   };
 
   const EN_UI = {
-    "settings.aria": "Settings",
-    "settings.h": "Language",
-    "about.lang.h": "",
   };
 
   const fill = (s, vars) => (vars ? s.replace(/\{(\w+)\}/g, (m, k) => (vars[k] == null ? "" : vars[k])) : s);
@@ -219,11 +216,8 @@
       const z = pp[id]; if (!z) continue;
       window.PERSON_PLACES[id].forEach((v, i) => { if (v.length > 2 && z[i]) v[2] = z[i]; });
     }
-    const tn = Z.terrain || {};
-    for (const k in window) {
-      // terrain.js lists its features in arrays of { n: name }
-    }
-    if (window.BIBLE_TERRAIN) translateNames(window.BIBLE_TERRAIN, tn);
+    // terrain.js lists its features as { n: name } in nested lists
+    if (window.TERRAIN) translateNames(window.TERRAIN, Z.terrain || {});
   }
   function translateNames(o, dict) {
     if (Array.isArray(o)) { o.forEach((x) => translateNames(x, dict)); return; }

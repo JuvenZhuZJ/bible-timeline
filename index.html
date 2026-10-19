@@ -11,12 +11,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <script src="js/i18n.js"></script>
+  <template id="zhFonts"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@400;500;600&display=swap" rel="stylesheet"></template>
+  <script>if (I18N.zh) document.write(document.getElementById("zhFonts").innerHTML);</script>
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
 
   <header class="topbar">
-    <a class="brand" href="#" id="brand" aria-label="Reset view">
+    <a class="brand" href="#" id="brand" aria-label="Reset view" data-i18n-aria="brand.aria">
       <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
         <circle cx="20" cy="20" r="18" />
         <path d="M5 30.5 H35" />
@@ -36,38 +39,49 @@
         <circle cx="33.2" cy="16.6" r="1.3" class="leaf" />
       </svg>
       <span class="brand-text">
-        <span class="brand-title">Bible Family Tree</span>
-        <span class="brand-sub">4026 B.C.E. — c. 100 C.E.</span>
+        <span class="brand-title" data-i18n="title">Bible Family Tree</span>
+        <span class="brand-sub" data-i18n="brand.sub">4026 B.C.E. — c. 100 C.E.</span>
       </span>
     </a>
 
     <div class="search" id="search">
-      <button class="icon-btn search-toggle" id="searchToggle" aria-label="Search people">
+      <button class="icon-btn search-toggle" id="searchToggle" aria-label="Search people" data-i18n-aria="search.aria">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
       </button>
-      <input id="searchInput" type="search" placeholder="Search a person…" autocomplete="off" spellcheck="false" aria-label="Search a person">
+      <input id="searchInput" type="search" placeholder="Search a person…" autocomplete="off" spellcheck="false" aria-label="Search a person" data-i18n-ph="search.ph" data-i18n-aria="search.aria">
       <ul class="search-results" id="searchResults" role="listbox"></ul>
     </div>
 
     <div class="show" id="show">
-      <button class="icon-btn show-btn" id="showBtn" aria-haspopup="true" aria-expanded="false" aria-label="Change who is shown">
+      <button class="icon-btn show-btn" id="showBtn" aria-haspopup="true" aria-expanded="false" aria-label="Change who is shown" data-i18n-aria="show.aria">
         <svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.4"/><path d="M2.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M13.5 15.2c.9-.8 1.9-1.2 3-1.2 2.3 0 4.1 1.5 4.6 4.5"/></svg>
         <span class="show-dot" aria-hidden="true"></span>
       </button>
-      <div class="show-menu" id="showMenu" role="menu" aria-label="Who is shown">
-        <div class="sm-h">Show <span id="showLabel"></span></div>
-        <button role="menuitemradio" data-mode="all"><span class="sm-t">Everyone<small>Every person named in the Bible</small></span><span class="sm-n"></span></button>
-        <button role="menuitemradio" data-mode="key"><span class="sm-t">Key figures<small>The best-known people and Jesus’ ancestors</small></span><span class="sm-n"></span></button>
-        <button role="menuitemradio" data-mode="line"><span class="sm-t">Adam to Jesus line<small>Only the line of descent from Adam to Jesus</small></span><span class="sm-n"></span></button>
+      <div class="show-menu" id="showMenu" role="menu" aria-label="Who is shown" data-i18n-aria="show.menu">
+        <div class="sm-h"><span data-i18n="show.h">Show</span> <span id="showLabel"></span></div>
+        <button role="menuitemradio" data-mode="all"><span class="sm-t"><span data-i18n="show.all">Everyone</span><small data-i18n="show.all.d">Every person named in the Bible</small></span><span class="sm-n"></span></button>
+        <button role="menuitemradio" data-mode="key"><span class="sm-t"><span data-i18n="show.key">Key figures</span><small data-i18n="show.key.d">The best-known people and Jesus’ ancestors</small></span><span class="sm-n"></span></button>
+        <button role="menuitemradio" data-mode="line"><span class="sm-t"><span data-i18n="show.line">Adam to Jesus line</span><small data-i18n="show.line.d">Only the line of descent from Adam to Jesus</small></span><span class="sm-n"></span></button>
       </div>
     </div>
 
-    <button class="icon-btn" id="infoBtn" aria-label="About this timeline">
+    <div class="settings" id="settings">
+      <button class="icon-btn" id="settingsBtn" aria-haspopup="true" aria-expanded="false" aria-label="Settings" data-i18n-aria="settings.aria">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M5.5 18.5l1.8-1.8M16.7 7.3l1.8-1.8"/></svg>
+      </button>
+      <div class="show-menu settings-menu" id="settingsMenu" role="menu" aria-label="Language">
+        <div class="sm-h" data-i18n="settings.h">Language</div>
+        <button role="menuitemradio" data-lang="en"><span class="sm-t">English<small>Names and text from the English publications</small></span></button>
+        <button role="menuitemradio" data-lang="zh" lang="zh-Hant"><span class="sm-t">中文（繁體）<small>人名和經文根據中文《新世界譯本》</small></span></button>
+      </div>
+    </div>
+
+    <button class="icon-btn" id="infoBtn" aria-label="About this timeline" data-i18n-aria="info.aria">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
     </button>
   </header>
 
-  <main id="stage" aria-label="Timeline">
+  <main id="stage" aria-label="Timeline" data-i18n-aria="stage.aria">
     <div id="eraLabels" class="era-labels" aria-hidden="true"></div>
     <div id="portraitStage" class="portrait-stage" aria-live="polite">
       <div class="portrait-frame" id="portraitFrame"></div>
@@ -78,7 +92,7 @@
         <div class="pc-hint" id="pcHint"></div>
       </div>
     </div>
-    <svg id="timeline" class="timeline" role="img" aria-label="Timeline of Bible people">
+    <svg id="timeline" class="timeline" role="img" aria-label="Timeline of Bible people" data-i18n-aria="timeline.aria">
       <g id="gEras"></g>
       <g id="gCursor"></g>
       <g id="gAxis"></g>
@@ -91,59 +105,61 @@
     </svg>
     <div id="eventTip" class="event-tip" role="tooltip"></div>
     <div id="zoomHint" class="zoom-hint">
-      <span class="zh-desktop">Scroll to zoom · Drag to travel through time</span>
-      <span class="zh-touch">Pinch to zoom · Drag to travel through time</span>
+      <span class="zh-desktop" data-i18n="zoom.desktop">Scroll to zoom · Drag to travel through time</span>
+      <span class="zh-touch" data-i18n="zoom.touch">Pinch to zoom · Drag to travel through time</span>
     </div>
   </main>
 
   <aside class="legend" id="legend">
-    <button class="legend-toggle" id="legendToggle" aria-expanded="false">Legend</button>
+    <button class="legend-toggle" id="legendToggle" aria-expanded="false" data-i18n="legend">Legend</button>
     <div class="legend-body">
-      <div class="lg-row"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="5" class="lg-solid"/></svg><span>Date derived from Bible ages</span></div>
-      <div class="lg-row"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="5.5" class="lg-ring"/><circle cx="10" cy="10" r="2" class="lg-solid"/></svg><span>Estimated date</span></div>
-      <div class="lg-row"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="5.5" class="lg-dash"/></svg><span>Assumed date (to review)</span></div>
-      <div class="lg-row"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="6" class="lg-ring"/><circle cx="10" cy="10" r="3" class="lg-solid"/></svg><span>Major event</span></div>
-      <div class="lg-row"><svg viewBox="0 0 20 20"><path d="M2 16 C2 5 15 5 15 13" class="lg-rel lg-m"/><circle cx="15" cy="15" r="3" class="lg-end lg-m"/></svg><span>Family link to a man</span></div>
-      <div class="lg-row"><svg viewBox="0 0 20 20"><path d="M2 16 C2 5 15 5 15 13" class="lg-rel lg-f"/><circle cx="15" cy="15" r="3" class="lg-end lg-f"/></svg><span>Family link to a woman</span></div>
+      <div class="lg-row"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="5" class="lg-solid"/></svg><span data-i18n="legend.derived">Date derived from Bible ages</span></div>
+      <div class="lg-row"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="5.5" class="lg-ring"/><circle cx="10" cy="10" r="2" class="lg-solid"/></svg><span data-i18n="legend.estimated">Estimated date</span></div>
+      <div class="lg-row"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="5.5" class="lg-dash"/></svg><span data-i18n="legend.assumed">Assumed date (to review)</span></div>
+      <div class="lg-row"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="6" class="lg-ring"/><circle cx="10" cy="10" r="3" class="lg-solid"/></svg><span data-i18n="legend.event">Major event</span></div>
+      <div class="lg-row"><svg viewBox="0 0 20 20"><path d="M2 16 C2 5 15 5 15 13" class="lg-rel lg-m"/><circle cx="15" cy="15" r="3" class="lg-end lg-m"/></svg><span data-i18n="legend.man">Family link to a man</span></div>
+      <div class="lg-row"><svg viewBox="0 0 20 20"><path d="M2 16 C2 5 15 5 15 13" class="lg-rel lg-f"/><circle cx="15" cy="15" r="3" class="lg-end lg-f"/></svg><span data-i18n="legend.woman">Family link to a woman</span></div>
     </div>
   </aside>
 
-  <div class="controls" role="group" aria-label="Zoom">
-    <button class="icon-btn" id="zoomIn" aria-label="Zoom in"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-    <button class="icon-btn" id="zoomOut" aria-label="Zoom out"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
-    <button class="icon-btn" id="zoomFit" aria-label="Show whole timeline"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <div class="controls" role="group" aria-label="Zoom" data-i18n-aria="zoom.aria">
+    <button class="icon-btn" id="zoomIn" aria-label="Zoom in" data-i18n-aria="zoom.in"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button class="icon-btn" id="zoomOut" aria-label="Zoom out" data-i18n-aria="zoom.out"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+    <button class="icon-btn" id="zoomFit" aria-label="Show whole timeline" data-i18n-aria="zoom.fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
   </div>
 
-  <div class="minimap" id="minimap" aria-label="Overview">
+  <div class="minimap" id="minimap" aria-label="Overview" data-i18n-aria="mini.aria">
     <svg id="miniSvg" preserveAspectRatio="none"></svg>
     <div class="mini-view" id="miniView"></div>
   </div>
 
   <div id="windows" class="windows"></div>
-  <div id="dock" class="dock" aria-label="Open windows">
-    <div class="dock-all" id="dockAll" role="group" aria-label="All windows" hidden>
-      <button class="dock-btn" id="foldAll"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg><span>Fold all</span></button>
-      <button class="dock-btn" id="closeAll"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Close all</span></button>
+  <div id="dock" class="dock" aria-label="Open windows" data-i18n-aria="dock.aria">
+    <div class="dock-all" id="dockAll" role="group" aria-label="All windows" data-i18n-aria="dock.all" hidden>
+      <button class="dock-btn" id="foldAll"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg><span data-i18n="fold.all">Fold all</span></button>
+      <button class="dock-btn" id="closeAll"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span data-i18n="close.all">Close all</span></button>
     </div>
   </div>
 
   <div class="modal" id="about" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
-      <button class="icon-btn modal-close" id="aboutClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      <h2 id="aboutTitle">About this timeline</h2>
-      <p>Every dot is a person; every large node is a turning point in Bible history. Zoom in to reveal more people. Hover (or tap) a dot to see their portrait, lifespan and family links; click (or tap again) to open a window. Open several windows to compare lives side by side, and use <strong>Fold all</strong> or <strong>Close all</strong> at the bottom to tidy them up at once. Their lifespans stay pinned under the main line. In a window, tap a relative to open theirs.</p>
-      <h3>Who is shown</h3>
-      <p>The people button in the top bar switches between <strong>everyone</strong> named in the Bible, the <strong>key figures</strong>, and only the <strong>line from Adam to Jesus</strong> (Luke 3:23-38; Matthew 1:1-16).</p>
-      <h3>Bible text</h3>
-      <p>Scripture references, quotations and name spellings follow the <em>New World Translation of the Holy Scriptures</em> (Study Edition).</p>
-      <h3>People</h3>
-      <p>The list of people and their relationships comes from the person articles in <em>Insight on the Scriptures</em> (Vols. 1 &amp; 2). Summaries are written for this site.</p>
-      <h3>Dates</h3>
-      <p>Years follow the chronology in <em>Insight on the Scriptures</em> (article “Chronology”), anchored on 607 B.C.E. and 539 B.C.E., with lifespans calculated from ages stated in the Bible. Most people have no recorded birth or death; their dates are <strong>assumed placeholders</strong> estimated from their generation or the period they appear in, drawn with dashed outlines and listed in <code>data/ASSUMED_DATES.md</code> for review.</p>
-      <h3>Places</h3>
-      <p>A map shows the places the Bible puts the person whose window is in use, numbered in the order of their life; each activity that happened somewhere has a place tag, and each major event shows where it happened. On a phone the map sits at the top of the person’s window. Locations come from the OpenBible.info Bible Geocoding Data, checked against <em>Insight on the Scriptures</em> and the maps in the <em>New World Translation</em>. A dashed pin means the site is uncertain.</p>
-      <h3>Portraits</h3>
-      <p>Portraits are generated line drawings for illustration only. You can replace any of them with an image by adding a <code>portrait</code> path in <code>data/characters.js</code>.</p>
+      <button class="icon-btn modal-close" id="aboutClose" aria-label="Close" data-i18n-aria="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <h2 id="aboutTitle" data-i18n="about.title">About this timeline</h2>
+      <p data-i18n="about.intro">Every dot is a person; every large node is a turning point in Bible history. Zoom in to reveal more people. Hover (or tap) a dot to see their portrait, lifespan and family links; click (or tap again) to open a window. Open several windows to compare lives side by side, and use <strong>Fold all</strong> or <strong>Close all</strong> at the bottom to tidy them up at once. Their lifespans stay pinned under the main line. In a window, tap a relative to open theirs.</p>
+      <h3 data-i18n="about.show.h">Who is shown</h3>
+      <p data-i18n="about.show">The people button in the top bar switches between <strong>everyone</strong> named in the Bible, the <strong>key figures</strong>, and only the <strong>line from Adam to Jesus</strong> (Luke 3:23-38; Matthew 1:1-16).</p>
+      <h3 data-i18n="about.bible.h">Bible text</h3>
+      <p data-i18n="about.bible">Scripture references, quotations and name spellings follow the <em>New World Translation of the Holy Scriptures</em> (Study Edition).</p>
+      <h3 data-i18n="about.people.h">People</h3>
+      <p data-i18n="about.people">The list of people and their relationships comes from the person articles in <em>Insight on the Scriptures</em> (Vols. 1 &amp; 2). Summaries are written for this site.</p>
+      <h3 data-i18n="about.dates.h">Dates</h3>
+      <p data-i18n="about.dates">Years follow the chronology in <em>Insight on the Scriptures</em> (article “Chronology”), anchored on 607 B.C.E. and 539 B.C.E., with lifespans calculated from ages stated in the Bible. Most people have no recorded birth or death; their dates are <strong>assumed placeholders</strong> estimated from their generation or the period they appear in, drawn with dashed outlines and listed in <code>data/ASSUMED_DATES.md</code> for review.</p>
+      <h3 data-i18n="about.places.h">Places</h3>
+      <p data-i18n="about.places">A map shows the places the Bible puts the person whose window is in use, numbered in the order of their life; each activity that happened somewhere has a place tag, and each major event shows where it happened. On a phone the map sits at the top of the person’s window. Locations come from the OpenBible.info Bible Geocoding Data, checked against <em>Insight on the Scriptures</em> and the maps in the <em>New World Translation</em>. A dashed pin means the site is uncertain.</p>
+      <h3 data-i18n="about.portraits.h">Portraits</h3>
+      <p data-i18n="about.portraits">Portraits are generated line drawings for illustration only. You can replace any of them with an image by adding a <code>portrait</code> path in <code>data/characters.js</code>.</p>
+      <h3 class="zh-only" data-i18n="about.lang.h"></h3>
+      <p class="zh-only" data-i18n="about.lang"></p>
       <p class="muted" id="aboutStats"></p>
     </div>
   </div>
@@ -155,6 +171,13 @@
   <script src="data/places.js"></script>
   <script src="data/routes.js"></script>
   <script src="data/terrain.js"></script>
+  <!-- Chinese text for the data, loaded only when the site is in Chinese (js/i18n.js) -->
+  <template id="zhData">
+    <script src="data/zh/people.js"></script>
+    <script src="data/zh/places.js"></script>
+  </template>
+  <script>if (I18N.zh) document.write(document.getElementById("zhData").innerHTML);</script>
+  <script>I18N.apply();</script>
   <script src="js/scripture.js"></script>
   <script src="js/map.js"></script>
   <script src="js/app.js"></script>
