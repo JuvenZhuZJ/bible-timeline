@@ -483,6 +483,9 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bm-label { font: 400 9.5px var(--sans); fill: var(--fg-2); paint-order: stroke; stroke: #0b0a08; stroke-width: 3px; stroke-linejoin: round; cursor: pointer; }
 .bm-label.hl { fill: var(--fg); }
 .bm-scale path { fill: none; stroke: var(--muted); stroke-width: 1; }
+/* a leg's length, shown while one of its places is lit (distLabels() in js/map.js) */
+.bm-dist { font: 500 8.5px var(--sans); fill: var(--wc, var(--accent)); paint-order: stroke; stroke: #0b0a08; stroke-width: 3px; stroke-linejoin: round; pointer-events: none; opacity: 0; transition: opacity 0.15s; }
+.bm-dist.hl { opacity: 1; }
 .bm-scale text { font: 300 8px var(--mono); fill: var(--muted); }
 .act-p { margin-left: 6px; padding: 0 6px 0 2px; border: 1px solid var(--faint); border-radius: 9px; background: none; color: var(--muted); font: 300 9.5px var(--sans); cursor: pointer; vertical-align: 1px; }
 .act-p b { display: inline-grid; place-items: center; width: 12px; height: 12px; margin-right: 4px; border-radius: 50%; border: 1px solid var(--wc); font: 500 7.5px var(--sans); color: var(--fg); }

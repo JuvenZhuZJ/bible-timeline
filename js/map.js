@@ -96,6 +96,7 @@
     s += "<!--terrain-->";
     const seq = list.map((st) => byId.get(st.id)).filter((q, i, a) => !i || q !== a[i - 1]);
     const segs = [];      // the route as drawn, in short straight pieces, so names can keep off it
+    const legs = [];      // each leg as drawn, with its length along the way, for its distance label
     if (opt.route && seq.length > 1) {
       const done = new Set();
       let d = "";
@@ -103,10 +104,12 @@
         const a = seq[i - 1], b = seq[i], key = [a.st.id, b.st.id].sort().join(">");
         if (done.has(key)) continue;
         done.add(key);
-        const mid = way(a.st.id, b.st.id).pts.slice(1, -1).map((ll) => { const [mx, my] = proj(ll); return [+X(mx), +Y(my)]; });
+        const wy = way(a.st.id, b.st.id).pts;
+        const mid = wy.slice(1, -1).map((ll) => { const [mx, my] = proj(ll); return [+X(mx), +Y(my)]; });
         const p = [[a.x, a.y], ...mid, [b.x, b.y]];
         d += smooth(p);
         const c = curve(p);
+        legs.push({ a: a.st.id, b: b.st.id, c, km: wy.reduce((t, ll, j) => (j ? t + gcKm(wy[j - 1], ll) : 0), 0) });
         for (let j = 1; j < c.length; j++) segs.push([c[j - 1][0], c[j - 1][1], c[j][0], c[j][1]]);
       }
       s += `<path class="bm-route" d="${d}"/>`;
@@ -124,6 +127,7 @@
     labelBoxes.push([w - 14 - px, h - 22, w - 6, h - 6]);   // the scale bar, bottom right
 
     let marks = "", labels = "";
+    const edges = [];     // the sides of the closer maps' boxes, which distances keep off too
     // the stops of each closer map are drawn there; here each closer map is one marked area,
     // with its name to click
     for (const ins of opt.insets || []) {
@@ -131,6 +135,8 @@
       if (!nb.length) continue;
       const xs = nb.map((q) => q.x), ys = nb.map((q) => q.y);
       const bx = Math.min(...xs) - 8, by = Math.min(...ys) - 8, bw = Math.max(...xs) - bx + 8, bh = Math.max(...ys) - by + 8;
+      const ex = bx + bw, ey = by + bh;
+      edges.push([bx, by, ex, by], [ex, by, ex, ey], [bx, ey, ex, ey], [bx, by, bx, ey]);
       s += `<rect class="bm-inset" data-k="${ins.k}" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="4"/>`;
       const tw = 14 + 6 * ins.name.length;
       const cands = [[bx + bw + 4, by + bh / 2 + 3], [bx - tw - 2, by + bh / 2 + 3], [bx, by - 4], [bx, by + bh + 10]];
@@ -197,10 +203,56 @@
       }
     }
     s = s.replace("<!--terrain-->", terrain(v, u, w, h, X, Y, list, hitsR, boxes, labelBoxes, (t) => { labels = t + labels; }));
-    s += marks + labels;
+    s += marks + labels + distLabels(legs, { hits, out, pins: (b) => over(b, boxes) }, segs.concat(edges), w, h);
     // scale bar
     s += `<g class="bm-scale" transform="translate(${w - 10 - px} ${h - 10})"><path d="M0 -3 V0 H${px.toFixed(1)} V-3"/><text x="${(px / 2).toFixed(1)}" y="-5" text-anchor="middle">${km} km</text></g>`;
     return s + `</svg>`;
+  }
+  // km along the earth's surface between two [lon, lat] points
+  function gcKm([lon1, lat1], [lon2, lat2]) {
+    const r = Math.PI / 180, a = Math.sin(((lat2 - lat1) * r) / 2) ** 2 + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(((lon2 - lon1) * r) / 2) ** 2;
+    return 12742 * Math.asin(Math.min(1, Math.sqrt(a)));
+  }
+  // rounded as the routes are only approximate: to half a km under 10 km, to the km under 30, to 5 km under 300, else to 10
+  const roundKm = (k) => (k < 10 ? Math.max(0.5, Math.round(k * 2) / 2) : k < 30 ? Math.round(k) : k < 300 ? Math.round(k / 5) * 5 : Math.round(k / 10) * 10);
+  /* each leg's length along its way, set beside the leg in the route's colour: hidden until one of its
+     two places lights up (markPlace() in js/app.js gives it the hl class). It sits near the middle of
+     the leg, on the side and at the spot where it covers no pin, name, other distance, route or closer map's box; a leg
+     too short on this map for its number has none (the closer map shows it) */
+  function distLabels(legs, chk, segs, w, h) {
+    const hits = chk.hits;
+    let out = "";
+    const placed = [];
+    const over = (b) => placed.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+    const onRoute = (b) => segs.some((sg) => cuts(sg, b[0], b[1], b[2], b[3]));
+    for (const lg of legs) {
+      const c = lg.c, len = [0];
+      for (let i = 1; i < c.length; i++) len.push(len[i - 1] + Math.hypot(c[i][0] - c[i - 1][0], c[i][1] - c[i - 1][1]));
+      // only the part of the leg on this map counts (a leg to a place off the map, from a close-up)
+      const vis = c.map(([x, y], i) => (x > 8 && x < w - 8 && y > 8 && y < h - 8 ? len[i] : null)).filter((v) => v != null);
+      if (!vis.length) continue;
+      const lo = Math.min(...vis), hi = Math.max(...vis), L = hi - lo;
+      if (L < 18) continue;
+      const t = `~${roundKm(lg.km).toLocaleString("en")} km`, tw = t.length * 4.6 + 2;
+      const cand = [];
+      for (const f of [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82, 0.1, 0.9]) {
+        const at = lo + f * L;
+        let i = 1;
+        while (i < c.length - 1 && len[i] < at) i++;
+        const [x0, y0] = c[i - 1], [x1, y1] = c[i], sl = len[i] - len[i - 1] || 1, q = (at - len[i - 1]) / sl;
+        const x = x0 + (x1 - x0) * q, y = y0 + (y1 - y0) * q, nx = -(y1 - y0) / sl, ny = (x1 - x0) / sl;
+        for (const more of [0, 5, 10]) for (const sd of [1, -1]) {
+          const off = Math.abs(nx) * (tw / 2) + Math.abs(ny) * 5 + 2.5 + more, cx = x + nx * sd * off, cy = y + ny * sd * off;
+          cand.push([cx, cy + 3, [cx - tw / 2, cy - 5, cx + tw / 2, cy + 4], f]);
+        }
+      }
+      // failing a free spot: over a route, then over a name, but never over a pin or off the map if it can help it
+      const k = cand.find((o) => !hits(o[2]) && !over(o[2]) && !onRoute(o[2])) || cand.find((o) => !hits(o[2]) && !over(o[2]))
+        || cand.find((o) => !chk.out(o[2]) && !chk.pins(o[2]) && !over(o[2])) || cand.find((o) => !chk.out(o[2]) && !over(o[2])) || cand[0];
+      placed.push(k[2]);
+      out += `<text class="bm-dist" data-place="${lg.a} ${lg.b}" x="${k[0].toFixed(1)}" y="${k[1].toFixed(1)}" text-anchor="middle">${t}</text>`;
+    }
+    return out;
   }
   // the same line as points, a few along each rounded corner
   function curve(p) {
