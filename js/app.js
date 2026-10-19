@@ -904,7 +904,7 @@
     const lv = BibleMap.levels(c.places), h0 = phone ? 150 : 210, h1 = phone ? 150 : 230;
     const maps = lv.map((l, k) => {
       const insets = lv.map((m, j) => ({ m, j })).filter(({ m }) => m.parent === k).map(({ m, j }) => ({ ids: [...new Set(m.stops.map((s) => s.id))], name: m.name, k: j }));
-      return `<div class="bm-v" data-k="${k}" data-d="${l.depth}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
+      return `<div class="bm-v" data-k="${k}" data-d="${l.depth}" data-p="${l.parent}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
         + BibleMap.svg(l.stops, { w: 340, h: k ? h1 : h0, route: true, labels: insets.length ? "far" : true, insets, minSpan: l.minSpan || 0,
           label: k ? `${l.full || l.name} map of places in the life of ${c.name}` : `Places in the life of ${c.name}` }) + `</div>`;
     }).join("");
@@ -1093,17 +1093,94 @@
   }
   // with nothing hovered, the map window says what it can do; a phone has no room for that
   const capHint = (box, c) => (box === mapW.body ? `${new Set(c.places.map((s) => s.id)).size} places · point at a pin or an activity’s place tag` : "");
-  function setMapView(box, v) {
+  /* turning the map to another of its maps moves the view there, so the eye can follow: going to a
+     closer map, the place (or the closer map's dashed box) lights up first and the view then zooms into
+     it; going back out, the view zooms out and the box just left and the place light up on the wider
+     map; between two close-ups the view pans across. About half a second in all, and a newer turn cancels
+     an older one mid-way. id is the place being followed, if any. */
+  const ZOOM_MS = 380, LEAD_MS = 220;
+  const quiet = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function setMapView(box, v, id) {
     const views = box.querySelector(".bm-views");
     if (!views || !views.querySelector('.bm-v[data-k="1"]')) return;
-    views.dataset.v = v;
-    views.querySelectorAll(".bm-sw").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === v));
+    v = String(v);
+    const z = box._zoom;
+    if (z && z.to === v) return;                      // already on its way there
+    stopZoom(box);
+    const from = views.dataset.v;
+    const show = () => {
+      views.dataset.v = v;
+      views.querySelectorAll(".bm-sw").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === v));
+    };
+    if (from === v) return;
+    const fEl = views.querySelector(`.bm-v[data-k="${from}"]`), tEl = views.querySelector(`.bm-v[data-k="${v}"]`);
+    const fSvg = fEl && fEl.querySelector("svg"), tSvg = tEl && tEl.querySelector("svg");
+    if (!fSvg || !tSvg || !fSvg.clientWidth || views.classList.contains("folded") || quiet()) { show(); return; }
+    // the map of v, or the closer map on the way to it, as drawn on the map we are on
+    const up = (k) => views.querySelector(`.bm-v[data-k="${k}"]`)?.dataset.p;
+    let step = v; while (step != null && step !== "-1" && up(step) !== from) step = up(step);
+    const inward = step != null && step !== "-1";
+    const glow = (svg, sel) => svg.querySelectorAll(sel).forEach((n) => { n.classList.remove("go"); void n.getBoundingClientRect(); n.classList.add("go"); });
+    const zs = box._zoom = { to: v, timers: [], anims: [], clone: null };
+    const zoom = () => {
+      const [fx, fy, fw] = fSvg.dataset.vb.split(" ").map(Number), [tx, ty, tw] = tSvg.dataset.vb.split(" ").map(Number);
+      const fwPx = fSvg.clientWidth;                                                     // measured while the old map still shows
+      show();
+      const cw = tSvg.clientWidth || fwPx, up = fw / fwPx;                               // map units per pixel on the old map
+      const s = fw / tw, rx = (tx - fx) / up, ry = (ty - fy) / up;                       // the new view's corner, on the old map
+      // the old map, laid over the new one, moves its view onto the new map's area and fades out,
+      // while the new map grows out of that same area
+      const wrap = document.createElement("div");
+      wrap.className = "bm-zoom";
+      wrap.style.cssText = `top:${tEl.offsetTop}px;left:${tEl.offsetLeft}px;width:${tEl.offsetWidth}px;height:${tSvg.clientHeight}px`;
+      const clone = fSvg.cloneNode(true);
+      clone.removeAttribute("id"); clone.style.width = fwPx + "px";
+      wrap.appendChild(clone); views.appendChild(wrap); zs.clone = wrap;
+      tEl.classList.add("zooming");
+      // the view's width changes evenly in scale (a 100-fold zoom from the whole journey to Hebron does not
+      // rush through its last steps), and a longer zoom takes a little longer
+      const rw = fwPx / s, N = 12, ms = Math.min(650, ZOOM_MS + 45 * Math.abs(Math.log2(s)));
+      const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - 2 * (1 - t) * (1 - t)), cut = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+      // a map blown up far past its size is only a blur of giant pins, so it fades out between 2.5x and 8x
+      const vis = (m) => 1 - cut(Math.log(m), Math.log(2.5), Math.log(8));
+      const old = [], neu = [];
+      for (let i = 0; i <= N; i++) {
+        const t = ease(i / N), wt = fwPx * Math.pow(rw / fwPx, t), f = Math.abs(fwPx - rw) < 0.01 ? t : (fwPx - wt) / (fwPx - rw);
+        const L = rx * f, T = ry * f, S = fwPx / wt;
+        const mo = S * (cw / fwPx), mn = rw / wt;
+        old.push({ transform: `scale(${mo}) translate(${-L}px, ${-T}px)`, opacity: Math.min(vis(mo), 1 - cut(i / N, 0.35, 0.95)) });
+        neu.push({ transform: `translate(${(rx - L) * mo}px, ${(ry - T) * mo}px) scale(${mn})`, opacity: vis(mn) });
+      }
+      zs.anims.push(clone.animate(old, { duration: ms, fill: "forwards" }));
+      zs.anims.push(tSvg.animate(neu, { duration: ms }));
+      zs.timers.push(setTimeout(() => {
+        stopZoom(box, true);
+        // back out on a wider map: show where we came from, and the place
+        if (!inward) { glow(tSvg, `.bm-inset[data-k="${from}"]`); if (id) glow(tSvg, `.bm-pin[data-place~="${CSS.escape(id)}"]`); }
+      }, ms));
+    };
+    if (inward) {
+      // first light up the place, or the dashed box of the closer map, on the map we are on
+      glow(fSvg, `.bm-inset[data-k="${step}"]`);
+      if (id) glow(fSvg, `.bm-pin[data-place~="${CSS.escape(id)}"]`);
+      zs.timers.push(setTimeout(zoom, LEAD_MS));
+    } else zoom();
+  }
+  function stopZoom(box, keepGlow) {
+    const z = box._zoom;
+    if (!z) return;
+    z.timers.forEach(clearTimeout);
+    z.anims.forEach((a) => a.cancel());
+    if (z.clone) z.clone.remove();
+    box.querySelectorAll(".bm-v.zooming").forEach((n) => n.classList.remove("zooming"));
+    if (!keepGlow) box.querySelectorAll(".go").forEach((n) => n.classList.remove("go"));
+    box._zoom = null;
   }
   function followView(w, id) {
     for (const box of mapBoxes(w)) {
       const views = box.querySelector(".bm-views");
       // the closest map that has the place on it
-      if (views) setMapView(box, [...views.querySelectorAll(".bm-v")].filter((m) => m.dataset.ids.split(" ").includes(id)).sort((a, b) => b.dataset.d - a.dataset.d)[0]?.dataset.k || "0");
+      if (views) setMapView(box, [...views.querySelectorAll(".bm-v")].filter((m) => m.dataset.ids.split(" ").includes(id)).sort((a, b) => b.dataset.d - a.dataset.d)[0]?.dataset.k || "0", id);
     }
   }
   function showPlace(w, id) {

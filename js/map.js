@@ -52,7 +52,7 @@
     const v = view(pts, w, h, span && span * KY);
     const u = v.w / w;                       // map units per screen pixel
     const X = (x) => ((x - v.x) / u).toFixed(1), Y = (y) => ((y - v.y) / u).toFixed(1);
-    let s = `<svg class="bmap ${opt.cls || ""}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opt.label || "Map")}">`;
+    let s = `<svg class="bmap ${opt.cls || ""}" viewBox="0 0 ${w} ${h}" data-vb="${[v.x, v.y, v.w, v.h].map((n) => n.toFixed(2)).join(" ")}" role="img" aria-label="${esc(opt.label || "Map")}">`;
     s += `<rect class="bm-sea" width="${w}" height="${h}"/>`;
     s += `<g transform="scale(${(1 / u).toFixed(5)}) translate(${(-v.x).toFixed(2)} ${(-v.y).toFixed(2)})">`;
     s += `<path class="bm-land" d="${B.land}"/><path class="bm-lake" d="${B.lakes}"/><path class="bm-river" d="${B.rivers}"/></g>`;
@@ -131,7 +131,7 @@
       if (!nb.length) continue;
       const xs = nb.map((q) => q.x), ys = nb.map((q) => q.y);
       const bx = Math.min(...xs) - 8, by = Math.min(...ys) - 8, bw = Math.max(...xs) - bx + 8, bh = Math.max(...ys) - by + 8;
-      s += `<rect class="bm-inset" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="4"/>`;
+      s += `<rect class="bm-inset" data-k="${ins.k}" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="4"/>`;
       const tw = 14 + 6 * ins.name.length;
       const cands = [[bx + bw + 4, by + bh / 2 + 3], [bx - tw - 2, by + bh / 2 + 3], [bx, by - 4], [bx, by + bh + 10]];
       const box = ([tx, ty]) => [tx - 1, ty - 9, tx + tw, ty + 2];

@@ -511,6 +511,16 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bm-gmap:hover, .bm-gmap:focus-visible { color: var(--fg); text-decoration-color: var(--wc, var(--accent)); outline: none; }
 .bm-cap b { font: 600 14px var(--serif); color: var(--fg); margin-right: 2px; }
 .bm-pin.ping .bm-ring { animation: pin-ping 1.6s ease-out; }
+/* turning to another map (setMapView in js/app.js): the place or closer map lights up, then the view zooms */
+.bm-views { position: relative; }
+.bm-zoom { position: absolute; overflow: hidden; border-radius: 8px; pointer-events: none; z-index: 2; }
+.bm-zoom .bmap { transform-origin: 0 0; border-color: transparent; }
+.bm-v.zooming { overflow: hidden; border-radius: 8px; }
+.bm-v.zooming .bmap { transform-origin: 0 0; }
+.bm-pin.go .bm-ring { animation: pin-go 0.9s ease-out; }
+.bm-inset.go { animation: inset-go 0.9s ease-out; }
+@keyframes pin-go { 0%, 40% { stroke: var(--fg); stroke-width: 3; } 100% { stroke-width: 1.2; } }
+@keyframes inset-go { 0%, 40% { stroke: var(--fg); stroke-width: 2; opacity: 1; } 100% { stroke-width: 0.8; opacity: 0.7; } }
 @keyframes pin-ping { 0%, 45% { stroke: var(--fg); stroke-width: 3.5; } 100% { stroke-width: 1.2; } }
 .bm-inset-t { cursor: pointer; }
 .bm-inset-t:hover { fill: var(--fg); }
