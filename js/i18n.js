@@ -45,7 +45,7 @@
     "show.line.d": "只顯示從亞當到耶穌的世系",
     "show.current": "目前顯示：{m}。選擇顯示哪些人",
     "info.aria": "關於這個時間線",
-    "settings.aria": "設定",
+    "settings.aria": "語言",
     "settings.h": "語言",
     "timeline.aria": "聖經人物時間線",
     "stage.aria": "時間線",
