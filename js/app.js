@@ -955,7 +955,7 @@
       const age = A(yr) - c.tb;
       const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${T("age.at", { a: c.q[0] === "derived" ? "" : T("age.approx"), n: age }, `${c.q[0] === "derived" ? "" : "~"}age ${age}`)}</span>` : "";
       const sts = c.places ? c.places.filter((p) => p.k === i) : [];
-      const pl = sts.map((st) => { const p = BibleMap.place(st.id); return ` <button class="act-p s-${p.s}" data-place="${esc(st.id)}" title="${esc(placeTitle(p))}"><b>${st.n}</b>${esc(BibleMap.shortName(p.n))}${p.s === "possible" ? "?" : ""}</button>`; }).join("");
+      const pl = sts.map((st) => { const p = BibleMap.place(st.id); return ` <button class="act-p s-${p.s}" data-place="${esc(st.id)}" title="${esc(placeTitle(p))}"><b>${st.n}</b>${esc(BibleMap.shortName(p.n))}${p.s === "possible" && !/^某/.test(p.n) ? "?" : ""}</button>`; }).join("");
       return `<li data-t="${A(yr)}" data-i="${i}"${sts.length ? ` data-place="${esc(sts.map((st) => st.id).join(" "))}"` : ""}><span class="act-y">${esc(fmtYear(yr, true))}${ageS}${pl}</span><span class="act-t">${esc(text)}</span><span class="act-r">${Scripture.linkRefs(ref)}</span></li>`;
     }).join("");
     return `
@@ -1126,7 +1126,7 @@
       const cap = box.querySelector(".bm-cap"), pl = w.capId && BibleMap.place(w.capId);
       if (!cap || cap.dataset.id === (w.capId || "")) continue;   // unchanged: keep the link under the pointer
       cap.dataset.id = w.capId || "";
-      cap.innerHTML = pl ? `<b>${esc(pl.n)}</b>${SURE[pl.s] ? ` <span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>` : ""}${placeNote(pl) ? ` <span>${esc(placeNote(pl))}</span>` : ""} ${gmapLink(pl)}` : capHint(box, w.c);
+      cap.innerHTML = pl ? `<b>${esc(pl.n)}</b>${SURE[pl.s] ? ` <span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>` : ""}${placeNote(pl) ? ` <span>${Scripture.linkText(placeNote(pl))}</span>` : ""} ${gmapLink(pl)}` : capHint(box, w.c);
     }
     w.el.querySelectorAll(".acts li[data-place]").forEach((n) => n.classList.toggle("at-place", !!id && hasId(n, id)));
   }
