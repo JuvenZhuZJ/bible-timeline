@@ -517,6 +517,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bm-zoom .bmap { transform-origin: 0 0; border-color: transparent; }
 .bm-v.zooming { overflow: hidden; border-radius: 8px; }
 .bm-v.zooming .bmap { transform-origin: 0 0; }
+.bm-zoom .bm-scale, .bm-v.zooming .bm-scale { opacity: 0; }
 .bm-pin.go .bm-ring { animation: pin-go 0.9s ease-out; }
 .bm-inset.go { animation: inset-go 0.9s ease-out; }
 @keyframes pin-go { 0%, 40% { stroke: var(--fg); stroke-width: 3; } 100% { stroke-width: 1.2; } }
