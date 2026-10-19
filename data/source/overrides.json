@@ -49,7 +49,7 @@
     ],
     "obed-1b": [
       -1359,
-      -1270
+      -1215
     ],
     "moab-1": [
       -1918,
@@ -90,6 +90,14 @@
     "israelite-girl-in-naaman-s-house": [
       -925,
       -825
+    ],
+    "jesse": [
+      -1220,
+      -1080
     ]
+  },
+  "notes": {
+    "jesse": "Not recorded. Jesse was already old when David was a youth (1 Samuel 17:12) and was still alive while David was a fugitive, when he and his wife stayed in Moab (1 Samuel 22:3, 4). His son Obed was born in Ruth's day, about the 14th century B.C.E. (Insight, “Boaz”), and David in 1107 B.C.E., so both Obed and Jesse must have become fathers very late in life. Years approximate.",
+    "obed-1b": "Not recorded. Born when Ruth married Boaz, about the 14th century B.C.E. (Insight, “Boaz”; Ruth 4:13-17). About 250 years separate his birth from David's (1107 B.C.E.) with only Jesse between them (Ruth 4:21, 22), so he must have fathered Jesse very late in life. Years approximate."
   }
 }

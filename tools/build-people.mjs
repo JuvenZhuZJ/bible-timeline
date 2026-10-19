@@ -279,6 +279,64 @@ for (const [id, [b, d]] of Object.entries(OVR.dates || {})) {
   const p = byId.get(id);
   if (p) { p.born = b; p.died = d; p.year = Math.round((b + d) / 2); }
 }
+for (const [id, note] of Object.entries(OVR.notes || {})) if (byId.get(id)) byId.get(id).note = note;
+
+/* ---------- 5b. a parent is alive when each child is born ----------
+   Placeholder dates are set one person at a time, so a father or mother can
+   end up dying before a child is born (Jesse died before David). Only assumed
+   dates move; dates from the Bible, the books, curated key figures and
+   overrides.json "dates" stay put. A father may die shortly before the birth,
+   a mother may not. */
+const fixedId = new Set(Object.keys(OVR.dates || {}));
+const movable = (p) => !p.curated && !fixedId.has(p.id) && p.q[0] === "assumed" && p.q[1] === "assumed";
+const endable = (p) => !fixedId.has(p.id) && p.q[1] === "assumed";
+/* how far a placeholder may move, and how long a life may be stretched; a
+   bigger gap is a genealogy where "son of" means descendant (Mica son of
+   Zabdi son of Asaph, Nehemiah 11:17), so the link is left as it is */
+const MAX_MOVE = 100;
+const maxLife = (p) => (p.born < -2370 ? 970 : p.born < -1900 ? 200 : p.born < -1400 ? 140 : 120);
+const kidsOf = (p) => p.rel.children.map((id) => byId.get(id)).filter(Boolean);
+const shift = (p, d) => { p.born = clampY(p.born + d); p.died = clampY(p.died + d); p.year = clampY(p.year + d); };
+const parentGaps = () => {
+  const out = [];
+  for (const c of people) for (const kind of ["father", "mother"]) for (const id of c.rel[kind]) {
+    const p = byId.get(id);
+    if (p && p.died < c.born - (kind === "father" ? 1 : 0)) out.push([p, c, kind]);
+  }
+  return out;
+};
+const gapsBefore = parentGaps();
+const datesFixed = new Set();
+for (let pass = 0; pass < 200; pass++) {
+  const gaps = parentGaps();
+  if (!gaps.length) break;
+  for (const [p, c, kind] of gaps) {
+    if (p.died >= c.born - (kind === "father" ? 1 : 0)) continue;   // fixed earlier in this pass
+    const gap = c.born - p.died;
+    /* 1. a short gap: the parent simply lived a little longer */
+    if (endable(p) && gap <= 30 && c.born - p.born <= maxLife(p)) { p.died = c.born; datesFixed.add(p.id); continue; }
+    /* 2. move the parent's whole life to one generation before the child,
+          unless that puts them too close to (or after) another child's birth */
+    if (movable(p)) {
+      const d = c.born - GAP(p) - p.born;
+      const others = Math.min(...kidsOf(p).filter((k) => k !== c).map((k) => k.born));
+      const own = Math.min(...[...p.rel.father, ...p.rel.mother].map((id) => byId.get(id)).filter(Boolean).map((q) => q.died));
+      if (d > 0 && d <= MAX_MOVE && p.born + d <= others - 15 && p.born + d <= own) { shift(p, d); datesFixed.add(p.id); continue; }
+    }
+    /* 3. the parent lived on until the birth, if that is a believable age */
+    if (endable(p) && c.born - p.born <= maxLife(p)) { p.died = c.born; datesFixed.add(p.id); continue; }
+    /* 4. move the child back to be born in the parent's lifetime */
+    if (movable(c)) {
+      const floor = Math.max(...[...c.rel.father, ...c.rel.mother].map((id) => byId.get(id)).filter(Boolean).map((q) => q.born + 15));
+      const d = Math.max(p.born + 20, p.died - 10) - c.born;
+      if (d < 0 && -d <= MAX_MOVE && c.born + d >= floor) { shift(c, d); datesFixed.add(c.id); }
+    }
+  }
+}
+const gapsAfter = parentGaps();
+if (process.argv.includes("--gaps")) for (const [p, c] of gapsAfter) console.log(`  ${p.id} (d. ${p.died}) -> ${c.id} (b. ${c.born}): ${c.born - p.died} years`);
+console.log(`Parents dying before a child's birth: ${gapsBefore.length} pairs found, ${datesFixed.size} placeholder dates moved, ${gapsAfter.length} left as descendant links (--gaps lists them).`);
+
 const missing = [];
 lukeLine.forEach((p, i) => { if (p) p.line = true; else missing.push("Luke: " + LUKE[i]); });
 mattLine.forEach((p, i) => { if (p) p.line = true; else missing.push("Matthew: " + MATT[i + 1]); });

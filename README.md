@@ -120,7 +120,7 @@ While any window is open, the dock at the bottom of the screen starts with two b
 - **Key figures and events:** `data/characters.js` and `data/events.js`, written by hand from the same sources.
 - **Dates checked against:** the *New World Translation* (nwt_E.pdf): the table of Bible books (when each book was written and the years it covers), Appendix A6 (chart of the kings and prophets of Judah and Israel) and Appendix A7 (main events of Jesus' life); *Walk Courageously With God* (2025), whose section timelines give approximate life spans for the people in its 54 chapters; *Imitate Their Faith*, whose opening timeline dates Ruth, Hannah, Abigail, Elijah, Jonah, Esther and others; and *"Bearing Thorough Witness" About God's Kingdom* for the dates in Acts. Where a key figure's date is not recorded in the Bible and one of these books gives an approximate year, the site uses that year and the person's window note names the source. Where they differ from older *Insight* dates, the newer NWT chart is followed (Hezekiah died in 716 B.C.E., Manasseh in 661 and Josiah in 628, as in Appendix A6 and *Walk Courageously With God*).
 
-Most minor people have no recorded dates. Their place on the timeline is estimated from their generation or the period in which they appear, and their window says so. `data/ASSUMED_DATES.md` lists every assumed date.
+Most minor people have no recorded dates. Their place on the timeline is estimated from their generation or the period in which they appear, and their window says so. `data/ASSUMED_DATES.md` lists every assumed date. Because each placeholder is estimated on its own, the build then checks every parent and child: a father or mother whose estimated life ends before a child is born either lives on to the birth (when the age stays believable for that era), or the parent's or child's placeholder is moved by up to 100 years. Dates from the Bible, the books above, key figures and `overrides.json` never move. Links still left with a gap (22 of them, listed by `node tools/build-people.mjs --gaps`) are mostly 1 Chronicles lists where "son of" means a later descendant (Mica son of Zabdi son of Asaph, Nehemiah 11:17) or "father of" names a town's founder.
 
 ## Project layout
 
@@ -166,7 +166,8 @@ The script merges the curated key figures with the Insight records, links relati
 - `drop`: Insight keys to leave out (duplicates such as AMMON, the same man as Ben-ammi, and JEDIDIAH, Solomon's other name).
 - `line`, `notLine`: person ids to add to or remove from the Adam-to-Jesus line.
 - `tier`: `{ "id": 1-4 }` sets how far you must zoom in before a person appears (1 is always shown).
-- `dates`: `{ "id": [born, died] }` replaces a placeholder life span that the generation estimate gets wrong (Ruth's family, for example: Obed is born when Ruth marries Boaz, not a generation later).
+- `dates`: `{ "id": [born, died] }` replaces a placeholder life span that the generation estimate gets wrong (Ruth's family, for example: Obed is born when Ruth marries Boaz, not a generation later). Jesse is set here too: he must be alive at David's birth (1107 B.C.E.) and while David was a fugitive (1 Samuel 22:3, 4), and his father Obed was born in Ruth's day, so both lives are long.
+- `notes`: `{ "id": "text" }` adds a window note to a person who is not a key figure, for example to explain an estimated date.
 
 ## Hosting
 
