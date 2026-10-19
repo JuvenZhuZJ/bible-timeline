@@ -678,8 +678,24 @@
     tip.style.top = Math.max(L.top, a.y - 14 - tip.offsetHeight) + "px";
     tip.classList.add("show");
     g.tracks.querySelectorAll(".track-act").forEach((n) => n.classList.toggle("active", n.__act.c === a.c && n.__act.k === a.k));
+    pointAct(a.c, a.k);
+  }
+  /* a lifespan dot points at its activity, as the activity's row in the window does: its place lights
+     up on the map (with its route distances) and the map turns to the closest map that has it. Only a
+     person with an open window has a map; on a computer the map window turns to that person. */
+  let actW = null;
+  function pointAct(c, k) {
+    const w = wins.find((x) => x.c === c && !x.minimized);
+    const li = w && w.el.querySelector(`.acts li[data-i="${k}"][data-place]`);
+    if (!li) return;
+    if (!L.mobile && mapW.c !== w.c) focusWin(w);
+    const id = li.dataset.place.split(" ")[0];
+    followView(w, id);
+    markPlace(w, id);
+    actW = w;
   }
   function hideActTip() {
+    if (actW) { markPlace(actW, null); actW = null; }
     if (!tipAct) return;
     tipAct = null;
     if (!tipEv) tip.classList.remove("show");
@@ -694,6 +710,9 @@
     scrollToRow(w, li);
     w.el.querySelectorAll(".acts li.act-hl").forEach((o) => o.classList.remove("act-hl"));
     void li.offsetWidth; li.classList.add("act-hl");
+    // and its place on the map (on a phone, where the window covers the lifespans, this is the way
+    // a lifespan dot reaches the map: tap it, then tap again)
+    if (li.dataset.place) { const id = li.dataset.place.split(" ")[0]; followView(w, id); markPlace(w, id); }
     cursorT = +li.dataset.t; requestRender();
   }
   g.tracks.addEventListener("pointerover", (e) => {
@@ -1267,6 +1286,29 @@
       markPlace(w, id || null);
     });
     acts.addEventListener("pointerleave", () => markPlace(w, null));
+    // so does a dot on the window's own lifespan bar
+    const mt = w.el.querySelector(".mini-tl");
+    if (!mt) return;
+    // the dot nearest the pointer counts, within a few pixels, as close dots overlap
+    let mtI = null;
+    const point = (e) => {
+      const r = mt.getBoundingClientRect(), x = ((e.clientX - r.left) / r.width) * 300;
+      let best = null, bd = (8 / r.width) * 300;
+      for (const d of mt.querySelectorAll(".mt-ev")) {
+        const dd = Math.abs(+d.getAttribute("cx") - x);
+        if (dd < bd && acts.querySelector(`li[data-i="${d.dataset.i}"][data-place]`)) { bd = dd; best = d.dataset.i; }
+      }
+      if (best === mtI) return;
+      mtI = best;
+      const li = best != null && acts.querySelector(`li[data-i="${best}"][data-place]`), id = li && li.dataset.place.split(" ")[0];
+      if (id) followView(w, id);
+      markPlace(w, id || null);
+      mt.classList.toggle("pointing", !!id);
+    };
+    mt.addEventListener("pointermove", point);
+    mt.addEventListener("pointerdown", point);
+    // a tap's place stays lit, as a tapped activity's does
+    mt.addEventListener("pointerleave", (e) => { mtI = null; mt.classList.remove("pointing"); if (e.pointerType === "mouse") markPlace(w, null); });
   }
 
   /* the map window (computer only): one window that shows the places of the person window in use,
