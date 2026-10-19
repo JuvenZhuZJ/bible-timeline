@@ -91,9 +91,22 @@
       if (d > 1.5) { q.dx = (q.x - q.ax) / d; q.dy = (q.y - q.ay) / d; }
     }
 
-    // route through the stops, in order of the person's life, joining the pins as drawn
+    // route through the stops, in order of the person's life, joining the pins as drawn; each leg
+    // follows its way along the roads and sea lanes (way() below), drawn once however often it was taken
+    s += "<!--terrain-->";
     const seq = list.map((st) => byId.get(st.id)).filter((q, i, a) => !i || q !== a[i - 1]);
-    if (opt.route && seq.length > 1) s += `<path class="bm-route" d="M${seq.map((q) => q.x + " " + q.y).join(" L")}"/>`;
+    if (opt.route && seq.length > 1) {
+      const done = new Set();
+      let d = "";
+      for (let i = 1; i < seq.length; i++) {
+        const a = seq[i - 1], b = seq[i], key = [a.st.id, b.st.id].sort().join(">");
+        if (done.has(key)) continue;
+        done.add(key);
+        const mid = way(a.st.id, b.st.id).pts.slice(1, -1).map((ll) => { const [mx, my] = proj(ll); return [+X(mx), +Y(my)]; });
+        d += smooth([[a.x, a.y], ...mid, [b.x, b.y]]);
+      }
+      s += `<path class="bm-route" d="${d}"/>`;
+    }
 
     const boxes = pins.filter((q) => !q.small).map((q) => [q.x - 7, q.y - 7, q.x + 7, q.y + 7]);
     const labelBoxes = [];
@@ -167,11 +180,172 @@
         labelBoxes.push(b); break;
       }
     }
+    s = s.replace("<!--terrain-->", terrain(v, u, w, h, X, Y, list, hits, boxes, labelBoxes, (t) => { labels = t + labels; }));
     s += marks + labels;
     // scale bar
     s += `<g class="bm-scale" transform="translate(${w - 10 - px} ${h - 10})"><path d="M0 -3 V0 H${px.toFixed(1)} V-3"/><text x="${(px / 2).toFixed(1)}" y="-5" text-anchor="middle">${km} km</text></g>`;
     return s + `</svg>`;
   }
+  // a line through the points with its corners rounded off
+  function smooth(p) {
+    const f = (q) => q[0].toFixed(1) + " " + q[1].toFixed(1);
+    if (p.length < 3) return `M${f(p[0])} L${f(p[p.length - 1])}`;
+    let d = `M${f(p[0])}`;
+    for (let i = 1; i < p.length - 1; i++) {
+      const m = [(p[i][0] + p[i + 1][0]) / 2, (p[i][1] + p[i + 1][1]) / 2];
+      d += i === 1 ? ` L${f([(p[0][0] + p[1][0]) / 2, (p[0][1] + p[1][1]) / 2])}` : "";
+      d += ` Q${f(p[i])} ${f(i === p.length - 2 ? p[i + 1] : m)}`;
+    }
+    return d;
+  }
+
+  /* the landscape of data/terrain.js seen at this zoom: deserts as a fine stipple, mountain ranges as
+     rows of small peaks, single mountains as a small triangle, and the names of each, set where they
+     cover no pin and no name; returns the marks, and hands the names to put() to go under the pins' names */
+  function terrain(v, u, w, h, X, Y, list, hits, boxes, labelBoxes, put) {
+    const T = window.TERRAIN;
+    if (!T) return "";
+    const deg = v.h / KY, on = new Set(list.map((st) => st.id));
+    const scr = (ll) => { const [mx, my] = proj(ll); return [+X(mx), +Y(my)]; };
+    const inView = ([x, y]) => x > 4 && x < w - 4 && y > 4 && y < h - 4;
+    let sand = "", peaks = "", names = "";
+    const name = (t, [x, y], cls) => {
+      const tw = t.length * (cls === "bm-river-t" ? 4.6 : 4.9), b = [x - tw / 2, y - 7, x + tw / 2, y + 3];
+      if (!inView([x, y]) || hits(b)) return false;
+      names += `<text class="${cls}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle">${esc(t)}</text>`;
+      labelBoxes.push(b);
+      return true;
+    };
+    // deserts: dots on a loose grid inside the outline
+    for (const ds of T.deserts) {
+      if (deg > ds.max) continue;
+      const poly = ds.poly.map(scr);
+      const xs = poly.map((p) => p[0]), ys = poly.map((p) => p[1]);
+      const x0 = Math.max(0, Math.min(...xs)), x1 = Math.min(w, Math.max(...xs)), y0 = Math.max(0, Math.min(...ys)), y1 = Math.min(h, Math.max(...ys));
+      if (x0 >= x1 || y0 >= y1) continue;
+      const inside = (x, y) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, yi] = poly[i], [xj, yj] = poly[j]; if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c; } return c; };
+      const G = 6;
+      for (let gy = Math.floor(y0 / G); gy * G < y1; gy++) for (let gx = Math.floor(x0 / G); gx * G < x1; gx++) {
+        const r = Math.sin(gx * 12.9898 + gy * 78.233) * 43758.5453, j = r - Math.floor(r);
+        const x = gx * G + (gy % 2) * 3 + j * 2, y = gy * G + j * 2.5;
+        if (inside(x, y)) sand += `M${x.toFixed(1)} ${y.toFixed(1)}h0`;
+      }
+    }
+    // a single mountain, unless it is on the map as a pin
+    for (const pk of T.peaks) {
+      if (deg > pk.max || (pk.place && on.has(pk.place))) continue;
+      const [x, y] = scr(pk.ll);
+      if (!inView([x, y]) || boxes.some((o) => x > o[0] - 3 && x < o[2] + 3 && y > o[1] - 3 && y < o[3] + 3)) continue;
+      peaks += `<path class="bm-peak" d="M${(x - 3.5).toFixed(1)} ${(y + 2.5).toFixed(1)}l3.5 -5.5l3.5 5.5z"/>`;
+      const tw = pk.n.length * 4.9;
+      for (const [tx, ty] of [[x + 6 + tw / 2, y + 3], [x - 6 - tw / 2, y + 3], [x, y - 5], [x, y + 11]]) if (name(pk.n, [tx, ty], "bm-ter-t")) break;
+      boxes.push([x - 4, y - 4, x + 4, y + 3]);
+    }
+    const shown = (f) => deg <= f.max && !(f.min && deg <= f.min);
+    for (const ds of T.deserts) if (shown(ds)) name(ds.n, scr(ds.at), "bm-ter-t");
+    for (const rg of T.ranges) if (shown(rg) && rg.n && rg.at) name(rg.n, scr(rg.at), "bm-ter-t");
+    for (const nm of T.names) if (shown(nm)) name(nm.n, scr(nm.ll), nm.river ? "bm-river-t" : "bm-ter-t");
+    // ranges: a small peak every few pixels along the crest, skipping any spot under a pin or a name
+    let crest = "";
+    for (const rg of T.ranges) {
+      if (!shown(rg) || deg < 0.5) continue;   // in a close-up of a few towns, the hills are no help
+      const p = rg.line.map(scr);
+      let carry = 5;
+      for (let i = 1; i < p.length; i++) {
+        const [ax, ay] = p[i - 1], [bx, by] = p[i], len = Math.hypot(bx - ax, by - ay);
+        for (let t = carry; t < len; t += 11) {
+          const x = ax + ((bx - ax) * t) / len, y = ay + ((by - ay) * t) / len;
+          if (!inView([x, y]) || hits([x - 3, y - 2, x + 3, y + 2])) continue;
+          crest += `M${(x - 3).toFixed(1)} ${(y + 1.5).toFixed(1)}l3 -3.4l3 3.4`;
+        }
+        carry = ((carry - len) % 11 + 11) % 11;
+      }
+    }
+    put(names);
+    return (sand ? `<path class="bm-sand" d="${sand}"/>` : "") + (crest ? `<path class="bm-crest" d="${crest}"/>` : "") + peaks;
+  }
+
+  /* the way between two places along the roads of data/routes.js: a leg TRAVELS describes takes that
+     way (the Exodus, Paul's voyages); any other takes the shortest way along the ROADS, with a place off
+     the roads joined to the nearest road towns; failing a road way not much longer than the straight
+     line, the line goes straight. Returns { pts: [[lon, lat], ...], src: [...] } */
+  const RW = window.ROUTE_WAY || {}, ROADS = window.ROADS || [], TRAVELS = window.TRAVELS || {};
+  const llOf = (p) => (Array.isArray(p) ? p : (P[p] && P[p].ll) || RW[p]);
+  const keyOf = (p) => (Array.isArray(p) ? p.join(",") : p);
+  const kmOf = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos(((a[1] + b[1]) * Math.PI) / 360), a[1] - b[1]) * 111;
+  let G = null;
+  function graph() {
+    if (G) return G;
+    G = new Map();
+    const node = (p) => { const k = keyOf(p); if (!G.has(k)) G.set(k, { ll: llOf(p), e: [], road: true }); return G.get(k); };
+    for (const r of ROADS) for (let i = 1; i < r.pts.length; i++) {
+      if (!llOf(r.pts[i - 1]) || !llOf(r.pts[i])) continue;
+      const a = node(r.pts[i - 1]), b = node(r.pts[i]), d = kmOf(a.ll, b.ll);
+      a.e.push({ to: b, d, src: r.src }); b.e.push({ to: a, d, src: r.src });
+    }
+    return G;
+  }
+  function attach(id) {
+    const g = graph();
+    if (g.has(id)) return g.get(id);
+    const ll = llOf(id);
+    if (!ll) return null;
+    const n = { ll, e: [] };
+    const near = [...g.values()].filter((m) => m.road).map((m) => [m, kmOf(ll, m.ll)]).sort((a, b) => a[1] - b[1])
+      .slice(0, 2).filter(([, d], i) => d < 150 && (!i || d < 40));
+    for (const [m, d] of near) { n.e.push({ to: m, d: d * 1.3, src: "common route" }); m.e.push({ to: n, d: d * 1.3, src: "common route" }); }
+    g.set(id, n);
+    return n;
+  }
+  function shortest(a, b) {
+    const s = attach(a), t = attach(b);
+    if (!s || !t) return null;
+    const dist = new Map([[s, 0]]), prev = new Map(), done = new Set(), q = [s];
+    while (q.length) {
+      let bi = 0;
+      for (let i = 1; i < q.length; i++) if (dist.get(q[i]) < dist.get(q[bi])) bi = i;
+      const n = q.splice(bi, 1)[0];
+      if (done.has(n)) continue;
+      done.add(n);
+      if (n === t) break;
+      for (const e of n.e) {
+        const nd = dist.get(n) + e.d;
+        if (nd < (dist.has(e.to) ? dist.get(e.to) : Infinity)) { dist.set(e.to, nd); prev.set(e.to, [n, e.src]); q.push(e.to); }
+      }
+    }
+    if (!dist.has(t)) return null;
+    const pts = [t.ll], src = new Set(), seg = [];
+    for (let n = t; prev.has(n); ) { const [p, sr] = prev.get(n); pts.unshift(p.ll); seg.unshift(sr); src.add(sr); n = p; }
+    return { pts, src: [...src], seg, d: dist.get(t) };
+  }
+  const ways = new Map();
+  function way(a, b) {
+    const key = a + ">" + b;
+    if (ways.has(key)) return ways.get(key);
+    let r;
+    const t = TRAVELS[key] || TRAVELS[b + ">" + a];
+    if (t) {
+      // seg: the source of each piece of the line, for checking (tools: which legs follow a source map)
+      const via = TRAVELS[key] ? t.via : t.via.slice().reverse(), pts = [], src = new Set([t.src]), seg = [];
+      for (let i = 0; i < via.length; i++) {
+        if (typeof via[i] === "string" && via[i][0] === "=") {   // the way another travel gives
+          const [x, y] = via[i].slice(1).split(">"), sub = way(x, y);
+          pts.push(...sub.pts.slice(1, -1)); seg.push(...sub.seg.slice(0, -1)); sub.src.forEach((v) => src.add(v));
+          continue;
+        }
+        if (via[i] !== ">") { pts.push(llOf(via[i])); if (i < via.length - 1 && via[i + 1] !== ">") seg.push(t.src); continue; }
+        const sp = shortest(keyOf(via[i - 1]), keyOf(via[i + 1]));
+        if (sp) { pts.push(...sp.pts.slice(1, -1)); seg.push(...sp.seg); sp.src.forEach((x) => src.add(x)); }
+      }
+      r = { pts, src: [...src], seg };
+    } else {
+      const A = llOf(a), Bp = llOf(b), sp = shortest(a, b), direct = kmOf(A, Bp);
+      r = sp && sp.d <= direct * 1.8 + 15 ? { pts: sp.pts, src: sp.src, seg: sp.seg } : { pts: [A, Bp], src: ["straight"], seg: ["straight"] };
+    }
+    ways.set(key, r);
+    return r;
+  }
+
   const niceKm = (k) => [5, 10, 20, 50, 100, 200, 500, 1000].reduce((a, b) => (Math.abs(b - k) < Math.abs(a - k) ? b : a));
   const shortName = (n) => n.replace(/ \(.*\)$/, "").replace(/, (near|by|plains of|Cyprus|Hebron).*$/i, "").replace(/^(Torrent valley of|A city in the land of) /, "");
 
@@ -278,5 +452,5 @@
 
 
 
-  window.BibleMap = { svg, levels, place: (id) => P[id], shortName };
+  window.BibleMap = { svg, levels, way, place: (id) => P[id], shortName };
 })();

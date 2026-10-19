@@ -462,7 +462,13 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bm-land { fill: #1a1712; stroke: rgba(217, 181, 111, 0.32); stroke-width: 0.8px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
 .bm-lake { fill: #0a0c0e; stroke: rgba(217, 181, 111, 0.32); stroke-width: 0.8px; vector-effect: non-scaling-stroke; }
 .bm-river { fill: none; stroke: rgba(120, 150, 160, 0.55); stroke-width: 1px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
-.bm-route { fill: none; stroke: var(--wc, var(--accent)); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.55; }
+.bm-route { fill: none; stroke: var(--wc, var(--accent)); stroke-width: 1.1; stroke-dasharray: 3 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0.6; }
+/* landscape (data/terrain.js): deserts as stipple, mountains as small peaks, names in faint italics */
+.bm-sand { fill: none; stroke: rgba(201, 170, 112, 0.2); stroke-width: 1.1px; stroke-linecap: round; }
+.bm-crest { fill: none; stroke: rgba(201, 170, 112, 0.42); stroke-width: 0.9px; stroke-linejoin: round; }
+.bm-peak { fill: rgba(201, 170, 112, 0.34); stroke: rgba(201, 170, 112, 0.5); stroke-width: 0.6px; stroke-linejoin: round; }
+.bm-ter-t { font: italic 400 8.5px var(--serif); fill: rgba(201, 170, 112, 0.5); letter-spacing: 0.04em; pointer-events: none; }
+.bm-river-t { font: italic 400 8.5px var(--serif); fill: rgba(130, 165, 178, 0.75); letter-spacing: 0.04em; pointer-events: none; }
 .bm-sea-t { font: italic 400 11px var(--serif); fill: rgba(235, 231, 222, 0.32); letter-spacing: 0.08em; }
 .bm-pin { cursor: pointer; }
 .bm-pin .bm-ring { fill: var(--bg); stroke: var(--wc, var(--accent)); stroke-width: 1.2; }
