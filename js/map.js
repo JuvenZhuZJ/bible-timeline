@@ -95,6 +95,7 @@
     // follows its way along the roads and sea lanes (way() below), drawn once however often it was taken
     s += "<!--terrain-->";
     const seq = list.map((st) => byId.get(st.id)).filter((q, i, a) => !i || q !== a[i - 1]);
+    const segs = [];      // the route as drawn, in short straight pieces, so names can keep off it
     if (opt.route && seq.length > 1) {
       const done = new Set();
       let d = "";
@@ -103,7 +104,10 @@
         if (done.has(key)) continue;
         done.add(key);
         const mid = way(a.st.id, b.st.id).pts.slice(1, -1).map((ll) => { const [mx, my] = proj(ll); return [+X(mx), +Y(my)]; });
-        d += smooth([[a.x, a.y], ...mid, [b.x, b.y]]);
+        const p = [[a.x, a.y], ...mid, [b.x, b.y]];
+        d += smooth(p);
+        const c = curve(p);
+        for (let j = 1; j < c.length; j++) segs.push([c[j - 1][0], c[j - 1][1], c[j][0], c[j][1]]);
       }
       s += `<path class="bm-route" d="${d}"/>`;
     }
@@ -113,6 +117,9 @@
     const out = (b) => b[0] < 2 || b[2] > w - 2 || b[1] < 2 || b[3] > h - 2;
     const over = (b, list) => list.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
     const hits = (b) => out(b) || over(b, boxes) || over(b, labelBoxes);
+    // a name on the route hides it under the name's dark outline, so names keep off the route where they can
+    const onRoute = (b) => segs.some((sg) => cuts(sg, b[0] - 1, b[1] - 1, b[2] + 1, b[3] + 1));
+    const hitsR = (b) => hits(b) || onRoute(b);
     const km = niceKm(v.w / KX * 111 * B.k * 0.25), px = km / (111 * B.k) * KX / u;
     labelBoxes.push([w - 14 - px, h - 22, w - 6, h - 6]);   // the scale bar, bottom right
 
@@ -127,8 +134,9 @@
       s += `<rect class="bm-inset" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="4"/>`;
       const tw = 14 + 6 * ins.name.length;
       const cands = [[bx + bw + 4, by + bh / 2 + 3], [bx - tw - 2, by + bh / 2 + 3], [bx, by - 4], [bx, by + bh + 10]];
-      for (const [tx, ty] of cands) {
-        const lb = [tx - 1, ty - 9, tx + tw, ty + 2];
+      const box = ([tx, ty]) => [tx - 1, ty - 9, tx + tw, ty + 2];
+      for (const [tx, ty] of cands.filter((c) => !hitsR(box(c))).concat(cands)) {
+        const lb = box([tx, ty]);
         if (hits(lb)) continue;
         s += `<text class="bm-label bm-inset-t" data-k="${ins.k}" x="${tx.toFixed(1)}" y="${ty.toFixed(1)}">${esc(ins.name)} ↓</text>`; labelBoxes.push(lb); break;
       }
@@ -161,9 +169,17 @@
         const bx0 = anc === "start" ? ex : anc === "end" ? ex - tw : ex - tw / 2;
         cand.push([ex, ey + 3.5, anc, [bx0, ey - 5, bx0 + tw, ey + 5], [x + ux * 7, y + uy * 7, ex - ux * 2, ey - uy * 2]]);
       }
-      // a name never covers another name or leaves the map; failing a free spot, it crosses as few pins as it can
+      // a name never covers another name or leaves the map, and keeps off the route if any spot allows
+      // (farther out on a fine line if need be); failing a free spot, it crosses as few pins as it can
       const nPins = (b) => boxes.filter((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]).length;
-      let c = cand.find((k) => !hits(k[3]));
+      // a name set farther out must still sit nearer its own pin than any other, or it reads as the other's
+      const gap = (b, px, py) => Math.hypot(Math.max(b[0] - px, 0, px - b[2]), Math.max(b[1] - py, 0, py - b[3]));
+      const clear = (b) => !big.some((o) => o.st.id !== st.id && gap(b, o.x, o.y) < gap(b, x, y));
+      const crossings = (b) => segs.filter((sg) => cuts(sg, b[0] - 1, b[1] - 1, b[2] + 1, b[3] + 1)).length;
+      let c = cand.find((k) => !hitsR(k[3]) && clear(k[3]));
+      if (!c) c = cand.filter((k) => !hits(k[3]) && clear(k[3])).map((k, i) => [crossings(k[3]) + i * 0.01, k]).sort((a, b) => a[0] - b[0]).map((e) => e[1])[0];
+      if (!c) c = cand.filter((k) => !out(k[3]) && !over(k[3], labelBoxes) && clear(k[3])).sort((k1, k2) => nPins(k1[3]) - nPins(k2[3]))[0];
+      if (!c) c = cand.find((k) => !hits(k[3]));
       if (!c) c = cand.filter((k) => !out(k[3]) && !over(k[3], labelBoxes)).sort((k1, k2) => nPins(k1[3]) - nPins(k2[3]))[0];
       if (!c) continue;
       labelBoxes.push(c[3]);
@@ -175,16 +191,37 @@
       for (const at of sea.at) {
         const [mx, my] = proj(at), x = +X(mx), y = +Y(my), tw = sea.t.length * 5.6;
         const b = [x - tw / 2, y - 7, x + tw / 2, y + 4];
-        if (x < 0 || x > w || y < 0 || y > h || hits(b)) continue;
+        if (x < 0 || x > w || y < 0 || y > h || hitsR(b)) continue;
         labels = `<text class="bm-sea-t" x="${x}" y="${y}" text-anchor="middle">${esc(sea.t)}</text>` + labels;
         labelBoxes.push(b); break;
       }
     }
-    s = s.replace("<!--terrain-->", terrain(v, u, w, h, X, Y, list, hits, boxes, labelBoxes, (t) => { labels = t + labels; }));
+    s = s.replace("<!--terrain-->", terrain(v, u, w, h, X, Y, list, hitsR, boxes, labelBoxes, (t) => { labels = t + labels; }));
     s += marks + labels;
     // scale bar
     s += `<g class="bm-scale" transform="translate(${w - 10 - px} ${h - 10})"><path d="M0 -3 V0 H${px.toFixed(1)} V-3"/><text x="${(px / 2).toFixed(1)}" y="-5" text-anchor="middle">${km} km</text></g>`;
     return s + `</svg>`;
+  }
+  // the same line as points, a few along each rounded corner
+  function curve(p) {
+    if (p.length < 3) return p;
+    const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], out = [p[0], mid(p[0], p[1])];
+    for (let i = 1; i < p.length - 1; i++) {
+      const a = out[out.length - 1], c = i === p.length - 2 ? p[i + 1] : mid(p[i], p[i + 1]);
+      for (let t = 0.25; t <= 1; t += 0.25) out.push([(1 - t) * (1 - t) * a[0] + 2 * t * (1 - t) * p[i][0] + t * t * c[0], (1 - t) * (1 - t) * a[1] + 2 * t * (1 - t) * p[i][1] + t * t * c[1]]);
+    }
+    return out;
+  }
+  // does the piece of line [x1, y1, x2, y2] pass through the box x0..x1, y0..y1 (Liang-Barsky)
+  function cuts([ax, ay, bx, by], x0, y0, x1, y1) {
+    let t0 = 0, t1 = 1;
+    const dx = bx - ax, dy = by - ay;
+    for (const [p, q] of [[-dx, ax - x0], [dx, x1 - ax], [-dy, ay - y0], [dy, y1 - ay]]) {
+      if (p === 0) { if (q < 0) return false; continue; }
+      const r = q / p;
+      if (p < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; }
+    }
+    return true;
   }
   // a line through the points with its corners rounded off
   function smooth(p) {
@@ -209,12 +246,17 @@
     const scr = (ll) => { const [mx, my] = proj(ll); return [+X(mx), +Y(my)]; };
     const inView = ([x, y]) => x > 4 && x < w - 4 && y > 4 && y < h - 4;
     let sand = "", peaks = "", names = "";
-    const name = (t, [x, y], cls) => {
-      const tw = t.length * (cls === "bm-river-t" ? 4.6 : 4.9), b = [x - tw / 2, y - 7, x + tw / 2, y + 3];
-      if (!inView([x, y]) || hits(b)) return false;
-      names += `<text class="${cls}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle">${esc(t)}</text>`;
-      labelBoxes.push(b);
-      return true;
+    // a name goes at its spot, or a little above, below or beside it, where it covers no pin, name or route
+    const name = (t, [x0, y0], cls, shift) => {
+      const tw = t.length * (cls === "bm-river-t" ? 4.6 : 4.9);
+      for (const [ox, oy] of shift === false ? [[0, 0]] : [[0, 0], [0, -9], [0, 9], [-tw / 3, 0], [tw / 3, 0]]) {
+        const x = x0 + ox, y = y0 + oy, b = [x - tw / 2, y - 7, x + tw / 2, y + 3];
+        if (!inView([x, y]) || hits(b)) continue;
+        names += `<text class="${cls}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle">${esc(t)}</text>`;
+        labelBoxes.push(b);
+        return true;
+      }
+      return false;
     };
     // deserts: dots on a loose grid inside the outline
     for (const ds of T.deserts) {
@@ -238,7 +280,7 @@
       if (!inView([x, y]) || boxes.some((o) => x > o[0] - 3 && x < o[2] + 3 && y > o[1] - 3 && y < o[3] + 3)) continue;
       peaks += `<path class="bm-peak" d="M${(x - 3.5).toFixed(1)} ${(y + 2.5).toFixed(1)}l3.5 -5.5l3.5 5.5z"/>`;
       const tw = pk.n.length * 4.9;
-      for (const [tx, ty] of [[x + 6 + tw / 2, y + 3], [x - 6 - tw / 2, y + 3], [x, y - 5], [x, y + 11]]) if (name(pk.n, [tx, ty], "bm-ter-t")) break;
+      for (const [tx, ty] of [[x + 6 + tw / 2, y + 3], [x - 6 - tw / 2, y + 3], [x, y - 5], [x, y + 11]]) if (name(pk.n, [tx, ty], "bm-ter-t", false)) break;
       boxes.push([x - 4, y - 4, x + 4, y + 3]);
     }
     const shown = (f) => deg <= f.max && !(f.min && deg <= f.min);
