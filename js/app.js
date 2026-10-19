@@ -1143,16 +1143,18 @@
       const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - 2 * (1 - t) * (1 - t)), cut = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
       // a map blown up far past its size is only a blur of giant pins, so it fades out between 2.5x and 8x
       const vis = (m) => 1 - cut(Math.log(m), Math.log(2.5), Math.log(8));
-      const old = [], neu = [];
+      const old = [], neu = [], mos = [], mns = [];
       for (let i = 0; i <= N; i++) {
         const t = ease(i / N), wt = fwPx * Math.pow(rw / fwPx, t), f = Math.abs(fwPx - rw) < 0.01 ? t : (fwPx - wt) / (fwPx - rw);
         const L = rx * f, T = ry * f, S = fwPx / wt;
         const mo = S * (cw / fwPx), mn = rw / wt;
+        mos.push(mo); mns.push(mn);
         old.push({ transform: `scale(${mo}) translate(${-L}px, ${-T}px)`, opacity: Math.min(vis(mo), 1 - cut(i / N, 0.35, 0.95)) });
         neu.push({ transform: `translate(${(rx - L) * mo}px, ${(ry - T) * mo}px) scale(${mn})`, opacity: vis(mn) });
       }
       zs.anims.push(clone.animate(old, { duration: ms, fill: "forwards" }));
       zs.anims.push(tSvg.animate(neu, { duration: ms }));
+      keep(clone, mos, ms, zs); keep(tSvg, mns, ms, zs);
       zs.timers.push(setTimeout(() => {
         stopZoom(box, true);
         // back out on a wider map: show where we came from, and the place
@@ -1165,6 +1167,31 @@
       if (id) glow(fSvg, `.bm-pin[data-place~="${CSS.escape(id)}"]`);
       zs.timers.push(setTimeout(zoom, LEAD_MS));
     } else zoom();
+  }
+  /* a map being blown up keeps its pins, names, lines and dashes at their usual size on screen, as a
+     real map does when you zoom in: each mark shrinks back by as much as the map grows, about its own
+     spot, lines and dashes thin back the same way, and the rows of small peaks fade, so the last frame
+     looks like the map it lands on. ms: the map's scale at each keyframe. */
+  function keep(svg, ms, dur, zs) {
+    if (Math.max(...ms) < 1.05) return;
+    const k = ms.map((m) => 1 / Math.max(1, m)), f = (n) => n.toFixed(2) + "px";
+    const at = (el, x, y, extra = "") => zs.anims.push(el.animate(k.map((q) => ({ transform: `translate(${f(x)}, ${f(y)}) scale(${q})${extra}` })), { duration: dur, fill: "forwards" }));
+    svg.querySelectorAll(".bm-pin").forEach((g) => { const m = g.transform.baseVal.consolidate(); if (m) at(g, m.matrix.e, m.matrix.f); });
+    svg.querySelectorAll("text").forEach((t) => {
+      if (t.closest(".bm-pin, .bm-scale")) return;
+      const x = t.x.baseVal[0]?.value || 0, y = t.y.baseVal[0]?.value || 0;
+      at(t, x, y, ` translate(${f(-x)}, ${f(-y)})`);
+    });
+    svg.querySelectorAll(".bm-peak, .bm-at").forEach((n) => { const b = n.getBBox(), x = b.x + b.width / 2, y = b.y + b.height / 2; at(n, x, y, ` translate(${f(-x)}, ${f(-y)})`); });
+    // lines: strokes and dashes thin back by as much as the map grows
+    svg.querySelectorAll("path, rect, line, circle").forEach((n) => {
+      if (n.closest(".bm-pin") || n.matches(".bm-peak, .bm-at, .bm-sea, .bm-crest")) return;
+      const cs = getComputedStyle(n);
+      if (cs.stroke === "none") return;
+      const w = parseFloat(cs.strokeWidth) || 1, dash = cs.strokeDasharray === "none" ? null : cs.strokeDasharray.split(/[ ,]+/).map(parseFloat);
+      zs.anims.push(n.animate(k.map((q) => (dash ? { strokeWidth: f(w * q), strokeDasharray: dash.map((d) => f(d * q)).join(" ") } : { strokeWidth: f(w * q) })), { duration: dur, fill: "forwards" }));
+    });
+    svg.querySelectorAll(".bm-crest").forEach((n) => zs.anims.push(n.animate(ms.map((m) => ({ opacity: Math.max(0, Math.min(1, 2 - m)) })), { duration: dur, fill: "forwards" })));
   }
   function stopZoom(box, keepGlow) {
     const z = box._zoom;
