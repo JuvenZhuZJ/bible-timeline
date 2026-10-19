@@ -493,7 +493,9 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .acts li.at-place { background: rgba(235, 231, 222, 0.05); }
 /* the map: in the map window on a computer, pinned under the lifespan bar in the window on a phone */
 .win-map { display: none; }
-.bm-bar { display: flex; gap: 5px; align-items: center; margin-bottom: 6px; overflow-x: auto; scrollbar-width: none; }
+/* the bar scrolls sideways on narrow phones, and a scrolling box clips at its edge: 1px of padding
+   (taken back from the margins) keeps the buttons' top and bottom borders inside it at any zoom */
+.bm-bar { display: flex; gap: 5px; align-items: center; padding: 1px 0; margin: -1px 0 5px; overflow-x: auto; scrollbar-width: none; }
 .bm-bar::-webkit-scrollbar { display: none; }
 .bm-sw, .bm-hide { font: 300 10px var(--sans); color: var(--muted); background: none; border: 1px solid var(--faint); border-radius: 10px; padding: 2px 8px; cursor: pointer; white-space: nowrap; flex: none; }
 .bm-sw:hover, .bm-hide:hover, .bm-sw:focus-visible, .bm-hide:focus-visible { color: var(--fg); outline: none; }
@@ -503,7 +505,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bm-views[data-v="0"] .bm-v:not([data-k="0"]), .bm-views[data-v="1"] .bm-v:not([data-k="1"]), .bm-views[data-v="2"] .bm-v:not([data-k="2"]),
 .bm-views[data-v="3"] .bm-v:not([data-k="3"]), .bm-views[data-v="4"] .bm-v:not([data-k="4"]) { display: none; }
 .bm-views.folded .bm-v, .bm-views.folded .bm-cap { display: none; }
-.bm-views.folded .bm-bar { margin-bottom: 0; }
+.bm-views.folded .bm-bar { margin-bottom: -1px; }
 .bm-cap { font: 300 11px/1.45 var(--sans); color: var(--muted); min-height: 3em; margin-top: 7px; }
 .bm-gmap { color: var(--fg-2); text-decoration: underline; text-decoration-color: var(--faint); text-underline-offset: 2px; white-space: nowrap; margin-left: 2px; }
 .bm-gmap:hover, .bm-gmap:focus-visible { color: var(--fg); text-decoration-color: var(--wc, var(--accent)); outline: none; }
