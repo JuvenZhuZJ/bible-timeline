@@ -294,6 +294,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 /* the lifespan bar stays at the top of the window while you scroll its activities, so the dot a click highlights is in view */
 .mini-tl { position: sticky; top: -14px; z-index: 1; padding: 6px 0 2px; height: 52px; box-sizing: border-box; background: #0e0e0d; box-shadow: -16px 0 0 #0e0e0d, 16px 0 0 #0e0e0d; }
 .mini-tl .mt-ev { transform-box: fill-box; transform-origin: center; }
+.mini-tl.pointing { cursor: pointer; }
 .mini-tl .mt-ev.mt-hl { animation: mt-hl 1.8s ease-out; }
 @keyframes mt-hl {
   0%, 40% { transform: scale(2.4); stroke: var(--fg); stroke-width: 0.7; }
