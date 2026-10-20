@@ -613,8 +613,18 @@
     const mx = (t) => ((t - T0) / (T1 - T0)) * 1000;
     ERAS.forEach((e, i) => { if (!(i % 2)) el("rect", { class: "mini-era", x: mx(A(e.from)), width: mx(A(e.to)) - mx(A(e.from)), y: 0, height: 30 }, miniSvg); });
     EVENTS.forEach((e) => el("line", { class: "mini-ev", x1: mx(A(e.year)), x2: mx(A(e.year)), y1: 8, y2: 22, "vector-effect": "non-scaling-stroke" }, miniSvg));
-    CHARS.filter((c) => c.tier === 1).forEach((c, i) => el("rect", { class: "mini-dot", x: mx(c.tb), y: 24 - (i % 4) * 3, width: 2.5, height: 1.4 }, miniSvg));
   })();
+  /* the people marks follow the People filter: one mark at each shown person's birth. With many
+     people (Everyone, or a big group such as Sons) the marks fade, so the bar reads as how crowded
+     each period is. */
+  const miniPeople = el("g", { class: "mini-people" }, miniSvg);
+  function renderMiniPeople() {
+    const mx = (t) => ((t - T0) / (T1 - T0)) * 1000;
+    const list = CHARS.filter(inMode).sort((a, b) => a.tb - b.tb);
+    miniPeople.textContent = "";
+    miniPeople.style.opacity = list.length > 600 ? 0.4 : list.length > 150 ? 0.65 : 1;
+    list.forEach((c, i) => el("rect", { class: "mini-dot" + (c.tier === 1 ? " t1" : ""), x: mx(c.tb), y: 24 - (i % 5) * 3, width: 2.5, height: 1.4 }, miniPeople));
+  }
   function renderMinimap() {
     const mw = mini.clientWidth;
     const a = ((view.t0 - T0) / (T1 - T0)) * mw, b = ((tAt(W) - T0) / (T1 - T0)) * mw;
@@ -1775,6 +1785,7 @@
     showMenu.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-checked", b.dataset.mode === showMode));
     showMenu.querySelectorAll("[data-group]").forEach((b) => b.setAttribute("aria-checked", showGroups.has(b.dataset.group)));
     showMenu.querySelectorAll("[data-match]").forEach((b) => b.setAttribute("aria-checked", (b.dataset.match === "all") === showAll));
+    renderMiniPeople();
     $("showNote").textContent = showAll ? T("show.groups.note.all", null, "Only people in every group you pick are shown, such as a king who was also a prophet.")
       : T("show.groups.note", null, "Pick as many as you like. Anyone in any of them is shown.");
     $("showResult").textContent = showMode === "groups" && showGroups.size > 1 ? T("show.result", { n: CHARS.filter(inMode).length.toLocaleString() }, `${CHARS.filter(inMode).length.toLocaleString()} people`) : "";
@@ -1832,7 +1843,7 @@
     });
     const m = showMenu.querySelector('[data-mode="mine"] .sm-n');
     if (m) m.textContent = nMine().toLocaleString();
-    if (showMode === "mine") { packForce = true; requestRender(); }
+    if (showMode === "mine") { packForce = true; renderMiniPeople(); requestRender(); }
     if (!notesBox.hidden) renderNotes();
   }
   function toggleStar(c) {

@@ -282,6 +282,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .mini-era { fill: rgba(235,231,222,0.03); }
 .mini-ev { stroke: var(--fg-2); stroke-width: 1; }
 .mini-dot { fill: var(--muted); }
+.mini-dot.t1 { fill: var(--fg-2); }
 .mini-view {
   position: absolute; top: 0; bottom: 0; border: 1px solid var(--fg-2); border-top: none;
   background: rgba(235,231,222,0.06); min-width: 3px; pointer-events: none;

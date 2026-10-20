@@ -31,6 +31,8 @@ The **People** button in the top bar picks who appears:
 | My bookmarks | Only the people the visitor starred (see [My notes and bookmarks](#my-notes-and-bookmarks)). |
 | By job or family | Any mix of groups, picked as toggles; a switch under the heading shows either anyone in **any** picked group (the default) or only people in **all** of them (Kings and Prophets together gives David and Jesus; the menu shows how many people match). Saved in the browser as `g:` (any) or `a:` (all) in `bt-show`. Jobs: kings and queens, prophets, false prophets, patriarchs, judges, priests, apostles, officials, army commanders, Bible writers (see [Job icons](#job-icons)). Family roles, below a divider and with no timeline icon: husbands and wives (a recorded spouse), sons and daughters (a recorded father or mother). |
 
+The overview bar at the bottom follows the same choice: it has one small mark at the birth of each person being shown (`renderMiniPeople()` in `js/app.js`), fainter when there are hundreds, so it shows which periods the chosen people belong to. Its era shading and event lines stay the same.
+
 All the modes follow the same zoom rule: fully zoomed out you see only the timeline and its events, and people appear as you zoom in, the most important first. The Key figures, Adam-to-Jesus and By job or family modes show their people a little sooner, since fewer people compete for space.
 
 Searching for a person who is hidden by the current mode switches to Everyone. The choice is remembered in the browser.
