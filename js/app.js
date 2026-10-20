@@ -156,7 +156,6 @@
   const T0 = A(-4026) - 90;
   const T1 = A(100) + 70;
   const TIER = { 1: 0.45, 2: 1.4, 3: 3.4, 4: 7 };   // px-per-year needed to show each tier
-  const HIST_PPY = 0.9;   // events from history show from this zoom on, so the whole-history view stays calm
   const MAX_PPY = 140;
 
   /* ───────────────────────── DOM ───────────────────────── */
@@ -423,7 +422,7 @@
     const xs = evEls.map((o) => X(o.t));
     evEls.forEach((o, i) => {
       const x = xs[i];
-      const on = x > -60 && x < W + 60 && (!o.ev.hist || view.ppy >= HIST_PPY);
+      const on = x > -60 && x < W + 60;
       o.node.style.display = on ? "" : "none";
       o.node.setAttribute("transform", `translate(${x},${lineY})`);
       let row = -1, lx = x;
