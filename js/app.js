@@ -861,17 +861,23 @@
     const bk = o.books[0];
     const who = bk.w.map((id) => CHAR_BY_ID.get(id)).filter(Boolean)
       .map((c) => `<button class="bk-w" data-id="${esc(c.id)}">${esc(c.name)}</button>`).join(I18.zh ? "、" : ", ");
-    const done = bookYear(bk.dq, bk.done) + (bk.doneTo ? `–${bk.doneTo}` : "");
+    // a range keeps the era once, at its end: "c. 60–65 C.E.", "745–740 B.C.E."
+    const done = bk.doneTo ? bookYear(bk.dq, bk.doneTo).replace(String(Math.abs(bk.doneTo)), `${Math.abs(bk.done)}–${Math.abs(bk.doneTo)}`) : bookYear(bk.dq, bk.done);
     const span = bk.from == null ? "" : bk.from === bk.to ? bookYear(bk.fq, bk.from) : `${bookYear(bk.fq, bk.from)} – ${bookYear(bk.tq, bk.to)}`;
     const row = (k, en, v) => `<div class="bk-row"><span class="bk-k">${esc(T(k, null, en))}</span>${v}</div>`;
     const evs = o.evs.map((e, i) => `<li><button data-i="${i}"><span class="bk-y">${esc(fmtYear(e.y))}</span>${esc(e.ev ? e.ev.title : e.text)}${e.c ? ` <span class="bk-p">· ${esc(e.c.name)}</span>` : ""}</button></li>`).join("");
-    const read = o.books.map((b) => `<a class="ref-link" href="${esc(Scripture.url(b.b, 1))}" target="_blank" rel="noopener">${esc(T("bk.read", { b: Scripture.bookName(b.b) }, `Read ${Scripture.bookName(b.b)}`))}</a>`).join("");
+    const read = o.books.map((b) => `<a class="ref-link" href="${esc(Scripture.url(b.b, 1))}" target="_blank" rel="noopener">${esc(T("bk.read", { b: Scripture.bookName(b.b) }, `Read ${Scripture.bookName(b.b)}`))}</a>`).join("")
+      // the book's chapter in the handbook God's Word Is Truth, where its focus line comes from
+      + o.books.filter((b) => b.gwt).map((b) => `<a class="ref-link" href="${esc(wolDoc(b.gwt))}" target="_blank" rel="noopener">${I18.zh ? esc(T("bk.gwt")) : "About this book: <em>God’s Word Is Truth</em>"}&nbsp;↗</a>`).join("");
     return `<div class="et-year">${esc(T("bk.kind", null, "Bible book"))}</div><div class="et-title">${esc(o.name)}</div>
+      <div class="bk-scroll">
+      ${bk.focus ? `<div class="bk-focus">${esc(bk.focus[I18.zh ? 1 : 0])}</div>` : ""}
       ${row("bk.writer", bk.w.length > 1 ? "Writers" : "Writer", `<span class="bk-v">${who}</span>`)}
       ${bk.at ? row("bk.at", "Written in", `<span class="bk-v">${esc(bk.at[I18.zh ? 1 : 0])}</span>`) : ""}
       ${row("bk.done", "Completed", `<span class="bk-v">${esc(done)}</span>`)}
       ${span ? row("bk.span", "Time covered", `<span class="bk-v">${esc(span)}</span>`) : ""}
       ${evs ? `<ol class="bk-evs">${evs}</ol>` : ""}
+      </div>
       <div class="bk-read">${read}</div>`;
   }
   function showBookTip(o) {
@@ -895,8 +901,9 @@
       tip.style.top = top + "px";
     }
     tip.classList.add("show", "live");
-    // a list that runs on fades at its foot until it is scrolled to the end
-    const ol = tip.querySelector(".bk-evs");
+    // a card that runs on (a long list of events, or a phone's short room) scrolls between its title
+    // and its links, and fades at its foot until it is scrolled to the end
+    const ol = tip.querySelector(".bk-scroll");
     if (ol) { const fade = () => ol.classList.toggle("more", ol.scrollTop + ol.clientHeight < ol.scrollHeight - 2); fade(); ol.onscroll = fade; }
     evEls.forEach((x) => x.node.classList.remove("active"));
     g.books.querySelectorAll(".book").forEach((n) => n.classList.toggle("active", n.__book === o));
@@ -1096,7 +1103,7 @@
   }
 
   stage.addEventListener("wheel", (e) => {
-    if (e.target.closest && e.target.closest(".event-tip .bk-evs")) return;   // a book card's list scrolls
+    if (e.target.closest && e.target.closest(".event-tip .bk-scroll")) return;   // a book card's list scrolls
     e.preventDefault();
     hideHint(); hideTip();
     const k = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
@@ -1281,18 +1288,23 @@
       </div>`;
   }
 
+  // a document on wol.jw.org, which has the same number in English and Chinese
+  const wolDoc = (d) => I18.zh ? `https://wol.jw.org/cmn-Hant/wol/d/r24/lp-ch/${d}` : `https://wol.jw.org/en/wol/d/r1/lp-e/${d}`;
+
   // "Read more": the person's Insight article and the chapters of the study books about them (data/reading.js)
   function readMoreHTML(c) {
     const R = window.READING;
     if (!R) return "";
-    const wol = (d) => I18.zh ? `https://wol.jw.org/cmn-Hant/wol/d/r24/lp-ch/${d}` : `https://wol.jw.org/en/wol/d/r1/lp-e/${d}`;
+    const wol = wolDoc;
     const book = (b) => esc(R.books[b][I18.zh ? "zh" : "en"]);
+    // a chapter is "chapter 3" / 第3章, or the book's own word for it ("Bible Book 26" / 第26卷)
+    const unit = (b, n) => { const u = R.books[b].unit; return I18.zh ? `第${n}${u ? u.zh : "章"}` : `${u ? u.en : "chapter"} ${n}`; };
     const row = (d, what, title) => `<li><a class="ref-link" href="${esc(wol(d))}" target="_blank" rel="noopener"><span class="rm-book">${what}</span> <span class="rm-title">${esc(title)}</span>&nbsp;↗</a></li>`;
     const items = [];
     const doc = R.insight[c.id];
     if (doc) items.push(row(doc, I18.zh ? `《${book("insight")}》` : `<em>${book("insight")}</em>:`, I18.zh ? (c.srcZh ? c.srcZh.t : c.name) : (c.src || c.name)));
     for (const ch of R.chapters) if (ch.who.includes(c.id)) {
-      items.push(row(ch.d, I18.zh ? `《${book(ch.b)}》第${ch.n}章` : `<em>${book(ch.b)}</em>, chapter ${ch.n}:`, I18.zh ? ch.zh : ch.t));
+      items.push(row(ch.d, I18.zh ? `《${book(ch.b)}》${unit(ch.b, ch.n)}` : `<em>${book(ch.b)}</em>, ${unit(ch.b, ch.n)}:`, I18.zh ? ch.zh : ch.t));
     }
     return items.length ? `<div class="win-h">${T("readmore", null, "Read more")}</div><ul class="read-more">${items.join("")}</ul>` : "";
   }

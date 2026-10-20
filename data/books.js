@@ -17,6 +17,9 @@
  * ev    the book's main events, drawn as dots on its line. Each is either "person-id:n",
  *       the n-th activity of that person in data/people.js (counting from 0), or "e:event-id"
  *       from data/events.js, so its text, year and scripture come from there in both languages.
+ * focus the book's main subject, English and Chinese, written for this site from the chapter
+ *       about the book in "God's Word Is Truth—A Handbook to the Bible" (2026)
+ * gwt   that chapter's document on wol.jw.org (same number in English and Chinese)
  */
 window.BIBLE_BOOKS = [
 { b: 1, w: ["moses"], at: ["Wilderness", "曠野"], done: -1513, from: -4026, to: -1657, ev: ["e:creation", "adam:1", "cain:0", "enoch:2", "noah:5", "e:flood", "noah:2", "nimrod:0", "e:covenant", "abraham:1", "abraham:2", "abraham:4", "isaac:1", "isaac:3", "jacob:0", "jacob:2", "joseph-patriarch:0", "joseph-patriarch:2", "e:egypt", "jacob:4", "joseph-patriarch:4"] },
@@ -44,10 +47,14 @@ window.BIBLE_BOOKS = [
 { b: 23, w: ["isaiah"], at: ["Jerusalem", "耶路撒冷"], done: -732, dq: "a.", from: -778, fq: "c.", to: -732, tq: "a.", ev: ["isaiah:0", "isaiah:1", "isaiah:2", "hezekiah:2", "isaiah:3"] },
 { b: 24, w: ["jeremiah"], at: ["Judah; Egypt", "猶大；埃及"], done: -580, from: -647, to: -580, ev: ["jeremiah:0", "josiah:2", "jeremiah:1", "jeremiah:2", "zedekiah:2", "jeremiah:3", "jeremiah:4"] },
 { b: 25, w: ["jeremiah"], at: ["Near Jerusalem", "耶路撒冷附近"], done: -607, ev: [] },
-{ b: 26, w: ["ezekiel"], at: ["Babylon", "巴比倫"], done: -591, dq: "c.", from: -613, to: -591, tq: "c.", ev: ["ezekiel:1", "ezekiel:2", "e:jerusalem1", "ezekiel:3", "ezekiel:4"] },
-{ b: 27, w: ["daniel"], at: ["Babylon", "巴比倫"], done: -536, dq: "c.", from: -618, to: -536, tq: "c.", ev: ["daniel:0", "daniel:1", "nebuchadnezzar:4", "daniel:2", "daniel:3", "daniel:4"] },
-{ b: 28, w: ["hosea"], at: ["Samaria (District)", "撒馬利亞（地區）"], done: -745, dq: "a.", from: -804, fq: "b.", to: -745, tq: "a.", ev: ["hosea:0", "hosea:1"] },
-{ b: 29, w: ["joel-9"], at: ["Judah", "猶大"], done: -820, dq: "c.", ev: [] },
+{ b: 26, w: ["ezekiel"], at: ["Babylon", "巴比倫"], done: -591, dq: "c.", from: -613, to: -591, tq: "c.", ev: ["ezekiel:1", "ezekiel:5", "ezekiel:6", "ezekiel:2", "e:jerusalem1", "ezekiel:7", "ezekiel:8", "ezekiel:9", "ezekiel:10", "ezekiel:11", "ezekiel:3", "ezekiel:4"],
+  focus: ["Visions and prophecies about the fall of Jerusalem and the return of the exiles. More than any other book, it stresses that Jehovah's name must be cleared of reproach.", "記載關於耶路撒冷陷落和被擄的人返回故鄉的異象和預言。這卷書比其他經卷更強調，耶和華的名必須洗雪恥辱。"], gwt: "1102026526" },
+{ b: 27, w: ["daniel"], at: ["Babylon", "巴比倫"], done: -536, dq: "c.", from: -618, to: -536, tq: "c.", ev: ["nebuchadnezzar:6", "daniel:0", "daniel:1", "daniel:5", "shadrach:0", "daniel:6", "nebuchadnezzar:4", "daniel:7", "daniel:9", "daniel:2", "e:babylon", "daniel:3", "daniel:8", "e:return", "daniel:4"],
+  focus: ["Daniel's prophecies and his life in Babylon. It shows when the Messiah would appear and when Jehovah would set up his Kingdom in heaven.", "記載但以理在巴比倫的經歷和他寫下的預言。這卷書揭示彌賽亞什麼時候來到，以及上帝的王國什麼時候在天上建立。"], gwt: "1102026527" },
+{ b: 28, w: ["hosea"], at: ["Samaria (District)", "撒馬利亞（地區）"], done: -745, doneTo: -740, from: -804, fq: "b.", to: -745, tq: "a.", ev: ["hosea:2", "hosea:0", "hosea:1", "hosea:3"],
+  focus: ["Jehovah's judgments on the ten-tribe kingdom of Israel, with a merciful call to return to him. It shows that Jehovah is a merciful Sovereign and that faithfulness to him brings blessing.", "記載耶和華對十部族以色列王國的判決，以及他慈悲地呼籲他們回到他身邊。這卷書表明耶和華是慈悲的至高統治者，忠於他的人必定得益。"], gwt: "1102026528" },
+{ b: 29, w: ["joel-9"], at: ["Judah", "猶大"], done: -820, dq: "c.", ev: ["joel-9:0", "joel-9:1", "joel-9:2"],
+  focus: ["A warning to Judah of the coming 'day of Jehovah'. When Jehovah judges, he saves those who call on his name.", "警告猶大「耶和華的日子」快要來到。耶和華執行審判時，會拯救呼求他名的人。"], gwt: "1102026529" },
 { b: 30, w: ["amos"], at: ["Judah", "猶大"], done: -804, dq: "c.", ev: ["amos:0"] },
 { b: 31, w: ["obadiah-8"], at: null, done: -607, dq: "c.", ev: [] },
 { b: 32, w: ["jonah"], at: null, done: -844, dq: "c.", ev: ["jonah:0", "jonah:1"] },
