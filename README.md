@@ -2,6 +2,8 @@
 
 An interactive timeline of every named person in the Bible, from Adam to the apostles. Zoom and drag along the years, hover over a person to see lines to their family, and open a person's window for their dates, relatives and key scriptures.
 
+The ⓘ button opens **About this timeline**, a short guide for visitors: moving around, opening a person, who is shown, how to read the three kinds of date, the map and the sources. It is written for people using the site, so it names no files or code; the text is in `index.html` (English) and `js/i18n.js` (Chinese, `about.*` keys).
+
 The site is plain HTML, CSS and JavaScript. There is no build step and nothing to install to view it.
 
 ## Run it locally
