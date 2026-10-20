@@ -890,7 +890,7 @@
       tip.style.maxHeight = room + "px";
       tip.style.top = bandTop - tip.offsetHeight + "px";
     } else {
-      const top = L.lineY + 14;
+      const top = L.lineY + 30;   // clear of the year marks under the line
       tip.style.maxHeight = Math.max(160, H - L.bottom - top - 8) + "px";
       tip.style.top = top + "px";
     }
