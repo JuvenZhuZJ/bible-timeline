@@ -846,7 +846,7 @@
     }
     const ys = evs.map((e) => A(e.y));
     const [a, b] = bk.from != null ? [A(bk.from), A(bk.to)] : ys.length ? [Math.min(...ys), Math.max(...ys)] : [A(bk.done), A(bk.done)];
-    bookLines.push({ books: [bk], evs: evs.sort((p, q) => p.y - q.y), a, b, name: Scripture.bookName(bk.b), mw: 0 });
+    bookLines.push({ books: [bk], evs: evs.sort((p, q) => p.y - q.y), a, b, d: Math.max(A(bk.done), b), name: Scripture.bookName(bk.b), mw: 0 });
   }
 
   // "c. 1513 B.C.E.", "after 443 B.C.E.", "before 1000 B.C.E."
@@ -936,7 +936,9 @@
         o.mw = t.getComputedTextLength() || tlen(o.name) * 5.6;
         t.remove();
       }
-      const xa = X(o.a), xb = Math.max(X(o.b), xa + 2);
+      // xd: where the writing was completed, a diamond; most books were finished the year their
+      // account ends, the rest (Genesis, the Gospels...) get a dotted tail on to it
+      const xa = X(o.a), xb = Math.max(X(o.b), xa + 2), xd = Math.max(X(o.d), xb), tail = xd - xb > 4;
       // the name sits before the line; once the start has gone off the left edge it stays at the edge
       if (xb < 0) continue;
       // the first row (nearest the line) with room for the name before the line; failing that, the
@@ -944,13 +946,13 @@
       // the Gospels do where Acts begins); a book that fits nowhere waits for more zoom
       const free = (a, b) => rows.findIndex((rw) => !rw.some(([p, q]) => a < q + 8 && b > p - 8));
       let nx = Math.max(o.mw + 6, xa - 5), after = false;
-      let a = nx - o.mw - 2, b = Math.max(xb, nx) + 6;
+      let a = nx - o.mw - 2, b = Math.max(xd, nx) + 6;
       if (b < -20 || a > W + 20) continue;
       let r = free(a, b);
-      if (r < 0 && xb + o.mw + 12 < W) {
-        const a2 = xa - 6, b2 = xb + o.mw + 12;
+      if (r < 0 && xd + o.mw + 12 < W) {
+        const a2 = xa - 6, b2 = xd + o.mw + 12;
         r = free(a2, b2);
-        if (r >= 0) { after = true; nx = xb + 5; a = a2; b = b2; }
+        if (r >= 0) { after = true; nx = xd + 6; a = a2; b = b2; }
       }
       if (r < 0) continue;
       rows[r].push([a, b]);
@@ -961,8 +963,10 @@
       el("rect", { class: "hit", x: a, y: y - 7, width: b - a, height: 14 }, grp);
       const x1 = after ? xa : Math.max(xa, nx + 4);   // a name held at the edge sits on the line, so the line starts after it
       if (xb > x1) el("line", { class: "book-line", x1, x2: xb, y1: y, y2: y }, grp);
-      if (x1 === xa) el("line", { class: "book-end", x1: xa, x2: xa, y1: y - 3.5, y2: y + 3.5 }, grp);
-      if (o.b > o.a) el("line", { class: "book-end", x1: xb, x2: xb, y1: y - 3.5, y2: y + 3.5 }, grp);
+      if (x1 === xa && o.b > o.a) el("line", { class: "book-end", x1: xa, x2: xa, y1: y - 3.5, y2: y + 3.5 }, grp);
+      if (o.b > o.a && tail) el("line", { class: "book-end", x1: xb, x2: xb, y1: y - 3.5, y2: y + 3.5 }, grp);
+      if (tail) el("line", { class: "book-tail", x1: xb + 2, x2: xd - 3, y1: y, y2: y }, grp);
+      if (xd > -4) el("path", { class: "book-done", d: `M${xd} ${y - 3.6}L${xd + 3.6} ${y}L${xd} ${y + 3.6}L${xd - 3.6} ${y}Z` }, grp);
       const nm = el("text", { class: "book-name", x: nx, y: y + 3.5, "text-anchor": after ? "start" : "end" }, grp);
       nm.textContent = o.name;
       for (const e of o.evs) {
