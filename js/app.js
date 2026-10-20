@@ -9,7 +9,13 @@
   const I18 = window.I18N || { t: () => null, tlen: (s) => String(s).length, zh: false };
   const T = (k, v, en) => { const s = I18.t(k, v); return s == null ? en : s; };
   const tlen = I18.tlen;
-  const EVENTS = window.TIMELINE_EVENTS || [];
+  // from history, not the Bible: sources and the tag shown on events, people and activities
+  const HSRC = window.HISTORY_SOURCES || {};
+  const isHistRef = (ref) => /(^|;)\s*@/.test(ref || "");
+  const HIST_TAG_T = T("hist.tag", null, "From history, not the Bible");
+  const HIST_TAG = `<span class="hist-tag"><svg viewBox="0 0 10 10" aria-hidden="true"><rect x="1.5" y="1.5" width="7" height="7"/></svg>${HIST_TAG_T}</span>`;
+  // the Bible's major events, then events known from history (data/history.js), drawn with a square
+  const EVENTS = (window.TIMELINE_EVENTS || []).concat((window.HISTORY_EVENTS || []).map((e) => Object.assign(e, { hist: true })));
   const ERAS = window.TIMELINE_ERAS || [];
   const CHARS = window.TIMELINE_PEOPLE || window.TIMELINE_CHARACTERS || [];
   const $ = (id) => document.getElementById(id);
@@ -27,10 +33,12 @@
   const fmtT = (t, long) => fmtYear(fromA(Math.round(t)), long);
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 
+  // a year worked out from Bible ages, or one the history sources give, needs no "c."
+  const SURE_Q = (q) => q === "derived" || q === "history";
   function fmtRange(c) {
     const ca = T("c.", null, "c. ");
-    const pb = c.q[0] === "derived" ? "" : ca;
-    const pd = c.q[1] === "derived" ? "" : ca;
+    const pb = SURE_Q(c.q[0]) ? "" : ca;
+    const pd = SURE_Q(c.q[1]) ? "" : ca;
     if (I18.zh) {
       const v = { pb, pd, b: Math.abs(c.born), d: Math.abs(c.died) };
       return T(c.born < 0 && c.died < 0 ? "range.bce" : c.born < 0 ? "range.cross" : "range.ce", v);
@@ -97,7 +105,7 @@
 
   /* who is shown: everyone, key figures only, or only the line from Adam to Jesus */
   const SHOW_MODES = { all: T("show.all", null, "Everyone"), key: T("show.key", null, "Key figures"), line: T("show.line", null, "Adam to Jesus line"),
-    mine: T("show.mine", null, "My bookmarks") };
+    mine: T("show.mine", null, "My bookmarks"), hist: T("show.hist", null, "From history") };
 
   /* My notes and bookmarks: kept only in this browser (localStorage "bt-notes"),
      as { person id: { s: starred, n: note text, t: last change } } */
@@ -137,11 +145,12 @@
   } catch (_) {}
   const showKey = () => (showMode === "groups" ? (showAll ? "a:" : "g:") + [...showGroups].join(",") : showMode);
   const inMode = (c) => showMode === "all" || (showMode === "groups" ? [...showGroups][showAll ? "every" : "some"]((g) => GROUP[g](c))
-    : showMode === "line" ? !!c.line : showMode === "mine" ? isStarred(c) : !!(c.key || c.line));
+    : showMode === "line" ? !!c.line : showMode === "mine" ? isStarred(c) : showMode === "hist" ? !!c.hist : !!(c.key || c.line));
 
   const T0 = A(-4026) - 90;
   const T1 = A(100) + 70;
   const TIER = { 1: 0.45, 2: 1.4, 3: 3.4, 4: 7 };   // px-per-year needed to show each tier
+  const HIST_PPY = 0.9;   // events from history show from this zoom on, so the whole-history view stays calm
   const MAX_PPY = 140;
 
   /* ───────────────────────── DOM ───────────────────────── */
@@ -245,15 +254,21 @@
   const evEls = EVENTS.map((ev) => {
     const t = A(ev.year);
     const stem = el("line", { class: "ev-stem" }, g.events);
-    const node = el("g", { class: "ev-node", tabindex: "0", role: "button", "aria-label": `${ev.title}, ${fmtYear(ev.year, true)}` }, g.events);
-    el("circle", { class: "ev-halo", r: 15 }, node);
-    el("circle", { class: "ev-ring", r: 7.5 }, node);
-    el("circle", { class: "ev-core", r: 3 }, node);
+    const node = el("g", { class: "ev-node" + (ev.hist ? " hist" : ""), tabindex: "0", role: "button", "aria-label": `${ev.title}, ${fmtYear(ev.year, true)}` }, g.events);
+    if (ev.hist) {   // from history, not the Bible: a smaller square
+      el("rect", { class: "ev-halo", x: -10, y: -10, width: 20, height: 20 }, node);
+      el("rect", { class: "ev-ring", x: -5, y: -5, width: 10, height: 10 }, node);
+      el("rect", { class: "ev-core", x: -2, y: -2, width: 4, height: 4 }, node);
+    } else {
+      el("circle", { class: "ev-halo", r: 15 }, node);
+      el("circle", { class: "ev-ring", r: 7.5 }, node);
+      el("circle", { class: "ev-core", r: 3 }, node);
+    }
     el("circle", { r: 20, fill: "transparent" }, node);
-    const label = el("text", { class: "ev-label" }, g.events);
+    const label = el("text", { class: "ev-label" + (ev.hist ? " hist" : "") }, g.events);
     label.textContent = ev.title;
     const year = el("text", { class: "ev-year" }, g.events);
-    year.textContent = fmtYear(ev.year);
+    year.textContent = (ev.approx ? T("c.", null, "c. ") : "") + fmtYear(ev.year);
     node.__ev = ev;
     return { ev, t, stem, node, label, year, w: tlen(ev.title) * 7.3 + 14 };
   });
@@ -266,13 +281,20 @@
     const c = d.c;
     d.life = el("path", { class: "life" + (c.q[1] === "assumed" ? " q-assumed" : "") }, g.life);
     const node = el("g", {
-      class: `dot tier-${c.tier} q-${c.q[0]}${c.line ? " on-line" : ""}`, tabindex: "0", role: "button",
+      class: `dot tier-${c.tier} q-${c.q[0]}${c.line ? " on-line" : ""}${c.hist ? " hist" : ""}`, tabindex: "0", role: "button",
       "aria-label": `${c.name}, ${fmtRange(c)}`,
     }, g.dots);
     el("rect", { class: "hit", x: -12, y: -15, width: c.labelW + 10, height: 31 }, node);   // as tall as a lane, so neighbours leave no gap
     d.sel = el("circle", { class: "d-sel", r: 10, stroke: "transparent" }, node);
-    el("circle", { class: "d-ring", r: c.tier === 1 ? 5.5 : 4.5 }, node);
-    if (c.q[0] !== "assumed") el("circle", { class: "d-core", r: c.q[0] === "derived" ? (c.tier === 1 ? 5.5 : 4.5) : 2 }, node);
+    const r0 = c.tier === 1 ? 5.5 : 4.5, rc = SURE_Q(c.q[0]) ? r0 : 2;
+    if (c.hist) {   // known from history, not the Bible: square marks, filled the same way as the round ones
+      const sq = (cls, r) => el("rect", { class: cls, x: -r * 0.9, y: -r * 0.9, width: r * 1.8, height: r * 1.8 }, node);
+      sq("d-ring", r0);
+      if (c.q[0] !== "assumed") sq("d-core", rc);
+    } else {
+      el("circle", { class: "d-ring", r: r0 }, node);
+      if (c.q[0] !== "assumed") el("circle", { class: "d-core", r: rc }, node);
+    }
     const name = el("text", { class: "d-name", x: 11, y: 4 }, node);
     name.textContent = c.name;
     d.name = name;
@@ -395,7 +417,7 @@
     const xs = evEls.map((o) => X(o.t));
     evEls.forEach((o, i) => {
       const x = xs[i];
-      const on = x > -60 && x < W + 60;
+      const on = x > -60 && x < W + 60 && (!o.ev.hist || view.ppy >= HIST_PPY);
       o.node.style.display = on ? "" : "none";
       o.node.setAttribute("transform", `translate(${x},${lineY})`);
       let row = -1, lx = x;
@@ -580,7 +602,8 @@
         const act = el("g", { class: "track-act" + (tipAct && tipAct.c === c && tipAct.k === k ? " active" : "") }, grp);
         act.__act = { c, k, x, y, color: o.color };
         el("circle", { class: "hit", cx: x, cy: y, r: L.mobile ? 11 : 8 }, act);
-        el("circle", { class: "track-ev", cx: x, cy: y, r: 2.6, fill: o.color }, act);
+        if (isHistRef(c.events[k][2])) el("rect", { class: "track-ev sq", x: x - 2.4, y: y - 2.4, width: 4.8, height: 4.8, fill: o.color }, act);
+        else el("circle", { class: "track-ev", cx: x, cy: y, r: 2.6, fill: o.color }, act);
         if (!showLabels) return;
         const max = I18.zh ? 20 : 34;   // a Chinese character is about two letters wide
         const label = text.length > max ? text.slice(0, max - 1) + "…" : text;
@@ -612,7 +635,7 @@
     miniSvg.setAttribute("viewBox", "0 0 1000 30");
     const mx = (t) => ((t - T0) / (T1 - T0)) * 1000;
     ERAS.forEach((e, i) => { if (!(i % 2)) el("rect", { class: "mini-era", x: mx(A(e.from)), width: mx(A(e.to)) - mx(A(e.from)), y: 0, height: 30 }, miniSvg); });
-    EVENTS.forEach((e) => el("line", { class: "mini-ev", x1: mx(A(e.year)), x2: mx(A(e.year)), y1: 8, y2: 22, "vector-effect": "non-scaling-stroke" }, miniSvg));
+    EVENTS.forEach((e) => el("line", { class: "mini-ev" + (e.hist ? " hist" : ""), x1: mx(A(e.year)), x2: mx(A(e.year)), y1: e.hist ? 11 : 8, y2: e.hist ? 19 : 22, "vector-effect": "non-scaling-stroke" }, miniSvg));
   })();
   /* the people marks follow the People filter: one mark at each shown person's birth. With many
      people (Everyone, or a big group such as Sons) the marks fade, so the bar reads as how crowded
@@ -731,7 +754,9 @@
     plainTip();
     const pid = (window.EVENT_PLACES || {})[ev.id], pl = pid && window.BibleMap && BibleMap.place(pid);
     const map = pl ? `<div class="et-map">${BibleMap.svg([{ id: pid }], { w: 252, h: 112, cls: "bm-tip", labels: false, minSpan: 7, label: pl.n })}<div class="et-place">${esc(pl.n)}${pl.s === "known" ? "" : `<span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>`} ${gmapLink(pl)}</div></div>` : "";
-    tip.innerHTML = `<div class="et-year">${esc(fmtYear(ev.year, true))}</div><div class="et-title">${esc(ev.title)}</div><div class="et-text">${esc(ev.text)}</div><div class="et-ref">${Scripture.linkRefs(ev.ref)}</div>${map}`;
+    const hist = ev.hist ? `<div class="et-hist">${HIST_TAG}</div><div class="et-src">${T("src", null, "Source: ")}${(ev.src || []).map(srcLink).join(I18.zh ? "；" : "; ")}</div>` : "";
+    const ref = ev.ref ? `<div class="et-ref">${ev.hist ? T("see", null, "See ") : ""}${Scripture.linkRefs(ev.ref)}</div>` : "";
+    tip.innerHTML = `<div class="et-year">${esc((ev.approx ? T("c.", null, "c. ") : "") + fmtYear(ev.year, true))}</div><div class="et-title">${esc(ev.title)}</div><div class="et-text">${esc(ev.text)}</div>${hist}${ref}${map}`;
     const x = Math.min(W - 150, Math.max(150, X(A(ev.year))));
     tip.style.left = x + "px";
     tip.style.top = Math.max(L.top, (y == null ? L.lineY - 26 : y - 14) - tip.offsetHeight) + "px";
@@ -766,7 +791,7 @@
     tipAct = a;
     plainTip();
     const [yr, text, ref] = a.c.events[a.k];
-    tip.innerHTML = `<div class="et-year" style="color:${esc(a.color)}">${esc(fmtYear(yr, true))} · ${esc(a.c.name)}</div><div class="et-act">${esc(text)}</div><div class="et-ref">${esc(Scripture.label(ref))}</div><div class="et-hint">${esc(T(touch ? "act.hint.tap" : "act.hint.click", { name: a.c.name }, `${touch ? "Tap again" : "Click"} to open in ${a.c.name}’s window`))}</div>`;
+    tip.innerHTML = `<div class="et-year" style="color:${esc(a.color)}">${esc(fmtYear(yr, true))} · ${esc(a.c.name)}</div><div class="et-act">${esc(text)}</div><div class="et-ref">${isHistRef(ref) ? `${HIST_TAG} · ` : ""}${esc(refsLabel(ref))}</div><div class="et-hint">${esc(T(touch ? "act.hint.tap" : "act.hint.click", { name: a.c.name }, `${touch ? "Tap again" : "Click"} to open in ${a.c.name}’s window`))}</div>`;
     tip.style.left = Math.min(W - 150, Math.max(150, a.x)) + "px";
     tip.style.top = Math.max(L.top, a.y - 14 - tip.offsetHeight) + "px";
     tip.classList.add("show");
@@ -1264,7 +1289,7 @@
     link: '<svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
     star: '<svg viewBox="0 0 24 24"><path d="M12 3.8l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/></svg>',
   };
-  const QLABEL = { derived: T("q.derived", null, "from Bible ages"), estimated: T("q.estimated", null, "estimated"), assumed: T("q.assumed", null, "assumed") };
+  const QLABEL = { derived: T("q.derived", null, "from Bible ages"), history: T("q.history", null, "from history"), estimated: T("q.estimated", null, "estimated"), assumed: T("q.assumed", null, "assumed") };
 
   function miniTimeline(c) {
     const a = c.tb, b = Math.max(c.td, c.tb + 1), w = 300, pad = 12;
@@ -1272,9 +1297,11 @@
     let s = `<svg class="mini-tl" viewBox="0 0 ${w} 44" preserveAspectRatio="none" aria-hidden="true">`;
     s += `<line x1="${pad}" x2="${w - pad}" y1="16" y2="16" stroke="var(--wc)" stroke-width="1.5"${c.assumed ? ' stroke-dasharray="4 3"' : ""}/>`;
     s += `<circle cx="${pad}" cy="16" r="3.5" fill="var(--bg)" stroke="var(--wc)"/><circle cx="${w - pad}" cy="16" r="3.5" fill="var(--bg)" stroke="var(--wc)"/>`;
-    c.events.forEach(([yr], i) => {
+    c.events.forEach(([yr, , ref], i) => {
       const x = Math.max(pad, Math.min(w - pad, mx(A(yr))));
-      s += `<circle class="mt-ev" data-i="${i}" cx="${x.toFixed(1)}" cy="16" r="2.4" fill="var(--wc)"/>`;
+      // an activity from history is a square (its cx is kept for finding the nearest dot)
+      s += isHistRef(ref) ? `<rect class="mt-ev" data-i="${i}" cx="${x.toFixed(1)}" x="${(x - 2.2).toFixed(1)}" y="13.8" width="4.4" height="4.4" fill="var(--wc)"/>`
+        : `<circle class="mt-ev" data-i="${i}" cx="${x.toFixed(1)}" cy="16" r="2.4" fill="var(--wc)"/>`;
     });
     s += `<text x="${pad - 2}" y="36">${esc(fmtYear(c.born))}</text><text x="${w - pad + 2}" y="36" text-anchor="end">${esc(fmtYear(c.died))}</text>`;
     s += `<text x="${w / 2}" y="36" text-anchor="middle">${esc(ageText(c))}</text></svg>`;
@@ -1345,10 +1372,11 @@
   function windowHTML(c) {
     const acts = c.events.map(([yr, text, ref], i) => {
       const age = A(yr) - c.tb;
-      const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${T("age.at", { a: c.q[0] === "derived" ? "" : T("age.approx"), n: age }, `${c.q[0] === "derived" ? "" : "~"}age ${age}`)}</span>` : "";
+      const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${T("age.at", { a: SURE_Q(c.q[0]) ? "" : T("age.approx"), n: age }, `${SURE_Q(c.q[0]) ? "" : "~"}age ${age}`)}</span>` : "";
       const sts = c.places ? c.places.filter((p) => p.k === i) : [];
       const pl = sts.map((st) => { const p = BibleMap.place(st.id); return ` <button class="act-p s-${p.s}" data-place="${esc(st.id)}" title="${esc(placeTitle(p))}"><b>${st.n}</b>${esc(BibleMap.shortName(p.n))}${p.s === "possible" && !/^某/.test(p.n) ? "?" : ""}</button>`; }).join("");
-      return `<li data-t="${A(yr)}" data-i="${i}"${sts.length ? ` data-place="${esc(sts.map((st) => st.id).join(" "))}"` : ""}><span class="act-y">${esc(fmtYear(yr, true))}${ageS}${pl}</span><span class="act-t">${esc(text)}</span><span class="act-r">${Scripture.linkRefs(ref)}</span></li>`;
+      const h = isHistRef(ref);
+      return `<li data-t="${A(yr)}" data-i="${i}"${h ? ` class="hist" title="${esc(HIST_TAG_T)}"` : ""}${sts.length ? ` data-place="${esc(sts.map((st) => st.id).join(" "))}"` : ""}><span class="act-y">${esc(fmtYear(yr, true))}${ageS}${pl}</span><span class="act-t">${esc(text)}</span><span class="act-r">${refsHTML(ref)}</span></li>`;
     }).join("");
     return `
       <div class="win-head">
@@ -1364,6 +1392,7 @@
       </div>
       <div class="win-body">
         <div class="win-role">${esc(c.role)}</div>
+        ${c.hist ? `<div class="win-hist">${HIST_TAG}</div>` : ""}
         ${c.jobs.length ? `<div class="win-jobs">${c.jobs.map((j) => `<span class="win-job">${jobIcon(j)}${esc(jobName(c, j))}</span>`).join("")}</div>` : ""}
         ${c.meaning ? `<div class="win-meaning">${I18.zh ? "「" : "“"}${esc(c.meaning)}${I18.zh ? "」" : "”"}</div>` : ""}
         <div class="badges">
@@ -1386,7 +1415,7 @@
         ${c.refs.length ? `<div class="win-h">${T("keyrefs", null, "Key scriptures")}</div><div class="win-refs">${c.refs.map(Scripture.linkRefs).join(" · ")}</div>` : ""}
         ${booksWrittenHTML(c)}
         ${readMoreHTML(c)}
-        ${I18.zh ? sourcesZh(c) : `<div class="win-src">Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”${c.places && c.places.length ? " Places: OpenBible.info Bible Geocoding Data (CC BY 4.0), checked against <em>Insight</em> and the maps in the <em>New World Translation</em> (Appendix A7 and B)." : ""}</div>`}
+        ${I18.zh ? sourcesZh(c) : `<div class="win-src">${histSources(c)}Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”${c.places && c.places.length ? " Places: OpenBible.info Bible Geocoding Data (CC BY 4.0), checked against <em>Insight</em> and the maps in the <em>New World Translation</em> (Appendix A7 and B)." : ""}</div>`}
       </div>`;
   }
 
@@ -1401,6 +1430,35 @@
     return `<div class="win-h">${T("books.written", null, "Bible books written")}</div><ul class="books-written">${items.join("")}</ul>`;
   }
 
+  /* History, not the Bible (data/history.js): an activity reference may name sources as "@key"
+     next to scriptures, e.g. "@it-herod; Daniel 11:16". Those link to the publication on
+     wol.jw.org; the scriptures link as usual. */
+  function srcLink(k) {
+    const s = HSRC[k];
+    if (!s) return esc(k);
+    return `<a class="ref-link src-link" href="${esc(wolDoc(s.d))}" target="_blank" rel="noopener">${I18.zh ? esc(s.zh) : s.en}</a>`;
+  }
+  const refParts = (ref) => {
+    const parts = String(ref || "").split(/;\s*/).filter(Boolean);
+    return { src: parts.filter((p) => p[0] === "@").map((p) => p.slice(1)), bible: parts.filter((p) => p[0] !== "@").join("; ") };
+  };
+  function refsHTML(ref) {
+    const { src, bible } = refParts(ref);
+    const sep = I18.zh ? "；" : "; ";
+    return [src.map(srcLink).join(sep), bible ? Scripture.linkRefs(bible) : ""].filter(Boolean).join(sep);
+  }
+  function refsLabel(ref) {
+    const { src, bible } = refParts(ref);
+    const sep = I18.zh ? "；" : "; ";
+    return [src.map((k) => (HSRC[k] ? (I18.zh ? HSRC[k].zh : HSRC[k].en.replace(/<[^>]+>/g, "")) : k)).join(sep), bible ? Scripture.label(bible) : ""].filter(Boolean).join(sep);
+  }
+  // the opening of the sources line for someone known from history
+  function histSources(c) {
+    if (!c.hist) return "";
+    const list = (c.hsrc || []).map(srcLink).join(I18.zh ? "；" : "; ");
+    return I18.zh ? `歷史資料：${list}。聖經以外的人物和事件，以方形標示。` : `History: ${list}. People and events from outside the Bible are marked with a square. `;
+  }
+
   // "Read more": the person's Insight article and the chapters of the study books about them (data/reading.js)
   function readMoreHTML(c) {
     const R = window.READING;
@@ -1413,6 +1471,10 @@
     const items = [];
     const doc = R.insight[c.id];
     if (doc) items.push(row(doc, I18.zh ? `《${book("insight")}》` : `<em>${book("insight")}</em>:`, I18.zh ? (c.srcZh ? c.srcZh.t : c.name) : (c.src || c.name)));
+    for (const k of c.hsrc || []) {
+      const s = HSRC[k]; if (!s || s.d === doc) continue;
+      items.push(`<li><a class="ref-link" href="${esc(wol(s.d))}" target="_blank" rel="noopener">${I18.zh ? esc(s.zh) : s.en}&nbsp;↗</a></li>`);
+    }
     for (const ch of R.chapters) if (ch.who.includes(c.id)) {
       items.push(row(ch.d, I18.zh ? `《${book(ch.b)}》${unit(ch.b, ch.n)}` : `<em>${book(ch.b)}</em>, ${unit(ch.b, ch.n)}:`, I18.zh ? ch.zh : ch.t));
     }
@@ -1422,7 +1484,7 @@
   // the sources line in Chinese; the person's Insight article is linked on wol.jw.org when known
   function sourcesZh(c) {
     const art = c.srcZh ? (c.srcZh.d ? `<a class="ref-link" href="https://wol.jw.org/cmn-Hant/wol/d/r24/lp-ch/${esc(c.srcZh.d)}" target="_blank" rel="noopener">${esc(c.srcZh.t)}</a>` : esc(c.srcZh.t)) : "";
-    return `<div class="win-src">${T("src.bible")}${art ? T("src.person", { a: art }) : ""}${T("src.chron")}${c.places && c.places.length ? T("src.places") : ""}${T("src.zh")}</div>`;
+    return `<div class="win-src">${histSources(c)}${T("src.bible")}${art ? T("src.person", { a: art }) : ""}${T("src.chron")}${c.places && c.places.length ? T("src.places") : ""}${T("src.zh")}</div>`;
   }
 
   function openWindow(c) {
@@ -1917,8 +1979,9 @@
   $("aboutClose").addEventListener("click", closeAbout);
   about.addEventListener("click", (e) => { if (e.target === about) closeAbout(); });
   const nAssumed = CHARS.filter((c) => c.assumed).length;
-  $("aboutStats").textContent = T("about.stats", { n: CHARS.length.toLocaleString(), e: EVENTS.length, a: nAssumed.toLocaleString() },
-    `${CHARS.length.toLocaleString()} people · ${EVENTS.length} major events · ${nAssumed.toLocaleString()} people with at least one assumed date.`);
+  const nBibleEv = EVENTS.filter((e) => !e.hist).length, nHist = CHARS.filter((c) => c.hist).length, nHistEv = EVENTS.length - nBibleEv;
+  $("aboutStats").textContent = T("about.stats", { n: CHARS.length.toLocaleString(), e: nBibleEv, a: nAssumed.toLocaleString(), h: nHist, he: nHistEv },
+    `${CHARS.length.toLocaleString()} people · ${nBibleEv} major events · ${nAssumed.toLocaleString()} people with at least one assumed date · ${nHist} people and ${nHistEv} events from history.`);
 
   /* show: everyone / key figures / Adam-to-Jesus line, or any mix of jobs and family roles */
   const showBox = $("show"), showBtn = $("showBtn"), showMenu = $("showMenu");
@@ -1947,7 +2010,8 @@
     packForce = true; requestRender();
   }
   const closeShow = () => { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); };
-  const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length, mine: CHARS.filter(isStarred).length };
+  const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length, mine: CHARS.filter(isStarred).length,
+    hist: CHARS.filter((c) => c.hist).length };
   showMenu.querySelectorAll("[data-mode]").forEach((b) => {
     b.querySelector(".sm-n").textContent = counts[b.dataset.mode].toLocaleString();
     b.addEventListener("click", () => { setShowMode(b.dataset.mode); closeShow(); });
