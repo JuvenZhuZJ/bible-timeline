@@ -607,7 +607,7 @@
         const x = X(A(yr));
         const act = el("g", { class: "track-act" + (tipAct && tipAct.c === c && tipAct.k === k ? " active" : "") }, grp);
         act.__act = { c, k, x, y, color: o.color };
-        el("circle", { class: "hit", cx: x, cy: y, r: L.mobile ? 11 : 8 }, act);
+        el("circle", { class: "hit", cx: x, cy: y, r: L.mobile || isTouch ? 11 : 8 }, act);
         if (isHistRef(c.events[k][2])) el("rect", { class: "track-ev sq", x: x - 2.4, y: y - 2.4, width: 4.8, height: 4.8, fill: o.color }, act);
         else el("circle", { class: "track-ev", cx: x, cy: y, r: 2.6, fill: o.color }, act);
         if (!showLabels) return;
@@ -924,7 +924,7 @@
     const p = bookParts(o);
     return `<div class="et-year">${esc(T("bk.kind", null, "Bible book"))}</div><div class="et-title">${esc(o.name)}</div>
       <div class="bk-scroll">${p.info}${p.evs}</div>${p.read}
-      <div class="et-hint">${esc(T(L.mobile ? "bk.hint.tap" : "bk.hint.click", null, L.mobile ? "Tap again to open its window" : "Click to open its window"))}</div>`;
+      <div class="et-hint">${esc(T(L.mobile || isTouch ? "bk.hint.tap" : "bk.hint.click", null, L.mobile || isTouch ? "Tap again to open its window" : "Click to open its window"))}</div>`;
   }
   // the books under a "+3": each opens its card, zoomed in on it
   function groupCard(o) {
@@ -1015,7 +1015,7 @@
     const rows = Array.from({ length: L.bookRows }, () => []);   // [a, b] taken in each row, in px
     for (const o of bookLines) o.shown = false;
     const rowY = (r) => L.lineY - 22 - r * L.bookStep;
-    const hitR = L.mobile ? 11 : 8;
+    const hitR = L.mobile || isTouch ? 11 : 8;
     const free = (a, b) => rows.findIndex((rw) => !rw.some(([p, q]) => a < q + 8 && b > p - 8));
     const left = [];   // books with no room for their name
     for (const o of bookLines) {
