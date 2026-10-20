@@ -450,6 +450,16 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 }
 
 /* ------------------------------------------------------------- responsive */
+/* the legend folds behind a "Legend" button on phones and on tablets (any touch screen without
+   hover, e.g. an iPad either way round), where the open list would sit over the timeline */
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  .legend-toggle {
+    display: block; border: 1px solid var(--faint); background: rgba(5,5,5,0.7); border-radius: 14px; padding: 5px 12px;
+    font: 500 9.5px var(--sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-2); cursor: pointer;
+  }
+  .legend-body { display: none; position: absolute; bottom: 36px; left: 0; width: max-content; min-width: 220px; padding: 12px; background: var(--panel); border: 1px solid var(--faint); border-radius: 10px; }
+  .legend.open .legend-body { display: flex; }
+}
 @media (max-width: 760px) {
   :root { --top: 56px; }
   .topbar { padding: 0 12px; gap: 8px; }
@@ -466,12 +476,6 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
   .brand, .show, .books-btn { transition: opacity .2s; }
   .topbar:has(.search.open) :is(.brand, .show, .books-btn) { opacity: 0; visibility: hidden; pointer-events: none; }
   .legend { left: 12px; bottom: calc(56px + var(--safe-b)); }
-  .legend-toggle {
-    display: block; border: 1px solid var(--faint); background: rgba(5,5,5,0.7); border-radius: 14px; padding: 5px 12px;
-    font: 500 9.5px var(--sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-2); cursor: pointer;
-  }
-  .legend-body { display: none; position: absolute; bottom: 36px; left: 0; width: max-content; min-width: 220px; padding: 12px; background: var(--panel); border: 1px solid var(--faint); border-radius: 10px; }
-  .legend.open .legend-body { display: flex; }
   .controls { right: 12px; bottom: calc(56px + var(--safe-b)); flex-direction: row; }
   .controls .icon-btn { width: 34px; height: 34px; }
   .minimap { left: 12px; right: 12px; bottom: calc(10px + var(--safe-b)); height: 30px; }
