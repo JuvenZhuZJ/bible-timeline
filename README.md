@@ -59,7 +59,7 @@ Everything from history is drawn as a **square** instead of a circle, on the mai
 
 Each item cites its source. A history person's window lists them under Sources; an activity's reference starts with the source and may add scriptures after it. Where the Bible speaks of an event, the scripture is listed too: Daniel 8 and 11 (the kings of the north and south, the disgusting thing), Daniel 7:7, John 10:22 (the Festival of Dedication) and Luke 2:1. These are given only as references; prophecy arcs are not drawn.
 
-History events (20 of them, in `data/history.js`) follow the same zoom rule as Bible events, but they are laid out after them, so a Bible event always keeps its label and a history label waits for room. History people follow the usual zoom rule and People modes; Alexander the Great, Antiochus IV, Judas Maccabeus and Pompey are tier 1, like the best-known Bible people, so the years between the Testaments are not empty when zoomed out.
+History events (20 of them, in `data/history.js`) follow the same zoom rule as Bible events, but they are laid out after them, so a Bible event always keeps its label and a history label waits for room. History people follow the usual zoom rule and People modes. The best-known of them (Alexander the Great, Antiochus IV, Judas Maccabeus, Pompey, Nero and others) are tier 2, the rank of Bible people such as Ezra or Mordecai; tier 1 is kept for the best-known Bible people, so history names are never drawn larger or bolder than theirs.
 
 Data:
 
