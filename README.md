@@ -93,6 +93,12 @@ Small line icons after a person's name, on the timeline and in their window, sho
 
 `data/source/jobs.json` sets the jobs by hand for the key figures, the Bible writers and the patriarchs, and fixes a few others. Everyone else gets jobs from the words in their role (`jobsFromRole()` in `tools/build-people.mjs`). A title that belongs to someone else does not count, so "Father of King Saul" or "Priest under King Ahaz" gives no crown. The icons are SVG symbols at the top of `index.html` (`#job-king` ...), drawn in the colour of the name beside them.
 
+## Shareable links
+
+The address in the browser keeps what is on screen, so a study can be bookmarked or sent: `#p=david,solomon&y=-1050&z=4` opens those people's windows (the last one in front) with 1050 B.C.E. in the middle of the screen, zoomed to 4 times the whole-timeline view. It is updated as you move, zoom and open or close windows (`syncHash()` in `js/app.js`, using `history.replaceState`, so the Back button is not filled with every step).
+
+The link button at the top of a window copies a short link to that person (`#p=moses`), which opens their window and shows them on the timeline. If the person is hidden by the viewer's People filter, the filter goes back to Everyone.
+
 ## Read more
 
 Under the key scriptures, a person's window lists where to read more about them, each a link that opens in a new tab on wol.jw.org: their article in *Insight on the Scriptures* (2,678 people), and every chapter about them in *Imitate Their Faith* (23 chapters) and *Walk Courageously With God* (54 chapters), with the chapter number and title. In Chinese the links open the Chinese editions (《洞悉聖經》, 《信心的榜樣》, 《鼓起勇氣與上帝同行》) with their Chinese titles. A wol.jw.org document has the same number in both languages, so one number serves both.
