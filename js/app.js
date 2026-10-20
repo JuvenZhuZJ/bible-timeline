@@ -1343,8 +1343,11 @@
       const lab = I18.zh ? T("rel." + k) : label === "Child" ? (n > 1 ? "Children" : "Child") : label + (n > 1 ? "s" : "");
       return `<div class="rel-row"><span class="rel-k">${lab}</span><span class="rel-v">${chips.concat(plain).join("")}</span></div>`;
     }).join("");
-    if (rows) return `<div class="win-h">${T("family", null, "Family")}</div><div class="rel">${rows}</div>`;
-    return c.family && c.family !== "—" ? `<div class="win-family">${linkNames(c.family, c.links)}</div>` : "";
+    // companions are one more row, after the relatives (or on their own, under a hand-written family line)
+    const comp = companionsRow(c);
+    if (rows) return `<div class="win-h">${T("family", null, "Family")}</div><div class="rel">${rows}${comp}</div>`;
+    return (c.family && c.family !== "—" ? `<div class="win-family">${linkNames(c.family, c.links)}</div>` : "")
+      + (comp ? `<div class="rel rel-solo">${comp}</div>` : "");
   }
   // a family line written by hand ("Companions: Hananiah, Mishael, Azariah"): the people it names
   // (its "links", by id) open their windows; each is found by its name or another name, in either language
@@ -1376,9 +1379,9 @@
   }
 
   /* companions (data/source/companions.json): people who served, traveled or stood with this person,
-     family left out (it is listed above). Each chip's tooltip gives its verses; all of them are
+     shown as a row of the family list, family left out (it is listed above). Each chip's tooltip gives its verses; all of them are
      under "Verses". The first 8 show, with a button for the rest. */
-  function companionsHTML(c) {
+  function companionsRow(c) {
     const fam = new Set(c.relIds);
     const list = (c.comp || []).filter(([id]) => CHAR_BY_ID.has(id) && !fam.has(id));
     if (!list.length) return "";
@@ -1388,8 +1391,8 @@
     }).join("");
     const more = list.length > CONTEMP_SHOWN ? `<button class="contemp-more comp-more" aria-expanded="false">${T("show.all.n", { n: list.length }, `Show all ${list.length}`)}</button>` : "";
     const refs = [...new Set(list.flatMap(([, ref]) => ref.split(/;\s*/)))].join("; ");
-    return `<div class="win-h">${T("comp", null, "Companions")}</div><div class="comp"><div class="rel-v">${chips}${more}</div>`
-      + `<details class="comp-refs"><summary>${T("comp.refs", null, "Verses")}</summary>${Scripture.linkRefs(refs)}</details></div>`;
+    return `<div class="rel-row comp"><span class="rel-k">${T("comp", null, "Companions")}</span><span class="rel-v">${chips}${more}`
+      + `<details class="comp-refs"><summary>${T("comp.refs", null, "Verses")}</summary>${Scripture.linkRefs(refs)}</details></span></div>`;
   }
 
   /* contemporaries: other key figures whose lifespans overlap this key figure's, family left out
@@ -1470,7 +1473,6 @@
           <div class="mn-foot"><span class="mn-state"></span><span>${T("note.local", null, "Saved only in this browser")}</span></div>
         </div>
         ${familyHTML(c)}
-        ${companionsHTML(c)}
         ${contemporariesHTML(c)}
         <div class="win-h">${T("lifespan", null, "Lifespan")}</div>
         ${miniTimeline(c)}

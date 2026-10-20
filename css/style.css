@@ -499,8 +499,10 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .lg-end { fill: none; stroke-width: 1.2; }
 .lg-m { stroke: var(--male); }
 .lg-f { stroke: var(--female); }
-.rel { display: flex; flex-direction: column; gap: 6px; }
-.rel-row { display: grid; grid-template-columns: 74px 1fr; gap: 8px; align-items: baseline; }
+/* one grid for all the rows, so the labels share a column as wide as the longest ("Companions") */
+.rel { display: grid; grid-template-columns: minmax(74px, max-content) 1fr; gap: 6px 10px; align-items: baseline; }
+.rel-row { display: contents; }
+.rel-solo { margin-top: 10px; }
 .rel-k { font: 500 9.5px var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
 .rel-v { display: flex; flex-wrap: wrap; gap: 5px; }
 .rel-chip {
@@ -521,7 +523,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .contemp-more:hover, .contemp-more:focus-visible { color: var(--wc); outline: none; }
 .contemp-note { font-size: 11px; color: var(--muted); margin-top: 6px; }
 /* companions: chips, then their verses folded under "Verses" */
-.comp-refs { margin-top: 6px; font-size: 11px; color: var(--muted); line-height: 1.6; }
+.comp-refs { flex-basis: 100%; margin-top: 2px; font-size: 11px; color: var(--muted); line-height: 1.6; }
 .comp-refs summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 6px; font: 500 9.5px var(--sans); letter-spacing: 0.2em; text-transform: uppercase; }
 .comp-refs summary::-webkit-details-marker { display: none; }
 .comp-refs summary::after { content: ""; width: 4px; height: 4px; border: solid currentColor; border-width: 0 1px 1px 0; transform: rotate(-45deg); transition: transform 0.15s; }
@@ -587,7 +589,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .search-results { max-height: min(60vh, 520px); overflow-y: auto; }
 @media (max-width: 760px) {
   .show-menu { position: fixed; top: 56px; left: 12px; right: 12px; width: auto; }
-  .rel-row { grid-template-columns: 64px 1fr; }
+  .rel { grid-template-columns: minmax(64px, max-content) 1fr; }
 }
 
 /* ------------------------------------------------------------- maps (js/map.js) */
