@@ -728,6 +728,7 @@
     clearTimeout(tipTimer);
     if (tipEv === ev && tip.classList.contains("show")) return;
     tipEv = ev;
+    plainTip();
     const pid = (window.EVENT_PLACES || {})[ev.id], pl = pid && window.BibleMap && BibleMap.place(pid);
     const map = pl ? `<div class="et-map">${BibleMap.svg([{ id: pid }], { w: 252, h: 112, cls: "bm-tip", labels: false, minSpan: 7, label: pl.n })}<div class="et-place">${esc(pl.n)}${pl.s === "known" ? "" : `<span class="pl-s s-${pl.s}">${SURE[pl.s]}</span>`} ${gmapLink(pl)}</div></div>` : "";
     tip.innerHTML = `<div class="et-year">${esc(fmtYear(ev.year, true))}</div><div class="et-title">${esc(ev.title)}</div><div class="et-text">${esc(ev.text)}</div><div class="et-ref">${Scripture.linkRefs(ev.ref)}</div>${map}`;
@@ -743,6 +744,7 @@
     g.books.querySelectorAll(".active").forEach((n) => n.classList.remove("active"));
     hideActTip();
   }
+  function plainTip() { tip.classList.remove("book"); tip.style.maxHeight = ""; }   // undo a book card's shape
   function hideTipSoon() { clearTimeout(tipTimer); tipTimer = setTimeout(hideTip, 350); }
   g.events.addEventListener("pointerover", (e) => { if (e.pointerType === "mouse") { const n = e.target.closest(".ev-node"); if (n) showTip(n.__ev); } });
   g.events.addEventListener("pointerout", (e) => { if (e.pointerType === "mouse" && e.target.closest(".ev-node") && tipEv) hideTipSoon(); });
@@ -762,6 +764,7 @@
   function showActTip(a, touch) {
     hideTip();
     tipAct = a;
+    plainTip();
     const [yr, text, ref] = a.c.events[a.k];
     tip.innerHTML = `<div class="et-year" style="color:${esc(a.color)}">${esc(fmtYear(yr, true))} · ${esc(a.c.name)}</div><div class="et-act">${esc(text)}</div><div class="et-ref">${esc(Scripture.label(ref))}</div><div class="et-hint">${esc(T(touch ? "act.hint.tap" : "act.hint.click", { name: a.c.name }, `${touch ? "Tap again" : "Click"} to open in ${a.c.name}’s window`))}</div>`;
     tip.style.left = Math.min(W - 150, Math.max(150, a.x)) + "px";
@@ -877,9 +880,24 @@
     hideActTip();
     tipEv = o;
     tip.innerHTML = bookCard(o);
-    tip.style.left = Math.min(W - 150, Math.max(150, o.lx)) + "px";
-    tip.style.top = Math.max(L.top, o.y - 12 - tip.offsetHeight) + "px";
+    tip.classList.add("book");
+    // the card never covers the band, so the pointer can move along a book to its dots: it sits above
+    // the band's top row, its list of events scrolling when long; with too little room there, it
+    // goes under the main line
+    const bandTop = L.lineY - 22 - (L.bookRows - 1) * L.bookStep - 10, room = bandTop - L.top;
+    tip.style.left = Math.min(W - 175, Math.max(175, o.lx)) + "px";
+    if (room >= 240) {
+      tip.style.maxHeight = room + "px";
+      tip.style.top = bandTop - tip.offsetHeight + "px";
+    } else {
+      const top = L.lineY + 14;
+      tip.style.maxHeight = Math.max(160, H - L.bottom - top - 8) + "px";
+      tip.style.top = top + "px";
+    }
     tip.classList.add("show", "live");
+    // a list that runs on fades at its foot until it is scrolled to the end
+    const ol = tip.querySelector(".bk-evs");
+    if (ol) { const fade = () => ol.classList.toggle("more", ol.scrollTop + ol.clientHeight < ol.scrollHeight - 2); fade(); ol.onscroll = fade; }
     evEls.forEach((x) => x.node.classList.remove("active"));
     g.books.querySelectorAll(".book").forEach((n) => n.classList.toggle("active", n.__book === o));
   }
@@ -1078,6 +1096,7 @@
   }
 
   stage.addEventListener("wheel", (e) => {
+    if (e.target.closest && e.target.closest(".event-tip .bk-evs")) return;   // a book card's list scrolls
     e.preventDefault();
     hideHint(); hideTip();
     const k = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
