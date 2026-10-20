@@ -103,7 +103,7 @@ for (const p of INSIGHT) {
     gender: p.gender === "f" || p.gender === "u" ? p.gender : "m", meaning: p.meaning || "", role: p.role || "", summary: p.summary || "",
     born, died, year: clampY(year), q: [qB, qD], group: p.group || "", refs: (p.refs || []).slice(0, 4),
     raw: { father: p.father, mother: p.mother, spouses: p.spouses || [], children: p.children || [], siblings: p.siblings || [], hints: p.relHints || "" },
-    src: p.unnamed ? "" : head0.charAt(0) + head0.slice(1).toLowerCase().replace(/(^|[\s\-])([a-z])/g, (m, a, b) => a + b.toUpperCase()) + sense,
+    src: p.unnamed ? "" : head0.toLowerCase().replace(/(^|[\s\-])([a-z])/g, (m, a, b) => a + b.toUpperCase()) + sense,
     tier: 4,
   });
 }
