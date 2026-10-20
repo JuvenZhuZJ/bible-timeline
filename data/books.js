@@ -13,6 +13,11 @@
  *       the pair has that span. Left out when the table gives none: the line then runs between
  *       the book's events, or is a short mark at the year the writing was completed.
  * doneTo     last year when the table gives a range for the completion ("c. 60-65")
+ * parts for a book with several writers, who wrote what: [writer, English, Chinese], the writer a
+ *       person id, or [English name, Chinese name] for a group with no entry of its own
+ * by    for a book finished long after its first writer died, who finished it and how:
+ *       [person ids, English, Chinese]. parts and by are from "All Scripture Is Inspired of God
+ *       and Beneficial" (si), "Bible Book Number" 9, 19 and 20, and the superscriptions of Psalms.
  * fq, tq     "c." / "a." / "b." for the covered years
  * ev    the book's main events, drawn as dots on its line. Each is either "person-id:n",
  *       the n-th activity of that person in data/people.js (counting from 0), or "e:event-id"
@@ -30,7 +35,7 @@ window.BIBLE_BOOKS = [
 { b: 6, w: ["joshua"], at: ["Canaan", "迦南"], done: -1450, dq: "c.", from: -1473, to: -1450, tq: "c.", ev: ["e:canaan", "rahab:0", "joshua:3", "caleb:1", "othniel:0", "joshua:4"] },
 { b: 7, w: ["samuel"], at: ["Israel", "以色列"], done: -1100, dq: "c.", from: -1450, fq: "c.", to: -1120, tq: "c.", ev: ["othniel:1", "ehud:0", "deborah:0", "gideon:0", "gideon:2", "gideon:3", "jephthah:0", "samson:0", "samson:2"] },
 { b: 8, w: ["samuel"], at: ["Israel", "以色列"], done: -1090, dq: "c.", ev: ["ruth:0", "ruth:2"] },
-{ b: 9, w: ["samuel", "gad-3", "nathan"], at: ["Israel", "以色列"], done: -1078, dq: "c.", from: -1180, fq: "c.", to: -1078, ev: ["hannah:1", "samuel:0", "eli:2", "e:monarchy", "jonathan:0", "saul:2", "david:0", "jonathan:1", "david:6", "saul:3"] },
+{ b: 9, w: ["samuel", "gad-3", "nathan"], parts: [["samuel", "chapters 1–24", "第1–24章"], ["gad-3", "the rest, after Samuel’s death", "撒母耳死後的部分"], ["nathan", "the rest, after Samuel’s death", "撒母耳死後的部分"]], by: [["gad-3", "nathan"], "finished by Gad and Nathan", "由迦得和拿單完成"], at: ["Israel", "以色列"], done: -1078, dq: "c.", from: -1180, fq: "c.", to: -1078, ev: ["hannah:1", "samuel:0", "eli:2", "e:monarchy", "jonathan:0", "saul:2", "david:0", "jonathan:1", "david:6", "saul:3"] },
 { b: 10, w: ["gad-3", "nathan"], at: ["Israel", "以色列"], done: -1040, dq: "c.", from: -1077, to: -1040, tq: "c.", ev: ["david:1", "david:2", "david:3", "david:4", "nathan:1", "absalom:0", "absalom:1", "absalom:2"] },
 { b: 11, w: ["jeremiah"], at: ["Judah and Egypt", "猶大和埃及"], done: -580, from: -1040, fq: "c.", to: -580, ev: ["nathan:2", "solomon:0", "e:temple", "solomon:3", "solomon:4", "e:division", "rehoboam:1", "asa:1", "ahab:0", "elijah:0", "elijah:1", "elijah:2", "ahab:2", "ahab:3"] },
 { b: 12, w: ["jeremiah"], at: ["Judah and Egypt", "猶大和埃及"], done: -580, from: -1040, fq: "c.", to: -580, ev: ["elijah:3", "elisha:2", "elisha:3", "jehu:0", "elisha:4", "e:samaria", "hezekiah:1", "josiah:2", "josiah:3", "nebuchadnezzar:1", "zedekiah:1", "e:jerusalem1"] },
@@ -40,8 +45,8 @@ window.BIBLE_BOOKS = [
 { b: 16, w: ["nehemiah"], at: ["Jerusalem", "耶路撒冷"], done: -443, dq: "a.", from: -456, to: -443, tq: "a.", ev: ["nehemiah:0", "nehemiah:1", "ezra:2", "nehemiah:2"] },
 { b: 17, w: ["mordecai"], at: ["Shushan, Elam", "以攔的書珊"], done: -475, dq: "c.", from: -493, to: -475, tq: "c.", ev: ["esther:0", "mordecai:0", "esther:1", "esther:2", "esther:3"] },
 { b: 18, w: ["moses"], at: ["Wilderness", "曠野"], done: -1473, dq: "c.", from: -1657, to: -1473, ev: ["job:0", "job:1", "job:2"] },
-{ b: 19, w: ["david"], at: null, done: -460, dq: "c.", ev: [] },
-{ b: 20, w: ["solomon", "agur", "lemuel"], at: ["Jerusalem", "耶路撒冷"], done: -717, dq: "c.", ev: [] },
+{ b: 19, w: ["david", "asaph-1", "heman-1", "ethan-1", "moses", "solomon"], parts: [["david", "73 psalms", "73篇"], ["asaph-1", "12 psalms, by Asaph’s house", "12篇，亞薩家族所寫"], [["Sons of Korah", "可拉的子孫"], "11 psalms", "11篇"], ["heman-1", "Psalm 88", "第88篇"], ["ethan-1", "Psalm 89", "第89篇"], ["moses", "Psalm 90, probably 91", "第90篇，可能還有第91篇"], ["solomon", "Psalm 127", "第127篇"], [["Others not named", "未具名的執筆者"], "the rest", "其餘的詩篇"]], by: [["ezra"], "evidently put in its final form by Ezra", "看來由以斯拉編成最後的形式"], at: null, done: -460, dq: "c.", ev: [] },
+{ b: 20, w: ["solomon", "agur", "lemuel"], parts: [["solomon", "chapters 1–29", "第1–29章"], ["agur", "chapter 30", "第30章"], ["lemuel", "chapter 31", "第31章"]], by: [["hezekiah"], "King Hezekiah’s men copied out chapters 25–29", "希西家王的臣僕抄錄了第25–29章"], at: ["Jerusalem", "耶路撒冷"], done: -717, dq: "c.", ev: [] },
 { b: 21, w: ["solomon"], at: ["Jerusalem", "耶路撒冷"], done: -1000, dq: "b.", ev: [] },
 { b: 22, w: ["solomon"], at: ["Jerusalem", "耶路撒冷"], done: -1020, dq: "c.", ev: [] },
 { b: 23, w: ["isaiah"], at: ["Jerusalem", "耶路撒冷"], done: -732, dq: "a.", from: -778, fq: "c.", to: -732, tq: "a.", ev: ["isaiah:0", "isaiah:1", "isaiah:2", "hezekiah:2", "isaiah:3"] },
