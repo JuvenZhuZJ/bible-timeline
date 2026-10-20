@@ -520,6 +520,13 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .contemp-more { font: 500 9.5px var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); background: none; border: 0; cursor: pointer; padding: 4px 4px 5px; }
 .contemp-more:hover, .contemp-more:focus-visible { color: var(--wc); outline: none; }
 .contemp-note { font-size: 11px; color: var(--muted); margin-top: 6px; }
+/* companions: chips, then their verses folded under "Verses" */
+.comp-refs { margin-top: 6px; font-size: 11px; color: var(--muted); line-height: 1.6; }
+.comp-refs summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 6px; font: 500 9.5px var(--sans); letter-spacing: 0.2em; text-transform: uppercase; }
+.comp-refs summary::-webkit-details-marker { display: none; }
+.comp-refs summary::after { content: ""; width: 4px; height: 4px; border: solid currentColor; border-width: 0 1px 1px 0; transform: rotate(-45deg); transition: transform 0.15s; }
+.comp-refs[open] summary::after { transform: rotate(45deg); }
+.comp-refs summary:hover, .comp-refs summary:focus-visible { color: var(--fg-2); outline: none; }
 .rel-plain { font: 400 14px/1 var(--serif); color: var(--fg-2); padding: 4px 2px 5px; }
 .win-refs { font: 300 11px/1.7 var(--mono); color: var(--fg-2); }
 .books-written { list-style: none; margin: 0; padding: 0; }
