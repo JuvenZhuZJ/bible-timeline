@@ -39,6 +39,17 @@
     if (c.born < 0) return `${pb}${-c.born} B.C.E. – ${pd}${c.died} C.E.`;
     return `${pb}${c.born} – ${pd}${c.died} C.E.`;
   }
+  // jobs (data/source/jobs.json): an icon after the name on the timeline and a label in the window
+  const JOB_LABEL = {
+    king: ["King", "Queen"], prophet: ["Prophet", "Prophetess"], falseprophet: ["False prophet", "False prophetess"], patriarch: ["Patriarch"], judge: ["Judge"], priest: ["Priest"],
+    apostle: ["Apostle"], official: ["Official"], commander: ["Army commander"], writer: ["Bible writer"],
+  };
+  const jobName = (c, j) => {
+    const f = c.gender === "f" ? 1 : 0;
+    return T(`job.${j}${f ? ".f" : ""}`, null, null) || T(`job.${j}`, null, JOB_LABEL[j][f] || JOB_LABEL[j][0]);
+  };
+  const jobIcon = (j) => `<svg class="job-ic" aria-hidden="true"><use href="#job-${j}"/></svg>`;
+  const JOB_STEP = 12;   // px per icon after a name on the timeline
   const ageText = (c) => T("age", { a: c.assumed ? T("age.approx") : "", n: c.td - c.tb }, `${c.assumed ? "~" : ""}${c.td - c.tb} yrs`);
 
   CHARS.forEach((c) => {
@@ -58,7 +69,8 @@
     });
     c.events = rawEvents.slice().sort((a, b) => a[0] - b[0]);
     c.places = placesOf(c, visits);
-    c.labelW = tlen(c.name) * (c.tier === 1 ? 7.6 : 6.3) + 16;
+    c.jobs = c.jobs || [];
+    c.labelW = tlen(c.name) * (c.tier === 1 ? 7.6 : 6.3) + 16 + (c.jobs.length ? c.jobs.length * JOB_STEP + 2 : 0);
     c.rel = c.rel || {};
     c.refs = c.refs || [];
   });
@@ -84,9 +96,31 @@
 
   /* who is shown: everyone, key figures only, or only the line from Adam to Jesus */
   const SHOW_MODES = { all: T("show.all", null, "Everyone"), key: T("show.key", null, "Key figures"), line: T("show.line", null, "Adam to Jesus line") };
-  let showMode = "all";
-  try { const m = localStorage.getItem("bt-show"); if (SHOW_MODES[m]) showMode = m; } catch (_) {}
-  const inMode = (c) => showMode === "all" || (showMode === "line" ? !!c.line : !!(c.key || c.line));
+  // by job or family role: any number of groups can be picked, and anyone in any of them is shown.
+  // The jobs come from data/source/jobs.json; husband/wife/son/daughter from the recorded relatives
+  // (they have no icon on the timeline).
+  const SHOW_JOBS = { king: "Kings and queens", prophet: "Prophets", falseprophet: "False prophets", patriarch: "Patriarchs", judge: "Judges", priest: "Priests",
+    apostle: "Apostles", official: "Officials", commander: "Army commanders", writer: "Bible writers" };
+  const SHOW_FAM = { husband: "Husbands", wife: "Wives", son: "Sons", daughter: "Daughters" };
+  const nRel = (c, k) => ((c.rel && c.rel[k]) || []).length + ((c.relNames && c.relNames[k]) || []).length;
+  const GROUP = {};
+  const GROUP_NAME = {};
+  for (const [j, en] of Object.entries(SHOW_JOBS)) { GROUP[j] = (c) => c.jobs.includes(j); GROUP_NAME[j] = T("show.job." + j, null, en); }
+  GROUP.husband = (c) => c.gender === "m" && nRel(c, "spouses") > 0;
+  GROUP.wife = (c) => c.gender === "f" && nRel(c, "spouses") > 0;
+  GROUP.son = (c) => c.gender === "m" && nRel(c, "father") + nRel(c, "mother") > 0;
+  GROUP.daughter = (c) => c.gender === "f" && nRel(c, "father") + nRel(c, "mother") > 0;
+  for (const [g, en] of Object.entries(SHOW_FAM)) GROUP_NAME[g] = T("show.fam." + g, null, en);
+  let showMode = "all";             // all | key | line | groups
+  let showGroups = new Set();       // with showMode "groups": the picked jobs and family roles
+  try {
+    const m = localStorage.getItem("bt-show") || "";
+    if (m.startsWith("g:")) showGroups = new Set(m.slice(2).split(",").filter((g) => GROUP[g]));
+    showMode = showGroups.size ? "groups" : SHOW_MODES[m] ? m : "all";
+  } catch (_) {}
+  const showKey = () => (showMode === "groups" ? "g:" + [...showGroups].join(",") : showMode);
+  const inMode = (c) => showMode === "all" || (showMode === "groups" ? [...showGroups].some((g) => GROUP[g](c))
+    : showMode === "line" ? !!c.line : !!(c.key || c.line));
 
   const T0 = A(-4026) - 90;
   const T1 = A(100) + 70;
@@ -222,6 +256,10 @@
     const name = el("text", { class: "d-name", x: 11, y: 4 }, node);
     name.textContent = c.name;
     d.name = name;
+    if (c.jobs.length) {
+      d.jobs = el("g", { class: "d-jobs" }, node);
+      c.jobs.forEach((j, i) => el("use", { href: `#job-${j}`, x: i * JOB_STEP, y: -5.5, width: 11, height: 11 }, d.jobs));
+    }
     const yr = el("text", { class: "d-year", x: 11, y: 15 }, node);
     yr.textContent = fmtYear(c.born);
     node.__c = c;
@@ -244,7 +282,7 @@
     // jump away from under the cursor, lose the hover, jump back, and flicker.
     // Only repack when such a person is in range but has no lane yet.
     const unplaced = cands.some((d) => d.lane < 0 && (isPinned(d.c) || d.c === hoverC) && d.c.td >= lastPack.a - 40 && d.c.tb <= lastPack.b);
-    const key = showMode;
+    const key = showKey();
     if (!force && !unplaced && inside && key === lastPack.key && Math.abs(view.ppy / lastPack.ppy - 1) < 0.12) return;
     lastPack.key = key; lastPack.ppy = view.ppy; lastPack.a = a - span; lastPack.b = b + span;
     for (const d of dotEls) d.lane = -1;
@@ -397,7 +435,11 @@
       const y = laneY(d.lane);
       d.node.setAttribute("transform", `translate(${xb},${y})`);
       // the line starts after the name, so the label never sits on top of it
-      if (!d.gap) d.gap = 11 + d.name.getComputedTextLength() + 6;
+      if (!d.gap) {
+        const nw = d.name.getComputedTextLength();
+        d.gap = 11 + nw + 6;
+        if (d.jobs) { d.jobs.setAttribute("transform", `translate(${11 + nw + 4},0)`); d.gap += c.jobs.length * JOB_STEP; }
+      }
       const pin = pinColor(c);
       d.sel.setAttribute("stroke", pin || "transparent");
       d.node.classList.toggle("pinned", !!pin);
@@ -970,6 +1012,7 @@
       </div>
       <div class="win-body">
         <div class="win-role">${esc(c.role)}</div>
+        ${c.jobs.length ? `<div class="win-jobs">${c.jobs.map((j) => `<span class="win-job">${jobIcon(j)}${esc(jobName(c, j))}</span>`).join("")}</div>` : ""}
         ${c.meaning ? `<div class="win-meaning">${I18.zh ? "「" : "“"}${esc(c.meaning)}${I18.zh ? "」" : "”"}</div>` : ""}
         <div class="badges">
           <span class="badge${c.q[0] === "assumed" ? " assumed" : ""}">${T("birth", { q: QLABEL[c.q[0]] }, `Birth: ${QLABEL[c.q[0]]}`)}</span>
@@ -1496,28 +1539,48 @@
   $("aboutStats").textContent = T("about.stats", { n: CHARS.length.toLocaleString(), e: EVENTS.length, a: nAssumed.toLocaleString() },
     `${CHARS.length.toLocaleString()} people · ${EVENTS.length} major events · ${nAssumed.toLocaleString()} people with at least one assumed date.`);
 
-  /* show: everyone / key figures / Adam-to-Jesus line */
+  /* show: everyone / key figures / Adam-to-Jesus line, or any mix of jobs and family roles */
   const showBox = $("show"), showBtn = $("showBtn"), showMenu = $("showMenu");
-  function setShowMode(m) {
+  function showLabelText() {
+    if (showMode !== "groups") return SHOW_MODES[showMode];
+    const names = [...showGroups].map((g) => GROUP_NAME[g]);
+    return names.length <= 2 ? names.join(I18.zh ? "、" : ", ") : T("show.groups.more", { a: names[0], n: names.length }, `${names[0]} + ${names.length - 1} more`);
+  }
+  function setShowMode(m, groups) {
     showMode = m;
-    try { localStorage.setItem("bt-show", m); } catch (_) {}
-    showBox.classList.toggle("filtered", m !== "all");
-    showBtn.setAttribute("aria-label", T("show.current", { m: SHOW_MODES[m] }, `Showing: ${SHOW_MODES[m]}. Change who is shown`));
-    $("showLabel").textContent = SHOW_MODES[m];
-    showMenu.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-checked", b.dataset.mode === m));
+    showGroups = m === "groups" ? groups : new Set();
+    if (m === "groups" && !showGroups.size) showMode = "all";
+    try { localStorage.setItem("bt-show", showKey()); } catch (_) {}
+    showBox.classList.toggle("filtered", showMode !== "all");
+    const label = showLabelText();
+    showBtn.setAttribute("aria-label", T("show.current", { m: label }, `Showing: ${label}. Change who is shown`));
+    $("showLabel").textContent = label;
+    showMenu.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-checked", b.dataset.mode === showMode));
+    showMenu.querySelectorAll("[data-group]").forEach((b) => b.setAttribute("aria-checked", showGroups.has(b.dataset.group)));
     packForce = true; requestRender();
   }
+  const closeShow = () => { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); };
   const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length };
   showMenu.querySelectorAll("[data-mode]").forEach((b) => {
     b.querySelector(".sm-n").textContent = counts[b.dataset.mode].toLocaleString();
-    b.addEventListener("click", () => { setShowMode(b.dataset.mode); showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); });
+    b.addEventListener("click", () => { setShowMode(b.dataset.mode); closeShow(); });
+  });
+  // the groups are toggles, so the menu stays open while you pick several
+  showMenu.querySelectorAll("[data-group]").forEach((b) => {
+    const g = b.dataset.group;
+    b.querySelector(".sm-n").textContent = CHARS.filter(GROUP[g]).length.toLocaleString();
+    b.addEventListener("click", () => {
+      const next = new Set(showMode === "groups" ? showGroups : []);
+      if (next.has(g)) next.delete(g); else next.add(g);
+      setShowMode("groups", next);
+    });
   });
   showBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     const open = !showBox.classList.contains("open");
     showBox.classList.toggle("open", open); showBtn.setAttribute("aria-expanded", open);
   });
-  document.addEventListener("pointerdown", (e) => { if (!showBox.contains(e.target)) { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); } });
+  document.addEventListener("pointerdown", (e) => { if (!showBox.contains(e.target)) closeShow(); });
 
   /* settings: the language menu (its buttons are wired in js/i18n.js) */
   const setBox = $("settings"), setBtn = $("settingsBtn");
@@ -1527,7 +1590,7 @@
     setBox.classList.toggle("open", open); setBtn.setAttribute("aria-expanded", open);
   });
   document.addEventListener("pointerdown", (e) => { if (!setBox.contains(e.target)) { setBox.classList.remove("open"); setBtn.setAttribute("aria-expanded", "false"); } });
-  setShowMode(showMode);
+  setShowMode(showMode, showGroups);
 
   /* ───────────────────────── boot ───────────────────────── */
   let resizeT = 0;

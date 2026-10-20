@@ -1,0 +1,37 @@
+{
+  "_about": "Jobs shown as small icons after a person's name (tools/build-people.mjs). 'set' gives a person's jobs exactly, in display order; anyone not listed gets jobs from the words in their role (king, prophet, false prophet, judge, priest, apostle, governor/official, army chief). Bible writers follow the NWT 'Table of the Books of the Bible'. Patriarchs: the family heads from Adam to Jacob and Jacob's twelve sons (Acts 7:8-9; Hebrews 7:4).",
+  "jobs": ["king", "prophet", "falseprophet", "patriarch", "judge", "priest", "apostle", "official", "commander", "writer"],
+  "set": {
+    "adam": ["patriarch"], "seth": ["patriarch"], "enosh": ["patriarch"], "kenan": ["patriarch"], "mahalalel": ["patriarch"],
+    "jared": ["patriarch"], "enoch": ["patriarch", "prophet"], "methuselah": ["patriarch"], "lamech": ["patriarch"], "noah": ["patriarch"],
+    "shem": ["patriarch"], "arpachshad": ["patriarch"], "shelah": ["patriarch"], "eber": ["patriarch"], "peleg": ["patriarch"],
+    "reu": ["patriarch"], "serug": ["patriarch"], "nahor": ["patriarch"], "terah": ["patriarch"],
+    "abraham": ["patriarch"], "isaac": ["patriarch"], "jacob": ["patriarch"],
+    "reuben": ["patriarch"], "simeon-1": ["patriarch"], "levi": ["patriarch"], "judah": ["patriarch"], "dan-1": ["patriarch"],
+    "naphtali-1": ["patriarch"], "gad-1": ["patriarch"], "asher-1": ["patriarch"], "issachar-1": ["patriarch"], "zebulun-1": ["patriarch"],
+    "joseph-patriarch": ["patriarch", "official"], "benjamin": ["patriarch"], "ben-oni": ["patriarch"],
+
+    "nimrod": ["king"], "melchizedek": ["king", "priest"], "jethro": ["priest"], "aaron": ["priest"],
+    "miriam": ["prophet"], "moses": ["prophet", "writer"], "joshua": ["commander", "writer"], "balaam": ["prophet"],
+    "othniel": ["judge"], "ehud": ["judge"], "deborah": ["prophet", "judge"], "barak": ["commander"], "gideon": ["judge"],
+    "eli": ["priest", "judge"], "jephthah": ["judge"], "samuel": ["prophet", "judge", "writer"], "samson": ["judge"],
+    "saul": ["king"], "nathan": ["prophet", "writer"], "gad-3": ["prophet", "writer"], "david": ["king", "prophet", "writer"],
+    "solomon": ["king", "writer"], "agur": ["writer"], "lemuel": ["king", "writer"],
+    "rehoboam": ["king"], "jeroboam": ["king"], "asa": ["king"], "ahab": ["king"], "jehoshaphat": ["king"], "jezebel": ["king"],
+    "jehu": ["king"], "hezekiah": ["king"], "manasseh": ["king"], "josiah": ["king"], "zedekiah": ["king"],
+    "nebuchadnezzar": ["king"], "cyrus": ["king"], "esther": ["king"], "herod": ["king"], "darius-1": ["king"],
+    "jehoiada": ["priest"], "elijah": ["prophet"], "elisha": ["prophet"], "jonah": ["prophet", "writer"],
+    "amos": ["prophet", "writer"], "hosea": ["prophet", "writer"], "hoshea-3": ["prophet", "writer"], "isaiah": ["prophet", "writer"], "micah": ["prophet", "writer"],
+    "joel-9": ["prophet", "writer"], "obadiah-8": ["prophet", "writer"], "nahum-1": ["prophet", "writer"], "habakkuk": ["prophet", "writer"],
+    "zephaniah-2": ["prophet", "writer"], "jeremiah": ["prophet", "writer"], "ezekiel": ["priest", "prophet", "writer"],
+    "daniel": ["prophet", "official", "writer"], "haggai": ["prophet", "writer"], "zechariah-prophet": ["prophet", "writer"],
+    "malachi": ["prophet", "writer"], "zerubbabel": ["official"], "mordecai": ["official", "writer"], "ezra": ["priest", "writer"],
+    "nehemiah": ["official", "writer"], "pilate": ["official"],
+    "zechariah-priest": ["priest"], "hanani-2": ["prophet"], "shamgar": ["judge"], "bar-jesus": ["falseprophet"], "dionysius": [], "zebadiah-7": [], "chenaniah-2": [], "john-baptist": ["prophet"], "jesus": ["king", "prophet", "priest"],
+    "peter": ["apostle", "writer"], "andrew": ["apostle"], "james-zebedee": ["apostle"], "john": ["apostle", "writer"],
+    "judas-iscariot": ["apostle"], "matthew": ["apostle", "writer"], "levi-4": ["apostle", "writer"], "thomas": ["apostle"],
+    "paul": ["apostle", "writer"], "saul-2": ["apostle", "writer"], "mark": ["writer"], "john-mark-4": ["writer"], "luke": ["writer"],
+    "james-brother": ["writer"], "jude": ["writer"],
+    "eliezer-1": [], "baruch-1": [], "abel": [], "cain": [], "eve": [], "sarah": [], "rebekah": [], "job": [], "lot": []
+  }
+}

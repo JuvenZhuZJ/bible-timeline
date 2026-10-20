@@ -12,6 +12,7 @@
  *                                    daughters, Noah's wife, Jephthah's daughter ...),
  *                                    written by hand in the same shape
  *   data/source/overrides.json       manual fixes (optional)
+ *   data/source/jobs.json            jobs shown as icons after names (king, prophet ...)
  * Outputs
  *   data/people.js                   window.TIMELINE_PEOPLE, read by js/app.js
  *   data/ASSUMED_DATES.md            people whose dates are placeholders
@@ -353,8 +354,39 @@ for (const p of people) {
 }
 for (const [id, t] of Object.entries(OVR.tier || {})) if (byId.get(id)) byId.get(id).tier = t;
 
+/* ---------- 6b. jobs ----------
+   Small icons after the name (king, prophet ...). data/source/jobs.json sets them by hand for the
+   key figures and the Bible writers; everyone else gets them from the words in their role. A title
+   after "of", "to", "under" ... ("Father of King Saul", "Priest under King Ahaz") or followed by
+   "'s" ("High priest's slave") is someone else's, so it does not count. False prophets get their
+   own icon (a broken scroll), not the prophet's. */
+const JOBS = JSON.parse(read("data/source/jobs.json"));
+const JOB_WORDS = {
+  king: "king|queen|pharaoh|emperor|tetrarch", prophet: "prophet|prophetess|seer|visionary", judge: "judge", priest: "priest|high priest",
+  apostle: "apostle", official: "governor|official|prime minister|steward|recorder|secretary|satrap|proconsul|chamberlain|ruler|cupbearer",
+  commander: "commander|general|army chief|captain",
+};
+const NOT_THEIRS = "of|to|under|serving|with|for|against|by|beside";
+function jobsFromRole(role) {
+  const out = [];
+  for (const [job, words] of Object.entries(JOB_WORDS)) {
+    const w = `(?:${words})`;
+    if (!new RegExp(`\\b${w}\\b(?!'s)`, "i").test(role)) continue;
+    // every mention is someone else's title, or a false prophet
+    const all = role.match(new RegExp(`(?:\\S+\\s+){0,3}\\b${w}\\b(?!'s)`, "gi")) || [];
+    const own = all.filter((m) => !new RegExp(`\\b(?:${NOT_THEIRS})\\s+(?:\\S+\\s+){0,2}${w}$`, "i").test(m) && !/\b(false|lying)\s+prophet/i.test(m));
+    if (own.length) out.push(job);
+  }
+  if (/\b(false|lying)\s+prophet/i.test(role) && !/\bof\s+(\S+\s+)?(false|lying)\s+prophet/i.test(role)) out.push("falseprophet");
+  return out;
+}
+for (const p of people) {
+  const set = JOBS.set[p.id];
+  p.jobs = set ? set.slice() : jobsFromRole(p.role || "");
+}
+
 /* ---------- 7. write ---------- */
-const KEEP = ["id", "name", "aka", "meaning", "born", "died", "q", "tier", "gender", "role", "look", "portrait", "summary", "family", "note", "events", "refs", "group", "rel", "relNames", "src", "key", "line"];
+const KEEP = ["id", "name", "aka", "meaning", "born", "died", "q", "tier", "gender", "role", "look", "portrait", "summary", "family", "note", "events", "refs", "group", "rel", "relNames", "src", "key", "line", "jobs"];
 const outList = people.slice().sort((a, b) => a.born - b.born || a.name.localeCompare(b.name)).map((p) => {
   const o = {};
   for (const k of KEEP) {
