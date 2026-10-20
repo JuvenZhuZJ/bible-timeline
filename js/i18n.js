@@ -109,7 +109,7 @@
     "legend.estimated": "估計的年份",
     "legend.assumed": "假定的年份",
     "legend.event": "重大事件",
-    "legend.hist": "方形：來自歷史資料，不是聖經",
+    "legend.hist": "來自歷史資料，不是聖經",
     "legend.man": "跟男子的親屬關係",
     "legend.woman": "跟女子的親屬關係",
     "legend.job.king": "君王／王后",
