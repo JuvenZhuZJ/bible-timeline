@@ -53,7 +53,7 @@
  "events":[[-301,"Rules Asia Minor and Thrace, one of four parts of Alexander's empire","@dp13; Daniel 8:8, 22"],[-285,"Takes the European part of the Greek empire","@dp13"],[-281,"Falls in battle against Seleucus I","@dp13"]],
  "src":["dp13"]},
 
-{"id":"ptolemy-i","name":"Ptolemy I","aka":["Ptolemy Lagus","Ptolemy Soter"],"gender":"m","born":-367,"died":-283,"q":["assumed","estimated"],"tier":3,
+{"id":"ptolemy-i","name":"Ptolemy I","aka":["Ptolemy Lagus","Ptolemy Soter"],"gender":"m","born":-367,"died":-283,"q":["assumed","estimated"],"tier":2,"key":true,
  "role":"King of Egypt; the first 'king of the south'","jobs":["king","commander"],"look":{"age":"old","head":"crown","beard":"none","culture":"greek"},
  "summary":"A general of Alexander who took Egypt and Palestine and founded the Greek dynasty that ruled Egypt for nearly 300 years. He encouraged Jews to settle in Alexandria and started its famous library. Judah stayed under his family's rule until 198 B.C.E.",
  "note":"Death year from general histories. His son Ptolemy II began to reign in 285 B.C.E.",
@@ -108,7 +108,7 @@
  "events":[[-180,"Succeeds his father as king","@dp13"],[-168,"Asks Rome for help against Antiochus IV","@dp14"]],
  "rel":{"father":["ptolemy-v"],"mother":["cleopatra-i"]},"src":["dp13","dp14"]},
 
-{"id":"seleucus-i","name":"Seleucus I","aka":["Seleucus Nicator"],"gender":"m","born":-358,"died":-281,"q":["assumed","history"],"tier":3,
+{"id":"seleucus-i","name":"Seleucus I","aka":["Seleucus Nicator"],"gender":"m","born":-358,"died":-281,"q":["assumed","history"],"tier":2,"key":true,
  "role":"King of Syria; the first 'king of the north'","jobs":["king","commander"],"look":{"age":"old","head":"crown","beard":"full","culture":"greek"},
  "summary":"A general of Alexander who won Mesopotamia and Syria and founded the Seleucid dynasty, which ruled from Syria until Rome took it over in 64 B.C.E. He built Antioch, where Jesus' followers were later first called Christians.",
  "events":[[-301,"Rules Mesopotamia and Syria, one of four parts of Alexander's empire","@dp13; Daniel 11:5"],[-300,"Founds Antioch, his new capital, and the port of Seleucia","@dp13; Acts 11:26"],[-281,"Defeats Lysimachus but is assassinated the same year","@dp13"]],
@@ -140,7 +140,7 @@
  "events":[[-223,"Is assassinated; his brother Antiochus III takes the throne","@dp13; Daniel 11:10"]],
  "rel":{"father":["seleucus-ii"]},"src":["dp13"]},
 
-{"id":"antiochus-iii","name":"Antiochus III","aka":["Antiochus the Great"],"gender":"m","born":-241,"died":-187,"q":["assumed","history"],"tier":3,
+{"id":"antiochus-iii","name":"Antiochus III","aka":["Antiochus the Great"],"gender":"m","born":-241,"died":-187,"q":["assumed","history"],"tier":2,"key":true,
  "role":"King of Syria; 'king of the north'","jobs":["king","commander"],"look":{"age":"adult","head":"crown","beard":"full","culture":"greek"},
  "summary":"The Seleucid king who took Judah from Egypt. Beaten at Raphia, he came back years later, won at Paneas, and took Jerusalem in 198 B.C.E. When he moved into Greece, Rome stepped in, defeated him and made him pay a heavy fine.",
  "events":[[-223,"Succeeds his murdered brother as king","@dp13"],[-218,"Takes Seleucia, Tyre, Ptolemais and many towns of Judah","@dp13; Daniel 11:10"],[-217,"Is defeated by Ptolemy IV at Raphia","@dp13; Daniel 11:11"],[-198,"Wins at Paneas, takes Sidon and then Jerusalem; Judah now belongs to Syria","@dp13; @it-jerusalem; Daniel 11:15, 16"],[-193,"Marries his daughter Cleopatra I to Ptolemy V","@dp13; Daniel 11:17"],[-190,"Beaten by the Romans at Magnesia and must give up Asia Minor","@dp13; Daniel 11:18"],[-187,"Dies while robbing a temple in Elymais, Persia","@dp13; Daniel 11:19"]],
@@ -325,7 +325,7 @@
  "events":[[-64,"Makes Syria a Roman province; the Seleucid dynasty ends","@dp13; @it-syria"],[-63,"Takes Jerusalem after a three-month siege; Judea comes under Rome","@it-jerusalem; @dp13; @w01"]],
  "src":["it-jerusalem","dp13"]},
 
-{"id":"julius-caesar","name":"Julius Caesar","gender":"m","born":-100,"died":-44,"q":["estimated","history"],"tier":3,
+{"id":"julius-caesar","name":"Julius Caesar","gender":"m","born":-100,"died":-44,"q":["estimated","history"],"tier":2,"key":true,
  "role":"Roman dictator","jobs":["king","commander"],"look":{"age":"adult","head":"bare","beard":"none","culture":"roman"},
  "summary":"Roman general and statesman who made Herod's father Antipater governor of Judea. He was made dictator for ten years and murdered two years later. His adopted son Octavian became the emperor Augustus.",
  "note":"Birth year from general histories.",
@@ -339,7 +339,7 @@
  "events":[[-37,"At Herod's request has Antigonus put to death","@it-herod"],[-31,"Is defeated with Cleopatra at Actium by Octavian","@dp14"]],
  "src":["it-herod","dp14"]},
 
-{"id":"cleopatra-vii","name":"Cleopatra VII","aka":["Cleopatra"],"gender":"f","born":-69,"died":-30,"q":["estimated","history"],"tier":3,
+{"id":"cleopatra-vii","name":"Cleopatra VII","aka":["Cleopatra"],"gender":"f","born":-69,"died":-30,"q":["estimated","history"],"tier":2,"key":true,
  "role":"Last Ptolemaic queen of Egypt","jobs":["king"],"look":{"age":"adult","head":"crown","culture":"egyptian"},
  "summary":"The last of the Greek rulers of Egypt and the last 'king of the south' of that line. With her Roman lover Mark Antony she was defeated at Actium, and after her suicide Egypt became a Roman province.",
  "note":"Birth year from general histories.",
@@ -368,7 +368,7 @@
  "rel":{"children":["titus-emperor","domitian"]},
  "src":["it-caesar","it-jerusalem"]},
 
-{"id":"titus-emperor","name":"Titus (Roman general)","aka":["Titus Caesar","General Titus"],"gender":"m","born":39,"died":81,"q":["estimated","history"],"tier":3,
+{"id":"titus-emperor","name":"Titus (Roman general)","aka":["Titus Caesar","General Titus"],"gender":"m","born":39,"died":81,"q":["estimated","history"],"tier":2,"key":true,
  "role":"Roman general who destroyed Jerusalem; later emperor","jobs":["commander","king"],"look":{"age":"adult","head":"romanhelm","beard":"none","culture":"roman"},
  "summary":"Son of Vespasian. In 70 C.E. he besieged Jerusalem, crowded with Passover visitors, and fenced it in as Jesus had foretold. His offers of peace were refused, the temple was burned against his orders, and the city was razed. The Arch of Titus in Rome shows the temple vessels carried off. Not the Titus of Paul's letters.",
  "note":"Birth year from general histories.",
@@ -416,7 +416,7 @@
  "events":[[-845,"Attacks Damascus and receives tribute from Jehoash of Samaria","@it-assyria"],[-844,"Possibly the king of Nineveh who repents at Jonah's preaching","@it-assyria; Jonah 3:6"]],
  "src":["it-assyria"]},
 
-{"id":"nabopolassar","name":"Nabopolassar","gender":"m","born":-685,"died":-625,"q":["assumed","estimated"],"tier":3,
+{"id":"nabopolassar","name":"Nabopolassar","gender":"m","born":-685,"died":-625,"q":["assumed","estimated"],"tier":2,"key":true,
  "role":"King of Babylon; father of Nebuchadnezzar","jobs":["king"],"look":{"age":"old","head":"crown","beard":"long","culture":"mesopotamian"},
  "summary":"A Chaldean who rebelled against Assyria and founded a new dynasty in Babylon. Allied with Cyaxares the Mede, he destroyed Nineveh. His son Nebuchadnezzar took over the government in the year of the battle of Carchemish.",
  "note":"Death year from Nebuchadnezzar's taking the throne in 625 B.C.E.; birth assumed.",
@@ -436,7 +436,7 @@
  "events":[[-632,"Tries to rule what is left of Assyria from Harran","@it-assyria"],[-629,"With an Egyptian army tries and fails to retake Harran","@it-assyria; 2 Chronicles 35:20"]],
  "src":["it-assyria"]},
 
-{"id":"nabonidus-king","replaces":"nabonidus","name":"Nabonidus","gender":"m","born":-620,"died":-535,"q":["assumed","assumed"],"tier":3,
+{"id":"nabonidus-king","replaces":"nabonidus","name":"Nabonidus","gender":"m","born":-620,"died":-535,"q":["assumed","assumed"],"tier":2,"key":true,
  "role":"Last king of Babylon; father of Belshazzar","jobs":["king"],"look":{"age":"old","head":"crown","beard":"long","culture":"mesopotamian"},
  "summary":"Babylon's last supreme ruler, given to literature, art and religion. In his third year he made his firstborn son Belshazzar king in Babylon and went off to live at Tema in Arabia. He lost to Cyrus and fled to Borsippa, so he was not at Belshazzar's feast on the night Babylon fell.",
  "note":"Reigned some 17 years (556-539 B.C.E.) by cuneiform texts; birth and death assumed.",

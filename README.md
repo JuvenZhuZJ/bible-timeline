@@ -26,7 +26,7 @@ The **People** button in the top bar picks who appears:
 | Mode | Shows |
 | --- | --- |
 | Everyone | All 2,795 people, including the people the Bible does not name and 66 known from history (see below). Minor people appear as you zoom in. |
-| Key figures | 209 people: the 140 hand-written key figures, 8 from history (Alexander the Great, Antiochus IV, Mattathias, Judas Maccabeus, Simon, John Hyrcanus I, Pompey and Nero) and everyone on the Adam-to-Jesus line. |
+| Key figures | 217 people: the 140 hand-written key figures, 16 from history (Nabopolassar, Nabonidus, Alexander the Great, Ptolemy I, Seleucus I, Antiochus III, Antiochus IV, Mattathias, Judas Maccabeus, Simon, John Hyrcanus I, Pompey, Julius Caesar, Cleopatra VII, Nero and Titus) and everyone on the Adam-to-Jesus line. |
 | Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
 | My bookmarks | Only the people the visitor starred (see [My notes and bookmarks](#my-notes-and-bookmarks)). |
 | By job or family | Any mix of groups, picked as toggles; a switch under the heading shows either anyone in **any** picked group (the default) or only people in **all** of them (Kings and Prophets together gives David and Jesus; the menu shows how many people match). Saved in the browser as `g:` (any) or `a:` (all) in `bt-show`. Jobs: kings and queens, prophets, false prophets, patriarchs, judges, priests, apostles, officials, army commanders, Bible writers (see [Job icons](#job-icons)). Family roles, below a divider and with no timeline icon: husbands and wives (a recorded spouse), sons and daughters (a recorded father or mother). |
