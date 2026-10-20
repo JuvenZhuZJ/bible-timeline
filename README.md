@@ -25,9 +25,9 @@ The **People** button in the top bar picks who appears:
 
 | Mode | Shows |
 | --- | --- |
-| Everyone | All 2,788 people, including 34 the Bible does not name and 52 known from history (see below). Minor people appear as you zoom in. |
-| Key figures | 208 people: the 140 hand-written key figures, 7 from history (Alexander the Great, Antiochus IV, Mattathias, Judas Maccabeus, Simon, John Hyrcanus I and Pompey) and everyone on the Adam-to-Jesus line. |
-| From history | Only the 52 people known from history, not the Bible (see [History between the Testaments](#history-between-the-testaments)). |
+| Everyone | All 2,795 people, including the people the Bible does not name and 66 known from history (see below). Minor people appear as you zoom in. |
+| Key figures | 209 people: the 140 hand-written key figures, 8 from history (Alexander the Great, Antiochus IV, Mattathias, Judas Maccabeus, Simon, John Hyrcanus I, Pompey and Nero) and everyone on the Adam-to-Jesus line. |
+| From history | Only the 66 people known from history, not the Bible (see [History between the Testaments](#history-between-the-testaments)). |
 | Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
 | My bookmarks | Only the people the visitor starred (see [My notes and bookmarks](#my-notes-and-bookmarks)). |
 | By job or family | Any mix of groups, picked as toggles; a switch under the heading shows either anyone in **any** picked group (the default) or only people in **all** of them (Kings and Prophets together gives David and Jesus; the menu shows how many people match). Saved in the browser as `g:` (any) or `a:` (all) in `bt-show`. Jobs: kings and queens, prophets, false prophets, patriarchs, judges, priests, apostles, officials, army commanders, Bible writers (see [Job icons](#job-icons)). Family roles, below a divider and with no timeline icon: husbands and wives (a recorded spouse), sons and daughters (a recorded father or mother). |
@@ -48,11 +48,15 @@ The people list is built from the person articles in *Insight on the Scriptures*
 
 The Bible records almost nothing between Nehemiah (after 443 B.C.E.) and the birth of Jesus (2 B.C.E.). The site fills that gap with people and events known from history, as told in publications on wol.jw.org: the last Persian kings, Alexander the Great and the generals who split his empire, the Ptolemies of Egypt and the Seleucids of Syria who fought over Judea, Antiochus IV and the defiled temple, the Maccabees and the Hasmonaean kings, Pompey and Rome, and Herod's family. Herod the Great and Augustus, already on the site, gained activities from the same sources.
 
+Around the kings and prophets, history adds the empires the Bible speaks of, from *Insight* ("Assyria," "Shalmaneser," "Nineveh," "Medes, Media," "Babylon," "Nabonidus," "Persia"): Shalmaneser III's Black Obelisk with Jehu's tribute, Adad-nirari III and the tribute of Jehoash, the fall of Nineveh to Nabopolassar and Cyaxares (632 B.C.E.), Assyria's last stand at Harran (629), Nabonidus and Belshazzar, and Persia's wars with Greece (Marathon 490, Xerxes 480, Daniel 11:2). Rulers the Bible names are not repeated as history people; Nebuchadnezzar gains Carchemish (Jeremiah 46:2) as a Bible activity and Jehu the Black Obelisk as a history one. Shalmaneser III and Nabonidus, whom the Bible does not name, are now history people. Dates follow the wol.jw.org publications, which use Bible chronology; the Nineveh event says that many history books put these events about 20 years later and cites *The Watchtower*, October 1, 2011, on why.
+
+After Acts the Bible's account ends, but history fills in what Jesus foretold for Jerusalem. From *Insight* ("Caesar," "Jerusalem," "Dagger Men," "Patmos") and *The Watchtower* (October 15, 1990, "Masada—Why Did It Happen?"): the emperors from Gaius (Caligula) to Nerva, among them Nero, the Caesar Paul appealed to; the fire of Rome in 64 C.E.; the Jewish revolt of 66 and Cestius Gallus' sudden withdrawal, which let Christians flee (Luke 21:20-22); Titus' siege in 70 (the destruction itself is one of the Bible's major events, since Jesus foretold it); and the fall of Masada in 73. John's window adds his release from Patmos after Domitian's death, as tradition says.
+
 Everything from history is drawn as a **square** instead of a circle, on the main line, on people's dots, on lifespan tracks and in the windows' activity lists, and its names and event labels are in italics. The square follows the same fill rules as the circles (solid = the source gives the year, square with a small square = approximate, dashed = assumed). Windows and tooltips say "From history, not the Bible". The legend and the About box explain this in English and Chinese.
 
 Each item cites its source. A history person's window lists them under Sources; an activity's reference starts with the source and may add scriptures after it. Where the Bible speaks of an event, the scripture is listed too: Daniel 8 and 11 (the kings of the north and south, the disgusting thing), Daniel 7:7, John 10:22 (the Festival of Dedication) and Luke 2:1. These are given only as references; prophecy arcs are not drawn.
 
-History events (13 of them, in `data/history.js`) appear only when zoomed in past `HIST_PPY` in `js/app.js`, and they are laid out after the Bible events, so a Bible event always keeps its label. History people follow the usual zoom rule and People modes.
+History events (20 of them, in `data/history.js`) appear only when zoomed in past `HIST_PPY` in `js/app.js`, and they are laid out after the Bible events, so a Bible event always keeps its label. History people follow the usual zoom rule and People modes.
 
 Data:
 

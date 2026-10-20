@@ -838,7 +838,7 @@ window.TIMELINE_CHARACTERS = [
   summary:"A fisherman, probably the youngest apostle. Cared for Mary after Jesus' death, endured exile on Patmos, and wrote Revelation, a Gospel and three letters. The last of the apostles.",
   family:"Brother: James · Parents: Zebedee & Salome",
   note:"Approximate dates from Walk Courageously With God (5 B.C.E.–100 C.E.); died c. 100 C.E.",
-  events:[[29,"Becomes a disciple","John 1:35-39"],[33,"Entrusted with Mary at the torture stake","John 19:26-27"],[33,"Arrested with Peter; keeps preaching","Acts 4:13-20"],[96,"Receives Revelation on Patmos","Revelation 1:9"],[98,"Writes his Gospel and letters","John 21:24"],[100,"Dies; the last apostle","—"]] },
+  events:[[29,"Becomes a disciple","John 1:35-39"],[33,"Entrusted with Mary at the torture stake","John 19:26-27"],[33,"Arrested with Peter; keeps preaching","Acts 4:13-20"],[96,"Receives Revelation on Patmos","Revelation 1:9"],[96,"Freed from Patmos after Domitian dies, as tradition says","@it-patmos"],[98,"Writes his Gospel and letters","John 21:24"],[100,"Dies; the last apostle","—"]] },
 
 { id:"matthew", name:"Matthew (Levi)", meaning:"Gift of Jehovah", born:-5, died:70, q:["assumed","assumed"], tier:3, gender:"m",
   role:"Apostle; Gospel writer", look:{age:"adult", head:"cloth", beard:"full"},
