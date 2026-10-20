@@ -339,7 +339,7 @@ for (const [id, [b, d]] of Object.entries(OVR.dates || {})) {
 }
 for (const [id, note] of Object.entries(OVR.notes || {})) if (byId.get(id)) byId.get(id).note = note;
 /* activities for people who are not key figures (overrides.json "events"): [year, text, scripture] */
-for (const [id, evs] of Object.entries(OVR.events || {})) if (byId.get(id)) byId.get(id).events = evs;
+for (const [id, evs] of Object.entries(OVR.events || {})) if (byId.get(id)) byId.get(id).events = evs.concat(byId.get(id).events || []);   // keeps history activities added in step 4b
 
 /* ---------- 5b. a parent is alive when each child is born ----------
    Placeholder dates are set one person at a time, so a father or mother can
