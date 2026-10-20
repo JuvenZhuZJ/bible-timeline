@@ -1874,6 +1874,7 @@
         if (!notesBox.hidden) renderNotes();
       }, 400);
     });
+    ta.addEventListener("grow", grow);
     requestAnimationFrame(grow);
   }
   // the people with a bookmark or a note, in timeline order
@@ -1904,11 +1905,53 @@
       if (noteText(c).trim()) lines.push(noteText(c).trim());
       lines.push("");
     }
+    // the same notes as data, so Load can read the file back in (on this or another device)
+    const data = {};
+    for (const c of noted()) data[c.id] = NOTES[c.id];
+    lines.push("-----", T("notes.filetail", null, "For loading back into Bible Family Tree (please leave this part as it is):"), NOTES_TAG + JSON.stringify(data), "");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" }));
     a.download = `bible-family-tree-notes-${day}.txt`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+  /* Load: reads a downloaded notes file and merges it with the notes in this browser. A bookmark on
+     either side stays; when both sides have different notes for a person, both texts are kept (the
+     newer first), so nothing is lost. */
+  const NOTES_TAG = "BFT-NOTES ";
+  const notesFile = $("notesFile");
+  $("notesLoad").addEventListener("click", () => notesFile.click());
+  notesFile.addEventListener("change", () => {
+    const f = notesFile.files && notesFile.files[0];
+    notesFile.value = "";
+    if (!f) return;
+    f.text().then((text) => {
+      const line = text.split(/\r?\n/).find((l) => l.startsWith(NOTES_TAG));
+      let data = null;
+      try { data = line && JSON.parse(line.slice(NOTES_TAG.length)); } catch (_) {}
+      if (!data || typeof data !== "object") { showToast(T("notes.badfile", null, "This file has no notes from this site")); return; }
+      let n = 0;
+      for (const [id, o] of Object.entries(data)) {
+        const c = CHAR_BY_ID.get(id);
+        if (!c || !o || typeof o !== "object") continue;
+        const mine = NOTES[id] || {}, a = String(mine.n || "").trim(), b = String(o.n || "").trim();
+        const newer = (+o.t || 0) > (+mine.t || 0);
+        let text = a;
+        if (!a || b.includes(a)) text = b;
+        else if (b && !a.includes(b)) text = newer ? `${b}\n\n${a}` : `${a}\n\n${b}`;
+        NOTES[id] = { s: !!(mine.s || o.s), n: text, t: Math.max(+mine.t || 0, +o.t || 0) || Date.now() };
+        if (!NOTES[id].s && !text) delete NOTES[id];
+        n++;
+      }
+      let ok = true;
+      try { localStorage.setItem("bt-notes", JSON.stringify(NOTES)); } catch (_) { ok = false; }
+      // open windows show the merged notes and stars
+      wins.forEach((w) => { const ta = w.el.querySelector(".my-note textarea"); if (ta && document.activeElement !== ta) { ta.value = noteText(w.c); ta.dispatchEvent(new Event("grow")); } syncStars(w.c); });
+      renderNotes();
+      if (showMode === "mine") { packForce = true; renderMiniPeople(); requestRender(); }
+      { const m = showMenu.querySelector('[data-mode="mine"] .sm-n'); if (m) m.textContent = nMine().toLocaleString(); }
+      showToast(!ok ? T("note.fail", null, "This browser could not save it") : T("notes.loaded", { n }, `Loaded notes and bookmarks for ${n} ${n === 1 ? "person" : "people"}`));
+    }, () => showToast(T("notes.badfile", null, "This file has no notes from this site")));
   });
   $("notesPrint").addEventListener("click", () => {
     document.body.classList.add("print-notes");
