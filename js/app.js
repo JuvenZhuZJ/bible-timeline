@@ -61,6 +61,7 @@
     // the places in data/places.js that are not one of the activities become activities too, so the
     // window has one list
     const rawEvents = (c.events || []).slice();
+    c.ev0 = rawEvents.slice();   // the activities in data order, which the Bible books band counts in
     const visits = ((window.PERSON_PLACES || {})[c.id] || []).map(([id, a, text, ref]) => {
       if (text === undefined) return [id, rawEvents[a]];
       const ev = [a, text, ref];
@@ -113,13 +114,16 @@
   for (const [g, en] of Object.entries(SHOW_FAM)) GROUP_NAME[g] = T("show.fam." + g, null, en);
   let showMode = "all";             // all | key | line | groups
   let showGroups = new Set();       // with showMode "groups": the picked jobs and family roles
+  let showAll = false;              // with several groups: false = anyone in any of them, true = only people in all of them
+  let booksOn = false;              // the Bible books band (the book button in the top bar)
+  try { booksOn = localStorage.getItem("bt-books") === "1"; } catch (_) {}
   try {
     const m = localStorage.getItem("bt-show") || "";
-    if (m.startsWith("g:")) showGroups = new Set(m.slice(2).split(",").filter((g) => GROUP[g]));
+    if (/^[ga]:/.test(m)) { showGroups = new Set(m.slice(2).split(",").filter((g) => GROUP[g])); showAll = m[0] === "a"; }
     showMode = showGroups.size ? "groups" : SHOW_MODES[m] ? m : "all";
   } catch (_) {}
-  const showKey = () => (showMode === "groups" ? "g:" + [...showGroups].join(",") : showMode);
-  const inMode = (c) => showMode === "all" || (showMode === "groups" ? [...showGroups].some((g) => GROUP[g](c))
+  const showKey = () => (showMode === "groups" ? (showAll ? "a:" : "g:") + [...showGroups].join(",") : showMode);
+  const inMode = (c) => showMode === "all" || (showMode === "groups" ? [...showGroups][showAll ? "every" : "some"]((g) => GROUP[g](c))
     : showMode === "line" ? !!c.line : !!(c.key || c.line));
 
   const T0 = A(-4026) - 90;
@@ -129,7 +133,7 @@
 
   /* ───────────────────────── DOM ───────────────────────── */
   const stage = $("stage"), svg = $("timeline");
-  const g = { eras: $("gEras"), cursor: $("gCursor"), axis: $("gAxis"), rels: $("gRels"), life: $("gLife"), main: $("gMain"), events: $("gEvents"), dots: $("gDots"), tracks: $("gTracks") };
+  const g = { eras: $("gEras"), cursor: $("gCursor"), axis: $("gAxis"), rels: $("gRels"), life: $("gLife"), main: $("gMain"), books: $("gBooks"), events: $("gEvents"), dots: $("gDots"), tracks: $("gTracks") };
   const eraLabelBox = $("eraLabels");
   const tip = $("eventTip");
 
@@ -152,9 +156,12 @@
     const laneStep = mobile ? 28 : 31;
     // event labels sit in a fixed band of rows under the axis; the personal tracks start below it
     const evRows = mobile ? 2 : 3, evRow0 = lineY + 40, evRowStep = 22;
+    // with the Bible books band on, its rows sit just above the main line and the people move up
+    const bookRows = 4, bookStep = mobile ? 14 : 15;
+    const band = booksOn ? bookRows * bookStep + 6 : 0;
     L = {
-      mobile, top, bottom, lineY, laneStep, evRows, evRow0, evRowStep,
-      maxLanes: Math.max(3, Math.floor((lineY - top - 22) / laneStep)),
+      mobile, top, bottom, lineY, laneStep, evRows, evRow0, evRowStep, bookRows, bookStep, band,
+      maxLanes: Math.max(3, Math.floor((lineY - band - top - 22) / laneStep)),
       trackY0: evRow0 + (evRows - 1) * evRowStep + 11 + 22,
       trackStep: mobile ? 30 : 34,
     };
@@ -301,7 +308,7 @@
       lanes[lane].push([s, lbl, life]);
     }
   }
-  const laneY = (lane) => L.lineY - 30 - lane * L.laneStep;
+  const laneY = (lane) => L.lineY - 30 - L.band - lane * L.laneStep;
 
   /* ───────────────────────── render ───────────────────────── */
   let hoverC = null, cursorT = null, packForce = false;
@@ -449,6 +456,7 @@
       d.y = y; d.xb = xb; d.xd = xd;
     }
     cutLifeLines();
+    renderBooks();
 
     placePortrait();
     renderRels();
@@ -693,7 +701,7 @@
      stays open while the pointer travels from the event into it (a short grace delay) and closes once
      the pointer has left both; on a phone a tap opens it and it stays until a tap elsewhere */
   let tipEv = null, tipTimer = 0;
-  function showTip(ev) {
+  function showTip(ev, y) {
     clearTimeout(tipTimer);
     if (tipEv === ev && tip.classList.contains("show")) return;
     tipEv = ev;
@@ -702,11 +710,16 @@
     tip.innerHTML = `<div class="et-year">${esc(fmtYear(ev.year, true))}</div><div class="et-title">${esc(ev.title)}</div><div class="et-text">${esc(ev.text)}</div><div class="et-ref">${Scripture.linkRefs(ev.ref)}</div>${map}`;
     const x = Math.min(W - 150, Math.max(150, X(A(ev.year))));
     tip.style.left = x + "px";
-    tip.style.top = Math.max(L.top, L.lineY - 26 - tip.offsetHeight) + "px";
+    tip.style.top = Math.max(L.top, (y == null ? L.lineY - 26 : y - 14) - tip.offsetHeight) + "px";
     tip.classList.add("show", "live");
     evEls.forEach((o) => o.node.classList.toggle("active", o.ev === ev));
   }
-  function hideTip() { clearTimeout(tipTimer); tipEv = null; tip.classList.remove("show", "live"); evEls.forEach((o) => o.node.classList.remove("active")); hideActTip(); }
+  function hideTip() {
+    clearTimeout(tipTimer); tipEv = null; tip.classList.remove("show", "live");
+    evEls.forEach((o) => o.node.classList.remove("active"));
+    g.books.querySelectorAll(".active").forEach((n) => n.classList.remove("active"));
+    hideActTip();
+  }
   function hideTipSoon() { clearTimeout(tipTimer); tipTimer = setTimeout(hideTip, 350); }
   g.events.addEventListener("pointerover", (e) => { if (e.pointerType === "mouse") { const n = e.target.closest(".ev-node"); if (n) showTip(n.__ev); } });
   g.events.addEventListener("pointerout", (e) => { if (e.pointerType === "mouse" && e.target.closest(".ev-node") && tipEv) hideTipSoon(); });
@@ -781,6 +794,169 @@
     if (n.__act.c === hoverC && !isPinned(hoverC)) clearHoverSoon();
   });
 
+  /* ───────────────────────── Bible books band ─────────────────────────
+     data/books.js: each book is a line over the years it covers (from the New World Translation's
+     table of the books), with its name before it and its main events as dots on it. 1 and 2 Kings
+     share one span in the table, as do 1 and 2 Chronicles, so each pair is drawn as one line.
+     Hover a book (or tap it) for its card, click (or tap again) to zoom to it; a dot works like an
+     activity dot on an open lifespan. */
+  const EV_BY_ID = new Map(EVENTS.map((e) => [e.id, e]));
+  const PAIR = { 12: 11, 14: 13 };   // 2 Kings joins 1 Kings, 2 Chronicles joins 1 Chronicles
+  function bookEv(ref) {
+    if (ref.startsWith("e:")) { const ev = EV_BY_ID.get(ref.slice(2)); return ev && { ref, y: ev.year, ev }; }
+    const [id, n] = ref.split(":"), c = CHAR_BY_ID.get(id), e = c && c.ev0[+n];
+    return e && { ref, y: e[0], text: e[1], c, k: c.events.indexOf(e) };
+  }
+  const bookLines = [];
+  for (const bk of window.BIBLE_BOOKS || []) {
+    const evs = bk.ev.map(bookEv).filter(Boolean);
+    const joined = PAIR[bk.b] && bookLines.find((o) => o.books[0].b === PAIR[bk.b]);
+    if (joined) {
+      joined.books.push(bk);
+      for (const e of evs) if (!joined.evs.some((x) => x.ref === e.ref)) joined.evs.push(e);
+      joined.evs.sort((p, q) => p.y - q.y);
+      joined.name += I18.zh ? "、下" : " · " + Scripture.bookName(bk.b);   // 列王紀上、下
+      continue;
+    }
+    const ys = evs.map((e) => A(e.y));
+    const [a, b] = bk.from != null ? [A(bk.from), A(bk.to)] : ys.length ? [Math.min(...ys), Math.max(...ys)] : [A(bk.done), A(bk.done)];
+    bookLines.push({ books: [bk], evs: evs.sort((p, q) => p.y - q.y), a, b, name: Scripture.bookName(bk.b), mw: 0 });
+  }
+
+  // "c. 1513 B.C.E.", "after 443 B.C.E.", "before 1000 B.C.E."
+  function bookYear(q, y) {
+    const t = fmtYear(y, true);
+    if (q === "c.") return T("bk.c", { y: t }, "c. " + t);
+    if (q === "a.") return T("bk.a", { y: t }, "after " + t);
+    if (q === "b.") return T("bk.b", { y: t }, "before " + t);
+    return t;
+  }
+  function bookCard(o) {
+    const bk = o.books[0];
+    const who = bk.w.map((id) => CHAR_BY_ID.get(id)).filter(Boolean)
+      .map((c) => `<button class="bk-w" data-id="${esc(c.id)}">${esc(c.name)}</button>`).join(I18.zh ? "、" : ", ");
+    const done = bookYear(bk.dq, bk.done) + (bk.doneTo ? `–${bk.doneTo}` : "");
+    const span = bk.from == null ? "" : bk.from === bk.to ? bookYear(bk.fq, bk.from) : `${bookYear(bk.fq, bk.from)} – ${bookYear(bk.tq, bk.to)}`;
+    const row = (k, en, v) => `<div class="bk-row"><span class="bk-k">${esc(T(k, null, en))}</span>${v}</div>`;
+    const evs = o.evs.map((e, i) => `<li><button data-i="${i}"><span class="bk-y">${esc(fmtYear(e.y))}</span>${esc(e.ev ? e.ev.title : e.text)}${e.c ? ` <span class="bk-p">· ${esc(e.c.name)}</span>` : ""}</button></li>`).join("");
+    const read = o.books.map((b) => `<a class="ref-link" href="${esc(Scripture.url(b.b, 1))}" target="_blank" rel="noopener">${esc(T("bk.read", { b: Scripture.bookName(b.b) }, `Read ${Scripture.bookName(b.b)}`))}</a>`).join("");
+    return `<div class="et-year">${esc(T("bk.kind", null, "Bible book"))}</div><div class="et-title">${esc(o.name)}</div>
+      ${row("bk.writer", bk.w.length > 1 ? "Writers" : "Writer", `<span class="bk-v">${who}</span>`)}
+      ${bk.at ? row("bk.at", "Written in", `<span class="bk-v">${esc(bk.at[I18.zh ? 1 : 0])}</span>`) : ""}
+      ${row("bk.done", "Completed", `<span class="bk-v">${esc(done)}</span>`)}
+      ${span ? row("bk.span", "Time covered", `<span class="bk-v">${esc(span)}</span>`) : ""}
+      ${evs ? `<ol class="bk-evs">${evs}</ol>` : ""}
+      <div class="bk-read">${read}</div>`;
+  }
+  function showBookTip(o) {
+    clearTimeout(tipTimer);
+    if (tipEv === o && tip.classList.contains("show")) return;
+    hideActTip();
+    tipEv = o;
+    tip.innerHTML = bookCard(o);
+    tip.style.left = Math.min(W - 150, Math.max(150, o.lx)) + "px";
+    tip.style.top = Math.max(L.top, o.y - 12 - tip.offsetHeight) + "px";
+    tip.classList.add("show", "live");
+    evEls.forEach((x) => x.node.classList.remove("active"));
+    g.books.querySelectorAll(".book").forEach((n) => n.classList.toggle("active", n.__book === o));
+  }
+  function zoomToBook(o) {
+    const span = o.b - o.a;
+    animateTo((o.a + o.b) / 2, span > 0 ? Math.min(MAX_PPY, (W * 0.7) / span) : Math.max(view.ppy * 1.8, TIER[2]));
+  }
+  function bookDotTip(n, touch) {
+    const { o, e, x, y } = n.__bact;
+    if (e.ev) { hideActTip(); showTip(e.ev, y); }
+    else showActTip({ c: e.c, k: e.k, x, y, color: "var(--accent)" }, touch);
+    g.books.querySelectorAll(".book-act").forEach((m) => m.classList.toggle("active", m === n));
+  }
+  function openBookDot(n) {
+    const { e } = n.__bact;
+    if (e.ev) zoomToEvent(e.ev); else openActivity(e.c, e.k);
+  }
+  tip.addEventListener("click", (e) => {
+    const o = tipEv && tipEv.books ? tipEv : null;
+    if (!o) return;
+    const w = e.target.closest(".bk-w"), li = e.target.closest(".bk-evs button");
+    if (w && CHAR_BY_ID.get(w.dataset.id)) { hideTip(); openWindow(CHAR_BY_ID.get(w.dataset.id)); }
+    else if (li) { const ev = o.evs[+li.dataset.i]; hideTip(); if (ev.ev) zoomToEvent(ev.ev); else openActivity(ev.c, ev.k); }
+  });
+
+  function renderBooks() {
+    g.books.textContent = "";
+    if (!booksOn) return;
+    const rows = Array.from({ length: L.bookRows }, () => []);   // [a, b] taken in each row, in px
+    const rowY = (r) => L.lineY - 22 - r * L.bookStep;
+    const hitR = L.mobile ? 11 : 8;
+    for (const o of bookLines) {
+      if (!o.mw) {   // measure the name once (again when the web fonts arrive)
+        const t = el("text", { class: "book-name" }, g.books);
+        t.textContent = o.name;
+        o.mw = t.getComputedTextLength() || tlen(o.name) * 5.6;
+        t.remove();
+      }
+      const xa = X(o.a), xb = Math.max(X(o.b), xa + 2);
+      // the name sits before the line; once the start has gone off the left edge it stays at the edge
+      const nx = Math.max(o.mw + 6, xa - 5);
+      if (xb < 0) continue;
+      const a = nx - o.mw - 2, b = Math.max(xb, nx) + 6;
+      if (b < -20 || a > W + 20) continue;
+      // the first row (nearest the line) with room; a book that fits nowhere waits for more zoom
+      const r = rows.findIndex((rw) => !rw.some(([p, q]) => a < q + 8 && b > p - 8));
+      if (r < 0) continue;
+      rows[r].push([a, b]);
+      const y = rowY(r);
+      o.y = y; o.lx = (Math.max(xa, 0) + Math.min(xb, W)) / 2;
+      const grp = el("g", { class: "book" + (tipEv === o ? " active" : ""), tabindex: "0", role: "button", "aria-label": o.name }, g.books);
+      grp.__book = o;
+      el("rect", { class: "hit", x: a, y: y - 7, width: b - a, height: 14 }, grp);
+      const x1 = Math.max(xa, nx + 4);   // a name held at the edge sits on the line, so the line starts after it
+      if (xb > x1) el("line", { class: "book-line", x1, x2: xb, y1: y, y2: y }, grp);
+      if (x1 === xa) el("line", { class: "book-end", x1: xa, x2: xa, y1: y - 3.5, y2: y + 3.5 }, grp);
+      if (o.b > o.a) el("line", { class: "book-end", x1: xb, x2: xb, y1: y - 3.5, y2: y + 3.5 }, grp);
+      const nm = el("text", { class: "book-name", x: nx, y: y + 3.5, "text-anchor": "end" }, grp);
+      nm.textContent = o.name;
+      for (const e of o.evs) {
+        const x = X(A(e.y));
+        if (x < x1 - 2) continue;   // under a name held at the edge
+        const act = el("g", { class: "book-act" }, g.books);
+        act.__bact = { o, e, x, y };
+        el("circle", { class: "hit", cx: x, cy: y, r: hitR }, act);
+        el("circle", { class: "book-ev", cx: x, cy: y, r: 2.6 }, act);
+      }
+    }
+  }
+  g.books.addEventListener("pointerover", (e) => {
+    if (e.pointerType !== "mouse" || dragging) return;
+    const d = e.target.closest(".book-act"), n = e.target.closest(".book");
+    if (d) bookDotTip(d, false); else if (n) showBookTip(n.__book);
+  });
+  g.books.addEventListener("pointerout", (e) => {
+    if (e.pointerType !== "mouse") return;
+    const d = e.target.closest(".book-act"), n = e.target.closest(".book");
+    if (!d && !n) return;
+    if (e.relatedTarget && (d || n).contains(e.relatedTarget)) return;
+    if (d) { d.classList.remove("active"); if (tipAct) hideActTip(); else hideTipSoon(); }
+    else if (n && tipEv) hideTipSoon();
+  });
+  g.books.addEventListener("focusin", (e) => { const n = e.target.closest(".book"); if (n) showBookTip(n.__book); });
+  g.books.addEventListener("keydown", (e) => { const n = e.target.closest(".book"); if (n && e.key === "Enter") zoomToBook(n.__book); });
+
+  const booksBtn = $("booksBtn");
+  function setBooks(on) {
+    booksOn = on;
+    syncBooksBtn();
+    try { localStorage.setItem("bt-books", on ? "1" : "0"); } catch (_) {}
+    hideTip();
+    layout(); packForce = true; requestRender();
+  }
+  function syncBooksBtn() {
+    booksBtn.classList.toggle("on", booksOn);
+    booksBtn.setAttribute("aria-pressed", booksOn ? "true" : "false");
+  }
+  syncBooksBtn();
+  booksBtn.addEventListener("click", () => { setBooks(!booksOn); if (booksOn) showToast(T("books.on", null, "Bible books shown above the main line")); });
+
   /* ───────────────────────── pointer: pan, pinch, tap ───────────────────────── */
   const pointers = new Map();
   let dragging = false, gesture = null;
@@ -833,6 +1009,19 @@
     const dot = target && target.closest && target.closest(".dot");
     const ev = target && target.closest && target.closest(".ev-node");
     const act = target && target.closest && target.closest(".track-act");
+    const bdot = target && target.closest && target.closest(".book-act");
+    const book = target && target.closest && target.closest(".book");
+    if (bdot) {
+      const { e } = bdot.__bact;
+      const open = type === "mouse" || (e.ev ? tipEv === e.ev : tipAct && tipAct.c === e.c && tipAct.k === e.k);
+      if (open) { hideTip(); openBookDot(bdot); } else bookDotTip(bdot, true);
+      return;
+    }
+    if (book) {
+      const o = book.__book;
+      if (type === "mouse" || tipEv === o) { hideTip(); zoomToBook(o); } else showBookTip(o);
+      return;
+    }
     if (act) {
       const a = act.__act;
       if (type === "mouse" || (tipAct && tipAct.c === a.c && tipAct.k === a.k)) openActivity(a.c, a.k);
@@ -1549,7 +1738,8 @@
   function showLabelText() {
     if (showMode !== "groups") return SHOW_MODES[showMode];
     const names = [...showGroups].map((g) => GROUP_NAME[g]);
-    return names.length <= 2 ? names.join(I18.zh ? "、" : ", ") : T("show.groups.more", { a: names[0], n: names.length }, `${names[0]} + ${names.length - 1} more`);
+    if (names.length > 2) return T(showAll ? "show.groups.more.all" : "show.groups.more", { a: names[0], n: names.length }, `${names[0]} ${showAll ? "&" : "+"} ${names.length - 1} more`);
+    return names.join(showAll ? T("show.and", null, " & ") : I18.zh ? "、" : ", ");
   }
   function setShowMode(m, groups) {
     showMode = m;
@@ -1562,6 +1752,10 @@
     $("showLabel").textContent = label;
     showMenu.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-checked", b.dataset.mode === showMode));
     showMenu.querySelectorAll("[data-group]").forEach((b) => b.setAttribute("aria-checked", showGroups.has(b.dataset.group)));
+    showMenu.querySelectorAll("[data-match]").forEach((b) => b.setAttribute("aria-checked", (b.dataset.match === "all") === showAll));
+    $("showNote").textContent = showAll ? T("show.groups.note.all", null, "Only people in every group you pick are shown, such as a king who was also a prophet.")
+      : T("show.groups.note", null, "Pick as many as you like. Anyone in any of them is shown.");
+    $("showResult").textContent = showMode === "groups" && showGroups.size > 1 ? T("show.result", { n: CHARS.filter(inMode).length.toLocaleString() }, `${CHARS.filter(inMode).length.toLocaleString()} people`) : "";
     packForce = true; requestRender();
   }
   const closeShow = () => { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); };
@@ -1580,6 +1774,11 @@
       setShowMode("groups", next);
     });
   });
+  // any or all of the picked groups
+  showMenu.querySelectorAll("[data-match]").forEach((b) => b.addEventListener("click", () => {
+    showAll = b.dataset.match === "all";
+    setShowMode(showMode === "groups" ? "groups" : showMode, showGroups);
+  }));
   showBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     const open = !showBox.classList.contains("open");
@@ -1606,7 +1805,7 @@
   function hashNow() {
     const ids = wins.slice().sort((a, b) => (+a.el.style.zIndex || 0) - (+b.el.style.zIndex || 0)).map((w) => w.c.id);
     const y = Math.round(fromA(tAt(W / 2))), z = Math.round((view.ppy / fitPpy()) * 100) / 100;
-    return "#" + (ids.length ? `p=${ids.join(",")}&` : "") + `y=${y}&z=${z}`;
+    return "#" + (ids.length ? `p=${ids.join(",")}&` : "") + `y=${y}&z=${z}` + (booksOn ? "&b=1" : "");
   }
   function syncHash() {
     if (!hashReady) return;
@@ -1617,6 +1816,8 @@
     const q = new URLSearchParams(location.hash.slice(1));
     const people = (q.get("p") || "").split(",").map((id) => CHAR_BY_ID.get(id)).filter(Boolean);
     const y = parseFloat(q.get("y")), z = parseFloat(q.get("z"));
+    // b=1: the link was made with the Bible books band on (this visit only; the viewer's own choice stays)
+    if (q.get("b") === "1" && !booksOn) { booksOn = true; syncBooksBtn(); layout(); }
     if (z > 0) view.ppy = fitPpy() * z;
     if (isFinite(y)) view.t0 = A(Math.round(y)) - W / 2 / view.ppy;
     clampView();
@@ -1668,7 +1869,7 @@
   hashReady = true;
   render();
   // names measured with a fallback font are re-measured once the web fonts arrive
-  if (document.fonts) document.fonts.ready.then(() => { dotEls.forEach((d) => { d.gap = 0; }); evEls.forEach((o) => { o.mw = 0; }); requestRender(); });
+  if (document.fonts) document.fonts.ready.then(() => { dotEls.forEach((d) => { d.gap = 0; }); evEls.forEach((o) => { o.mw = 0; }); bookLines.forEach((o) => { o.mw = 0; }); requestRender(); });
 
   // expose for debugging / tests
   window.Timeline = { setShowMode, view, openWindow: (id) => openWindow(CHAR_BY_ID.get(id)), locate: (id) => locate(CHAR_BY_ID.get(id)), setHover: (id) => setHover(id ? CHAR_BY_ID.get(id) : null), zoomAt, animateTo, A, chars: CHARS, render };

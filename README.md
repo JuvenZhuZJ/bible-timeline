@@ -28,7 +28,7 @@ The **People** button in the top bar picks who appears:
 | Everyone | All 2,737 people, including 34 the Bible does not name (see below). Minor people appear as you zoom in. |
 | Key figures | 201 people: the 140 hand-written key figures plus everyone on the Adam-to-Jesus line. |
 | Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
-| By job or family | Any mix of groups, picked as toggles; anyone in any picked group is shown. Jobs: kings and queens, prophets, false prophets, patriarchs, judges, priests, apostles, officials, army commanders, Bible writers (see [Job icons](#job-icons)). Family roles, below a divider and with no timeline icon: husbands and wives (a recorded spouse), sons and daughters (a recorded father or mother). |
+| By job or family | Any mix of groups, picked as toggles; a switch under the heading shows either anyone in **any** picked group (the default) or only people in **all** of them (Kings and Prophets together gives David and Jesus; the menu shows how many people match). Saved in the browser as `g:` (any) or `a:` (all) in `bt-show`. Jobs: kings and queens, prophets, false prophets, patriarchs, judges, priests, apostles, officials, army commanders, Bible writers (see [Job icons](#job-icons)). Family roles, below a divider and with no timeline icon: husbands and wives (a recorded spouse), sons and daughters (a recorded father or mother). |
 
 All the modes follow the same zoom rule: fully zoomed out you see only the timeline and its events, and people appear as you zoom in, the most important first. The Key figures, Adam-to-Jesus and By job or family modes show their people a little sooner, since fewer people compete for space.
 
@@ -98,6 +98,17 @@ Small line icons after a person's name, on the timeline and in their window, sho
 The address in the browser keeps what is on screen, so a study can be bookmarked or sent: `#p=david,solomon&y=-1050&z=4` opens those people's windows (the last one in front) with 1050 B.C.E. in the middle of the screen, zoomed to 4 times the whole-timeline view. It is updated as you move, zoom and open or close windows (`syncHash()` in `js/app.js`, using `history.replaceState`, so the Back button is not filled with every step).
 
 The link button at the top of a window copies a short link to that person (`#p=moses`), which opens their window and shows them on the timeline. If the person is hidden by the viewer's People filter, the filter goes back to Everyone.
+
+## Bible books band
+
+The book button in the top bar (next to the People button) shows the 66 books of the Bible as lines just above the main line; the people move up to make room. The choice is remembered in the browser (`bt-books`) and kept in shared links (`&b=1`).
+
+- **Lines:** each book spans the years it covers, from the *New World Translation* "Table of the Books of the Bible" (writer, place written, writing completed, time covered). The table gives one span for 1 and 2 Kings together and one for 1 and 2 Chronicles together, so each pair is drawn as one line ("1 Kings · 2 Kings"). A book the table gives no span for runs between its events (Ruth, Jonah, Malachi), or is a short mark at the year its writing was completed (Psalms, Proverbs, the letters).
+- **Rows:** four rows, filled nearest the main line first in book order. A book that has no room waits for more zoom, like the event labels. A name whose line starts off the left edge stays at the edge.
+- **Dots:** each book's main events, drawn like the activity dots on an open lifespan. Hover (or tap) for the activity, click (or tap again) to open it in the person's window. A dot that is a major event (for example the Exodus) shows the event's tooltip and zooms to it.
+- **Card:** hovering a book name (or tapping it) shows its card: the writer (click to open their window), where and when it was written, the time covered, its main events (each clickable) and a link to read the book on wol.jw.org. Click the book (or tap again) to zoom to it.
+
+The data is in `data/books.js` (hand-editable). A dot is either `"person-id:n"`, the person's n-th activity in `data/people.js` (counting from 0, before the activities are sorted), or `"e:event-id"` from `data/events.js`, so its text and scripture come from there in both languages.
 
 ## Read more
 
@@ -177,6 +188,7 @@ data/routes.js              ancient roads and travel routes for the maps (hand-w
 data/terrain.js             mountains, deserts and valleys for the maps (hand-written)
 data/people.js              all people (generated, do not edit)
 data/reading.js             "Read more" links: Insight articles and study-book chapters (hand-written)
+data/books.js               Bible books band: writer, place, years and main events of each book (hand-written)
 data/zh/people.js           Chinese text for every person (hand-editable)
 data/zh/places.js           Chinese text for places, events, eras and map labels
 data/ASSUMED_DATES.md       generated list of placeholder dates
