@@ -905,7 +905,7 @@
   }
 
   /* contemporaries: other key figures whose lifespans overlap this key figure's, family left out
-     (it is listed above), most years shared first. Most of them have dates estimated from their
+     (it is listed above), most years shared first. Most of them have assumed dates placed by their
      generation, so the list is a guide; their chips are dashed. Collapsed until opened. */
   const CONTEMP_SHOWN = 8;
   function contemporariesHTML(c) {
@@ -922,7 +922,7 @@
     }).join("");
     const more = list.length > CONTEMP_SHOWN ? `<button class="contemp-more" aria-expanded="false">${T("show.all.n", { n: list.length }, `Show all ${list.length}`)}</button>` : "";
     return `<details class="contemp"><summary class="win-h">${T("contemp", null, "Contemporaries")} <span class="contemp-n">${list.length}</span></summary>`
-      + `<div class="rel-v">${chips}${more}</div><div class="contemp-note">${T("contemp.note", null, "Key figures alive at the same time, most years shared first. Dashed: dates estimated.")}</div></details>`;
+      + `<div class="rel-v">${chips}${more}</div><div class="contemp-note">${T("contemp.note", null, "Key figures alive at the same time, most years shared first. Dashed: dates assumed.")}</div></details>`;
   }
 
   /* the map of a person's places: on a computer it is drawn in the map window (mapW, below), which
