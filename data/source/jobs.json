@@ -1,6 +1,6 @@
 {
-  "_about": "Jobs shown as small icons after a person's name (tools/build-people.mjs). 'set' gives a person's jobs exactly, in display order; anyone not listed gets jobs from the words in their role (king, prophet, judge, priest, apostle, governor/official, army chief). Bible writers follow the NWT 'Table of the Books of the Bible'. Patriarchs: the family heads from Adam to Jacob and Jacob's twelve sons (Acts 7:8-9; Hebrews 7:4).",
-  "jobs": ["king", "prophet", "patriarch", "judge", "priest", "apostle", "official", "commander", "writer"],
+  "_about": "Jobs shown as small icons after a person's name (tools/build-people.mjs). 'set' gives a person's jobs exactly, in display order; anyone not listed gets jobs from the words in their role (king, prophet, false prophet, judge, priest, apostle, governor/official, army chief). Bible writers follow the NWT 'Table of the Books of the Bible'. Patriarchs: the family heads from Adam to Jacob and Jacob's twelve sons (Acts 7:8-9; Hebrews 7:4).",
+  "jobs": ["king", "prophet", "falseprophet", "patriarch", "judge", "priest", "apostle", "official", "commander", "writer"],
   "set": {
     "adam": ["patriarch"], "seth": ["patriarch"], "enosh": ["patriarch"], "kenan": ["patriarch"], "mahalalel": ["patriarch"],
     "jared": ["patriarch"], "enoch": ["patriarch", "prophet"], "methuselah": ["patriarch"], "lamech": ["patriarch"], "noah": ["patriarch"],
@@ -27,7 +27,7 @@
     "daniel": ["prophet", "official", "writer"], "haggai": ["prophet", "writer"], "zechariah-prophet": ["prophet", "writer"],
     "malachi": ["prophet", "writer"], "zerubbabel": ["official"], "mordecai": ["official", "writer"], "ezra": ["priest", "writer"],
     "nehemiah": ["official", "writer"], "pilate": ["official"],
-    "zechariah-priest": ["priest"], "hanani-2": ["prophet"], "shamgar": ["judge"], "dionysius": [], "zebadiah-7": [], "chenaniah-2": [], "john-baptist": ["prophet"], "jesus": ["king", "prophet", "priest"],
+    "zechariah-priest": ["priest"], "hanani-2": ["prophet"], "shamgar": ["judge"], "bar-jesus": ["falseprophet"], "dionysius": [], "zebadiah-7": [], "chenaniah-2": [], "john-baptist": ["prophet"], "jesus": ["king", "prophet", "priest"],
     "peter": ["apostle", "writer"], "andrew": ["apostle"], "james-zebedee": ["apostle"], "john": ["apostle", "writer"],
     "judas-iscariot": ["apostle"], "matthew": ["apostle", "writer"], "levi-4": ["apostle", "writer"], "thomas": ["apostle"],
     "paul": ["apostle", "writer"], "saul-2": ["apostle", "writer"], "mark": ["writer"], "john-mark-4": ["writer"], "luke": ["writer"],

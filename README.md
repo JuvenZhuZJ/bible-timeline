@@ -28,7 +28,7 @@ The **People** button in the top bar picks who appears:
 | Everyone | All 2,737 people, including 34 the Bible does not name (see below). Minor people appear as you zoom in. |
 | Key figures | 201 people: the 140 hand-written key figures plus everyone on the Adam-to-Jesus line. |
 | Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
-| By job | Only the people with one job icon (see [Job icons](#job-icons)): kings and queens, prophets, patriarchs, judges, priests, apostles, officials, army commanders or Bible writers. |
+| By job | Only the people with one job icon (see [Job icons](#job-icons)): kings and queens, prophets, false prophets, patriarchs, judges, priests, apostles, officials, army commanders or Bible writers. |
 
 All the modes follow the same zoom rule: fully zoomed out you see only the timeline and its events, and people appear as you zoom in, the most important first. The Key figures, Adam-to-Jesus and By job modes show their people a little sooner, since fewer people compete for space.
 
@@ -82,6 +82,7 @@ Small line icons after a person's name, on the timeline and in their window, sho
 | --- | --- | --- |
 | King / queen | crown | anyone whose role is king, queen, Pharaoh, emperor or tetrarch |
 | Prophet | scroll | prophets, prophetesses and seers (not false prophets) |
+| False prophet | broken scroll | false and lying prophets and prophetesses |
 | Patriarch | shepherd's staff | the family heads from Adam to Jacob and Jacob's twelve sons (Acts 7:8-9; Hebrews 7:4) |
 | Judge | scales | the judges of Israel |
 | Priest | turban | priests and high priests |

@@ -358,7 +358,8 @@ for (const [id, t] of Object.entries(OVR.tier || {})) if (byId.get(id)) byId.get
    Small icons after the name (king, prophet ...). data/source/jobs.json sets them by hand for the
    key figures and the Bible writers; everyone else gets them from the words in their role. A title
    after "of", "to", "under" ... ("Father of King Saul", "Priest under King Ahaz") or followed by
-   "'s" ("High priest's slave") is someone else's, so it does not count. */
+   "'s" ("High priest's slave") is someone else's, so it does not count. False prophets get their
+   own icon (a broken scroll), not the prophet's. */
 const JOBS = JSON.parse(read("data/source/jobs.json"));
 const JOB_WORDS = {
   king: "king|queen|pharaoh|emperor|tetrarch", prophet: "prophet|prophetess|seer|visionary", judge: "judge", priest: "priest|high priest",
@@ -376,6 +377,7 @@ function jobsFromRole(role) {
     const own = all.filter((m) => !new RegExp(`\\b(?:${NOT_THEIRS})\\s+(?:\\S+\\s+){0,2}${w}$`, "i").test(m) && !/\b(false|lying)\s+prophet/i.test(m));
     if (own.length) out.push(job);
   }
+  if (/\b(false|lying)\s+prophet/i.test(role) && !/\bof\s+(\S+\s+)?(false|lying)\s+prophet/i.test(role)) out.push("falseprophet");
   return out;
 }
 for (const p of people) {

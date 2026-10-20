@@ -41,7 +41,7 @@
   }
   // jobs (data/source/jobs.json): an icon after the name on the timeline and a label in the window
   const JOB_LABEL = {
-    king: ["King", "Queen"], prophet: ["Prophet", "Prophetess"], patriarch: ["Patriarch"], judge: ["Judge"], priest: ["Priest"],
+    king: ["King", "Queen"], prophet: ["Prophet", "Prophetess"], falseprophet: ["False prophet", "False prophetess"], patriarch: ["Patriarch"], judge: ["Judge"], priest: ["Priest"],
     apostle: ["Apostle"], official: ["Official"], commander: ["Army commander"], writer: ["Bible writer"],
   };
   const jobName = (c, j) => {
@@ -97,7 +97,7 @@
   /* who is shown: everyone, key figures only, or only the line from Adam to Jesus */
   const SHOW_MODES = { all: T("show.all", null, "Everyone"), key: T("show.key", null, "Key figures"), line: T("show.line", null, "Adam to Jesus line") };
   // by job: "job:king" shows only the kings and queens, and so on (data/source/jobs.json)
-  const SHOW_JOBS = { king: "Kings and queens", prophet: "Prophets", patriarch: "Patriarchs", judge: "Judges", priest: "Priests",
+  const SHOW_JOBS = { king: "Kings and queens", prophet: "Prophets", falseprophet: "False prophets", patriarch: "Patriarchs", judge: "Judges", priest: "Priests",
     apostle: "Apostles", official: "Officials", commander: "Army commanders", writer: "Bible writers" };
   for (const [j, en] of Object.entries(SHOW_JOBS)) SHOW_MODES["job:" + j] = T("show.job." + j, null, en);
   let showMode = "all";
