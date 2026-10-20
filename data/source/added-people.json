@@ -1,0 +1,30 @@
+[
+ {
+  "key": "ABEDNEGO",
+  "name": "Azariah",
+  "aka": [
+   "Abednego"
+  ],
+  "gender": "m",
+  "meaning": "Jehovah Has Helped",
+  "role": "Daniel's companion Abednego",
+  "summary": "One of Daniel's three Judean friends taken to Babylon, where the chief court official renamed him Abednego. With Hananiah and Mishael he refused to bow to Nebuchadnezzar's golden image and came out of the fiery furnace unharmed.",
+  "father": "",
+  "mother": "",
+  "spouses": [],
+  "children": [],
+  "siblings": [],
+  "relHints": "companions DANIEL, HANANIAH (Shadrach), MISHAEL (Meshach)",
+  "group": "Judah",
+  "year": -600,
+  "born": null,
+  "died": null,
+  "dateQ": "estimated",
+  "refs": [
+   "Daniel 1:6, 7",
+   "Daniel 2:49",
+   "Daniel 3:12-30"
+  ],
+  "solo": true
+ }
+]
