@@ -114,15 +114,16 @@
   for (const [g, en] of Object.entries(SHOW_FAM)) GROUP_NAME[g] = T("show.fam." + g, null, en);
   let showMode = "all";             // all | key | line | groups
   let showGroups = new Set();       // with showMode "groups": the picked jobs and family roles
+  let showAll = false;              // with several groups: false = anyone in any of them, true = only people in all of them
   let booksOn = false;              // the Bible books band (the book button in the top bar)
   try { booksOn = localStorage.getItem("bt-books") === "1"; } catch (_) {}
   try {
     const m = localStorage.getItem("bt-show") || "";
-    if (m.startsWith("g:")) showGroups = new Set(m.slice(2).split(",").filter((g) => GROUP[g]));
+    if (/^[ga]:/.test(m)) { showGroups = new Set(m.slice(2).split(",").filter((g) => GROUP[g])); showAll = m[0] === "a"; }
     showMode = showGroups.size ? "groups" : SHOW_MODES[m] ? m : "all";
   } catch (_) {}
-  const showKey = () => (showMode === "groups" ? "g:" + [...showGroups].join(",") : showMode);
-  const inMode = (c) => showMode === "all" || (showMode === "groups" ? [...showGroups].some((g) => GROUP[g](c))
+  const showKey = () => (showMode === "groups" ? (showAll ? "a:" : "g:") + [...showGroups].join(",") : showMode);
+  const inMode = (c) => showMode === "all" || (showMode === "groups" ? [...showGroups][showAll ? "every" : "some"]((g) => GROUP[g](c))
     : showMode === "line" ? !!c.line : !!(c.key || c.line));
 
   const T0 = A(-4026) - 90;
@@ -1737,7 +1738,8 @@
   function showLabelText() {
     if (showMode !== "groups") return SHOW_MODES[showMode];
     const names = [...showGroups].map((g) => GROUP_NAME[g]);
-    return names.length <= 2 ? names.join(I18.zh ? "、" : ", ") : T("show.groups.more", { a: names[0], n: names.length }, `${names[0]} + ${names.length - 1} more`);
+    if (names.length > 2) return T(showAll ? "show.groups.more.all" : "show.groups.more", { a: names[0], n: names.length }, `${names[0]} ${showAll ? "&" : "+"} ${names.length - 1} more`);
+    return names.join(showAll ? T("show.and", null, " & ") : I18.zh ? "、" : ", ");
   }
   function setShowMode(m, groups) {
     showMode = m;
@@ -1750,6 +1752,10 @@
     $("showLabel").textContent = label;
     showMenu.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-checked", b.dataset.mode === showMode));
     showMenu.querySelectorAll("[data-group]").forEach((b) => b.setAttribute("aria-checked", showGroups.has(b.dataset.group)));
+    showMenu.querySelectorAll("[data-match]").forEach((b) => b.setAttribute("aria-checked", (b.dataset.match === "all") === showAll));
+    $("showNote").textContent = showAll ? T("show.groups.note.all", null, "Only people in every group you pick are shown, such as a king who was also a prophet.")
+      : T("show.groups.note", null, "Pick as many as you like. Anyone in any of them is shown.");
+    $("showResult").textContent = showMode === "groups" && showGroups.size > 1 ? T("show.result", { n: CHARS.filter(inMode).length.toLocaleString() }, `${CHARS.filter(inMode).length.toLocaleString()} people`) : "";
     packForce = true; requestRender();
   }
   const closeShow = () => { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); };
@@ -1768,6 +1774,11 @@
       setShowMode("groups", next);
     });
   });
+  // any or all of the picked groups
+  showMenu.querySelectorAll("[data-match]").forEach((b) => b.addEventListener("click", () => {
+    showAll = b.dataset.match === "all";
+    setShowMode(showMode === "groups" ? "groups" : showMode, showGroups);
+  }));
   showBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     const open = !showBox.classList.contains("open");

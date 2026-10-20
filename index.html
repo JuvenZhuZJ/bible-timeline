@@ -81,6 +81,12 @@
         <button role="menuitemradio" data-mode="key"><span class="sm-t"><span data-i18n="show.key">Key figures</span><small data-i18n="show.key.d">The best-known people and Jesus’ ancestors</small></span><span class="sm-n"></span></button>
         <button role="menuitemradio" data-mode="line"><span class="sm-t"><span data-i18n="show.line">Adam to Jesus line</span><small data-i18n="show.line.d">Only the line of descent from Adam to Jesus</small></span><span class="sm-n"></span></button>
         <div class="sm-h sm-h2" data-i18n="show.jobs">By job or family</div>
+        <div class="sm-match" role="group" aria-label="When you pick several" data-i18n-aria="show.match">
+          <span class="sm-mk" data-i18n="show.match.k">Show people in</span>
+          <button role="menuitemradio" data-match="any" data-i18n="show.match.any">any of them</button>
+          <button role="menuitemradio" data-match="all" data-i18n="show.match.all">all of them</button>
+          <span class="sm-res" id="showResult"></span>
+        </div>
         <div class="sm-jobs">
           <button role="menuitemcheckbox" data-group="king"><svg class="job-ic" aria-hidden="true"><use href="#job-king"/></svg><span class="sm-j" data-i18n="show.job.king">Kings and queens</span><span class="sm-n"></span></button>
           <button role="menuitemcheckbox" data-group="prophet"><svg class="job-ic" aria-hidden="true"><use href="#job-prophet"/></svg><span class="sm-j" data-i18n="show.job.prophet">Prophets</span><span class="sm-n"></span></button>
@@ -100,7 +106,7 @@
           <button role="menuitemcheckbox" data-group="son"><span class="sm-j" data-i18n="show.fam.son">Sons</span><span class="sm-n"></span></button>
           <button role="menuitemcheckbox" data-group="daughter"><span class="sm-j" data-i18n="show.fam.daughter">Daughters</span><span class="sm-n"></span></button>
         </div>
-        <div class="sm-note" data-i18n="show.groups.note">Pick as many as you like. Anyone in any of them is shown.</div>
+        <div class="sm-note" id="showNote">Pick as many as you like. Anyone in any of them is shown.</div>
       </div>
     </div>
 
@@ -206,7 +212,7 @@
       <h3 data-i18n="about.person.h">Looking at a person</h3>
       <p data-i18n="about.person">Hover over a dot (or tap it) to see the person’s portrait, lifespan and family links. Click it (or tap again) to open their window. In a window you can click a relative to open theirs, and click a dot on the lifespan bar to read about something that happened in their life. Bible references open the verse in the <em>New World Translation</em> online. Under <strong>Read more</strong>, the window links to the person’s article in <em>Insight on the Scriptures</em> and to any chapter about them in <em>Imitate Their Faith</em> or <em>Walk Courageously With God</em>. Key figures also list the other key figures who lived at the same time. The link button at the top of a window copies a link that opens that person, and the address in the browser always keeps what is on screen, so you can bookmark it or send it to someone. Open several windows to compare lives side by side; their lifespans stay under the main line, and <strong>Fold all</strong> or <strong>Close all</strong> at the bottom tidies them up at once.</p>
       <h3 data-i18n="about.show.h">Who is shown</h3>
-      <p data-i18n="about.show">The people button in the top bar switches between <strong>everyone</strong> named in the Bible, the <strong>key figures</strong>, and only the <strong>line from Adam to Jesus</strong> (Luke 3:23-38; Matthew 1:1-16). Under <strong>By job or family</strong> it can also show only the kings and queens, the prophets, the Bible writers, the wives, the daughters and so on. Pick several to see everyone in any of them. Small icons after a name show what the person is known for: a crown for a king or queen, a scroll for a prophet (broken for a false prophet), a staff for a patriarch, scales for a judge, a turban for a priest, a sandal for an apostle, a signet ring for an official, a sword for an army commander and a quill for a Bible writer. Someone known for more than one, such as David, has more than one icon. The <strong>Legend</strong> lists them.</p>
+      <p data-i18n="about.show">The people button in the top bar switches between <strong>everyone</strong> named in the Bible, the <strong>key figures</strong>, and only the <strong>line from Adam to Jesus</strong> (Luke 3:23-38; Matthew 1:1-16). Under <strong>By job or family</strong> it can also show only the kings and queens, the prophets, the Bible writers, the wives, the daughters and so on. Pick several to see everyone in any of them, or switch to <strong>all of them</strong> to see only the people who are in every one, such as the kings who were also prophets. Small icons after a name show what the person is known for: a crown for a king or queen, a scroll for a prophet (broken for a false prophet), a staff for a patriarch, scales for a judge, a turban for a priest, a sandal for an apostle, a signet ring for an official, a sword for an army commander and a quill for a Bible writer. Someone known for more than one, such as David, has more than one icon. The <strong>Legend</strong> lists them.</p>
       <h3 data-i18n="about.books.h">Bible books</h3>
       <p data-i18n="about.books">The book button in the top bar shows the books of the Bible as lines just above the main line. Each line spans the years the book covers, and the dots on it are main events the book tells about. Hover over a book (or tap it) to see who wrote it, where, and when the writing was completed, with a link to read it online. Click it (or tap again) to zoom to it, and click a dot to open that event in the person’s window. Books that cover no set period, such as Psalms or the letters, are a short mark at the year they were completed. The years come from the table of the books of the Bible in the <em>New World Translation</em>.</p>
       <h3 data-i18n="about.dates.h">Reading the dates</h3>

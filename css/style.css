@@ -499,6 +499,11 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .sm-div { height: 1px; margin: 6px 8px; background: var(--faint); }
 .sm-fam .sm-j { padding-left: 2px; }
 .sm-note { font: 300 11px/1.4 var(--sans); color: var(--muted); padding: 8px 8px 4px; }
+.sm-match { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 2px 8px 8px; font: 300 11px var(--sans); color: var(--muted); }
+.sm-match .sm-mk { margin-right: 2px; }
+.show-menu .sm-match button { width: auto; padding: 3px 10px; border: 1px solid var(--faint); border-radius: 12px; font: 400 11px var(--sans); color: var(--fg-2); background: none; }
+.show-menu .sm-match button[aria-checked="true"] { border-color: rgba(217,181,111,0.6); color: var(--accent); background: rgba(217,181,111,0.08); }
+.sm-match .sm-res { margin-left: auto; font: 300 10px var(--mono); }
 .search-results li .sr-n { min-width: 0; }
 .search-results li .sr-n small { display: block; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .search-results { max-height: min(60vh, 520px); overflow-y: auto; }
