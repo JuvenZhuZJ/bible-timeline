@@ -555,7 +555,7 @@
   /* personal timelines (hover + pinned windows), juxtaposed under the main line */
   function renderTracks() {
     g.tracks.textContent = "";
-    const list = wins.map((w) => ({ c: w.c, color: w.color }));
+    const list = wins.filter((w) => !isBookW(w)).map((w) => ({ c: w.c, color: w.color }));
     if (hoverC && !list.some((o) => o.c === hoverC)) list.push({ c: hoverC, color: "var(--accent)", hover: true });
     const fit = trackFit(list.length);
     while (list.length > fit.n) list.splice(list.findIndex((o) => o.c !== hoverC), 1);   // drop the oldest, keep the hover track
@@ -706,7 +706,7 @@
     cardTop = Infinity;
     if (!hoverC) return;
     const s = pStage.style, m = L.mobile ? 12 : 24, limit = bottomLimit();
-    const { n, step } = trackFit(wins.length + (isPinned(hoverC) ? 0 : 1));
+    const { n, step } = trackFit(wins.filter((w) => !isBookW(w)).length + (isPinned(hoverC) ? 0 : 1));
     // under the last track and the hover track's event notes, or just under the track if the notes don't fit
     let top = Math.min(L.trackY0 + (n - 1) * step + 52, limit - CARD_SMALL());
     const small = limit - top < CARD_FULL();
@@ -874,6 +874,12 @@
     bookLines.push({ books: [bk], evs: evs.sort((p, q) => p.y - q.y), a, b, d: Math.max(A(bk.done), b), name: Scripture.bookName(bk.b), mw: 0 });
   }
 
+  // each book line can open in a window like a person's: its subject has an id for links and notes
+  for (const o of bookLines) o.subj = { id: "book-" + o.books[0].b, name: o.name, isBook: true, o };
+  const BOOK_BY_ID = new Map(bookLines.map((o) => [o.subj.id, o.subj]));
+  const subjById = (id) => CHAR_BY_ID.get(id) || BOOK_BY_ID.get(id);
+  const isBookW = (w) => w.c.isBook;
+
   // "c. 1513 B.C.E.", "after 443 B.C.E.", "before 1000 B.C.E."
   function bookYear(q, y) {
     const t = fmtYear(y, true);
@@ -882,7 +888,8 @@
     if (q === "b.") return T("bk.b", { y: t }, "before " + t);
     return t;
   }
-  function bookCard(o) {
+  // a book's details, shared by its hover card and its window
+  function bookParts(o) {
     const bk = o.books[0];
     const wBtn = (c) => `<button class="bk-w" data-id="${esc(c.id)}">${esc(c.name)}</button>`;
     // a book with several writers lists who wrote which part, one to a line
@@ -896,20 +903,22 @@
     const done = bk.doneTo ? bookYear(bk.dq, bk.doneTo).replace(String(Math.abs(bk.doneTo)), `${Math.abs(bk.done)}–${Math.abs(bk.doneTo)}`) : bookYear(bk.dq, bk.done);
     const span = bk.from == null ? "" : bk.from === bk.to ? bookYear(bk.fq, bk.from) : `${bookYear(bk.fq, bk.from)} – ${bookYear(bk.tq, bk.to)}`;
     const row = (k, en, v) => `<div class="bk-row"><span class="bk-k">${esc(T(k, null, en))}</span>${v}</div>`;
-    const evs = o.evs.map((e, i) => `<li><button data-i="${i}"><span class="bk-y">${esc(fmtYear(e.y))}</span>${esc(e.ev ? e.ev.title : e.text)}${e.c ? ` <span class="bk-p">· ${esc(e.c.name)}</span>` : ""}</button></li>`).join("");
+    const evs = o.evs.map((e, i) => `<li><button data-i="${i}"><span class="bk-y">${esc(fmtYear(e.y))}</span><span>${esc(e.ev ? e.ev.title : e.text)}${e.c ? ` <span class="bk-p">· ${esc(e.c.name)}</span>` : ""}</span></button></li>`).join("");
     const read = o.books.map((b) => `<a class="ref-link" href="${esc(Scripture.url(b.b, 1))}" target="_blank" rel="noopener">${esc(T("bk.read", { b: Scripture.bookName(b.b) }, `Read ${Scripture.bookName(b.b)}`))}</a>`).join("")
       // the book's chapter in the handbook God's Word Is Truth, where its focus line comes from
       + o.books.filter((b) => b.gwt).map((b) => `<a class="ref-link" href="${esc(wolDoc(b.gwt))}" target="_blank" rel="noopener">${I18.zh ? esc(T("bk.gwt")) : "About this book: <em>God’s Word Is Truth</em>"}&nbsp;↗</a>`).join("");
-    return `<div class="et-year">${esc(T("bk.kind", null, "Bible book"))}</div><div class="et-title">${esc(o.name)}</div>
-      <div class="bk-scroll">
-      ${bk.focus ? `<div class="bk-focus">${esc(bk.focus[I18.zh ? 1 : 0])}</div>` : ""}
+    const info = `${bk.focus ? `<div class="bk-focus">${esc(bk.focus[I18.zh ? 1 : 0])}</div>` : ""}
       ${row("bk.writer", bk.w.length > 1 ? "Writers" : "Writer", `<span class="bk-v">${who}</span>`)}
       ${bk.at ? row("bk.at", "Written in", `<span class="bk-v">${esc(bk.at[I18.zh ? 1 : 0])}</span>`) : ""}
       ${row("bk.done", "Completed", `<span class="bk-v">${esc(done)}${bk.by ? `<span class="bk-by">${esc(bk.by[I18.zh ? 2 : 1])}</span>` : ""}</span>`)}
-      ${span ? row("bk.span", "Time covered", `<span class="bk-v">${esc(span)}</span>`) : ""}
-      ${evs ? `<ol class="bk-evs">${evs}</ol>` : ""}
-      </div>
-      <div class="bk-read">${read}</div>`;
+      ${span ? row("bk.span", "Time covered", `<span class="bk-v">${esc(span)}</span>`) : ""}`;
+    return { info, evs: evs ? `<ol class="bk-evs">${evs}</ol>` : "", read: `<div class="bk-read">${read}</div>`, done, span };
+  }
+  function bookCard(o) {
+    const p = bookParts(o);
+    return `<div class="et-year">${esc(T("bk.kind", null, "Bible book"))}</div><div class="et-title">${esc(o.name)}</div>
+      <div class="bk-scroll">${p.info}${p.evs}</div>${p.read}
+      <div class="et-hint">${esc(T(L.mobile ? "bk.hint.tap" : "bk.hint.click", null, L.mobile ? "Tap again to open its window" : "Click to open its window"))}</div>`;
   }
   // the books under a "+3": each opens its card, zoomed in on it
   function groupCard(o) {
@@ -984,6 +993,16 @@
     else if (li) { const ev = o.evs[+li.dataset.i]; hideTip(); if (ev.ev) zoomToEvent(ev.ev); else openActivity(ev.c, ev.k); }
   });
 
+  // pointing at an event in a book's card or window lights its dot on the band
+  let bookHL = null;
+  function setBookHL(o, i) {
+    bookHL = o ? { o, e: o.evs[i] } : null;
+    g.books.querySelectorAll(".book-act").forEach((n) => n.classList.toggle("active", !!bookHL && n.__bact.o === bookHL.o && n.__bact.e === bookHL.e));
+    cursorT = bookHL ? A(bookHL.e.y) : null; requestRender();
+  }
+  tip.addEventListener("pointerover", (e) => { const b = tipEv && tipEv.books && !tipEv.group && e.target.closest(".bk-evs button"); if (b) setBookHL(tipEv, +b.dataset.i); });
+  tip.addEventListener("pointerout", (e) => { if (e.target.closest(".bk-evs button") && bookHL) setBookHL(null); });
+
   function renderBooks() {
     g.books.textContent = "";
     if (!booksOn) return;
@@ -1004,6 +1023,7 @@
       // account ends, the rest (Genesis, the Gospels...) get a dotted tail on to it
       const xa = X(o.a), xb = Math.max(X(o.b), xa + 2), xd = Math.max(X(o.d), xb);
       if (xd < -6 || xa > W + 6) continue;
+      if (showMode === "mine" && !isStarred(o.subj)) continue;   // My bookmarks: only the starred books
       // the name sits before the line; once the start has gone off the left edge it stays at the edge.
       // The first row (nearest the line) with room for the name before the line; failing that, the
       // first with room for it after the line (where the books before it end at the same year, as
@@ -1079,7 +1099,7 @@
       for (const e of o.evs) {
         const x = X(A(e.y));
         if (x < x1 - 2) continue;   // under a name held at the edge
-        const act = el("g", { class: "book-act" }, g.books);
+        const act = el("g", { class: "book-act" + (bookHL && bookHL.o === o && bookHL.e === e ? " active" : "") }, g.books);
         act.__bact = { o, e, x, y };
         el("circle", { class: "hit", cx: x, cy: y, r: hitR }, act);
         el("circle", { class: "book-ev", cx: x, cy: y, r: 2.6 }, act);
@@ -1100,7 +1120,10 @@
     else if (n && tipEv) hideTipSoon();
   });
   g.books.addEventListener("focusin", (e) => { const n = e.target.closest(".book"); if (n) showBookTip(n.__book); });
-  g.books.addEventListener("keydown", (e) => { const n = e.target.closest(".book"); if (n && e.key === "Enter") zoomToBook(n.__book); });
+  g.books.addEventListener("keydown", (e) => {
+    const n = e.target.closest(".book");
+    if (n && e.key === "Enter") { if (n.__book.group) zoomToBook(n.__book); else { hideTip(); openWindow(n.__book.subj); } }
+  });
 
   /* the books each writer had a part in, for "Bible books written" in their window: the book's
      writers, who wrote which part, and who finished it (data/books.js w, parts, by) */
@@ -1120,8 +1143,8 @@
   function goToBook(o) {
     if (!booksOn) setBooks(true);
     hideTip();
+    openWindow(o.subj);
     zoomToBook(o);
-    setTimeout(() => { if (o.shown) showBookTip(o); }, 760);
   }
 
   const booksBtn = $("booksBtn");
@@ -1201,7 +1224,8 @@
     }
     if (book) {
       const o = book.__book;
-      if (type === "mouse" || tipEv === o) { hideTip(); zoomToBook(o); } else showBookTip(o);
+      if (o.group) { if (type === "mouse" || tipEv === o) { hideTip(); zoomToBook(o); } else showBookTip(o); }
+      else if (type === "mouse" || tipEv === o) { hideTip(); openWindow(o.subj); } else showBookTip(o);
       return;
     }
     if (act) {
@@ -1382,13 +1406,7 @@
       <div class="win-head">
         <div class="win-thumb">${window.Portrait.html(c)}</div>
         <div class="win-title"><div class="win-name">${esc(c.name)}</div><div class="win-dates"><span>${esc(fmtRange(c))}</span> · <span>${esc(ageText(c))}</span></div></div>
-        <div class="win-btns">
-          <button class="win-btn win-star${isStarred(c) ? " on" : ""}" data-act="star" aria-pressed="${isStarred(c)}" aria-label="${esc(T("star", { name: c.name }, `Bookmark ${c.name}`))}" title="${esc(T("star.t", null, "Bookmark"))}">${ICON.star}</button>
-          <button class="win-btn" data-act="locate" aria-label="${esc(T("locate", { name: c.name }, `Show ${c.name} on the timeline`))}" title="${esc(T("locate.t", null, "Show on timeline"))}">${ICON.locate}</button>
-          <button class="win-btn" data-act="link" aria-label="${esc(T("link", { name: c.name }, `Copy a link to ${c.name}`))}" title="${esc(T("link.t", null, "Copy link"))}">${ICON.link}</button>
-          <button class="win-btn" data-act="min" aria-label="${T("min", null, "Minimize")}" title="${T("min", null, "Minimize")}">${ICON.min}</button>
-          <button class="win-btn" data-act="close" aria-label="${T("close", null, "Close")}" title="${T("close", null, "Close")}">${ICON.close}</button>
-        </div>
+        ${winBtns(c)}
       </div>
       <div class="win-body">
         <div class="win-role">${esc(c.role)}</div>
@@ -1487,6 +1505,65 @@
     return `<div class="win-src">${histSources(c)}${T("src.bible")}${art ? T("src.person", { a: art }) : ""}${T("src.chron")}${c.places && c.places.length ? T("src.places") : ""}${T("src.zh")}</div>`;
   }
 
+  // the same buttons on a person's window and a book's
+  function winBtns(c) {
+    return `<div class="win-btns">
+          <button class="win-btn win-star${isStarred(c) ? " on" : ""}" data-act="star" aria-pressed="${isStarred(c)}" aria-label="${esc(T("star", { name: c.name }, `Bookmark ${c.name}`))}" title="${esc(T("star.t", null, "Bookmark"))}">${ICON.star}</button>
+          <button class="win-btn" data-act="locate" aria-label="${esc(T("locate", { name: c.name }, `Show ${c.name} on the timeline`))}" title="${esc(T("locate.t", null, "Show on timeline"))}">${ICON.locate}</button>
+          <button class="win-btn" data-act="link" aria-label="${esc(T("link", { name: c.name }, `Copy a link to ${c.name}`))}" title="${esc(T("link.t", null, "Copy link"))}">${ICON.link}</button>
+          <button class="win-btn" data-act="min" aria-label="${T("min", null, "Minimize")}" title="${T("min", null, "Minimize")}">${ICON.min}</button>
+          <button class="win-btn" data-act="close" aria-label="${T("close", null, "Close")}" title="${T("close", null, "Close")}">${ICON.close}</button>
+        </div>`;
+  }
+  /* a Bible book's window: what its hover card shows, kept open, with a bookmark, notes and a link */
+  const BOOK_ICON = '<svg viewBox="0 0 24 24"><path d="M12 6.6C10 5.2 7 4.7 3.5 5.1v13c3.5-.4 6.5.1 8.5 1.5 2-1.4 5-1.9 8.5-1.5v-13C17 4.7 14 5.2 12 6.6zM12 6.6v13"/></svg>';
+  const bookYears = (o) => { const p = bookParts(o); return p.span ? `${p.span}` : T("bk.done.at", { y: p.done }, `completed ${p.done}`); };
+  function bookWindowHTML(c) {
+    const o = c.o, p = bookParts(o);
+    return `
+      <div class="win-head">
+        <div class="win-thumb bk-thumb">${BOOK_ICON}</div>
+        <div class="win-title"><div class="win-name">${esc(c.name)}</div><div class="win-dates"><span>${esc(T("bk.kind", null, "Bible book"))}</span> · <span>${esc(bookYears(o))}</span></div></div>
+        ${winBtns(c)}
+      </div>
+      <div class="win-body">
+        <div class="bk-info">${p.info}</div>
+        <div class="win-h">${T("note.h", null, "My notes")}</div>
+        <div class="my-note">
+          <textarea rows="2" aria-label="${esc(T("note.aria", { name: c.name }, `My notes about ${c.name}`))}" placeholder="${esc(T("note.ph", { name: c.name }, `Write your own notes about ${c.name}…`))}">${esc(noteText(c))}</textarea>
+          <div class="mn-foot"><span class="mn-state"></span><span>${T("note.local", null, "Saved only in this browser")}</span></div>
+        </div>
+        ${p.evs ? `<div class="win-h">${T("bk.evs.h", null, "Main events")}</div>${p.evs}` : ""}
+        <div class="win-h">${T("readmore", null, "Read more")}</div>${p.read}
+        <div class="win-src">${esc(T("bk.src", null, "Writer, place, completion and time covered: the table of the books of the Bible in the New World Translation."))}</div>
+      </div>`;
+  }
+  function wireBookWindow(w) {
+    const o = w.c.o;
+    w.el.querySelectorAll(".bk-w").forEach((b) => b.addEventListener("click", () => {
+      const c = CHAR_BY_ID.get(b.dataset.id); if (!c) return;
+      if (!inMode(c)) setShowMode("all");
+      openWindow(c); locate(c);
+    }));
+    const ol = w.el.querySelector(".bk-evs");
+    if (!ol) return;
+    ol.addEventListener("pointerover", (e) => { const b = e.target.closest("button"); if (b) setBookHL(o, +b.dataset.i); });
+    ol.addEventListener("pointerleave", () => setBookHL(null));
+    ol.addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      const ev = o.evs[+b.dataset.i];
+      if (L.mobile) minimize(w);
+      if (!booksOn) setBooks(true);
+      if (ev.ev) zoomToEvent(ev.ev); else openActivity(ev.c, ev.k);
+    });
+  }
+  // the locate button: a person's lifespan, or a book on the band (turned on if it is off)
+  function locateAny(c) {
+    if (!c.isBook) { locate(c); return; }
+    if (!booksOn) setBooks(true);
+    zoomToBook(c.o);
+  }
+
   function openWindow(c) {
     let w = wins.find((x) => x.c === c);
     if (w) { restore(w); focusWin(w); w.el.classList.remove("flash"); void w.el.offsetWidth; w.el.classList.add("flash"); return; }
@@ -1497,7 +1574,8 @@
     node.setAttribute("role", "dialog");
     node.setAttribute("aria-label", c.name);
     node.style.setProperty("--wc", color);
-    node.innerHTML = windowHTML(c);
+    if (c.isBook) node.classList.add("bk-win");
+    node.innerHTML = c.isBook ? bookWindowHTML(c) : windowHTML(c);
     winBox.appendChild(node);
 
     const n = wins.length;
@@ -1567,7 +1645,8 @@
 
     w.el.querySelector('[data-act="close"]').addEventListener("click", () => closeWin(w));
     w.el.querySelector('[data-act="min"]').addEventListener("click", () => minimize(w));
-    w.el.querySelector('[data-act="locate"]').addEventListener("click", () => { if (L.mobile) minimize(w); locate(w.c); });
+    w.el.querySelector('[data-act="locate"]').addEventListener("click", () => { if (L.mobile) minimize(w); locateAny(w.c); });
+    if (w.c.isBook) wireBookWindow(w);
     w.el.querySelector('[data-act="link"]').addEventListener("click", () => copyLink(w.c));
     w.el.querySelector('[data-act="star"]').addEventListener("click", () => toggleStar(w.c));
     wireNote(w);
@@ -1861,7 +1940,7 @@
   wireMapBox(mapW.body, mapFor);
 
   function syncMap() {
-    const open = wins.filter((w) => !w.minimized);
+    const open = wins.filter((w) => !w.minimized && !isBookW(w));
     const w = L.mobile ? null : focusedW && open.includes(focusedW) ? focusedW : open[open.length - 1];
     mapW.el.hidden = !w || mapW.min;
     mapChip.hidden = !w || !mapW.min;
@@ -2010,7 +2089,7 @@
     packForce = true; requestRender();
   }
   const closeShow = () => { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); };
-  const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length, mine: CHARS.filter(isStarred).length,
+  const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length, mine: CHARS.filter(isStarred).length + [...BOOK_BY_ID.values()].filter(isStarred).length,
     hist: CHARS.filter((c) => c.hist).length };
   showMenu.querySelectorAll("[data-mode]").forEach((b) => {
     b.querySelector(".sm-n").textContent = counts[b.dataset.mode].toLocaleString();
@@ -2053,7 +2132,7 @@
      notes; both are saved in this browser only. "My bookmarks" in the People menu shows only the
      starred people, and "My notes and bookmarks" lists everything, with a download and a print. */
   const notesBox = $("notes");
-  const nMine = () => CHARS.filter(isStarred).length;
+  const nMine = () => CHARS.filter(isStarred).length + [...BOOK_BY_ID.values()].filter(isStarred).length;
   function syncStars(c) {
     const on = isStarred(c);
     wins.filter((w) => w.c === c).forEach((w) => {
@@ -2089,14 +2168,17 @@
     requestAnimationFrame(grow);
   }
   // the people with a bookmark or a note, in timeline order
-  const noted = () => CHARS.filter((c) => NOTES[c.id]).sort((a, b) => a.tb - b.tb);
+  // (people first, then the Bible books in the order they were completed)
+  const noted = () => CHARS.filter((c) => NOTES[c.id]).sort((a, b) => a.tb - b.tb)
+    .concat([...BOOK_BY_ID.values()].filter((c) => NOTES[c.id]).sort((a, b) => a.o.d - b.o.d));
+  const yearsOf = (c) => c.isBook ? bookYears(c.o) : fmtRange(c);
   function renderNotes() {
     const list = noted();
     $("notesList").innerHTML = list.length ? list.map((c) => `<li>
-        <div class="nl-head"><button class="nl-name" data-id="${esc(c.id)}">${isStarred(c) ? `<span class="nl-star" aria-label="${esc(T("star.t", null, "Bookmark"))}">★</span>` : ""}${esc(c.name)}</button><span class="nl-years">${esc(fmtRange(c))}</span></div>
+        <div class="nl-head"><button class="nl-name" data-id="${esc(c.id)}">${isStarred(c) ? `<span class="nl-star" aria-label="${esc(T("star.t", null, "Bookmark"))}">★</span>` : ""}${esc(c.name)}</button><span class="nl-years">${esc(yearsOf(c))}</span></div>
         ${noteText(c).trim() ? `<div class="nl-text">${esc(noteText(c).trim())}</div>` : ""}
-      </li>`).join("") : `<li class="nl-empty">${esc(T("notes.empty", null, "Nothing yet. Open a person’s window, then tap the star to bookmark them or write in “My notes”."))}</li>`;
-    $("notesCount").textContent = list.length ? T("notes.count", { n: list.length, s: nMine() }, `${list.length} ${list.length === 1 ? "person" : "people"} · ${nMine()} bookmarked`) : "";
+      </li>`).join("") : `<li class="nl-empty">${esc(T("notes.empty", null, "Nothing yet. Open a person’s or a Bible book’s window, then tap the star to bookmark it or write in “My notes”."))}</li>`;
+    $("notesCount").textContent = list.length ? T("notes.count", { n: list.length, s: nMine() }, `${list.length} saved · ${nMine()} bookmarked`) : "";
     $("notesDownload").disabled = $("notesPrint").disabled = !list.length;
   }
   function openNotes() { closeShow(); renderNotes(); notesBox.hidden = false; $("notesClose").focus(); }
@@ -2105,14 +2187,14 @@
   notesBox.addEventListener("click", (e) => {
     if (e.target === notesBox) { closeNotes(); return; }
     const b = e.target.closest(".nl-name");
-    if (b) { const c = CHAR_BY_ID.get(b.dataset.id); closeNotes(); if (!inMode(c)) setShowMode("all"); openWindow(c); locate(c); }
+    if (b) { const c = subjById(b.dataset.id); closeNotes(); if (!c.isBook && !inMode(c)) setShowMode("all"); openWindow(c); locateAny(c); }
   });
   $("notesOpen").addEventListener("click", openNotes);
   $("notesDownload").addEventListener("click", () => {
     const day = new Date().toISOString().slice(0, 10);
     const lines = [T("notes.file", { d: day }, `Bible Family Tree: my notes and bookmarks (${day})`), ""];
     for (const c of noted()) {
-      lines.push(`${isStarred(c) ? "★ " : ""}${c.name} (${fmtRange(c)})`);
+      lines.push(`${isStarred(c) ? "★ " : ""}${c.name} (${yearsOf(c)})`);
       if (noteText(c).trim()) lines.push(noteText(c).trim());
       lines.push("");
     }
@@ -2143,7 +2225,7 @@
       if (!data || typeof data !== "object") { showToast(T("notes.badfile", null, "This file has no notes from this site")); return; }
       let n = 0;
       for (const [id, o] of Object.entries(data)) {
-        const c = CHAR_BY_ID.get(id);
+        const c = subjById(id);
         if (!c || !o || typeof o !== "object") continue;
         const mine = NOTES[id] || {}, a = String(mine.n || "").trim(), b = String(o.n || "").trim();
         const newer = (+o.t || 0) > (+mine.t || 0);
@@ -2161,7 +2243,7 @@
       renderNotes();
       if (showMode === "mine") { packForce = true; renderMiniPeople(); requestRender(); }
       { const m = showMenu.querySelector('[data-mode="mine"] .sm-n'); if (m) m.textContent = nMine().toLocaleString(); }
-      showToast(!ok ? T("note.fail", null, "This browser could not save it") : T("notes.loaded", { n }, `Loaded notes and bookmarks for ${n} ${n === 1 ? "person" : "people"}`));
+      showToast(!ok ? T("note.fail", null, "This browser could not save it") : T("notes.loaded", { n }, `Loaded notes and bookmarks (${n})`));
     }, () => showToast(T("notes.badfile", null, "This file has no notes from this site")));
   });
   $("notesPrint").addEventListener("click", () => {
@@ -2189,17 +2271,17 @@
   }
   function applyHash() {
     const q = new URLSearchParams(location.hash.slice(1));
-    const people = (q.get("p") || "").split(",").map((id) => CHAR_BY_ID.get(id)).filter(Boolean);
+    const people = (q.get("p") || "").split(",").map(subjById).filter(Boolean);
     const y = parseFloat(q.get("y")), z = parseFloat(q.get("z"));
     // b=1: the link was made with the Bible books band on (this visit only; the viewer's own choice stays)
-    if (q.get("b") === "1" && !booksOn) { booksOn = true; syncBooksBtn(); layout(); }
+    if ((q.get("b") === "1" || people.some((c) => c.isBook)) && !booksOn) { booksOn = true; syncBooksBtn(); layout(); }
     if (z > 0) view.ppy = fitPpy() * z;
     if (isFinite(y)) view.t0 = A(Math.round(y)) - W / 2 / view.ppy;
     clampView();
     // someone hidden by this viewer's People filter would not show, so show everyone
-    if (people.some((c) => !inMode(c))) setShowMode("all");
+    if (people.some((c) => !c.isBook && !inMode(c))) setShowMode("all");
     people.forEach((c) => openWindow(c));
-    if (people.length && !isFinite(y)) locate(people[people.length - 1]);
+    if (people.length && !isFinite(y)) locateAny(people[people.length - 1]);
   }
   const toast = $("toast");
   let toastT = 0;
