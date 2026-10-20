@@ -21,7 +21,7 @@
     "jehu": ["king"], "hezekiah": ["king"], "manasseh": ["king"], "josiah": ["king"], "zedekiah": ["king"],
     "nebuchadnezzar": ["king"], "cyrus": ["king"], "esther": ["king"], "herod": ["king"], "darius-1": ["king"],
     "jehoiada": ["priest"], "elijah": ["prophet"], "elisha": ["prophet"], "jonah": ["prophet", "writer"],
-    "amos": ["prophet", "writer"], "hosea": ["prophet", "writer"], "hoshea-3": ["prophet", "writer"], "isaiah": ["prophet", "writer"], "micah": ["prophet", "writer"],
+    "amos": ["prophet", "writer"], "hosea": ["prophet", "writer"], "isaiah": ["prophet", "writer"], "micah": ["prophet", "writer"],
     "joel-9": ["prophet", "writer"], "obadiah-8": ["prophet", "writer"], "nahum-1": ["prophet", "writer"], "habakkuk": ["prophet", "writer"],
     "zephaniah-2": ["prophet", "writer"], "jeremiah": ["prophet", "writer"], "ezekiel": ["priest", "prophet", "writer"],
     "daniel": ["prophet", "official", "writer"], "haggai": ["prophet", "writer"], "zechariah-prophet": ["prophet", "writer"],
@@ -29,8 +29,8 @@
     "nehemiah": ["official", "writer"], "pilate": ["official"],
     "zechariah-priest": ["priest"], "hanani-2": ["prophet"], "shamgar": ["judge"], "bar-jesus": ["falseprophet"], "dionysius": [], "zebadiah-7": [], "chenaniah-2": [], "john-baptist": ["prophet"], "jesus": ["king", "prophet", "priest"],
     "peter": ["apostle", "writer"], "andrew": ["apostle"], "james-zebedee": ["apostle"], "john": ["apostle", "writer"],
-    "judas-iscariot": ["apostle"], "matthew": ["apostle", "writer"], "levi-4": ["apostle", "writer"], "thomas": ["apostle"],
-    "paul": ["apostle", "writer"], "saul-2": ["apostle", "writer"], "mark": ["writer"], "john-mark-4": ["writer"], "luke": ["writer"],
+    "judas-iscariot": ["apostle"], "matthew": ["apostle", "writer"], "thomas": ["apostle"],
+    "paul": ["apostle", "writer"], "mark": ["writer"], "luke": ["writer"],
     "james-brother": ["writer"], "jude": ["writer"],
     "eliezer-1": [], "baruch-1": [], "abel": [], "cain": [], "eve": [], "sarah": [], "rebekah": [], "job": [], "lot": []
   }

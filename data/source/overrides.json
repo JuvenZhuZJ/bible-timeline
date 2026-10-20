@@ -23,7 +23,19 @@
     "JEDIDIAH"
   ],
   "same": {
-    "MISHAEL#2": "MESHACH"
+    "MISHAEL#2": "MESHACH",
+    "SAUL#2": "PAUL",
+    "JOHN#4": "MARK, I",
+    "JOSEPH#12": "BARNABAS",
+    "BARTHOLOMEW": "NATHANAEL",
+    "THADDAEUS": "JUDAS#3",
+    "ZEALOUS ONE, THE": "SIMON#3#a",
+    "LEVI#4": "MATTHEW",
+    "HOSHEA#1": "JOSHUA#1",
+    "HOSHEA#3": "HOSEA",
+    "BELTESHAZZAR": "DANIEL#2",
+    "CHILEAB": "DANIEL#1",
+    "NAOMI": "MARA"
   },
   "dates": {
     "nahshon": [

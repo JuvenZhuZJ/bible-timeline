@@ -14,6 +14,8 @@
  *   data/source/added-people.json    people whose Insight article is missing from the
  *                                    extracted list (Abednego), same shape; "solo": no
  *                                    relatives, so no other record's relative matches them
+ *   data/source/companions.json      people who served or traveled together (Elijah and
+ *                                    Elisha, Paul and Barnabas), each group with its verses
  *   data/source/overrides.json       manual fixes (optional); "same" merges two
  *                                    Insight records of one person ("MISHAEL#2": "MESHACH")
  *   data/source/jobs.json            jobs shown as icons after names (king, prophet ...)
@@ -106,7 +108,7 @@ for (const p of INSIGHT) {
   const head0 = head.split(",")[0].trim();
   const sense = nums[0] && /^\d+$/.test(nums[0]) ? ` No. ${nums[0]}` : "";
   people.push({
-    id: uid(idBase), ikey: p.key, name: p.name, aka: (p.aka || []).filter((a) => a && norm(a) !== norm(p.name)),
+    id: uid(p.id || idBase), ikey: p.key, name: p.name, aka: (p.aka || []).filter((a) => a && norm(a) !== norm(p.name)),
     gender: p.gender === "f" || p.gender === "u" ? p.gender : "m", meaning: p.meaning || "", role: p.role || "", summary: p.summary || "",
     born, died, year: clampY(year), q: [qB, qD], group: p.group || "", refs: (p.refs || []).slice(0, 4),
     raw: { father: p.father, mother: p.mother, spouses: p.spouses || [], children: p.children || [], siblings: p.siblings || [], hints: p.relHints || "" },
@@ -442,8 +444,28 @@ for (const p of people) {
   p.jobs = set ? set.slice() : p.hist && p.jobs ? p.jobs : jobsFromRole(p.role || "");
 }
 
+/* ---------- 6c. companions ----------
+   data/source/companions.json: groups of people who served, traveled or stood together, by id,
+   each with the verses that show it. Everyone in a group gets the others, with those verses. */
+const COMP = extra("data/source/companions.json");
+for (const g of COMP) {
+  const missing = g.ids.filter((id) => !byId.get(id));
+  if (missing.length) console.warn("Companions, unknown ids:", missing.join(", "));
+  for (const a of g.ids) {
+    const p = byId.get(a);
+    if (!p) continue;
+    p.comp = p.comp || [];
+    for (const b of g.ids) {
+      if (b === a || !byId.get(b)) continue;
+      const have = p.comp.find((x) => x[0] === b);
+      if (!have) p.comp.push([b, g.ref]);
+      else if (!have[1].includes(g.ref)) have[1] += "; " + g.ref;
+    }
+  }
+}
+
 /* ---------- 7. write ---------- */
-const KEEP = ["id", "name", "aka", "meaning", "born", "died", "q", "tier", "gender", "role", "look", "portrait", "summary", "family", "links", "note", "events", "refs", "group", "rel", "relNames", "src", "key", "line", "jobs", "hist", "hsrc"];
+const KEEP = ["id", "name", "aka", "meaning", "born", "died", "q", "tier", "gender", "role", "look", "portrait", "summary", "family", "links", "note", "events", "refs", "group", "rel", "relNames", "comp", "src", "key", "line", "jobs", "hist", "hsrc"];
 const outList = people.slice().sort((a, b) => a.born - b.born || a.name.localeCompare(b.name)).map((p) => {
   const o = {};
   for (const k of KEEP) {
