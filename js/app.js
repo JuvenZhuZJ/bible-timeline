@@ -39,6 +39,17 @@
     if (c.born < 0) return `${pb}${-c.born} B.C.E. – ${pd}${c.died} C.E.`;
     return `${pb}${c.born} – ${pd}${c.died} C.E.`;
   }
+  // jobs (data/source/jobs.json): an icon after the name on the timeline and a label in the window
+  const JOB_LABEL = {
+    king: ["King", "Queen"], prophet: ["Prophet", "Prophetess"], patriarch: ["Patriarch"], judge: ["Judge"], priest: ["Priest"],
+    apostle: ["Apostle"], official: ["Official"], commander: ["Army commander"], writer: ["Bible writer"],
+  };
+  const jobName = (c, j) => {
+    const f = c.gender === "f" ? 1 : 0;
+    return T(`job.${j}${f ? ".f" : ""}`, null, null) || T(`job.${j}`, null, JOB_LABEL[j][f] || JOB_LABEL[j][0]);
+  };
+  const jobIcon = (j) => `<svg class="job-ic" aria-hidden="true"><use href="#job-${j}"/></svg>`;
+  const JOB_STEP = 12;   // px per icon after a name on the timeline
   const ageText = (c) => T("age", { a: c.assumed ? T("age.approx") : "", n: c.td - c.tb }, `${c.assumed ? "~" : ""}${c.td - c.tb} yrs`);
 
   CHARS.forEach((c) => {
@@ -58,7 +69,8 @@
     });
     c.events = rawEvents.slice().sort((a, b) => a[0] - b[0]);
     c.places = placesOf(c, visits);
-    c.labelW = tlen(c.name) * (c.tier === 1 ? 7.6 : 6.3) + 16;
+    c.jobs = c.jobs || [];
+    c.labelW = tlen(c.name) * (c.tier === 1 ? 7.6 : 6.3) + 16 + (c.jobs.length ? c.jobs.length * JOB_STEP + 2 : 0);
     c.rel = c.rel || {};
     c.refs = c.refs || [];
   });
@@ -222,6 +234,10 @@
     const name = el("text", { class: "d-name", x: 11, y: 4 }, node);
     name.textContent = c.name;
     d.name = name;
+    if (c.jobs.length) {
+      d.jobs = el("g", { class: "d-jobs" }, node);
+      c.jobs.forEach((j, i) => el("use", { href: `#job-${j}`, x: i * JOB_STEP, y: -5.5, width: 11, height: 11 }, d.jobs));
+    }
     const yr = el("text", { class: "d-year", x: 11, y: 15 }, node);
     yr.textContent = fmtYear(c.born);
     node.__c = c;
@@ -397,7 +413,11 @@
       const y = laneY(d.lane);
       d.node.setAttribute("transform", `translate(${xb},${y})`);
       // the line starts after the name, so the label never sits on top of it
-      if (!d.gap) d.gap = 11 + d.name.getComputedTextLength() + 6;
+      if (!d.gap) {
+        const nw = d.name.getComputedTextLength();
+        d.gap = 11 + nw + 6;
+        if (d.jobs) { d.jobs.setAttribute("transform", `translate(${11 + nw + 4},0)`); d.gap += c.jobs.length * JOB_STEP; }
+      }
       const pin = pinColor(c);
       d.sel.setAttribute("stroke", pin || "transparent");
       d.node.classList.toggle("pinned", !!pin);
@@ -970,6 +990,7 @@
       </div>
       <div class="win-body">
         <div class="win-role">${esc(c.role)}</div>
+        ${c.jobs.length ? `<div class="win-jobs">${c.jobs.map((j) => `<span class="win-job">${jobIcon(j)}${esc(jobName(c, j))}</span>`).join("")}</div>` : ""}
         ${c.meaning ? `<div class="win-meaning">${I18.zh ? "「" : "“"}${esc(c.meaning)}${I18.zh ? "」" : "”"}</div>` : ""}
         <div class="badges">
           <span class="badge${c.q[0] === "assumed" ? " assumed" : ""}">${T("birth", { q: QLABEL[c.q[0]] }, `Birth: ${QLABEL[c.q[0]]}`)}</span>

@@ -230,6 +230,17 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .legend-body { display: flex; flex-direction: column; gap: 5px; }
 .lg-row { display: flex; align-items: center; gap: 8px; }
 .lg-row svg { width: 16px; height: 16px; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+/* job icons: line drawings in the colour of the text beside them */
+.job-ic { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.dot .d-jobs { fill: none; stroke: var(--fg-2); stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; opacity: 0.85; pointer-events: none; transition: stroke .2s; }
+.dot.tier-1 .d-jobs { stroke: var(--fg); }
+.dot.is-hover .d-jobs { stroke: var(--accent); }
+.lg-jobs { display: grid; grid-template-columns: auto auto; gap: 5px 14px; margin-top: 4px; padding-top: 7px; border-top: 1px solid var(--faint); }
+.lg-jobs span { white-space: nowrap; }
+.lg-jobs .lg-row svg.job-ic { width: 12px; height: 12px; margin: 0 2px; }
+.win-jobs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.win-job { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px 2px 6px; border: 1px solid var(--faint); border-radius: 999px; font: 400 11px var(--sans); color: var(--fg-2); }
 .lg-solid { fill: var(--fg); }
 .lg-ring { fill: none; stroke: var(--fg); stroke-width: 1.1; }
 .lg-dash { fill: none; stroke: var(--fg); stroke-width: 1.1; stroke-dasharray: 2 2; }
@@ -369,7 +380,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
     display: block; border: 1px solid var(--faint); background: rgba(5,5,5,0.7); border-radius: 14px; padding: 5px 12px;
     font: 500 9.5px var(--sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-2); cursor: pointer;
   }
-  .legend-body { display: none; position: absolute; bottom: 36px; left: 0; width: 220px; padding: 12px; background: var(--panel); border: 1px solid var(--faint); border-radius: 10px; }
+  .legend-body { display: none; position: absolute; bottom: 36px; left: 0; width: max-content; min-width: 220px; padding: 12px; background: var(--panel); border: 1px solid var(--faint); border-radius: 10px; }
   .legend.open .legend-body { display: flex; }
   .controls { right: 12px; bottom: calc(56px + var(--safe-b)); flex-direction: row; }
   .controls .icon-btn { width: 34px; height: 34px; }

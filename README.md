@@ -73,6 +73,24 @@ Gold marks people you are only hovering over. Every opened person gets their own
 
 Every scripture citation in a person's window (the major activities, key scriptures, and any citation in the summary, note or family line) is a link. Clicking it opens that passage in a new tab on the Watchtower ONLINE LIBRARY Bible (wol.jw.org, *New World Translation* Study Edition), with the cited verses highlighted. A citation with several parts links each part: in "Genesis 2:7, 19-20" both "Genesis 2:7" and "19-20" are links, and in "Genesis 47:28; 49" the "49" opens Genesis 49. A chapter-only citation such as "Genesis 27-28" opens its first chapter. Clicking a citation in an activity opens only the passage; clicking elsewhere on the activity still jumps the timeline to it. The links look like the plain citations until you hover (a faint underline marks them on phones). The parsing is `js/scripture.js`; links have the form `https://wol.jw.org/en/wol/b/r1/lp-e/nwtsty/<book>/<chapter>#v=<book>:<chapter>:<verse>-<book>:<chapter>:<verse>`, the same form wol.jw.org uses for its own verse links.
 
+## Job icons
+
+Small line icons after a person's name, on the timeline and in their window, show what they are known for. A person known for more than one has each icon (David: king, prophet, Bible writer; Jesus: king, prophet, priest). The Legend lists them.
+
+| Job | Icon | Who |
+| --- | --- | --- |
+| King / queen | crown | anyone whose role is king, queen, Pharaoh, emperor or tetrarch |
+| Prophet | scroll | prophets, prophetesses and seers (not false prophets) |
+| Patriarch | shepherd's staff | the family heads from Adam to Jacob and Jacob's twelve sons (Acts 7:8-9; Hebrews 7:4) |
+| Judge | scales | the judges of Israel |
+| Priest | turban | priests and high priests |
+| Apostle | Roman sandal | the apostles |
+| Official | signet ring | governors, court officials, secretaries, stewards, proconsuls |
+| Army commander | sword | army chiefs and commanders |
+| Bible writer | quill | the writers in the NWT "Table of the Books of the Bible" |
+
+`data/source/jobs.json` sets the jobs by hand for the key figures, the Bible writers and the patriarchs, and fixes a few others. Everyone else gets jobs from the words in their role (`jobsFromRole()` in `tools/build-people.mjs`). A title that belongs to someone else does not count, so "Father of King Saul" or "Priest under King Ahaz" gives no crown. The icons are SVG symbols at the top of `index.html` (`#job-king` ...), drawn in the colour of the name beside them.
+
 ## Read more
 
 Under the key scriptures, a person's window lists where to read more about them, each a link that opens in a new tab on wol.jw.org: their article in *Insight on the Scriptures* (2,678 people), and every chapter about them in *Imitate Their Faith* (23 chapters) and *Walk Courageously With God* (54 chapters), with the chapter number and title. In Chinese the links open the Chinese editions (《洞悉聖經》, 《信心的榜樣》, 《鼓起勇氣與上帝同行》) with their Chinese titles. A wol.jw.org document has the same number in both languages, so one number serves both.
@@ -154,6 +172,7 @@ data/reading.js             "Read more" links: Insight articles and study-book c
 data/zh/people.js           Chinese text for every person (hand-editable)
 data/zh/places.js           Chinese text for places, events, eras and map labels
 data/ASSUMED_DATES.md       generated list of placeholder dates
+data/source/jobs.json       job icons set by hand (key figures, Bible writers, patriarchs)
 data/source/                extracted Insight records, unnamed people and manual overrides
 tools/build-people.mjs      builds data/people.js
 tools/build-basemap.mjs     builds data/basemap.js
