@@ -130,6 +130,7 @@
     "lifespan": "生平",
     "acts": "主要事蹟",
     "keyrefs": "重要經文",
+    "readmore": "延伸閱讀",
     "age.at": "{a}{n}歲",
     "locate": "在時間線上顯示{name}",
     "locate.t": "在時間線上顯示",

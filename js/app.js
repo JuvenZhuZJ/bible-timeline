@@ -984,8 +984,25 @@
         ${c.places ? `<div class="win-map">${mapViews(c, true)}</div>` : ""}
         ${acts ? `<div class="win-h">${T("acts", null, "Major activities")}</div><ul class="acts">${acts}</ul>` : ""}
         ${c.refs.length ? `<div class="win-h">${T("keyrefs", null, "Key scriptures")}</div><div class="win-refs">${c.refs.map(Scripture.linkRefs).join(" · ")}</div>` : ""}
+        ${readMoreHTML(c)}
         ${I18.zh ? sourcesZh(c) : `<div class="win-src">Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”${c.places && c.places.length ? " Places: OpenBible.info Bible Geocoding Data (CC BY 4.0), checked against <em>Insight</em> and the maps in the <em>New World Translation</em> (Appendix A7 and B)." : ""}</div>`}
       </div>`;
+  }
+
+  // "Read more": the person's Insight article and the chapters of the study books about them (data/reading.js)
+  function readMoreHTML(c) {
+    const R = window.READING;
+    if (!R) return "";
+    const wol = (d) => I18.zh ? `https://wol.jw.org/cmn-Hant/wol/d/r24/lp-ch/${d}` : `https://wol.jw.org/en/wol/d/r1/lp-e/${d}`;
+    const book = (b) => esc(R.books[b][I18.zh ? "zh" : "en"]);
+    const row = (d, what, title) => `<li><a class="ref-link" href="${esc(wol(d))}" target="_blank" rel="noopener"><span class="rm-book">${what}</span> <span class="rm-title">${esc(title)}</span>&nbsp;↗</a></li>`;
+    const items = [];
+    const doc = R.insight[c.id];
+    if (doc) items.push(row(doc, I18.zh ? `《${book("insight")}》` : `<em>${book("insight")}</em>:`, I18.zh ? (c.srcZh ? c.srcZh.t : c.name) : (c.src || c.name)));
+    for (const ch of R.chapters) if (ch.who.includes(c.id)) {
+      items.push(row(ch.d, I18.zh ? `《${book(ch.b)}》第${ch.n}章` : `<em>${book(ch.b)}</em>, chapter ${ch.n}:`, I18.zh ? ch.zh : ch.t));
+    }
+    return items.length ? `<div class="win-h">${T("readmore", null, "Read more")}</div><ul class="read-more">${items.join("")}</ul>` : "";
   }
 
   // the sources line in Chinese; the person's Insight article is linked on wol.jw.org when known

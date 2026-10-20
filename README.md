@@ -73,6 +73,12 @@ Gold marks people you are only hovering over. Every opened person gets their own
 
 Every scripture citation in a person's window (the major activities, key scriptures, and any citation in the summary, note or family line) is a link. Clicking it opens that passage in a new tab on the Watchtower ONLINE LIBRARY Bible (wol.jw.org, *New World Translation* Study Edition), with the cited verses highlighted. A citation with several parts links each part: in "Genesis 2:7, 19-20" both "Genesis 2:7" and "19-20" are links, and in "Genesis 47:28; 49" the "49" opens Genesis 49. A chapter-only citation such as "Genesis 27-28" opens its first chapter. Clicking a citation in an activity opens only the passage; clicking elsewhere on the activity still jumps the timeline to it. The links look like the plain citations until you hover (a faint underline marks them on phones). The parsing is `js/scripture.js`; links have the form `https://wol.jw.org/en/wol/b/r1/lp-e/nwtsty/<book>/<chapter>#v=<book>:<chapter>:<verse>-<book>:<chapter>:<verse>`, the same form wol.jw.org uses for its own verse links.
 
+## Read more
+
+Under the key scriptures, a person's window lists where to read more about them, each a link that opens in a new tab on wol.jw.org: their article in *Insight on the Scriptures* (2,678 people), and every chapter about them in *Imitate Their Faith* (23 chapters) and *Walk Courageously With God* (54 chapters), with the chapter number and title. In Chinese the links open the Chinese editions (《洞悉聖經》, 《信心的榜樣》, 《鼓起勇氣與上帝同行》) with their Chinese titles. A wol.jw.org document has the same number in both languages, so one number serves both.
+
+The links are in `data/reading.js` (hand-editable): the chapter list says which people each chapter is about, and the Insight list maps a person's id to their article. Chapter numbers and titles were read from the books' contents pages on wol.jw.org (2026-10-20).
+
 ## Chinese (中文)
 
 The settings button (the gear in the top bar) switches the whole site between English and Traditional Chinese (繁體中文). The choice is remembered in the browser (`localStorage` key `bt-lang`); a first visit from a browser set to Chinese opens in Chinese. Switching reloads the page.
@@ -144,6 +150,7 @@ data/basemap.js             coastline, rivers and lakes for the maps (generated)
 data/routes.js              ancient roads and travel routes for the maps (hand-written)
 data/terrain.js             mountains, deserts and valleys for the maps (hand-written)
 data/people.js              all people (generated, do not edit)
+data/reading.js             "Read more" links: Insight articles and study-book chapters (hand-written)
 data/zh/people.js           Chinese text for every person (hand-editable)
 data/zh/places.js           Chinese text for places, events, eras and map labels
 data/ASSUMED_DATES.md       generated list of placeholder dates
