@@ -22,6 +22,9 @@
     "MORDECAI#3",
     "JEDIDIAH"
   ],
+  "same": {
+    "MISHAEL#2": "MESHACH"
+  },
   "dates": {
     "nahshon": [
       -1570,
@@ -115,6 +118,9 @@
       [-606, "Refuses to bow to the golden image; saved from the fiery furnace", "Daniel 3:12-30"]
     ],
     "mishael": [
+      [-606, "Refuses to bow to the golden image; saved from the fiery furnace", "Daniel 3:12-30"]
+    ],
+    "azariah": [
       [-606, "Refuses to bow to the golden image; saved from the fiery furnace", "Daniel 3:12-30"]
     ],
     "belshazzar": [
