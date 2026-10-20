@@ -106,5 +106,8 @@
   // a citation as plain text, in the site's language
   const label = (str) => (ZH ? zhText(String(str == null ? "" : str)) : String(str == null ? "" : str));
 
-  window.Scripture = { linkRefs, linkText, url, label };
+  // a book's name in the site's language, by its number (1 Genesis ... 66 Revelation)
+  const bookName = (b) => (ZH ? ZH_BOOKS : BOOKS)[b - 1];
+
+  window.Scripture = { linkRefs, linkText, url, label, bookName };
 })();

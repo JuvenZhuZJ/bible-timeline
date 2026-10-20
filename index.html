@@ -65,6 +65,11 @@
       <ul class="search-results" id="searchResults" role="listbox"></ul>
     </div>
 
+    <button class="icon-btn books-btn" id="booksBtn" aria-pressed="false" aria-label="Show the Bible books" title="Bible books" data-i18n-aria="books.aria" data-i18n-title="books.t">
+      <svg viewBox="0 0 24 24"><path d="M12 6.6C10 5.2 7 4.7 3.5 5.1v13c3.5-.4 6.5.1 8.5 1.5 2-1.4 5-1.9 8.5-1.5v-13C17 4.7 14 5.2 12 6.6zM12 6.6v13"/></svg>
+      <span class="show-dot" aria-hidden="true"></span>
+    </button>
+
     <div class="show" id="show">
       <button class="icon-btn show-btn" id="showBtn" aria-haspopup="true" aria-expanded="false" aria-label="Change who is shown" data-i18n-aria="show.aria">
         <svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.4"/><path d="M2.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M13.5 15.2c.9-.8 1.9-1.2 3-1.2 2.3 0 4.1 1.5 4.6 4.5"/></svg>
@@ -134,6 +139,7 @@
       <g id="gRels"></g>
       <g id="gLife"></g>
       <g id="gMain"></g>
+      <g id="gBooks"></g>
       <g id="gTracks"></g>
       <g id="gEvents"></g>
       <g id="gDots"></g>
@@ -154,6 +160,7 @@
       <div class="lg-row"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="6" class="lg-ring"/><circle cx="10" cy="10" r="3" class="lg-solid"/></svg><span data-i18n="legend.event">Major event</span></div>
       <div class="lg-row"><svg viewBox="0 0 20 20"><path d="M2 16 C2 5 15 5 15 13" class="lg-rel lg-m"/><circle cx="15" cy="15" r="3" class="lg-end lg-m"/></svg><span data-i18n="legend.man">Family link to a man</span></div>
       <div class="lg-row"><svg viewBox="0 0 20 20"><path d="M2 16 C2 5 15 5 15 13" class="lg-rel lg-f"/><circle cx="15" cy="15" r="3" class="lg-end lg-f"/></svg><span data-i18n="legend.woman">Family link to a woman</span></div>
+      <div class="lg-row"><svg viewBox="0 0 20 20"><path d="M3 10h14M3 7v6M17 7v6" class="lg-book"/><circle cx="10" cy="10" r="2.4" class="lg-solid"/></svg><span data-i18n="legend.book">Years a Bible book covers</span></div>
       <div class="lg-jobs">
         <div class="lg-row"><svg class="job-ic"><use href="#job-king"/></svg><span data-i18n="legend.job.king">King / queen</span></div>
         <div class="lg-row"><svg class="job-ic"><use href="#job-prophet"/></svg><span data-i18n="legend.job.prophet">Prophet</span></div>
@@ -200,6 +207,8 @@
       <p data-i18n="about.person">Hover over a dot (or tap it) to see the person’s portrait, lifespan and family links. Click it (or tap again) to open their window. In a window you can click a relative to open theirs, and click a dot on the lifespan bar to read about something that happened in their life. Bible references open the verse in the <em>New World Translation</em> online. Under <strong>Read more</strong>, the window links to the person’s article in <em>Insight on the Scriptures</em> and to any chapter about them in <em>Imitate Their Faith</em> or <em>Walk Courageously With God</em>. Key figures also list the other key figures who lived at the same time. The link button at the top of a window copies a link that opens that person, and the address in the browser always keeps what is on screen, so you can bookmark it or send it to someone. Open several windows to compare lives side by side; their lifespans stay under the main line, and <strong>Fold all</strong> or <strong>Close all</strong> at the bottom tidies them up at once.</p>
       <h3 data-i18n="about.show.h">Who is shown</h3>
       <p data-i18n="about.show">The people button in the top bar switches between <strong>everyone</strong> named in the Bible, the <strong>key figures</strong>, and only the <strong>line from Adam to Jesus</strong> (Luke 3:23-38; Matthew 1:1-16). Under <strong>By job or family</strong> it can also show only the kings and queens, the prophets, the Bible writers, the wives, the daughters and so on. Pick several to see everyone in any of them. Small icons after a name show what the person is known for: a crown for a king or queen, a scroll for a prophet (broken for a false prophet), a staff for a patriarch, scales for a judge, a turban for a priest, a sandal for an apostle, a signet ring for an official, a sword for an army commander and a quill for a Bible writer. Someone known for more than one, such as David, has more than one icon. The <strong>Legend</strong> lists them.</p>
+      <h3 data-i18n="about.books.h">Bible books</h3>
+      <p data-i18n="about.books">The book button in the top bar shows the books of the Bible as lines just above the main line. Each line spans the years the book covers, and the dots on it are main events the book tells about. Hover over a book (or tap it) to see who wrote it, where, and when the writing was completed, with a link to read it online. Click it (or tap again) to zoom to it, and click a dot to open that event in the person’s window. Books that cover no set period, such as Psalms or the letters, are a short mark at the year they were completed. The years come from the table of the books of the Bible in the <em>New World Translation</em>.</p>
       <h3 data-i18n="about.dates.h">Reading the dates</h3>
       <p data-i18n="about.dates">Each birth and death year is one of three kinds, and the <strong>Legend</strong> button shows how each is drawn. A <strong>solid dot</strong> means the year is worked out from ages and reign lengths the Bible gives. A <strong>ring with a small dot</strong> means the year is <strong>estimated</strong>: the Bible gives a clue, such as an age at death, but no exact year. A <strong>dashed ring</strong> means the year is <strong>assumed</strong>: the Bible does not record it, so the person is placed by their generation or the period they appear in. Most people have assumed dates, so take their place on the timeline as a rough guide. “c.” before a year means it is approximate.</p>
       <h3 data-i18n="about.places.h">Places</h3>
@@ -215,6 +224,7 @@
   <script src="data/events.js"></script>
   <script src="data/people.js"></script>
   <script src="data/reading.js"></script>
+  <script src="data/books.js"></script>
   <script src="js/portrait.js"></script>
   <script src="data/basemap.js"></script>
   <script src="data/places.js"></script>

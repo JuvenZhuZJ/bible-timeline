@@ -99,6 +99,17 @@ The address in the browser keeps what is on screen, so a study can be bookmarked
 
 The link button at the top of a window copies a short link to that person (`#p=moses`), which opens their window and shows them on the timeline. If the person is hidden by the viewer's People filter, the filter goes back to Everyone.
 
+## Bible books band
+
+The book button in the top bar (next to the People button) shows the 66 books of the Bible as lines just above the main line; the people move up to make room. The choice is remembered in the browser (`bt-books`) and kept in shared links (`&b=1`).
+
+- **Lines:** each book spans the years it covers, from the *New World Translation* "Table of the Books of the Bible" (writer, place written, writing completed, time covered). The table gives one span for 1 and 2 Kings together and one for 1 and 2 Chronicles together, so each pair is drawn as one line ("1 Kings · 2 Kings"). A book the table gives no span for runs between its events (Ruth, Jonah, Malachi), or is a short mark at the year its writing was completed (Psalms, Proverbs, the letters).
+- **Rows:** four rows, filled nearest the main line first in book order. A book that has no room waits for more zoom, like the event labels. A name whose line starts off the left edge stays at the edge.
+- **Dots:** each book's main events, drawn like the activity dots on an open lifespan. Hover (or tap) for the activity, click (or tap again) to open it in the person's window. A dot that is a major event (for example the Exodus) shows the event's tooltip and zooms to it.
+- **Card:** hovering a book name (or tapping it) shows its card: the writer (click to open their window), where and when it was written, the time covered, its main events (each clickable) and a link to read the book on wol.jw.org. Click the book (or tap again) to zoom to it.
+
+The data is in `data/books.js` (hand-editable). A dot is either `"person-id:n"`, the person's n-th activity in `data/people.js` (counting from 0, before the activities are sorted), or `"e:event-id"` from `data/events.js`, so its text and scripture come from there in both languages.
+
 ## Read more
 
 Under the key scriptures, a person's window lists where to read more about them, each a link that opens in a new tab on wol.jw.org: their article in *Insight on the Scriptures* (2,678 people), and every chapter about them in *Imitate Their Faith* (23 chapters) and *Walk Courageously With God* (54 chapters), with the chapter number and title. In Chinese the links open the Chinese editions (《洞悉聖經》, 《信心的榜樣》, 《鼓起勇氣與上帝同行》) with their Chinese titles. A wol.jw.org document has the same number in both languages, so one number serves both.
@@ -177,6 +188,7 @@ data/routes.js              ancient roads and travel routes for the maps (hand-w
 data/terrain.js             mountains, deserts and valleys for the maps (hand-written)
 data/people.js              all people (generated, do not edit)
 data/reading.js             "Read more" links: Insight articles and study-book chapters (hand-written)
+data/books.js               Bible books band: writer, place, years and main events of each book (hand-written)
 data/zh/people.js           Chinese text for every person (hand-editable)
 data/zh/places.js           Chinese text for places, events, eras and map labels
 data/ASSUMED_DATES.md       generated list of placeholder dates
