@@ -133,19 +133,23 @@
   GROUP.son = (c) => c.gender === "m" && nRel(c, "father") + nRel(c, "mother") > 0;
   GROUP.daughter = (c) => c.gender === "f" && nRel(c, "father") + nRel(c, "mother") > 0;
   for (const [g, en] of Object.entries(SHOW_FAM)) GROUP_NAME[g] = T("show.fam." + g, null, en);
-  let showMode = "all";             // all | key | line | groups
-  let showGroups = new Set();       // with showMode "groups": the picked jobs and family roles
+  let showMode = "all";             // all | key | line | mine
+  let showGroups = new Set();       // the picked jobs and family roles; they narrow the people of showMode
   let showAll = false;              // with several groups: false = anyone in any of them, true = only people in all of them
   let booksOn = false;              // the Bible books band (the book button in the top bar)
   try { booksOn = localStorage.getItem("bt-books") === "1"; } catch (_) {}
   try {
-    const m = localStorage.getItem("bt-show") || "";
-    if (/^[ga]:/.test(m)) { showGroups = new Set(m.slice(2).split(",").filter((g) => GROUP[g])); showAll = m[0] === "a"; }
-    showMode = showGroups.size ? "groups" : SHOW_MODES[m] ? m : "all";
+    // "line;g:wife,husband" (older: "g:king" with no mode before it)
+    const [m, gs] = (localStorage.getItem("bt-show") || "").split(";");
+    const g = /^[ga]:/.test(m) ? m : gs || "";
+    if (/^[ga]:/.test(g)) { showGroups = new Set(g.slice(2).split(",").filter((k) => GROUP[k])); showAll = g[0] === "a"; }
+    showMode = SHOW_MODES[m] ? m : "all";
   } catch (_) {}
-  const showKey = () => (showMode === "groups" ? (showAll ? "a:" : "g:") + [...showGroups].join(",") : showMode);
-  const inMode = (c) => showMode === "all" || (showMode === "groups" ? [...showGroups][showAll ? "every" : "some"]((g) => GROUP[g](c))
-    : showMode === "line" ? !!c.line : showMode === "mine" ? isStarred(c) : !!(c.key || c.line));
+  const showKey = () => showMode + (showGroups.size ? ";" + (showAll ? "a:" : "g:") + [...showGroups].join(",") : "");
+  const inBase = (c) => showMode === "all" || (showMode === "line" ? !!c.line : showMode === "mine" ? isStarred(c) : !!(c.key || c.line));
+  const inGroups = (c) => !showGroups.size || [...showGroups][showAll ? "every" : "some"]((g) => GROUP[g](c));
+  const inMode = (c) => inBase(c) && inGroups(c);
+  const filtered = () => showMode !== "all" || showGroups.size > 0;
 
   const T0 = A(-4026) - 90;
   const T1 = A(100) + 70;
@@ -455,7 +459,7 @@
 
     // characters
     // with a filter on, fewer people compete for space, so they show up sooner
-    const need = (c) => TIER[showMode === "all" ? c.tier : Math.min(c.tier, 3)];
+    const need = (c) => TIER[filtered() ? Math.min(c.tier, 3) : c.tier];
     const cands = dotEls.filter((d) => isPinned(d.c) || hoverC === d.c || (inMode(d.c) && view.ppy >= need(d.c)));
     packLanes(cands, packForce); packForce = false;
     const relSet = new Set(hoverC ? hoverC.relIds : []);
@@ -2112,27 +2116,32 @@
   /* show: everyone / key figures / Adam-to-Jesus line, or any mix of jobs and family roles */
   const showBox = $("show"), showBtn = $("showBtn"), showMenu = $("showMenu");
   function showLabelText() {
-    if (showMode !== "groups") return SHOW_MODES[showMode];
+    if (!showGroups.size) return SHOW_MODES[showMode];
     const names = [...showGroups].map((g) => GROUP_NAME[g]);
-    if (names.length > 2) return T(showAll ? "show.groups.more.all" : "show.groups.more", { a: names[0], n: names.length }, `${names[0]} ${showAll ? "&" : "+"} ${names.length - 1} more`);
-    return names.join(showAll ? T("show.and", null, " & ") : I18.zh ? "、" : ", ");
+    const gs = names.length > 2 ? T(showAll ? "show.groups.more.all" : "show.groups.more", { a: names[0], n: names.length }, `${names[0]} ${showAll ? "&" : "+"} ${names.length - 1} more`)
+      : names.join(showAll ? T("show.and", null, " & ") : I18.zh ? "、" : ", ");
+    // the jobs and family roles are picked inside the group above them: "Adam to Jesus line: Wives"
+    return showMode === "all" ? gs : SHOW_MODES[showMode] + T("show.within", null, ": ") + gs;
   }
   function setShowMode(m, groups) {
     showMode = m;
-    showGroups = m === "groups" ? groups : new Set();
-    if (m === "groups" && !showGroups.size) showMode = "all";
+    if (groups) showGroups = groups;
     try { localStorage.setItem("bt-show", showKey()); } catch (_) {}
-    showBox.classList.toggle("filtered", showMode !== "all");
+    showBox.classList.toggle("filtered", filtered());
     const label = showLabelText();
     showBtn.setAttribute("aria-label", T("show.current", { m: label }, `Showing: ${label}. Change who is shown`));
     $("showLabel").textContent = label;
     showMenu.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-checked", b.dataset.mode === showMode));
-    showMenu.querySelectorAll("[data-group]").forEach((b) => b.setAttribute("aria-checked", showGroups.has(b.dataset.group)));
+    // each job or family count is the number of people in it within the group picked above
+    showMenu.querySelectorAll("[data-group]").forEach((b) => {
+      b.setAttribute("aria-checked", showGroups.has(b.dataset.group));
+      b.querySelector(".sm-n").textContent = CHARS.filter((c) => inBase(c) && GROUP[b.dataset.group](c)).length.toLocaleString();
+    });
     showMenu.querySelectorAll("[data-match]").forEach((b) => b.setAttribute("aria-checked", (b.dataset.match === "all") === showAll));
     renderMiniPeople();
-    $("showNote").textContent = showAll ? T("show.groups.note.all", null, "Only people in every group you pick are shown, such as a king who was also a prophet.")
-      : T("show.groups.note", null, "Pick as many as you like. Anyone in any of them is shown.");
-    $("showResult").textContent = showMode === "groups" && showGroups.size > 1 ? T("show.result", { n: CHARS.filter(inMode).length.toLocaleString() }, `${CHARS.filter(inMode).length.toLocaleString()} people`) : "";
+    $("showNote").textContent = showAll ? T("show.groups.note.all", null, "Only people in every group you pick are shown, such as a king who was also a prophet. They are picked from the people chosen above.")
+      : T("show.groups.note", null, "Pick as many as you like. Anyone in any of them is shown, from the people chosen above.");
+    $("showResult").textContent = showGroups.size > (showMode === "all" ? 1 : 0) ? T("show.result", { n: CHARS.filter(inMode).length.toLocaleString() }, `${CHARS.filter(inMode).length.toLocaleString()} people`) : "";
     packForce = true; requestRender();
   }
   const closeShow = () => { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); };
@@ -2144,17 +2153,16 @@
   // the groups are toggles, so the menu stays open while you pick several
   showMenu.querySelectorAll("[data-group]").forEach((b) => {
     const g = b.dataset.group;
-    b.querySelector(".sm-n").textContent = CHARS.filter(GROUP[g]).length.toLocaleString();
     b.addEventListener("click", () => {
-      const next = new Set(showMode === "groups" ? showGroups : []);
+      const next = new Set(showGroups);
       if (next.has(g)) next.delete(g); else next.add(g);
-      setShowMode("groups", next);
+      setShowMode(showMode, next);
     });
   });
   // any or all of the picked groups
   showMenu.querySelectorAll("[data-match]").forEach((b) => b.addEventListener("click", () => {
     showAll = b.dataset.match === "all";
-    setShowMode(showMode === "groups" ? "groups" : showMode, showGroups);
+    setShowMode(showMode);
   }));
   showBtn.addEventListener("click", (e) => {
     e.stopPropagation();
