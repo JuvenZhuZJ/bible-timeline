@@ -455,6 +455,7 @@
     renderTracks();
     renderCursor();
     renderMinimap();
+    syncHash();
   }
 
   /* A lifespan line starts after its own name, and is also cut wherever another person's name
@@ -913,6 +914,7 @@
     min: '<svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg>',
     restorePath: "M6 7h12v11H6zM6 10h12",
     close: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    link: '<svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
   };
   const QLABEL = { derived: T("q.derived", null, "from Bible ages"), estimated: T("q.estimated", null, "estimated"), assumed: T("q.assumed", null, "assumed") };
 
@@ -1006,6 +1008,7 @@
         <div class="win-title"><div class="win-name">${esc(c.name)}</div><div class="win-dates"><span>${esc(fmtRange(c))}</span> · <span>${esc(ageText(c))}</span></div></div>
         <div class="win-btns">
           <button class="win-btn" data-act="locate" aria-label="${esc(T("locate", { name: c.name }, `Show ${c.name} on the timeline`))}" title="${esc(T("locate.t", null, "Show on timeline"))}">${ICON.locate}</button>
+          <button class="win-btn" data-act="link" aria-label="${esc(T("link", { name: c.name }, `Copy a link to ${c.name}`))}" title="${esc(T("link.t", null, "Copy link"))}">${ICON.link}</button>
           <button class="win-btn" data-act="min" aria-label="${T("min", null, "Minimize")}" title="${T("min", null, "Minimize")}">${ICON.min}</button>
           <button class="win-btn" data-act="close" aria-label="${T("close", null, "Close")}" title="${T("close", null, "Close")}">${ICON.close}</button>
         </div>
@@ -1097,6 +1100,7 @@
     w.el.style.zIndex = ++zTop;
     focusedW = w;
     syncMap();
+    syncHash();
   }
 
   /* scroll a window's activity row into the middle of what can be seen of the list, below the
@@ -1134,6 +1138,7 @@
     w.el.querySelector('[data-act="close"]').addEventListener("click", () => closeWin(w));
     w.el.querySelector('[data-act="min"]').addEventListener("click", () => minimize(w));
     w.el.querySelector('[data-act="locate"]').addEventListener("click", () => { if (L.mobile) minimize(w); locate(w.c); });
+    w.el.querySelector('[data-act="link"]').addEventListener("click", () => copyLink(w.c));
 
     w.el.querySelectorAll(".rel-chip").forEach((b) => b.addEventListener("click", () => {
       const r = CHAR_BY_ID.get(b.dataset.rel); if (!r) return;
@@ -1592,6 +1597,55 @@
   document.addEventListener("pointerdown", (e) => { if (!setBox.contains(e.target)) { setBox.classList.remove("open"); setBtn.setAttribute("aria-expanded", "false"); } });
   setShowMode(showMode, showGroups);
 
+  /* ───────────────────────── shareable links ─────────────────────────
+     The address keeps what is on screen, so it can be bookmarked or sent: #p=david,solomon&y=-1050&z=4
+     opens those windows (the last in front) with the year 1050 B.C.E. in the middle, zoomed to 4 times
+     the whole timeline. A window's link button copies just #p=<that person>, which opens their window
+     and shows them on the timeline. */
+  let hashT = 0, hashReady = false;
+  function hashNow() {
+    const ids = wins.slice().sort((a, b) => (+a.el.style.zIndex || 0) - (+b.el.style.zIndex || 0)).map((w) => w.c.id);
+    const y = Math.round(fromA(tAt(W / 2))), z = Math.round((view.ppy / fitPpy()) * 100) / 100;
+    return "#" + (ids.length ? `p=${ids.join(",")}&` : "") + `y=${y}&z=${z}`;
+  }
+  function syncHash() {
+    if (!hashReady) return;
+    clearTimeout(hashT);
+    hashT = setTimeout(() => { try { history.replaceState(null, "", hashNow()); } catch (_) {} }, 400);
+  }
+  function applyHash() {
+    const q = new URLSearchParams(location.hash.slice(1));
+    const people = (q.get("p") || "").split(",").map((id) => CHAR_BY_ID.get(id)).filter(Boolean);
+    const y = parseFloat(q.get("y")), z = parseFloat(q.get("z"));
+    if (z > 0) view.ppy = fitPpy() * z;
+    if (isFinite(y)) view.t0 = A(Math.round(y)) - W / 2 / view.ppy;
+    clampView();
+    // someone hidden by this viewer's People filter would not show, so show everyone
+    if (people.some((c) => !inMode(c))) setShowMode("all");
+    people.forEach((c) => openWindow(c));
+    if (people.length && !isFinite(y)) locate(people[people.length - 1]);
+  }
+  const toast = $("toast");
+  let toastT = 0;
+  function showToast(text) {
+    toast.textContent = text; toast.classList.add("show");
+    clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove("show"), 1800);
+  }
+  function copyLink(c) {
+    const url = location.href.split("#")[0] + "#p=" + c.id;
+    const done = () => showToast(T("link.copied", { name: c.name }, `Link to ${c.name} copied`));
+    const fallback = () => {
+      const ta = document.createElement("textarea");
+      ta.value = url; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch (_) { showToast(url); }
+      ta.remove();
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(done, fallback);
+    else fallback();
+  }
+  window.addEventListener("hashchange", () => { if (location.hash !== hashNow()) applyHash(); });
+
   /* ───────────────────────── boot ───────────────────────── */
   let resizeT = 0;
   window.addEventListener("resize", () => {
@@ -1610,6 +1664,8 @@
 
   layout();
   fit();
+  if (location.hash.length > 1) applyHash();
+  hashReady = true;
   render();
   // names measured with a fallback font are re-measured once the web fonts arrive
   if (document.fonts) document.fonts.ready.then(() => { dotEls.forEach((d) => { d.gap = 0; }); evEls.forEach((o) => { o.mw = 0; }); requestRender(); });
