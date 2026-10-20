@@ -80,6 +80,8 @@
         <button role="menuitemradio" data-mode="all"><span class="sm-t"><span data-i18n="show.all">Everyone</span><small data-i18n="show.all.d">Every person named in the Bible</small></span><span class="sm-n"></span></button>
         <button role="menuitemradio" data-mode="key"><span class="sm-t"><span data-i18n="show.key">Key figures</span><small data-i18n="show.key.d">The best-known people and Jesus’ ancestors</small></span><span class="sm-n"></span></button>
         <button role="menuitemradio" data-mode="line"><span class="sm-t"><span data-i18n="show.line">Adam to Jesus line</span><small data-i18n="show.line.d">Only the line of descent from Adam to Jesus</small></span><span class="sm-n"></span></button>
+        <button role="menuitemradio" data-mode="mine"><span class="sm-t"><span data-i18n="show.mine">My bookmarks</span><small data-i18n="show.mine.d">Only the people you starred</small></span><span class="sm-n"></span></button>
+        <button class="sm-link" id="notesOpen" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h9l3 3v14H6z"/><path d="M9 10h6M9 13.5h6M9 17h4"/></svg><span data-i18n="notes.open">My notes and bookmarks</span></button>
         <div class="sm-h sm-h2" data-i18n="show.jobs">By job or family</div>
         <div class="sm-match" role="group" aria-label="When you pick several" data-i18n-aria="show.match">
           <span class="sm-mk" data-i18n="show.match.k">Show people in</span>
@@ -202,19 +204,34 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="modal" id="notes" hidden>
+    <div class="modal-card notes-card" role="dialog" aria-modal="true" aria-labelledby="notesTitle">
+      <button class="icon-btn modal-close" id="notesClose" aria-label="Close" data-i18n-aria="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <h2 id="notesTitle" data-i18n="notes.title">My notes and bookmarks</h2>
+      <p class="notes-intro" data-i18n="notes.intro">These are kept only in this browser on this device. Clearing the browser’s data removes them, so download a copy now and then.</p>
+      <div class="notes-tools">
+        <button class="dock-btn" id="notesDownload"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg><span data-i18n="notes.download">Download</span></button>
+        <button class="dock-btn" id="notesPrint"><svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H4.5v-7h15v7H17M7 14h10v6H7z"/></svg><span data-i18n="notes.print">Print</span></button>
+        <span class="muted" id="notesCount"></span>
+      </div>
+      <ul class="notes-list" id="notesList"></ul>
+    </div>
+  </div>
   <div class="modal" id="about" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <button class="icon-btn modal-close" id="aboutClose" aria-label="Close" data-i18n-aria="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <h2 id="aboutTitle" data-i18n="about.title">About this timeline</h2>
       <p data-i18n="about.intro">This timeline shows the people of the Bible from Adam to the first-century Christians. Each dot is a person, and each large node is a turning point in Bible history.</p>
       <h3 data-i18n="about.move.h">Moving around</h3>
-      <p data-i18n="about.move">Drag the timeline to move through time, and scroll (or pinch on a phone) to zoom in and out. More people appear as you zoom in. The <strong>+</strong> and <strong>−</strong> buttons zoom too, and the button under them brings back the whole timeline, as does clicking the logo. The bar along the bottom shows all of history at once: click or drag on it to jump to a period. To find someone, type their name in the search box. The language button in the top bar switches between English and Chinese.</p>
+      <p data-i18n="about.move">Drag the timeline to move through time, and scroll (or pinch on a phone) to zoom in and out. More people appear as you zoom in. The <strong>+</strong> and <strong>−</strong> buttons zoom too, and the button under them brings back the whole timeline, as does clicking the logo. The bar along the bottom shows all of history at once, with a small mark for each person the people button is showing: click or drag on it to jump to a period. To find someone, type their name in the search box. The language button in the top bar switches between English and Chinese.</p>
       <h3 data-i18n="about.person.h">Looking at a person</h3>
       <p data-i18n="about.person">Hover over a dot (or tap it) to see the person’s portrait, lifespan and family links. Click it (or tap again) to open their window. In a window you can click a relative to open theirs, and click a dot on the lifespan bar to read about something that happened in their life. Bible references open the verse in the <em>New World Translation</em> online. Under <strong>Read more</strong>, the window links to the person’s article in <em>Insight on the Scriptures</em> and to any chapter about them in <em>Imitate Their Faith</em> or <em>Walk Courageously With God</em>. Key figures also list the other key figures who lived at the same time. The link button at the top of a window copies a link that opens that person, and the address in the browser always keeps what is on screen, so you can bookmark it or send it to someone. Open several windows to compare lives side by side; their lifespans stay under the main line, and <strong>Fold all</strong> or <strong>Close all</strong> at the bottom tidies them up at once.</p>
       <h3 data-i18n="about.show.h">Who is shown</h3>
       <p data-i18n="about.show">The people button in the top bar switches between <strong>everyone</strong> named in the Bible, the <strong>key figures</strong>, and only the <strong>line from Adam to Jesus</strong> (Luke 3:23-38; Matthew 1:1-16). Under <strong>By job or family</strong> it can also show only the kings and queens, the prophets, the Bible writers, the wives, the daughters and so on. Pick several to see everyone in any of them, or switch to <strong>all of them</strong> to see only the people who are in every one, such as the kings who were also prophets. Small icons after a name show what the person is known for: a crown for a king or queen, a scroll for a prophet (broken for a false prophet), a staff for a patriarch, scales for a judge, a turban for a priest, a sandal for an apostle, a signet ring for an official, a sword for an army commander and a quill for a Bible writer. Someone known for more than one, such as David, has more than one icon. The <strong>Legend</strong> lists them.</p>
       <h3 data-i18n="about.books.h">Bible books</h3>
       <p data-i18n="about.books">The book button in the top bar shows the books of the Bible as lines just above the main line. Each line spans the years the book covers, and the dots on it are main events the book tells about. Hover over a book (or tap it) to see who wrote it, where, and when the writing was completed, with a link to read it online. Click it (or tap again) to zoom to it, and click a dot to open that event in the person’s window. Books that cover no set period, such as Psalms or the letters, are a short mark at the year they were completed. The years come from the table of the books of the Bible in the <em>New World Translation</em>.</p>
+      <h3 data-i18n="about.notes.h">My notes and bookmarks</h3>
+      <p data-i18n="about.notes">The star at the top of a window bookmarks the person, and the <strong>My notes</strong> box under their summary keeps anything you want to write about them. <strong>My bookmarks</strong> in the people menu shows only the people you starred, and <strong>My notes and bookmarks</strong> lists them all, ready to download or print. They are saved only in this browser on this device.</p>
       <h3 data-i18n="about.dates.h">Reading the dates</h3>
       <p data-i18n="about.dates">Each birth and death year is one of three kinds, and the <strong>Legend</strong> button shows how each is drawn. A <strong>solid dot</strong> means the year is worked out from ages and reign lengths the Bible gives. A <strong>ring with a small dot</strong> means the year is <strong>estimated</strong>: the Bible gives a clue, such as an age at death, but no exact year. A <strong>dashed ring</strong> means the year is <strong>assumed</strong>: the Bible does not record it, so the person is placed by their generation or the period they appear in. Most people have assumed dates, so take their place on the timeline as a rough guide. “c.” before a year means it is approximate.</p>
       <h3 data-i18n="about.places.h">Places</h3>

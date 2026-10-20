@@ -28,7 +28,10 @@ The **People** button in the top bar picks who appears:
 | Everyone | All 2,737 people, including 34 the Bible does not name (see below). Minor people appear as you zoom in. |
 | Key figures | 201 people: the 140 hand-written key figures plus everyone on the Adam-to-Jesus line. |
 | Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
+| My bookmarks | Only the people the visitor starred (see [My notes and bookmarks](#my-notes-and-bookmarks)). |
 | By job or family | Any mix of groups, picked as toggles; a switch under the heading shows either anyone in **any** picked group (the default) or only people in **all** of them (Kings and Prophets together gives David and Jesus; the menu shows how many people match). Saved in the browser as `g:` (any) or `a:` (all) in `bt-show`. Jobs: kings and queens, prophets, false prophets, patriarchs, judges, priests, apostles, officials, army commanders, Bible writers (see [Job icons](#job-icons)). Family roles, below a divider and with no timeline icon: husbands and wives (a recorded spouse), sons and daughters (a recorded father or mother). |
+
+The overview bar at the bottom follows the same choice: it has one small mark at the birth of each person being shown (`renderMiniPeople()` in `js/app.js`), fainter when there are hundreds, so it shows which periods the chosen people belong to. Its era shading and event lines stay the same.
 
 All the modes follow the same zoom rule: fully zoomed out you see only the timeline and its events, and people appear as you zoom in, the most important first. The Key figures, Adam-to-Jesus and By job or family modes show their people a little sooner, since fewer people compete for space.
 
@@ -109,6 +112,13 @@ The book button in the top bar (next to the People button) shows the 66 books of
 - **Card:** hovering a book name (or tapping it) shows its card: the writer (click to open their window), where and when it was written, the time covered, its main events (each clickable) and a link to read the book on wol.jw.org. Click the book (or tap again) to zoom to it.
 
 The data is in `data/books.js` (hand-editable). A dot is either `"person-id:n"`, the person's n-th activity in `data/people.js` (counting from 0, before the activities are sorted), or `"e:event-id"` from `data/events.js`, so its text and scripture come from there in both languages.
+
+## My notes and bookmarks
+
+The star at the top of a person's window bookmarks them, and the **My notes** box under the summary keeps the visitor's own notes (saved as they type). Both are stored only in that browser (`localStorage` key `bt-notes`, `{ id: { s: starred, n: note, t: last change } }`); nothing is sent anywhere, and clearing the browser's data removes them.
+
+- **My bookmarks** in the People menu shows only the starred people (it follows the same zoom rule as the other modes).
+- **My notes and bookmarks** in the People menu lists everyone with a star or a note in timeline order; click a name to open their window. **Download** saves them as a text file, and **Print** prints just the list.
 
 ## Read more
 
