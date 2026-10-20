@@ -1,0 +1,83 @@
+/*
+ * HISTORY BETWEEN THE TESTAMENTS (and around them)
+ * ------------------------------------------------------------------
+ * Events and sources that come from history, not from the Bible text.
+ * The site draws them with a square mark so visitors can tell them apart.
+ * Years: negative = B.C.E.
+ *
+ * HISTORY_SOURCES: the publications on wol.jw.org these come from. A document has
+ *   the same number in English and Chinese. Activities in data/characters.js and
+ *   data/source/history-people.json point at them as "@key".
+ * HISTORY_EVENTS: drawn on the main line next to the Bible's major events.
+ *   src: source keys · ref: scriptures the event relates to (a prophecy, or a
+ *   later mention) · approx: the year is approximate (shown with "c.")
+ *   zh: Chinese title and text.
+ * Write every text in your own words.
+ */
+window.HISTORY_SOURCES = {
+  "it-alexander":   { d: "1200000192", en: "<em>Insight on the Scriptures</em>, “Alexander”", zh: "《洞悉聖經》「亞歷山大」" },
+  "it-alexandria":  { d: "1200000193", en: "<em>Insight on the Scriptures</em>, “Alexandria”", zh: "《洞悉聖經》「亞歷山大（城）」" },
+  "it-antonia":     { d: "1200000295", en: "<em>Insight on the Scriptures</em>, “Antonia, Tower of”", zh: "《洞悉聖經》「安東尼亞塔」" },
+  "it-caesarea":    { d: "1200000853", en: "<em>Insight on the Scriptures</em>, “Caesarea”", zh: "《洞悉聖經》「凱撒里亞」" },
+  "it-dedication":  { d: "1200001506", en: "<em>Insight on the Scriptures</em>, “Festival of Dedication”", zh: "《洞悉聖經》「獻殿節」" },
+  "it-greece":      { d: "1200001765", en: "<em>Insight on the Scriptures</em>, “Greece, Greeks”", zh: "《洞悉聖經》「希臘，希臘人」" },
+  "it-herod":       { d: "1200002000", en: "<em>Insight on the Scriptures</em>, “Herod”", zh: "《洞悉聖經》「希律」" },
+  "it-idumea":      { d: "1200002138", en: "<em>Insight on the Scriptures</em>, “Idumea”", zh: "《洞悉聖經》「以土邁」" },
+  "it-jerusalem":   { d: "1200002436", en: "<em>Insight on the Scriptures</em>, “Jerusalem”", zh: "《洞悉聖經》「耶路撒冷」" },
+  "it-persia":      { d: "1200003447", en: "<em>Insight on the Scriptures</em>, “Persia, Persians”", zh: "《洞悉聖經》「波斯，波斯人」" },
+  "it-pharisees":   { d: "1200003459", en: "<em>Insight on the Scriptures</em>, “Pharisees”", zh: "《洞悉聖經》「法利賽派」" },
+  "it-proselyte":   { d: "1200003565", en: "<em>Insight on the Scriptures</em>, “Proselyte”", zh: "《洞悉聖經》「歸信者」" },
+  "it-rome":        { d: "1200003763", en: "<em>Insight on the Scriptures</em>, “Rome”", zh: "《洞悉聖經》「羅馬」" },
+  "it-sadducees":   { d: "1200003795", en: "<em>Insight on the Scriptures</em>, “Sadducees”", zh: "《洞悉聖經》「撒都該派」" },
+  "it-samaritan":   { d: "1200003817", en: "<em>Insight on the Scriptures</em>, “Samaritan”", zh: "《洞悉聖經》「撒馬利亞人」" },
+  "it-syria":       { d: "1200004285", en: "<em>Insight on the Scriptures</em>, “Syria”", zh: "《洞悉聖經》「敘利亞」" },
+  "it-versions":    { d: "1200004554", en: "<em>Insight on the Scriptures</em>, “Versions”", zh: "《洞悉聖經》「聖經譯本」" },
+  "dp9":            { d: "1101999028", en: "<em>Pay Attention to Daniel’s Prophecy!</em>, chapter 9", zh: "《要留意但以理的預言！》第9章" },
+  "dp13":           { d: "1101999032", en: "<em>Pay Attention to Daniel’s Prophecy!</em>, chapter 13", zh: "《要留意但以理的預言！》第13章" },
+  "dp14":           { d: "1101999034", en: "<em>Pay Attention to Daniel’s Prophecy!</em>, chapter 14", zh: "《要留意但以理的預言！》第14章" },
+  "w98":            { d: "1998847", en: "<em>The Watchtower</em>, November 15, 1998, “Who Were the Maccabees?”", zh: "《守望台》1998年11月15日刊「馬加比家族是誰？」" },
+  "w01":            { d: "2001446", en: "<em>The Watchtower</em>, June 15, 2001, “The Hasmonaeans and Their Legacy”", zh: "《守望台》2001年6月15日刊「哈斯蒙家族對後世的影響」" },
+  "nwt-john10":     { d: "1001070678", en: "<em>New World Translation</em> (Study Edition), study note on John 10:22", zh: "《新世界譯本》研讀版約翰福音10:22注釋" }
+};
+
+window.HISTORY_EVENTS = [
+  { id: "h-greece", year: -332, title: "Greece Takes Judah", src: ["it-jerusalem", "it-greece"], ref: "Daniel 8:5-7, 20, 21",
+    text: "Alexander the Great sweeps through Persia's empire and takes Judah without harming Jerusalem. Greece is now the world power, and Greek language and culture spread among the Jews.",
+    zh: { title: "希臘控制猶大", text: "亞歷山大大帝橫掃波斯帝國，控制了猶大，耶路撒冷沒有受到破壞。希臘成為世界強國，希臘的語言和文化也在猶太人當中傳開。" } },
+  { id: "h-divided", year: -301, title: "Alexander's Empire Divided", src: ["dp13", "it-alexander"], ref: "Daniel 8:8, 22; 11:4",
+    text: "After Alexander dies in 323 B.C.E., his generals fight over his empire. By 301 four of them hold it. Ptolemy I rules Egypt and Palestine, so Judah is now governed from Egypt.",
+    zh: { title: "亞歷山大的帝國分裂", text: "亞歷山大在公元前323年去世後，手下的將領爭奪他的帝國。到公元前301年，四個將領各據一方。托勒密一世統治埃及和巴勒斯坦，於是猶大受埃及管轄。" } },
+  { id: "h-septuagint", year: -280, approx: true, title: "The Septuagint Begun", src: ["it-alexandria", "it-versions"],
+    text: "In Alexandria, during the reign of Ptolemy II (285-246 B.C.E.), Jewish scholars begin translating the Hebrew Scriptures into Greek. This Septuagint was later quoted by the Christian Bible writers.",
+    zh: { title: "開始翻譯七十子譯本", text: "托勒密二世在位期間（公元前285-246年），猶太學者在亞歷山大城開始把希伯來語經卷翻譯成希臘語。後來，基督徒執筆者常引用這部《七十子譯本》。" } },
+  { id: "h-raphia", year: -217, title: "Battle of Raphia", src: ["dp13"], ref: "Daniel 11:11, 12",
+    text: "Ptolemy IV of Egypt defeats Antiochus III of Syria at Raphia near Egypt's border. Judah stays under Egypt for now, as the kings of the north and south keep fighting over the land.",
+    zh: { title: "拉斐亞之役", text: "埃及的托勒密四世在埃及邊境附近的拉斐亞擊敗敘利亞的安條克三世。北方王和南方王繼續爭奪這片土地，猶大暫時仍受埃及統治。" } },
+  { id: "h-seleucid", year: -198, title: "Judea Passes to Syria", src: ["dp13", "it-jerusalem"], ref: "Daniel 11:15, 16",
+    text: "Antiochus III beats Egypt's army at Paneas, takes Sidon, and then Jerusalem. Judea now belongs to the Seleucid kings of Syria, who press Greek ways on the Jews.",
+    zh: { title: "猶地亞歸敘利亞", text: "安條克三世在潘尼厄斯擊敗埃及軍隊，攻取西頓，接著佔領耶路撒冷。猶地亞從此受敘利亞的塞琉西王朝統治，他們強迫猶太人接受希臘文化。" } },
+  { id: "h-defiled", year: -168, title: "Temple Defiled", src: ["it-dedication", "nwt-john10", "it-jerusalem"],
+    text: "Antiochus IV Epiphanes dedicates Jehovah's temple to Zeus, offers a pig on the altar and carries off the sacred furnishings. Circumcision and the Sabbath are banned on pain of death.",
+    zh: { title: "聖殿被褻瀆", text: "安條克四世（伊皮法尼斯）把耶和華的聖殿獻給宙斯，在壇上獻豬為祭，並奪去聖殿的器具。行割禮和守安息日都被判死罪。" } },
+  { id: "h-revolt", year: -167, title: "The Maccabean Revolt", src: ["w98"],
+    text: "At Modein the aged priest Mattathias refuses to offer a pagan sacrifice and flees to the hills with his sons. Many Jews join them, and his son Judas Maccabeus leads a long war against the Syrian armies.",
+    zh: { title: "馬加比起義", text: "年老的祭司瑪他提亞在莫頂拒絕獻異教的祭，帶著兒子逃往山區。許多猶太人前來歸附，他的兒子猶大·馬加比率領他們跟敘利亞軍隊長期作戰。" } },
+  { id: "h-rededicated", year: -165, title: "Temple Rededicated", src: ["it-dedication", "nwt-john10"], ref: "John 10:22",
+    text: "Judas Maccabeus retakes Jerusalem, cleanses the temple and rededicates it on Chislev 25, three years to the day after it was defiled. The yearly festival of dedication (Hanukkah) begins; Jesus was at the temple during it in 32 C.E.",
+    zh: { title: "聖殿重新呈獻", text: "猶大·馬加比收復耶路撒冷，潔淨聖殿，在基斯流月二十五日重新呈獻聖殿，正好是聖殿被褻瀆後整整三年。每年一度的獻殿節從此開始；公元32年耶穌曾在這個節期到聖殿去。" } },
+  { id: "h-independent", year: -142, title: "Judea Independent", src: ["it-jerusalem", "w98", "w01"],
+    text: "Under Simon, the last of the Maccabee brothers, Judea throws off Syrian rule and tribute. Two years later the people make him ruler and high priest, founding the Hasmonaean dynasty.",
+    zh: { title: "猶地亞獨立", text: "在馬加比家族最後一個兄弟西門的領導下，猶地亞擺脫了敘利亞的統治和進貢。兩年後，人民立他為統治者兼大祭司，哈斯蒙王朝從此建立。" } },
+  { id: "h-kingdom", year: -104, title: "A Hasmonaean King", src: ["it-jerusalem", "w01"],
+    text: "Aristobulus I, already high priest, takes the title of king, though he is not of David's line. Rivalry among Pharisees, Sadducees and others weakens the nation from within.",
+    zh: { title: "哈斯蒙王朝稱王", text: "已經是大祭司的阿里斯托布魯斯一世自立為王，但他並非出自大衛的王族。法利賽派、撒都該派和其他派系彼此爭鬥，使國家內部日漸衰弱。" } },
+  { id: "h-pompey", year: -63, title: "Pompey Takes Jerusalem", src: ["it-jerusalem", "dp13", "w01"],
+    text: "The brothers Hyrcanus II and Aristobulus II ask Rome to settle their fight for the throne. The Roman general Pompey besieges Jerusalem for three months and takes it. The Jews are now under Rome.",
+    zh: { title: "龐培攻取耶路撒冷", text: "海爾卡努斯二世和阿里斯托布魯斯二世兩兄弟爭奪王位，請羅馬出面調停。羅馬將軍龐培圍攻耶路撒冷三個月後攻陷了城。猶太人從此受羅馬統治。" } },
+  { id: "h-herod", year: -37, title: "Herod Takes Jerusalem", src: ["it-herod", "dp13", "w01"],
+    text: "Herod, an Idumean whom the Roman Senate had named king of Judea, captures Jerusalem from Antigonus, the last Hasmonaean ruler. His reign over the Jews lasts until shortly after Jesus' birth.",
+    zh: { title: "希律攻取耶路撒冷", text: "以土邁人希律獲羅馬元老院委任為猶地亞王，從哈斯蒙王朝最後一個統治者安提柯手中奪取耶路撒冷。他一直統治猶太人，直到耶穌出生後不久。" } },
+  { id: "h-actium", year: -31, title: "Battle of Actium", src: ["dp14", "dp9"], ref: "Daniel 7:7",
+    text: "Octavian defeats Mark Antony and Cleopatra VII at Actium. A year later Egypt becomes a Roman province, the last of the Greek kingdoms falls, and Rome stands as the next world power of Bible prophecy.",
+    zh: { title: "亞克興之役", text: "屋大維在亞克興擊敗馬可·安東尼和克婁巴特拉七世。一年後埃及成為羅馬的行省，最後一個希臘王國也滅亡了，羅馬成為聖經預言所說的下一個世界強國。" } }
+];

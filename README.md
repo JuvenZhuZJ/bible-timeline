@@ -25,8 +25,9 @@ The **People** button in the top bar picks who appears:
 
 | Mode | Shows |
 | --- | --- |
-| Everyone | All 2,737 people, including 34 the Bible does not name (see below). Minor people appear as you zoom in. |
-| Key figures | 201 people: the 140 hand-written key figures plus everyone on the Adam-to-Jesus line. |
+| Everyone | All 2,788 people, including 34 the Bible does not name and 52 known from history (see below). Minor people appear as you zoom in. |
+| Key figures | 208 people: the 140 hand-written key figures, 7 from history (Alexander the Great, Antiochus IV, Mattathias, Judas Maccabeus, Simon, John Hyrcanus I and Pompey) and everyone on the Adam-to-Jesus line. |
+| From history | Only the 52 people known from history, not the Bible (see [History between the Testaments](#history-between-the-testaments)). |
 | Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
 | My bookmarks | Only the people the visitor starred (see [My notes and bookmarks](#my-notes-and-bookmarks)). |
 | By job or family | Any mix of groups, picked as toggles; a switch under the heading shows either anyone in **any** picked group (the default) or only people in **all** of them (Kings and Prophets together gives David and Jesus; the menu shows how many people match). Saved in the browser as `g:` (any) or `a:` (all) in `bt-show`. Jobs: kings and queens, prophets, false prophets, patriarchs, judges, priests, apostles, officials, army commanders, Bible writers (see [Job icons](#job-icons)). Family roles, below a divider and with no timeline icon: husbands and wives (a recorded spouse), sons and daughters (a recorded father or mother). |
@@ -42,6 +43,24 @@ On a phone the search box opens across the top bar, so the site title and the Pe
 ## People the Bible does not name
 
 The people list is built from the person articles in *Insight on the Scriptures*, and Insight writes an article only for a name. So people the Bible never names were missing, and their families had gaps: Ammon (Ben-ammi) had no mother. `data/source/unnamed-people.json` adds 34 of them, in the same shape as the Insight records, with a label for a name ("Lot's younger daughter", "Noah's wife", "Pharaoh of the Exodus") and the verses that mention them. A person is included when they have a clear family link to someone on the timeline (the wives of Cain, Noah, his sons, Lot, Potiphar, Manoah, Job, Jeroboam, Isaiah, Ezekiel, Peter and Pilate; Lot's daughters; Jephthah's and Jairus' daughters; Paul's sister and nephew) or a notable part in a Bible account (the Pharaohs of Joseph's day and of the Exodus, the Pharaoh's daughter who adopted Moses, the queen of Sheba, the widow of Zarephath, the Israelite girl in Naaman's house, the medium of En-dor, the Samaritan woman, the poor widow, the evildoer beside Jesus, the Ethiopian eunuch). Anonymous crowds, unnamed children and passing mentions are left out. A few unnamed people already had an Insight article and were there before (the Shunammite woman). Their windows cite only the Bible, not *Insight*.
+
+## History between the Testaments
+
+The Bible records almost nothing between Nehemiah (after 443 B.C.E.) and the birth of Jesus (2 B.C.E.). The site fills that gap with people and events known from history, as told in publications on wol.jw.org: the last Persian kings, Alexander the Great and the generals who split his empire, the Ptolemies of Egypt and the Seleucids of Syria who fought over Judea, Antiochus IV and the defiled temple, the Maccabees and the Hasmonaean kings, Pompey and Rome, and Herod's family. Herod the Great and Augustus, already on the site, gained activities from the same sources.
+
+Everything from history is drawn as a **square** instead of a circle, on the main line, on people's dots, on lifespan tracks and in the windows' activity lists, and its names and event labels are in italics. The square follows the same fill rules as the circles (solid = the source gives the year, square with a small square = approximate, dashed = assumed). Windows and tooltips say "From history, not the Bible". The legend and the About box explain this in English and Chinese.
+
+Each item cites its source. A history person's window lists them under Sources; an activity's reference starts with the source and may add scriptures after it. Where the Bible speaks of an event, the scripture is listed too: Daniel 8 and 11 (the kings of the north and south, the disgusting thing), Daniel 7:7, John 10:22 (the Festival of Dedication) and Luke 2:1. These are given only as references; prophecy arcs are not drawn.
+
+History events (13 of them, in `data/history.js`) appear only when zoomed in past `HIST_PPY` in `js/app.js`, and they are laid out after the Bible events, so a Bible event always keeps its label. History people follow the usual zoom rule and People modes.
+
+Data:
+
+- `data/history.js`: `HISTORY_SOURCES` (each source's wol.jw.org document number, which is the same in English and Chinese, and its title in both languages) and `HISTORY_EVENTS` (year, title, text, sources, optional scripture, `approx` for "c.", and the Chinese text under `zh`).
+- `data/source/history-people.json`: the people. Each has dates, `q` (date labels; `history` means the source gives the year), role, jobs, portrait look, summary, note, activities and relatives by id. `replaces` turns an Insight record into a history person (Alexander the Great). `patch` changes a person already on the site: `unlink` removes a wrong family link, and `born`, `q`, `note` and `events` add history to Augustus.
+- An activity's scripture field marks a history source with `@`: `"@it-herod; Matthew 2:1"` cites the Insight article on Herod and then Matthew 2:1. The keys are the ones in `HISTORY_SOURCES`. Key figures in `data/characters.js` use the same form (Herod's activities).
+- Chinese text for history people goes in `data/zh/people.js` as usual; the event texts are in `data/history.js`.
+- History people are kept out of Insight name matching, so the Mattathias of Luke 3 is not confused with the Maccabees' father.
 
 ## Era names
 
@@ -177,6 +196,7 @@ While any window is open, the dock at the bottom of the screen starts with two b
 - **Places:** OpenBible.info Bible Geocoding Data (CC BY 4.0) for coordinates, checked against *Insight on the Scriptures* and the maps in the *New World Translation* (nwt_E.pdf). Coastline: Natural Earth (public domain). Roads, routes and landscape: the NWT appendix maps B2, B3, B4, B7, B10 and B13 and the Bible accounts (Acts 13-28 for Paul's voyages), with common routes where they show none. See [Places map](#places-map).
 - **Unnamed people:** `data/source/unnamed-people.json`, written by hand from the verses each record cites (see [People the Bible does not name](#people-the-bible-does-not-name)).
 - **Key figures and events:** `data/characters.js` and `data/events.js`, written by hand from the same sources.
+- **History between the Testaments:** *Insight on the Scriptures* (articles such as "Herod," "Greece," "Syria," "Rome" and "Festival of Dedication"), *Pay Attention to Daniel's Prophecy!* (chapters 9, 13 and 14), *The Watchtower* (November 15, 1998, "Who Were the Maccabees?", and June 15, 2001, "The Hasmonaeans and Their Legacy") and the NWT study note on John 10:22, all on wol.jw.org. Each item names its own source. See [History between the Testaments](#history-between-the-testaments).
 - **Dates checked against:** the *New World Translation* (nwt_E.pdf): the table of Bible books (when each book was written and the years it covers), Appendix A6 (chart of the kings and prophets of Judah and Israel) and Appendix A7 (main events of Jesus' life); *Walk Courageously With God* (2025), whose section timelines give approximate life spans for the people in its 54 chapters; *Imitate Their Faith*, whose opening timeline dates Ruth, Hannah, Abigail, Elijah, Jonah, Esther and others; and *"Bearing Thorough Witness" About God's Kingdom* for the dates in Acts. Where a key figure's date is not recorded in the Bible and one of these books gives an approximate year, the site uses that year and the person's window note names the source. Where they differ from older *Insight* dates, the newer NWT chart is followed (Hezekiah died in 716 B.C.E., Manasseh in 661 and Josiah in 628, as in Appendix A6 and *Walk Courageously With God*).
 - **God's Word Is Truth—A Handbook to the Bible** (2026, on wol.jw.org; Chinese 《上帝的話語就是真理：聖經導讀》). It is published a few chapters at a time; read so far (2026-10-20): Bible Books 26-29, Ezekiel, Daniel, Hosea and Joel. Every date in their timelines and tables is on the site: the dated prophecies of Ezekiel (612, 611, 609, 607, 607/606, 605, 593, 591 B.C.E.), the events of Daniel's life (618 first siege, about 606 the image dream, after 600 the tree dream, 553, 551, 539, 537, 536), the "70 weeks" (455 B.C.E. to 36 C.E.) and the "seven times" from 607 B.C.E. in the event texts, Hosea's book completed between 745 and 740 B.C.E., and Joel's about 820 B.C.E. Where it gave a different year from the site, the handbook, as the newest source, is followed: Nebuchadnezzar's dream of the image about 606 (was 605), the lions' pit in 539 (was 538), Cyrus freeing the Jews in 537 (was 538) and Daniel's vision of the ram and the goat in 551 (was 553); and the 593 B.C.E. vision in Ezekiel is the temple of chapter 40, not the dry bones of chapter 37. The books' subject lines, the people's summaries and notes are written for this site in our own words from its chapters.
 
@@ -197,6 +217,7 @@ js/map.js                   the small place maps in windows and event tooltips
 js/app.js                   timeline, windows, search, People filter
 data/characters.js          140 key figures (hand-written)
 data/events.js              events and eras
+data/history.js             events and sources from history, not the Bible (hand-written)
 data/places.js              places of key figures and events (hand-written)
 data/basemap.js             coastline, rivers and lakes for the maps (generated)
 data/routes.js              ancient roads and travel routes for the maps (hand-written)
@@ -215,7 +236,7 @@ tools/build-basemap.mjs     builds data/basemap.js
 
 ## Rebuild the people data
 
-After editing `data/characters.js`, `data/source/insight-people.json` or `data/source/overrides.json`:
+After editing `data/characters.js`, `data/source/insight-people.json`, `data/source/history-people.json` or `data/source/overrides.json`:
 
 ```sh
 node tools/build-people.mjs

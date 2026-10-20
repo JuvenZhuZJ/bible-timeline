@@ -41,7 +41,9 @@
     "show.menu": "顯示哪些人",
     "show.h": "顯示",
     "show.all": "所有人",
-    "show.all.d": "聖經提到名字的每個人",
+    "show.all.d": "聖經提到名字的每個人，以及歷史人物",
+    "show.hist": "歷史人物",
+    "show.hist.d": "聖經以外、見於歷史記載的人",
     "show.key": "主要人物",
     "show.key.d": "最為人熟知的人物和耶穌的祖先",
     "show.line": "亞當到耶穌的世系",
@@ -108,6 +110,7 @@
     "legend.estimated": "估計的年份",
     "legend.assumed": "假定的年份",
     "legend.event": "重大事件",
+    "legend.hist": "方形：來自歷史資料，不是聖經",
     "legend.man": "跟男子的親屬關係",
     "legend.woman": "跟女子的親屬關係",
     "legend.job.king": "君王／王后",
@@ -169,7 +172,9 @@
     "about.sources": "經文出處、引文和人名的寫法都根據《聖經新世界譯本》（研讀版）。人物和親屬關係的資料取自《洞悉聖經》（第1、2冊），簡介是本網站撰寫的。年份根據《洞悉聖經》的年代學和《新世界譯本》的圖表，也參考了較新的研經書籍，例如《上帝的話語就是真理：聖經導讀》提供的年份和背景資料。地點取自 OpenBible.info，並對照了《洞悉聖經》和《新世界譯本》的地圖。畫像只是插圖，僅供參考。",
     "about.lang.h": "中文版",
     "about.lang": "人名、地名和經文的寫法根據中文《新世界譯本》和《洞悉聖經》（守望台線上書庫）。中文資料沒有的內容由本網站翻譯。",
-    "about.stats": "{n}個人物 · {e}個重大事件 · {a}個人物至少有一個假定年份。",
+    "about.stats": "{n}個人物 · {e}個重大事件 · {a}個人物至少有一個假定年份 · {h}個歷史人物和{he}個歷史事件。",
+    "about.hist.h": "兩約之間的歷史",
+    "about.hist": "希伯來語經卷在公元前443年後不久寫成，耶穌在公元前2年出生。時間線用歷史記載而不是聖經裡的人物和事件，填補這段空白和前後的年代：尼希米之後的波斯王、亞歷山大大帝、為爭奪猶大而交戰的埃及和敘利亞希臘君王、馬加比家族和哈斯蒙王朝的統治者、龐培，以及希律的家族。這些人物和主線上的事件都用<strong>方形</strong>而不是圓點標示；來自歷史資料的活動，在出處旁邊有一個小方形。方形的畫法跟圓點一樣：資料提供了年份的是<strong>實心</strong>方形，年份是大約的，方形<strong>中間有個小方形</strong>，假定的年份則用<strong>虛線</strong>方形。每一項都附有守望台線上書庫的資料來源連結，主要是《洞悉聖經》、《要留意但以理的預言！》和《守望台》。如果聖經預言過或提到某件事，也會列出相關經文，例如但以理書第8和11章提到的希臘、埃及和敘利亞君王。在人物按鈕裡選<strong>歷史人物</strong>，就只會顯示這些人；把時間線稍為放大，就會看到歷史事件。",
     // years
     "bce.short": "公元前{y}",
     "ce.short": "公元{y}",
@@ -192,6 +197,10 @@
     // window
     "q.derived": "根據聖經記載的歲數",
     "q.estimated": "估計",
+    "q.history": "根據歷史資料",
+    "hist.tag": "來自歷史資料，不是聖經",
+    "src": "資料來源：",
+    "see": "參看",
     "q.assumed": "假定",
     "birth": "出生：{q}",
     "death": "死亡：{q}",
@@ -298,6 +307,8 @@
     }
     const ev = Z.events || {};
     for (const e of window.TIMELINE_EVENTS || []) { const z = ev[e.id]; if (z) { if (z.title) e.title = z.title; if (z.text) e.text = z.text; } }
+    // events from history (data/history.js) carry their Chinese with them
+    for (const e of window.HISTORY_EVENTS || []) if (e.zh) { e.en = e.title; e.title = e.zh.title; e.text = e.zh.text; }
     const eras = Z.eras || [];
     (window.TIMELINE_ERAS || []).forEach((e, i) => { if (eras[i]) e.name = eras[i]; });
     const pl = Z.places || {};
