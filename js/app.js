@@ -945,7 +945,7 @@
       }
       // xd: where the writing was completed, a diamond; most books were finished the year their
       // account ends, the rest (Genesis, the Gospels...) get a dotted tail on to it
-      const xa = X(o.a), xb = Math.max(X(o.b), xa + 2), xd = Math.max(X(o.d), xb), tail = xd - xb > 4;
+      const xa = X(o.a), xb = Math.max(X(o.b), xa + 2), xd = Math.max(X(o.d), xb), tail = xd - xb > 8;
       // the name sits before the line; once the start has gone off the left edge it stays at the edge
       if (xb < 0) continue;
       // the first row (nearest the line) with room for the name before the line; failing that, the
@@ -972,8 +972,9 @@
       if (xb > x1) el("line", { class: "book-line", x1, x2: xb, y1: y, y2: y }, grp);
       if (x1 === xa && o.b > o.a) el("line", { class: "book-end", x1: xa, x2: xa, y1: y - 3.5, y2: y + 3.5 }, grp);
       if (o.b > o.a && tail) el("line", { class: "book-end", x1: xb, x2: xb, y1: y - 3.5, y2: y + 3.5 }, grp);
-      if (tail) el("line", { class: "book-tail", x1: xb + 2, x2: xd - 3, y1: y, y2: y }, grp);
-      if (xd > -4) el("path", { class: "book-done", d: `M${xd} ${y - 3.6}L${xd + 3.6} ${y}L${xd} ${y + 3.6}L${xd - 3.6} ${y}Z` }, grp);
+      if (tail) el("line", { class: "book-tail", x1: xb + 2, x2: xd - 5.5, y1: y, y2: y }, grp);
+      // a hollow frame, under the event dots, so a dot on or next to the completion year shows inside it
+      if (xd > -6) el("path", { class: "book-done", d: `M${xd} ${y - 5.5}L${xd + 5.5} ${y}L${xd} ${y + 5.5}L${xd - 5.5} ${y}Z` }, grp);
       const nm = el("text", { class: "book-name", x: nx, y: y + 3.5, "text-anchor": after ? "start" : "end" }, grp);
       nm.textContent = o.name;
       for (const e of o.evs) {
