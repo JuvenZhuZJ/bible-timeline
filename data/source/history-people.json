@@ -400,10 +400,53 @@
  "role":"Leader of the dagger men at Masada","jobs":["commander"],"look":{"age":"adult","head":"bare","beard":"full"},
  "summary":"Commander of the Sicarii, or 'dagger men,' a band of violent Jewish rebels. They took Masada from its Roman garrison in 66 C.E. and held it until 73, when, as the Romans broke through, he urged the defenders to die rather than surrender.",
  "events":[[66,"Seizes Masada and kills its Roman garrison","@it-dagger"],[73,"Masada falls; he and the defenders die rather than be captured","@it-dagger; @w90"]],
- "src":["it-dagger","w90"]}
+ "src":["it-dagger","w90"]},
+
+{"id":"shalmaneser-iii","replaces":"shalmaneser-iii-1","name":"Shalmaneser III","gender":"m","born":-950,"died":-880,"q":["assumed","assumed"],"tier":3,
+ "role":"King of Assyria in Jehu's day","jobs":["king"],"look":{"age":"adult","head":"crown","beard":"long","culture":"mesopotamian"},
+ "summary":"The first Assyrian king whose records mention Israel. His inscriptions confirm that Hazael seized the throne of Damascus, and his Black Obelisk names Jehu of Israel and shows tribute being brought to him, something the Bible does not record.",
+ "note":"Years placed by Jehu's reign (c. 904-877 B.C.E.). His Karkar inscription names an 'Ahab the Israelite', but Insight doubts this is King Ahab, since it would not fit Bible chronology.",
+ "events":[[-906,"Records that Hazael killed his master and seized the throne of Damascus","@it-shalmaneser; 2 Kings 8:7-15"],[-900,"Receives tribute from Jehu of Israel, pictured on his Black Obelisk","@it-shalmaneser; @it-assyria"]],
+ "src":["it-shalmaneser","it-assyria"]},
+
+{"id":"adad-nirari-iii","name":"Adad-nirari III","gender":"m","born":-880,"died":-830,"q":["assumed","assumed"],"tier":4,
+ "role":"King of Assyria","jobs":["king"],"look":{"age":"adult","head":"crown","beard":"long","culture":"mesopotamian"},
+ "summary":"Assyrian king whose inscriptions tell of his attack on Damascus and of tribute from Jehoash of Samaria. He may have been the king of Nineveh who repented at Jonah's warning, but that is not certain.",
+ "note":"Years assumed, placed by Jehoash of Israel and Jonah's mission (about 844 B.C.E.).",
+ "events":[[-845,"Attacks Damascus and receives tribute from Jehoash of Samaria","@it-assyria"],[-844,"Possibly the king of Nineveh who repents at Jonah's preaching","@it-assyria; Jonah 3:6"]],
+ "src":["it-assyria"]},
+
+{"id":"nabopolassar","name":"Nabopolassar","gender":"m","born":-685,"died":-625,"q":["assumed","estimated"],"tier":3,
+ "role":"King of Babylon; father of Nebuchadnezzar","jobs":["king"],"look":{"age":"old","head":"crown","beard":"long","culture":"mesopotamian"},
+ "summary":"A Chaldean who rebelled against Assyria and founded a new dynasty in Babylon. Allied with Cyaxares the Mede, he destroyed Nineveh. His son Nebuchadnezzar took over the government in the year of the battle of Carchemish.",
+ "note":"Death year from Nebuchadnezzar's taking the throne in 625 B.C.E.; birth assumed.",
+ "events":[[-645,"Founds a new Chaldean dynasty in Babylon (about this year)","@it-babylon"],[-634,"Meets Cyaxares at the captured city of Asshur; they become allies","@it-medes"],[-632,"With the Medes captures and destroys Nineveh","@it-nineveh; @it-assyria; Nahum 3:7"],[-625,"His son Nebuchadnezzar beats Egypt at Carchemish and takes over the government","@it-babylon; Jeremiah 46:2"]],
+ "rel":{"children":["nebuchadnezzar"]},
+ "src":["it-babylon","it-medes","it-nineveh","it-assyria"]},
+
+{"id":"cyaxares","name":"Cyaxares","aka":["Kyaxares","Umakishtar"],"gender":"m","born":-670,"died":-600,"q":["assumed","assumed"],"tier":4,
+ "role":"King of the Medes","jobs":["king","commander"],"look":{"age":"adult","head":"crown","beard":"full","culture":"persian"},
+ "summary":"Under him the Medes became Assyria's most dangerous rival. He took Asshur, allied himself with Nabopolassar of Babylon, and together they destroyed Nineveh and divided Assyria's lands.",
+ "events":[[-634,"Captures Asshur and allies himself with Nabopolassar","@it-medes"],[-632,"With the Babylonians conquers Nineveh","@it-medes; @it-nineveh; Zephaniah 2:13"]],
+ "src":["it-medes","it-nineveh"]},
+
+{"id":"ashur-uballit-ii","name":"Ashur-uballit II","gender":"m","born":-665,"died":-628,"q":["assumed","assumed"],"tier":4,
+ "role":"Last king of Assyria","jobs":["king"],"look":{"age":"adult","head":"crown","beard":"long","culture":"mesopotamian"},
+ "summary":"After Nineveh fell he tried to keep Assyria alive from Harran. Driven out, he came back with an Egyptian army to retake the city, but failed, and the empire came to an end.",
+ "events":[[-632,"Tries to rule what is left of Assyria from Harran","@it-assyria"],[-629,"With an Egyptian army tries and fails to retake Harran","@it-assyria; 2 Chronicles 35:20"]],
+ "src":["it-assyria"]},
+
+{"id":"nabonidus-king","replaces":"nabonidus","name":"Nabonidus","gender":"m","born":-620,"died":-535,"q":["assumed","assumed"],"tier":3,
+ "role":"Last king of Babylon; father of Belshazzar","jobs":["king"],"look":{"age":"old","head":"crown","beard":"long","culture":"mesopotamian"},
+ "summary":"Babylon's last supreme ruler, given to literature, art and religion. In his third year he made his firstborn son Belshazzar king in Babylon and went off to live at Tema in Arabia. He lost to Cyrus and fled to Borsippa, so he was not at Belshazzar's feast on the night Babylon fell.",
+ "note":"Reigned some 17 years (556-539 B.C.E.) by cuneiform texts; birth and death assumed.",
+ "events":[[-556,"Becomes king of Babylon","@it-nabonidus"],[-553,"Makes Belshazzar king in Babylon and campaigns to Tema in Arabia","@it-nabonidus"],[-539,"Beaten by Cyrus, flees to Borsippa while Babylon falls","@it-babylon; @it-nabonidus; Daniel 5:30"]],
+ "src":["it-nabonidus","it-babylon"]}
 ],
 
 "patch": {
+  "nebuchadnezzar": {"events":[[-625,"Defeats Pharaoh Necho at Carchemish","Jeremiah 46:2"]]},
+  "jehu": {"events":[[-900,"His tribute to Shalmaneser III of Assyria is pictured on the Black Obelisk","@it-shalmaneser"]]},
   "aristobulus": {"unlink":["herod","salome-2"]},
   "augustus": {"born":-63,"q":["estimated","derived"],"note":"Birth from his age at death, 76 years.",
     "events":[[-31,"As Octavian, defeats Antony and Cleopatra at Actium","@dp14"],[-30,"Forgives Herod for backing Antony and enlarges his kingdom","@it-herod"],[-27,"Is proclaimed 'Augustus' and rules as emperor","@it-rome"],[-2,"Orders the registration that brings Joseph and Mary to Bethlehem","Luke 2:1-7"],[14,"Dies at 76","@dp14"]]}
