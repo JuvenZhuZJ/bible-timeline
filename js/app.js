@@ -1344,7 +1344,52 @@
       return `<div class="rel-row"><span class="rel-k">${lab}</span><span class="rel-v">${chips.concat(plain).join("")}</span></div>`;
     }).join("");
     if (rows) return `<div class="win-h">${T("family", null, "Family")}</div><div class="rel">${rows}</div>`;
-    return c.family ? `<div class="win-family">${Scripture.linkText(c.family)}</div>` : "";
+    return c.family && c.family !== "—" ? `<div class="win-family">${linkNames(c.family, c.links)}</div>` : "";
+  }
+  // a family line written by hand ("Companions: Hananiah, Mishael, Azariah"): the people it names
+  // (its "links", by id) open their windows; each is found by its name or another name, in either language
+  function linkNames(text, ids) {
+    const hits = [];
+    for (const id of ids || []) {
+      const r = CHAR_BY_ID.get(id);
+      if (!r) continue;
+      const names = [r.name, r.en, ...(r.aka || []), ...(r.akaZh || [])].filter(Boolean).sort((a, b) => b.length - a.length);
+      for (const n of names) {
+        // a word boundary for Latin names only: Chinese has no spaces between words
+        const lat = /[a-z]/i.test(n);
+        const re = new RegExp(`(${lat ? "^|[^\\p{L}]" : ""})(${n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})${lat ? "(?![\\p{L}])" : ""}`, "u");
+        const m = re.exec(text);
+        if (!m) continue;
+        const i = m.index + m[1].length, j = i + m[2].length;
+        if (hits.some((h) => i < h.j && j > h.i)) continue;
+        hits.push({ i, j, r });
+        break;
+      }
+    }
+    hits.sort((a, b) => a.i - b.i);
+    let out = "", at = 0;
+    for (const h of hits) {
+      out += Scripture.linkText(text.slice(at, h.i)) + `<button class="rel-link" data-rel="${esc(h.r.id)}" title="${esc(h.r.role || "")}">${esc(text.slice(h.i, h.j))}</button>`;
+      at = h.j;
+    }
+    return out + Scripture.linkText(text.slice(at));
+  }
+
+  /* companions (data/source/companions.json): people who served, traveled or stood with this person,
+     family left out (it is listed above). Each chip's tooltip gives its verses; all of them are
+     under "Verses". The first 8 show, with a button for the rest. */
+  function companionsHTML(c) {
+    const fam = new Set(c.relIds);
+    const list = (c.comp || []).filter(([id]) => CHAR_BY_ID.has(id) && !fam.has(id));
+    if (!list.length) return "";
+    const chips = list.map(([id, ref], i) => {
+      const o = CHAR_BY_ID.get(id), v = Scripture.label(ref);
+      return `<button class="rel-chip" data-rel="${esc(id)}" title="${esc((o.role ? o.role + (I18.zh ? "。" : ". ") : "") + v)}"${i >= CONTEMP_SHOWN ? " hidden" : ""}>${esc(o.name)}</button>`;
+    }).join("");
+    const more = list.length > CONTEMP_SHOWN ? `<button class="contemp-more comp-more" aria-expanded="false">${T("show.all.n", { n: list.length }, `Show all ${list.length}`)}</button>` : "";
+    const refs = [...new Set(list.flatMap(([, ref]) => ref.split(/;\s*/)))].join("; ");
+    return `<div class="win-h">${T("comp", null, "Companions")}</div><div class="comp"><div class="rel-v">${chips}${more}</div>`
+      + `<details class="comp-refs"><summary>${T("comp.refs", null, "Verses")}</summary>${Scripture.linkRefs(refs)}</details></div>`;
   }
 
   /* contemporaries: other key figures whose lifespans overlap this key figure's, family left out
@@ -1425,6 +1470,7 @@
           <div class="mn-foot"><span class="mn-state"></span><span>${T("note.local", null, "Saved only in this browser")}</span></div>
         </div>
         ${familyHTML(c)}
+        ${companionsHTML(c)}
         ${contemporariesHTML(c)}
         <div class="win-h">${T("lifespan", null, "Lifespan")}</div>
         ${miniTimeline(c)}
@@ -1444,7 +1490,7 @@
   function booksWrittenHTML(c) {
     const list = BOOKS_BY.get(c.id);
     if (!list) return "";
-    const items = list.map(({ bk, part }) => `<li><button class="bw-book" data-b="${bk.b}"><span class="bw-name">${esc(Scripture.bookName(bk.b))}</span>${part ? ` <span class="bw-part">· ${esc(part[I18.zh ? 1 : 0])}</span>` : ""}</button></li>`);
+    const items = list.map(({ bk, part }) => `<li><button class="bw-book" data-b="${bk.b}">${BOOK_ICON}<span class="bw-name">${esc(Scripture.bookName(bk.b))}</span>${part ? ` <span class="bw-part">· ${esc(part[I18.zh ? 1 : 0])}</span>` : ""}</button></li>`);
     return `<div class="win-h">${T("books.written", null, "Bible books written")}</div><ul class="books-written">${items.join("")}</ul>`;
   }
 
@@ -1651,18 +1697,19 @@
     w.el.querySelector('[data-act="star"]').addEventListener("click", () => toggleStar(w.c));
     wireNote(w);
 
-    w.el.querySelectorAll(".rel-chip").forEach((b) => b.addEventListener("click", () => {
+    w.el.querySelectorAll(".rel-chip, .rel-link").forEach((b) => b.addEventListener("click", () => {
       const r = CHAR_BY_ID.get(b.dataset.rel); if (!r) return;
       openWindow(r); locate(r);
     }));
-    const more = w.el.querySelector(".contemp-more");
-    if (more) more.addEventListener("click", () => {
+    // "Show all" under the companions and the contemporaries
+    w.el.querySelectorAll(".contemp-more").forEach((more) => more.addEventListener("click", () => {
       const open = more.getAttribute("aria-expanded") !== "true";
-      w.el.querySelectorAll(".contemp .rel-chip").forEach((b, i) => { b.hidden = !open && i >= CONTEMP_SHOWN; });
+      const chips = more.parentElement.querySelectorAll(".rel-chip");
+      chips.forEach((b, i) => { b.hidden = !open && i >= CONTEMP_SHOWN; });
       more.setAttribute("aria-expanded", open);
-      const n = w.el.querySelectorAll(".contemp .rel-chip").length;
+      const n = chips.length;
       more.textContent = open ? T("show.fewer", null, "Show fewer") : T("show.all.n", { n }, `Show all ${n}`);
-    });
+    }));
     wirePlaces(w);
     w.el.querySelectorAll(".bw-book").forEach((b) => b.addEventListener("click", () => {
       const o = bookLines.find((x) => x.books.some((bk) => bk.b === +b.dataset.b));

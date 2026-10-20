@@ -695,8 +695,8 @@ window.TIMELINE_CHARACTERS = [
 { id:"daniel", name:"Daniel", meaning:"My Judge is God", born:-635, died:-535, q:["estimated","assumed"], tier:1, gender:"m",
   role:"Prophet in Babylon", look:{age:"old", head:"turban", beard:"long"},
   summary:"Taken to Babylon as a youth, perhaps of royal descent, he refused defiling food, interpreted dreams and the handwriting on the wall, and was delivered from the lions' pit. He served Babylon's kings and then the Medo-Persian government. His visions trace the world powers to the time of the end, and his prophecies of the '70 weeks' and the 'seven times' show when the Messiah would come and when he would begin ruling.",
-  family:"Companions: Hananiah, Mishael, Azariah",
-  note:"Taken to Babylon in 617 B.C.E., possibly in his teens; probably in his 90's in 539 and about 100 at his last vision in 536, so his life spanned almost 100 years (God's Word Is Truth, 2026). Approximate life span from Walk Courageously With God (Section 2 timeline: 635–535 B.C.E.).",
+  family:"—",
+  note:"Born about 635 B.C.E.: possibly in his teens at the exile of 617, probably in his 90's in 539 and about 100 at his last vision in 536, a life of almost 100 years (God's Word Is Truth, 2026). The span 635–535 B.C.E. is the approximate one in the Section 2 timeline of Walk Courageously With God; his death is not recorded.",
   events:[[-617,"Taken to Babylon; refuses the king's food","Daniel 1"],[-606,"Interprets the immense image","Daniel 2"],[-539,"Interprets the handwriting on the wall","Daniel 5"],[-539,"Thrown into the lions' pit","Daniel 6"],[-536,"Final vision: the rival kings","Daniel 10:1–12:13"],[-606,"Made ruler over the province of Babylon","Daniel 2:48-49"],[-600,"Interprets the dream of the great tree and its 'seven times'","Daniel 4:19-27"],[-553,"Vision of the four beasts","Daniel 7:1-28"],[-539,"Understands the 70 years are ending; Gabriel tells of the '70 weeks'","Daniel 9:1-27"],[-551,"Vision of the ram and the male goat, at Shushan","Daniel 8:1-27"]] },
 
 { id:"cyrus", name:"Cyrus the Great", meaning:"—", born:-600, died:-530, q:["assumed","estimated"], tier:2, gender:"m",
@@ -744,7 +744,7 @@ window.TIMELINE_CHARACTERS = [
 { id:"ezra", name:"Ezra", meaning:"Help", born:-520, died:-440, q:["assumed","assumed"], tier:2, gender:"m",
   role:"Priest and skilled copyist", look:{age:"old", head:"priest", beard:"long"},
   summary:"'Prepared his heart to consult the Law.' He led a second group back to Jerusalem in 468 B.C.E., taught the Law, and corrected marriages to foreign wives.",
-  family:"Descendant of Aaron",
+  family:"Descendant of Aaron", links:["aaron"],
   note:"Not recorded.",
   events:[[-468,"Leads a return to Jerusalem","Ezra 7:6-10"],[-468,"Confronts mixed marriages","Ezra 9-10"],[-455,"Reads the Law publicly","Nehemiah 8:1-8"]] },
 
@@ -928,7 +928,7 @@ window.TIMELINE_CHARACTERS = [
 { id:"barnabas", name:"Barnabas", meaning:"Son of comfort", born:-5, died:60, q:["assumed","assumed"], tier:2, gender:"m",
   role:"Missionary; 'Son of Comfort'", look:{age:"adult", head:"bare", beard:"full"},
   summary:"A generous Levite from Cyprus who vouched for the newly converted Saul and accompanied him on the first missionary tour.",
-  family:"Cousin: Mark",
+  family:"Cousin: Mark", links:["mark"],
   note:"Not recorded.",
   events:[[33,"Sells a field for the congregation","Acts 4:36-37"],[36,"Introduces Saul to the apostles","Acts 9:27"],[47,"First missionary tour with Paul","Acts 13:2-3"],[49,"Sails to Cyprus with Mark","Acts 15:39"]] },
 

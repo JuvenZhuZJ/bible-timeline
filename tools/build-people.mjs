@@ -11,7 +11,13 @@
  *   data/source/unnamed-people.json  people the Bible does not name (Lot's wife and
  *                                    daughters, Noah's wife, Jephthah's daughter ...),
  *                                    written by hand in the same shape
- *   data/source/overrides.json       manual fixes (optional)
+ *   data/source/added-people.json    people whose Insight article is missing from the
+ *                                    extracted list (Abednego), same shape; "solo": no
+ *                                    relatives, so no other record's relative matches them
+ *   data/source/companions.json      people who served or traveled together (Elijah and
+ *                                    Elisha, Paul and Barnabas), each group with its verses
+ *   data/source/overrides.json       manual fixes (optional); "same" merges two
+ *                                    Insight records of one person ("MISHAEL#2": "MESHACH")
  *   data/source/jobs.json            jobs shown as icons after names (king, prophet ...)
  * Outputs
  *   data/people.js                   window.TIMELINE_PEOPLE, read by js/app.js
@@ -28,8 +34,9 @@ const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
 const sandbox = { window: {} };
 vm.runInNewContext(read("data/characters.js"), sandbox);
 const CURATED = sandbox.window.TIMELINE_CHARACTERS;
+const extra = (f) => fs.existsSync(path.join(ROOT, f)) ? JSON.parse(read(f)) : [];
 const INSIGHT = JSON.parse(read("data/source/insight-people.json"))
-  .concat(fs.existsSync(path.join(ROOT, "data/source/unnamed-people.json")) ? JSON.parse(read("data/source/unnamed-people.json")) : []);
+  .concat(extra("data/source/unnamed-people.json"), extra("data/source/added-people.json"));
 const OVR = fs.existsSync(path.join(ROOT, "data/source/overrides.json")) ? JSON.parse(read("data/source/overrides.json")) : {};
 
 const MIN_Y = -4026, MAX_Y = 100;
@@ -57,6 +64,7 @@ for (const p of INSIGHT) {
     parent.set(find(p.key), find(t));
   }
 }
+for (const [a, b] of Object.entries(OVR.same || {})) if (byKey.has(a) && byKey.has(b) && find(a) !== find(b)) parent.set(find(a), find(b));
 const merged = new Map();
 for (const p of INSIGHT) {
   if (!p || !p.key || SPIRIT.test(p.group || "")) continue;
@@ -100,12 +108,12 @@ for (const p of INSIGHT) {
   const head0 = head.split(",")[0].trim();
   const sense = nums[0] && /^\d+$/.test(nums[0]) ? ` No. ${nums[0]}` : "";
   people.push({
-    id: uid(idBase), ikey: p.key, name: p.name, aka: (p.aka || []).filter((a) => a && norm(a) !== norm(p.name)),
+    id: uid(p.id || idBase), ikey: p.key, name: p.name, aka: (p.aka || []).filter((a) => a && norm(a) !== norm(p.name)),
     gender: p.gender === "f" || p.gender === "u" ? p.gender : "m", meaning: p.meaning || "", role: p.role || "", summary: p.summary || "",
     born, died, year: clampY(year), q: [qB, qD], group: p.group || "", refs: (p.refs || []).slice(0, 4),
     raw: { father: p.father, mother: p.mother, spouses: p.spouses || [], children: p.children || [], siblings: p.siblings || [], hints: p.relHints || "" },
     src: p.unnamed ? "" : head0.toLowerCase().replace(/(^|[\s\-])([a-z])/g, (m, a, b) => a + b.toUpperCase()) + sense,
-    tier: 4,
+    tier: 4, solo: !!p.solo,
   });
 }
 
@@ -171,8 +179,9 @@ const GAP = (p) => (p.year < -2300 ? 90 : 32);
 function resolve(p, name, kind) {
   const k = norm(name).replace(/^(king|queen|prophet|the) /, "");
   if (!k) return null;
-  let cands = (byName.get(k) || []).filter((c) => c !== p);
-  if (!cands.length) cands = (byName.get(k.split(" ")[0]) || []).filter((c) => c !== p);
+  // "solo" people (added-people.json) have no relatives in the Bible, so no one's relative is matched to them
+  let cands = (byName.get(k) || []).filter((c) => c !== p && !c.solo);
+  if (!cands.length) cands = (byName.get(k.split(" ")[0]) || []).filter((c) => c !== p && !c.solo);
   if (!cands.length) return null;
   const expect = kind === "father" || kind === "mother" ? p.year - GAP(p) : kind === "children" ? p.year + GAP(p) : p.year;
   const back = { father: "children", mother: "children", children: null, spouses: "spouses", siblings: "siblings" }[kind];
@@ -435,8 +444,28 @@ for (const p of people) {
   p.jobs = set ? set.slice() : p.hist && p.jobs ? p.jobs : jobsFromRole(p.role || "");
 }
 
+/* ---------- 6c. companions ----------
+   data/source/companions.json: groups of people who served, traveled or stood together, by id,
+   each with the verses that show it. Everyone in a group gets the others, with those verses. */
+const COMP = extra("data/source/companions.json");
+for (const g of COMP) {
+  const missing = g.ids.filter((id) => !byId.get(id));
+  if (missing.length) console.warn("Companions, unknown ids:", missing.join(", "));
+  for (const a of g.ids) {
+    const p = byId.get(a);
+    if (!p) continue;
+    p.comp = p.comp || [];
+    for (const b of g.ids) {
+      if (b === a || !byId.get(b)) continue;
+      const have = p.comp.find((x) => x[0] === b);
+      if (!have) p.comp.push([b, g.ref]);
+      else if (!have[1].includes(g.ref)) have[1] += "; " + g.ref;
+    }
+  }
+}
+
 /* ---------- 7. write ---------- */
-const KEEP = ["id", "name", "aka", "meaning", "born", "died", "q", "tier", "gender", "role", "look", "portrait", "summary", "family", "note", "events", "refs", "group", "rel", "relNames", "src", "key", "line", "jobs", "hist", "hsrc"];
+const KEEP = ["id", "name", "aka", "meaning", "born", "died", "q", "tier", "gender", "role", "look", "portrait", "summary", "family", "links", "note", "events", "refs", "group", "rel", "relNames", "comp", "src", "key", "line", "jobs", "hist", "hsrc"];
 const outList = people.slice().sort((a, b) => a.born - b.born || a.name.localeCompare(b.name)).map((p) => {
   const o = {};
   for (const k of KEEP) {
