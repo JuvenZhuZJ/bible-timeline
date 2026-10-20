@@ -557,7 +557,7 @@ window.TIMELINE_CHARACTERS = [
   summary:"Removed idols and relied on Jehovah to defeat a million Ethiopians, but later relied on Syria and on physicians. Reigned 41 years.",
   family:"Father: Abijam · Son: Jehoshaphat",
   note:"Birth not recorded.",
-  events:[[-977,"Becomes king","1 Kings 15:9-10"],[-963,"Defeats Zerah the Ethiopian","2 Chronicles 14:9-12"],[-937,"Dies","1 Kings 15:24"],[-963,"Great assembly at Jerusalem; covenant to seek Jehovah","2 Chronicles 15:9-15"],[-963,"Removes his grandmother Maacah as queen mother","1 Kings 15:13"]] },
+  events:[[-977,"Becomes king","1 Kings 15:9-10"],[-967,"Defeats Zerah the Ethiopian","2 Chronicles 14:9-12"],[-937,"Dies","1 Kings 15:24"],[-963,"Great assembly at Jerusalem; covenant to seek Jehovah","2 Chronicles 15:9-15"],[-963,"Removes his grandmother Maacah as queen mother","1 Kings 15:13"]] },
 
 { id:"jehoshaphat", name:"Jehoshaphat", meaning:"Jehovah is Judge", born:-971, died:-911, q:["derived","derived"], tier:3, gender:"m",
   role:"King of Judah", look:{age:"adult", head:"crown", beard:"full"},

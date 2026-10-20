@@ -1,0 +1,1797 @@
+{
+"about": ["Activities of people who are not key figures, taken from what their card says they did, so each one shows on the lifespan.", "people: person id -> list of activities; an activity is [year, text, scripture, { c: 1 if the year is approximate, p: place id in data/places.js, zh: Chinese text }] or the name of an activity in shared.", "shared: activities that several people took part in (the 12 spies, joining David at Ziklag, the wall rebuilt under Nehemiah).", "Years follow the chronology of Insight on the Scriptures and the New World Translation (Appendix A6, A7); a year marked c is approximate, placed within the person's life from the setting of the account.", "dates: placeholder lives (born, died) moved so that they take in an activity.", "Run node tools/build-people.mjs after editing; it warns about an activity that falls outside the person's life."],
+"shared": {
+  "spy": [-1512, "One of the 12 men sent to spy out Canaan for 40 days", "Numbers 13:1-16", {"p": "kadesh", "zh": "是被派去窺探迦南地40天的12個人之一"}],
+  "badreport": [-1512, "Joins in the bad report; dies in a scourge from Jehovah", "Numbers 13:31-33; 14:36, 37", {"p": "kadesh", "zh": "一起散布壞消息；在耶和華降的災中死去"}],
+  "midiankings": [-1473, "Killed when Israel avenges the seduction at Peor", "Numbers 31:1-8; Joshua 13:21", {"zh": "以色列人為毗珥的引誘報仇時被殺"}],
+  "divide": [-1473, "Chosen to help divide the Promised Land", "Numbers 34:16-29", {"p": "shittim", "zh": "被選出協助分配應許之地"}],
+  "gibeonkings": [-1473, "Joins four other kings against Gibeon; defeated by Joshua, caught at Makkedah and executed", "Joshua 10:1-27", {"c": 1, "p": "gibeon", "zh": "與另外四個王一起攻打基遍；被約書亞擊敗，在瑪基大被捉住處死"}],
+  "merom": [-1470, "Leads a northern alliance against Joshua; defeated at the waters of Merom", "Joshua 11:1-9", {"c": 1, "zh": "率領北方聯軍攻打約書亞；在米倫水邊被擊敗"}],
+  "wilderness": [-1085, "Joins David at his stronghold in the wilderness", "1 Chronicles 12:8-15", {"c": 1, "zh": "到曠野的要塞投奔大衛"}],
+  "ziklag": [-1079, "Joins David at Ziklag while Saul keeps him in exile", "1 Chronicles 12:1-7", {"c": 1, "p": "ziklag", "zh": "大衛因掃羅的緣故流亡時，到洗革拉投奔他"}],
+  "manassites": [-1078, "Leaves Saul for David; helps pursue the raiders who plundered Ziklag", "1 Chronicles 12:19-21", {"p": "ziklag", "zh": "離開掃羅投奔大衛；幫助追擊劫掠洗革拉的掠奪隊"}],
+  "ark": [-1070, "Helps bring the Ark to Jerusalem", "1 Chronicles 15:4-15, 25", {"c": 1, "p": "jerusalem", "zh": "協助把約櫃運到耶路撒冷"}],
+  "arkmusic": [-1070, "Plays music as the Ark is brought to Jerusalem", "1 Chronicles 15:16-21; 16:4-6", {"c": 1, "p": "jerusalem", "zh": "約櫃被運到耶路撒冷時奏樂"}],
+  "arktrumpet": [-1070, "Blows a trumpet before the Ark as it is brought to Jerusalem", "1 Chronicles 15:24", {"c": 1, "p": "jerusalem", "zh": "約櫃被運到耶路撒冷時，在約櫃前吹號"}],
+  "arkgate": [-1070, "Serves as a gatekeeper for the Ark as it is brought to Jerusalem", "1 Chronicles 15:18, 23, 24", {"c": 1, "p": "jerusalem", "zh": "約櫃被運到耶路撒冷時擔任守門人"}],
+  "giants": [-1050, "Fights in the later wars with the Philistines", "2 Samuel 21:15-22; 1 Chronicles 20:4-8", {"c": 1, "zh": "參與後來與非利士人的戰爭"}],
+  "teach": [-934, "Sent by Jehoshaphat to teach Jehovah's law in Judah's cities", "2 Chronicles 17:7-9", {"zh": "奉約沙法之命到猶大各城教導耶和華的律法"}],
+  "jsons": [-913, "Killed by his brother Jehoram when Jehoram becomes king", "2 Chronicles 21:2-4", {"p": "jerusalem", "zh": "哥哥約蘭作王時被他殺死"}],
+  "athaliah": [-898, "Joins Jehoiada's covenant to remove Athaliah and crown Jehoash", "2 Kings 11:4-12; 2 Chronicles 23:1-11", {"p": "jerusalem", "zh": "加入耶何耶大的盟約，廢除亞他利雅，擁立約阿施作王"}],
+  "pekahwar": [-760, "Killed by the Ephraimite warrior Zichri when Pekah invades Judah", "2 Chronicles 28:6, 7", {"c": 1, "zh": "比加入侵猶大時，被以法蓮的勇士齊基利殺死"}],
+  "cleanse": [-745, "Helps cleanse the temple in Hezekiah's first year", "2 Chronicles 29:12-19", {"p": "jerusalem", "zh": "在希西家統治的第一年協助潔淨聖殿"}],
+  "contrib": [-745, "Appointed to care for the contributions brought to the temple", "2 Chronicles 31:11-15", {"c": 1, "p": "jerusalem", "zh": "被委派管理百姓帶到聖殿的捐獻"}],
+  "simeon": [-730, "With other Simeonite chieftains, seizes pastureland near Gedor in Hezekiah's day", "1 Chronicles 4:38-41", {"c": 1, "zh": "在希西家的日子，與其他西緬族的首領奪取基多附近的牧場"}],
+  "seir": [-730, "Leads 500 Simeonites against the last Amalekites in Mount Seir", "1 Chronicles 4:42, 43", {"c": 1, "zh": "率領500個西緬人攻打西珥山上剩下的亞瑪力人"}],
+  "sennacherib": [-702, "With his brother, murders their father Sennacherib in Nineveh and flees to Ararat", "2 Kings 19:37; Isaiah 37:38", {"c": 1, "p": "nineveh", "zh": "和兄弟一起在尼尼微殺了父親西拿基立，逃到亞拉臘地"}],
+  "josiahrepair": [-642, "Takes part in the temple repairs ordered by Josiah", "2 Kings 22:3-7; 2 Chronicles 34:8-13", {"p": "jerusalem", "zh": "參與約西亞下令進行的聖殿修繕工程"}],
+  "huldah": [-642, "Sent by Josiah to ask the prophetess Huldah about the book of the Law", "2 Kings 22:12-14; 2 Chronicles 34:20-22", {"p": "jerusalem", "zh": "奉約西亞之命，去向女先知戶勒大求問律法書的事"}],
+  "jehoahaz3": [-628, "Made king at 23; after three months Pharaoh Necho deposes him and takes him to Egypt", "2 Kings 23:30-34; Jeremiah 22:10-12", {"p": "riblah", "zh": "23歲被立為王；三個月後被法老尼哥廢黜，帶到埃及"}],
+  "seize": [-624, "Sent by Jehoiakim to seize Jeremiah and Baruch, but Jehovah hides them", "Jeremiah 36:26", {"p": "jerusalem", "zh": "奉約雅敬之命去捉拿耶利米和巴錄，耶和華卻把他們藏起來"}],
+  "falseprophets": [-614, "Prophesies falsely among the exiles; Jeremiah foretells that Nebuchadnezzar will roast him in fire", "Jeremiah 29:21-23", {"c": 1, "p": "babylon", "zh": "在被擄的人當中假預言；耶利米預言尼布甲尼撒會用火燒死他"}],
+  "gedaliah": [-607, "Comes to Governor Gedaliah and warns him of Ishmael's plot", "Jeremiah 40:7-9, 13, 14", {"zh": "投靠基大利總督，並警告他以實瑪利的陰謀"}],
+  "toegypt": [-607, "Rescues Ishmael's captives, then leads the remnant to Egypt against Jeremiah's advice", "Jeremiah 41:11-16; 43:4-7", {"p": "tahpanhes", "zh": "救回被以實瑪利擄走的人，後來不聽耶利米的勸告，帶領餘下的人到埃及"}],
+  "return537": [-537, "Returns from Babylon with Zerubbabel", "Ezra 2:1, 2; Nehemiah 12:1-9", {"p": "jerusalem", "zh": "與所羅巴伯一同從巴比倫歸回"}],
+  "foundation": [-536, "Helps oversee the rebuilding of the temple", "Ezra 3:8, 9", {"p": "jerusalem", "zh": "協助監督重建聖殿的工程"}],
+  "letter": [-522, "Helps write a letter to King Artaxerxes falsely accusing the Jews", "Ezra 4:7-16", {"zh": "協助寫信給亞達薛西王，誣告猶太人"}],
+  "tattenai": [-520, "Questions the temple rebuilding and writes to King Darius", "Ezra 5:3-17", {"p": "jerusalem", "zh": "質問重建聖殿的事，並寫信給大流士王"}],
+  "tattenai2": [-519, "Ordered by Darius to support the work, and does so promptly", "Ezra 6:6-13", {"c": 1, "p": "jerusalem", "zh": "大流士王命令他支持重建工程，他就立刻照辦"}],
+  "crown": [-519, "Brings gold and silver from Babylon that is made into a crown for High Priest Joshua", "Zechariah 6:9-14", {"p": "jerusalem", "zh": "從巴比倫帶來金銀，用來為大祭司約書亞製作冠冕"}],
+  "vashti": [-493, "Sent by King Ahasuerus to bring Queen Vashti to his banquet", "Esther 1:10-12", {"c": 1, "p": "susa", "zh": "奉亞哈隨魯王之命，去帶瓦實提王后到宴會中來"}],
+  "doorkeepers": [-489, "Plots against King Ahasuerus; Mordecai exposes it through Esther and he is hanged", "Esther 2:21-23; 6:2", {"c": 1, "p": "susa", "zh": "圖謀殺害亞哈隨魯王；末底改透過以斯帖揭發陰謀，他被掛在木柱上"}],
+  "hamansons": [-484, "Killed when the Jews defend themselves in Shushan", "Esther 9:6-10, 13, 14", {"p": "susa", "zh": "猶太人在書珊自衛時被殺"}],
+  "ezrareturn": [-468, "Leads his family's men back to Jerusalem with Ezra", "Ezra 8:1-14", {"p": "jerusalem", "zh": "帶領本家族的男子與以斯拉一同回到耶路撒冷"}],
+  "ahava": [-468, "Sent by Ezra from the river Ahava to find Levites for the temple", "Ezra 8:15-20", {"zh": "以斯拉在亞哈瓦河邊差派他去尋找為聖殿服務的利未人"}],
+  "treasure": [-468, "Receives and weighs the silver, gold and utensils brought for the temple", "Ezra 8:33, 34", {"p": "jerusalem", "zh": "點收並稱量為聖殿帶來的金銀和器皿"}],
+  "wives": [-468, "Sends away his foreign wife at Ezra's urging", "Ezra 10:18-44", {"p": "jerusalem", "zh": "聽從以斯拉的勸告，送走外族妻子"}],
+  "debate": [-468, "Takes part in the debate over how to handle the foreign marriages", "Ezra 10:15", {"p": "jerusalem", "zh": "參與處理外族婚姻問題的討論"}],
+  "wall": [-455, "Helps rebuild Jerusalem's wall under Nehemiah", "Nehemiah 3:1-32", {"p": "jerusalem", "zh": "在尼希米的帶領下協助重建耶路撒冷的城牆"}],
+  "lawstand": [-455, "Stands beside Ezra as he reads the Law to the people", "Nehemiah 8:4", {"p": "jerusalem", "zh": "以斯拉向百姓宣讀律法時，站在他旁邊"}],
+  "lawexplain": [-455, "Helps the people understand the Law as Ezra reads it", "Nehemiah 8:7, 8", {"p": "jerusalem", "zh": "以斯拉宣讀律法時，幫助百姓明白律法"}],
+  "confess": [-455, "Leads the people in confession and praise before the covenant is sealed", "Nehemiah 9:4, 5", {"p": "jerusalem", "zh": "在立約之前，帶領百姓認罪，讚美耶和華"}],
+  "inaug": [-455, "Takes part in the inauguration of Jerusalem's rebuilt wall", "Nehemiah 12:27-43", {"c": 1, "p": "jerusalem", "zh": "參加耶路撒冷重建城牆的落成典禮"}],
+  "luke3": [29, "Rules his district when John the Baptizer begins preaching, in Tiberius' 15th year", "Luke 3:1, 2", {"zh": "提比略在位第15年，施浸者約翰開始傳道時，他統治自己的轄區"}],
+  "antioch": [47, "With the prophets and teachers at Antioch, sends off Barnabas and Saul", "Acts 13:1-3", {"c": 1, "p": "antioch", "zh": "和安提阿的先知和導師一起，差派巴拿巴和掃羅出去"}],
+  "romans16": [56, "With Paul in Corinth, sends greetings to the Christians in Rome", "Romans 16:21-23", {"c": 1, "p": "corinth", "zh": "在哥林多與保羅在一起，向羅馬的信徒問候"}],
+  "timothy4": [65, "Sends greetings to Timothy in Paul's last letter", "2 Timothy 4:21", {"c": 1, "p": "rome", "zh": "在保羅的最後一封信中向提摩太問候"}]
+},
+"people": {
+  "noah-s-wife": [
+    [-2370, "Enters the ark with her family; survives the Flood", "Genesis 7:7, 13; 1 Peter 3:20", {"p": "ararat", "zh": "和家人進入方舟，在大洪水中存活"}]],
+  "canaan": [
+    [-2350, "Noah's prophetic curse: he is to be a slave to Shem and Japheth", "Genesis 9:20-27", {"c": 1, "zh": "挪亞預言性地咒詛他，說他要作閃和雅弗的奴隸"}]],
+  "canaan-2": [
+    [-2350, "Noah's prophetic curse: he is to be a slave to Shem and Japheth", "Genesis 9:20-27", {"c": 1, "zh": "挪亞預言性地咒詛他，說他要作閃和雅弗的奴隸"}]],
+  "lamech-1": [
+    [-3400, "Composes a poem claiming he killed a man in self-defense", "Genesis 4:23, 24", {"c": 1, "zh": "作了一首詩，聲稱自己殺人是出於自衛"}]],
+  "haran-1": [
+    [-1990, "Dies in Ur while his father Terah is still alive", "Genesis 11:28", {"c": 1, "p": "ur", "zh": "在父親他拉還活著時死在吾珥"}]],
+  "chedorlaomer": [
+    [-1933, "Crushes the revolt of five kings at the Low Plain of Siddim; carries off Lot", "Genesis 14:1-12", {"c": 1, "zh": "在西訂平原擊潰五王的叛亂，擄走羅得"}],
+    [-1933, "Routed by Abram in a night attack; the captives are freed", "Genesis 14:13-17", {"c": 1, "p": "dan", "zh": "被亞伯拉罕夜襲擊敗，被擄的人獲救"}]],
+  "tidal": [
+    [-1933, "With Chedorlaomer, crushes the revolt of five kings and carries off Lot", "Genesis 14:1-12", {"c": 1, "zh": "和基度勞瑪一起擊潰五王的叛亂，擄走羅得"}],
+    [-1933, "Routed by Abram, who frees the captives", "Genesis 14:13-17", {"c": 1, "p": "dan", "zh": "被亞伯拉罕擊敗，被擄的人獲救"}]],
+  "arioch-1": [
+    [-1933, "With Chedorlaomer, crushes the revolt of five kings and carries off Lot", "Genesis 14:1-12", {"c": 1, "zh": "和基度勞瑪一起擊潰五王的叛亂，擄走羅得"}],
+    [-1933, "Routed by Abram, who frees the captives", "Genesis 14:13-17", {"c": 1, "p": "dan", "zh": "被亞伯拉罕擊敗，被擄的人獲救"}]],
+  "bera": [
+    [-1933, "Defeated by Chedorlaomer's coalition in the Low Plain of Siddim", "Genesis 14:2, 8-10", {"c": 1, "zh": "在西訂平原被基度勞瑪的聯軍打敗"}],
+    [-1933, "Meets Abram after the victory; Abram refuses to keep any of the spoil", "Genesis 14:17-24", {"c": 1, "p": "salem", "zh": "在亞伯拉罕得勝後迎接他；亞伯拉罕不肯拿任何戰利品"}]],
+  "shemeber": [
+    [-1933, "Defeated by Chedorlaomer's coalition in the Low Plain of Siddim", "Genesis 14:2, 8-10", {"c": 1, "zh": "在西訂平原被基度勞瑪的聯軍打敗"}]],
+  "eshcol-1": [
+    [-1933, "Allied with Abram when he defeats the eastern kings and rescues Lot", "Genesis 14:13, 24", {"c": 1, "p": "dan", "zh": "與亞伯拉罕結盟，亞伯拉罕打敗東方諸王，救回羅得"}]],
+  "abimelech-1": [
+    [-1919, "Takes Sarah, thinking her Abraham's sister; returns her after God warns him in a dream", "Genesis 20:1-18", {"c": 1, "p": "gerar", "zh": "以為撒拉是亞伯拉罕的妹妹，把她接去；上帝在夢中警告他後，他把她送還"}],
+    [-1913, "Makes a peace pact with Abraham at Beer-sheba", "Genesis 21:22-34", {"c": 1, "p": "beersheba", "zh": "在別是巴與亞伯拉罕立約和好"}]],
+  "lot-s-wife": [
+    [-1919, "Flees Sodom but looks back and becomes a pillar of salt", "Genesis 19:15-26; Luke 17:32", {"p": "sodom", "zh": "逃離所多瑪時回頭看，變成了一根鹽柱"}]],
+  "ephron-1": [
+    [-1881, "Sells Abraham the field and cave of Machpelah for 400 silver shekels", "Genesis 23:3-20", {"p": "machpelah", "zh": "以400舍客勒銀子把麥比拉的田和洞賣給亞伯拉罕"}]],
+  "bethuel-1": [
+    [-1878, "Agrees that Jehovah has guided Abraham's servant; lets Rebekah go to marry Isaac", "Genesis 24:50, 51", {"p": "haran", "zh": "承認耶和華引導了亞伯拉罕的僕人，同意利百加嫁給以撒"}]],
+  "abimelech-2": [
+    [-1825, "Protects Isaac and Rebekah while they live in Gerar", "Genesis 26:6-11", {"c": 1, "p": "gerar", "zh": "以撒和利百加住在基拉耳時，他保護他們"}],
+    [-1820, "Asks Isaac to leave, later makes a covenant with him at Beer-sheba", "Genesis 26:26-31", {"c": 1, "p": "beersheba", "zh": "請以撒離開，後來在別是巴與他立約"}]],
+  "ahuzzath": [
+    [-1820, "Goes with Abimelech to make a covenant with Isaac", "Genesis 26:26-31", {"c": 1, "p": "beersheba", "zh": "陪同亞比米勒去與以撒立約"}]],
+  "judith": [
+    [-1818, "Married by Esau at 40; the marriage makes life bitter for Isaac and Rebekah", "Genesis 26:34, 35", {"p": "hebron", "zh": "以掃40歲時娶她，這婚事使以撒和利百加心裡愁苦"}]],
+  "adah-2": [
+    [-1818, "Married by Esau; the marriage grieves Isaac and Rebekah", "Genesis 26:34, 35; 36:2", {"c": 1, "zh": "嫁給以掃，使以撒和利百加憂傷"}]],
+  "mahalath-1": [
+    [-1781, "Married by Esau, who hopes to please his father", "Genesis 28:6-9", {"zh": "以掃娶了她，希望討父親喜悅"}]],
+  "basemath-2": [
+    [-1781, "Married by Esau, who hopes to please his parents", "Genesis 28:6-9; 36:3", {"zh": "以掃娶了她，希望討父母喜悅"}]],
+  "zilpah": [
+    [-1774, "Given by Laban to Leah as her maidservant at her marriage", "Genesis 29:24", {"p": "haran", "zh": "利亞出嫁時，拉班把她給了利亞作婢女"}],
+    [-1770, "Given to Jacob by Leah; bears Gad and Asher", "Genesis 30:9-13", {"c": 1, "p": "haran", "zh": "利亞把她給了雅各，她生了迦得和亞設"}]],
+  "bilhah-1": [
+    [-1772, "Given to Jacob by Rachel; bears Dan and Naphtali", "Genesis 30:3-8", {"c": 1, "p": "haran", "zh": "拉結把她給了雅各，她生了但和拿弗他利"}],
+    [-1750, "Reuben lies with her", "Genesis 35:22", {"c": 1, "zh": "呂便與她同寢"}]],
+  "dinah": [
+    [-1752, "Violated by Shechem; her brothers Simeon and Levi avenge her", "Genesis 34:1-31", {"c": 1, "p": "shechem", "zh": "被示劍玷污；她的哥哥西緬和利未為她報仇"}]],
+  "hamor": [
+    [-1752, "Killed with his son Shechem by Simeon and Levi after Dinah is violated", "Genesis 34:1-31", {"c": 1, "p": "shechem", "zh": "底拿被玷污後，他和兒子示劍被西緬和利未殺死"}]],
+  "shechem-1": [
+    [-1752, "Violates Dinah; after being circumcised he is killed by Simeon and Levi", "Genesis 34:1-31", {"c": 1, "p": "shechem", "zh": "玷污了底拿；他受割禮後被西緬和利未殺死"}]],
+  "simeon-1": [
+    [-1752, "With Levi, massacres the men of Shechem", "Genesis 34:25-31", {"c": 1, "p": "shechem", "zh": "和利未一起殺光示劍城的男子"}],
+    [-1729, "Held as a hostage by Joseph in Egypt", "Genesis 42:24", {"c": 1, "p": "egypt", "zh": "在埃及被約瑟扣留作人質"}]],
+  "potiphar": [
+    [-1750, "Buys Joseph and puts him over his house", "Genesis 37:36; 39:1-6", {"p": "egypt", "zh": "買下約瑟，派他管理全家"}],
+    [-1748, "Believes his wife's lie and has Joseph put in prison", "Genesis 39:19, 20", {"c": 1, "p": "egypt", "zh": "聽信妻子的謊話，把約瑟關進監牢"}]],
+  "potiphar-s-wife": [
+    [-1748, "Tries to seduce Joseph, then falsely accuses him", "Genesis 39:7-20", {"c": 1, "p": "egypt", "zh": "想引誘約瑟，不成就誣告他"}]],
+  "onan": [
+    [-1732, "Refuses to raise offspring for his dead brother Er; put to death by Jehovah", "Genesis 38:8-10", {"c": 1, "zh": "不肯為死去的哥哥珥立後，被耶和華處死"}]],
+  "pharaoh-of-joseph-s-day": [
+    [-1737, "Has dreams of fat and thin cows; makes Joseph food administrator", "Genesis 41:14-46", {"p": "egypt", "zh": "夢見肥牛和瘦牛；立約瑟管理全埃及的糧食"}],
+    [-1728, "Welcomes Jacob's family and lets them live in Goshen", "Genesis 47:1-10", {"p": "goshen", "zh": "歡迎雅各一家，讓他們住在歌珊"}]],
+  "ephraim-1": [
+    [-1711, "Adopted by Jacob, who puts him ahead of his older brother Manasseh", "Genesis 48:5, 13-20", {"c": 1, "p": "egypt", "zh": "雅各收他為兒子，並使他位居哥哥瑪拿西之上"}]],
+  "manasseh-1": [
+    [-1711, "Blessed by Jacob, who puts his younger brother Ephraim ahead of him", "Genesis 48:13-20", {"c": 1, "p": "egypt", "zh": "雅各祝福他，卻使弟弟以法蓮位居他之上"}]],
+  "elead": [
+    [-1700, "Killed with his brother Ezer by men of Gath over their livestock", "1 Chronicles 7:20-22", {"c": 1, "p": "gath", "zh": "和弟兄以謝為了牲畜被迦特人殺死"}]],
+  "ezer-2": [
+    [-1700, "Killed with his brother Elead by men of Gath over their livestock", "1 Chronicles 7:20-22", {"c": 1, "p": "gath", "zh": "和弟兄以列為了牲畜被迦特人殺死"}]],
+  "shiphrah": [
+    [-1595, "With Puah, refuses Pharaoh's order to kill the Hebrew baby boys", "Exodus 1:15-21", {"c": 1, "p": "egypt", "zh": "和普阿一起拒絕法老的命令，不殺希伯來男嬰"}]],
+  "puah-2": [
+    [-1595, "With Shiphrah, refuses Pharaoh's order to kill the Hebrew baby boys", "Exodus 1:15-21", {"c": 1, "p": "egypt", "zh": "和施非拉一起拒絕法老的命令，不殺希伯來男嬰"}]],
+  "pharaoh-s-daughter": [
+    [-1593, "Finds baby Moses in a basket by the Nile and raises him as her son", "Exodus 2:5-10", {"p": "egypt", "zh": "在尼羅河邊的箱子裡發現嬰孩摩西，把他當作兒子撫養"}]],
+  "zipporah": [
+    [-1553, "Marries Moses after he helps her and her sisters at a well", "Exodus 2:16-21", {"c": 1, "p": "midian", "zh": "摩西在井邊幫助她和姊妹以後，她嫁給了他"}],
+    [-1514, "Circumcises her son on the way to Egypt", "Exodus 4:24-26", {"c": 1, "zh": "在前往埃及的路上給兒子行割禮"}],
+    [-1513, "Brought back to Moses by her father Jethro", "Exodus 18:1-6", {"c": 1, "p": "sinai", "zh": "父親葉特羅把她帶回摩西那裡"}]],
+  "gershom-2": [
+    [-1513, "Brought to Moses in the wilderness by his grandfather Jethro", "Exodus 18:1-6", {"c": 1, "p": "sinai", "zh": "外祖父葉特羅把他帶到曠野見摩西"}]],
+  "jannes": [
+    [-1513, "With Jambres, opposes Moses at Pharaoh's court", "Exodus 7:11, 12; 2 Timothy 3:8", {"c": 1, "p": "egypt", "zh": "和楊布一起在法老的宮廷裡抵擋摩西"}]],
+  "jambres": [
+    [-1513, "With Jannes, opposes Moses at Pharaoh's court", "Exodus 7:11, 12; 2 Timothy 3:8", {"c": 1, "p": "egypt", "zh": "和雅尼一起在法老的宮廷裡抵擋摩西"}]],
+  "pharaoh-of-the-exodus": [
+    [-1513, "Refuses to let Israel go: 'Who is Jehovah?'", "Exodus 5:1, 2", {"p": "egypt", "zh": "拒絕讓以色列人離開，說：「耶和華是誰？」"}],
+    [-1513, "Lets Israel go after the tenth plague", "Exodus 12:29-32", {"p": "rameses", "zh": "第十災以後讓以色列人離開"}],
+    [-1513, "Pursues Israel and dies with his army in the Red Sea", "Exodus 14:5-28; Psalm 136:15", {"p": "redsea", "zh": "追趕以色列人，和軍隊一同死在紅海"}]],
+  "bezalel-1": [
+    [-1513, "Filled with God's spirit to direct the making of the tabernacle", "Exodus 31:1-5; 36:1, 2", {"p": "sinai", "zh": "受上帝的靈充滿，主持建造會幕"}]],
+  "nadab-1": [
+    [-1513, "Sees a vision of God's glory on Mount Sinai", "Exodus 24:1, 9-11", {"p": "sinai", "zh": "在西奈山上看見上帝榮耀的異象"}],
+    [-1512, "Installed as a priest; dies for offering unauthorized fire", "Leviticus 8:1-36; 10:1, 2", {"p": "sinai", "zh": "被立為祭司；因獻上不合規定的火而死"}]],
+  "abihu": [
+    [-1513, "Sees a vision of God's glory on Mount Sinai", "Exodus 24:1, 9-11", {"p": "sinai", "zh": "在西奈山上看見上帝榮耀的異象"}],
+    [-1512, "Installed as a priest; dies for offering unauthorized fire", "Leviticus 8:1-36; 10:1, 2", {"p": "sinai", "zh": "被立為祭司；因獻上不合規定的火而死"}]],
+  "elizaphan-1": [
+    [-1512, "With Mishael, carries the bodies of Nadab and Abihu out of the camp", "Leviticus 10:4, 5", {"p": "sinai", "zh": "和米沙利一起把拿答和亞比戶的屍體抬出營外"}]],
+  "mishael-1": [
+    [-1512, "With Elzaphan, carries the bodies of Nadab and Abihu out of the camp", "Leviticus 10:4, 5", {"p": "sinai", "zh": "和以利撒番一起把拿答和亞比戶的屍體抬出營外"}]],
+  "nahshon": [
+    [-1512, "Helps number Israel; brings Judah's offering on the first day of the altar's inauguration", "Numbers 1:4-7; 7:12-17", {"p": "sinai", "zh": "協助數點以色列人；祭壇啟用的第一天獻上猶大部族的供物"}],
+    [-1512, "Leads Judah's army as Israel sets out from Sinai", "Numbers 10:14", {"p": "sinai", "zh": "以色列人從西奈出發時，率領猶大部族的軍隊"}]],
+  "nethanel-1": [
+    [-1512, "Helps number Israel; brings Issachar's offering on the second day of the altar's inauguration", "Numbers 1:8; 7:18-23; 10:15", {"p": "sinai", "zh": "協助數點以色列人；祭壇啟用的第二天獻上以薩迦部族的供物"}]],
+  "eliab-1": [
+    [-1512, "Brings Zebulun's offering on the third day of the altar's inauguration", "Numbers 1:9; 7:24-29", {"p": "sinai", "zh": "祭壇啟用的第三天獻上西布倫部族的供物"}]],
+  "elizur": [
+    [-1512, "Helps number Israel; brings Reuben's offering on the fourth day of the altar's inauguration", "Numbers 1:5; 7:30-35", {"p": "sinai", "zh": "協助數點以色列人；祭壇啟用的第四天獻上呂便部族的供物"}]],
+  "elishama-1": [
+    [-1512, "Brings Ephraim's offering on the seventh day of the altar's inauguration", "Numbers 1:10; 7:48-53", {"p": "sinai", "zh": "祭壇啟用的第七天獻上以法蓮部族的供物"}]],
+  "gamaliel-1": [
+    [-1512, "Helps number Israel; brings Manasseh's offering on the eighth day of the altar's inauguration", "Numbers 1:10; 7:54-59", {"p": "sinai", "zh": "協助數點以色列人；祭壇啟用的第八天獻上瑪拿西部族的供物"}]],
+  "abidan": [
+    [-1512, "Brings Benjamin's offering on the ninth day of the altar's inauguration", "Numbers 1:11; 7:60-65", {"p": "sinai", "zh": "祭壇啟用的第九天獻上便雅憫部族的供物"}]],
+  "ahiezer-a": [
+    [-1512, "Helps number Israel; brings Dan's offering on the tenth day of the altar's inauguration; leads the rear guard", "Numbers 1:12; 7:66-71; 10:25", {"p": "sinai", "zh": "協助數點以色列人；祭壇啟用的第十天獻上但部族的供物；率領後隊"}]],
+  "ahira": [
+    [-1512, "Brings Naphtali's offering on the twelfth day of the altar's inauguration", "Numbers 1:15; 7:78-83", {"p": "sinai", "zh": "祭壇啟用的第十二天獻上拿弗他利部族的供物"}]],
+  "ammiel-1": [
+    "spy",
+    "badreport"],
+  "shammua-1": [
+    "spy",
+    "badreport"],
+  "palti-1": [
+    "spy"],
+  "sethur": [
+    "spy"],
+  "shaphat-1": [
+    "spy"],
+  "korah-3": [
+    [-1512, "Leads a rebellion against Moses and Aaron; destroyed by Jehovah", "Numbers 16:1-35; Jude 11", {"c": 1, "zh": "帶頭反叛摩西和亞倫，被耶和華毀滅"}]],
+  "dathan": [
+    [-1512, "Joins Korah's rebellion; the earth swallows him and his household", "Numbers 16:1-33", {"c": 1, "zh": "參與可拉的叛亂；地開了口，吞了他和他的一家"}]],
+  "on-1": [
+    [-1512, "Joins Korah's protest against Moses", "Numbers 16:1", {"c": 1, "zh": "參與可拉對摩西的反抗"}]],
+  "eleazar-1": [
+    [-1512, "Made chief over the Levites who care for the sanctuary", "Numbers 3:32", {"p": "sinai", "zh": "被立為照管聖所的利未人的首領"}],
+    [-1474, "Becomes high priest when Aaron dies on Mount Hor", "Numbers 20:25-28", {"p": "hor", "zh": "亞倫在何珥山去世，他成為大祭司"}],
+    [-1467, "With Joshua, divides the land among the tribes", "Joshua 14:1", {"c": 1, "p": "gilgal", "zh": "和約書亞一起把土地分給各部族"}]],
+  "cozbi": [
+    [-1473, "Brought into Zimri's tent during the sin at Peor; Phinehas kills them both", "Numbers 25:6-15", {"p": "shittim", "zh": "在毗珥事件中被帶進心利的帳幕；非尼哈把他們兩人都殺了"}]],
+  "zimri-2": [
+    [-1473, "Brings the Midianite Cozbi into his tent; Phinehas kills them both", "Numbers 25:6-15", {"p": "shittim", "zh": "把米甸女子歌斯比帶進帳幕；非尼哈把他們兩人都殺了"}]],
+  "phinehas-1": [
+    [-1473, "Kills Zimri and Cozbi, halting the plague; God covenants a lasting priesthood with him", "Numbers 25:6-15", {"p": "shittim", "zh": "殺了心利和歌斯比，止住了瘟疫；上帝跟他立約，使他的家族永遠擔任祭司"}],
+    [-1467, "Sent to the tribes east of the Jordan about their altar; settles the dispute", "Joshua 22:9-34", {"c": 1, "p": "shiloh", "zh": "被派去見約旦河東的部族，查問他們築壇的事，平息了爭端"}],
+    [-1450, "Serves as high priest when Israel fights Benjamin", "Judges 20:27, 28", {"c": 1, "p": "gibeah", "zh": "以色列人與便雅憫人作戰時，他擔任大祭司"}]],
+  "balak": [
+    [-1473, "Hires Balaam to curse Israel, but Balaam blesses them", "Numbers 22:2-37; 23:1-30", {"p": "shittim", "zh": "僱用巴蘭咒詛以色列人，巴蘭卻祝福他們"}]],
+  "sihon": [
+    [-1473, "Refuses Israel passage; defeated and killed at Jahaz", "Numbers 21:21-24; Deuteronomy 2:30-33", {"zh": "不讓以色列人過境；在雅雜被擊敗殺死"}]],
+  "og": [
+    [-1473, "Defeated by Israel at Edrei; his 60 fortified cities are taken", "Numbers 21:33-35; Deuteronomy 3:1-11", {"zh": "在以得來被以色列人擊敗；他的60座設防城被攻佔"}]],
+  "evi": [
+    "midiankings"],
+  "hur-3": [
+    "midiankings"],
+  "rekem-1": [
+    "midiankings"],
+  "zur-1": [
+    "midiankings"],
+  "mahlah-1": [
+    [-1473, "With her sisters, asks for her dead father's inheritance; Jehovah grants it", "Numbers 27:1-11", {"p": "shittim", "zh": "和姊妹們請求繼承亡父的產業；耶和華准了"}],
+    [-1473, "Marries a cousin in Manasseh so the land stays in the tribe", "Numbers 36:10-12", {"c": 1, "zh": "嫁給瑪拿西部族的堂兄弟，使產業留在本族"}]],
+  "milcah-2": [
+    [-1473, "With her sisters, asks for her dead father's inheritance; Jehovah grants it", "Numbers 27:1-11", {"p": "shittim", "zh": "和姊妹們請求繼承亡父的產業；耶和華准了"}]],
+  "elidad": [
+    "divide"],
+  "pedahel": [
+    "divide"],
+  "jair-1": [
+    [-1473, "Captures tent villages in Gilead and names them Havvoth-jair", "Numbers 32:41; Deuteronomy 3:14", {"c": 1, "p": "gilead", "zh": "攻取基列的帳篷村落，稱為哈倭特睚珥"}]],
+  "nobah-1": [
+    [-1473, "Captures Kenath and its towns and names it after himself", "Numbers 32:42", {"c": 1, "p": "gilead", "zh": "攻取基納和附屬的城鎮，用自己的名字稱呼那地"}]],
+  "achan": [
+    [-1473, "Secretly takes devoted things from Jericho", "Joshua 7:1, 20, 21", {"p": "jericho", "zh": "偷偷拿了耶利哥城中當毀滅的東西"}],
+    [-1473, "His sin brings defeat at Ai; exposed by lot and stoned with his household", "Joshua 7:2-26", {"p": "ai", "zh": "他的罪使以色列人在艾城戰敗；抽籤被揭發，和全家被石頭打死"}]],
+  "adoni-zedek": [
+    "gibeonkings"],
+  "debir-1": [
+    "gibeonkings"],
+  "japhia-a": [
+    "gibeonkings"],
+  "piram": [
+    "gibeonkings"],
+  "jabin-1": [
+    "merom",
+    [-1470, "Executed when Joshua takes Hazor and burns it", "Joshua 11:10-14", {"c": 1, "zh": "約書亞攻取並焚燒夏瑣時被處死"}]],
+  "jobab-3": [
+    [-1470, "Joins Jabin of Hazor; defeated at the waters of Merom", "Joshua 11:1-8; 12:19", {"c": 1, "zh": "加入夏瑣王耶賓的聯盟；在米倫水邊被擊敗"}]],
+  "achsah": [
+    [-1467, "Given as wife to Othniel for capturing Debir; asks her father for land with springs", "Joshua 15:16-19; Judges 1:12-15", {"c": 1, "p": "debir", "zh": "因俄陀聶攻取底璧而嫁給他；向父親求得有泉水的地"}]],
+  "adoni-bezek": [
+    [-1450, "Captured by Judah and Simeon; suffers what he did to 70 kings and dies in Jerusalem", "Judges 1:4-7", {"c": 1, "p": "jerusalem", "zh": "被猶大人和西緬人捉住，受到他對70個王所做的同樣懲罰，死在耶路撒冷"}]],
+  "micah-1": [
+    [-1450, "Returns stolen silver that becomes an idol in his house; hires a Levite as priest", "Judges 17:1-13", {"c": 1, "zh": "歸還偷去的銀子，這些銀子被做成偶像放在他家裡；他聘請一個利未人作祭司"}],
+    [-1450, "The migrating Danites take his idol and his priest", "Judges 18:14-26", {"c": 1, "p": "dan", "zh": "遷移的但族人奪走了他的偶像和祭司"}]],
+  "jonathan-1": [
+    [-1450, "Becomes priest for Micah's carved image", "Judges 17:7-13", {"c": 1, "zh": "成為米迦雕刻偶像的祭司"}],
+    [-1450, "Goes with the Danites as their priest", "Judges 18:19-31", {"c": 1, "p": "dan", "zh": "跟隨但族人，作他們的祭司"}]],
+  "cushan-rishathaim": [
+    [-1442, "Rules Israel for eight years until Othniel defeats him", "Judges 3:8-10", {"c": 1, "zh": "統治以色列人八年，後來被俄陀聶擊敗"}]],
+  "jabez-1": [
+    [-1400, "Prays for Jehovah's blessing, and God grants his request", "1 Chronicles 4:9, 10", {"c": 1, "zh": "祈求耶和華賜福，上帝應允了他"}]],
+  "elimelech": [
+    [-1380, "Moves to Moab with his family during a famine; dies there", "Ruth 1:1-3", {"c": 1, "p": "moab", "zh": "在饑荒時帶全家移居摩押，後來死在那裡"}]],
+  "mahlon": [
+    [-1375, "Marries Ruth in Moab; dies without children", "Ruth 1:2-5; 4:10", {"c": 1, "p": "moab", "zh": "在摩押娶了路得；沒有孩子就去世了"}]],
+  "chilion": [
+    [-1375, "Marries Orpah in Moab; dies without children", "Ruth 1:2-5; 4:9", {"c": 1, "p": "moab", "zh": "在摩押娶了俄珥巴；沒有孩子就去世了"}]],
+  "shamgar": [
+    [-1320, "Saves Israel by striking down 600 Philistines with a cattle goad", "Judges 3:31; 5:6", {"c": 1, "zh": "用趕牛棒擊殺600個非利士人，拯救了以色列"}]],
+  "jabin-2": [
+    [-1328, "Begins oppressing Israel through his general Sisera, for 20 years", "Judges 4:2, 3", {"c": 1, "zh": "藉著將軍西西拉欺壓以色列人，長達20年"}],
+    [-1308, "Subdued by Israel after Barak's victory", "Judges 4:23, 24", {"p": "kishon", "zh": "巴拉得勝後被以色列人制服"}]],
+  "sisera-1": [
+    [-1308, "His army is routed by Barak at the torrent valley of Kishon", "Judges 4:12-16; 5:20, 21", {"p": "kishon", "zh": "他的軍隊在基順河谷被巴拉擊潰"}],
+    [-1308, "Flees on foot; killed by Jael with a tent pin", "Judges 4:17-22", {"zh": "徒步逃走；被雅億用帳棚的橛子殺死"}]],
+  "joash-3": [
+    [-1261, "Defends his son Gideon for tearing down Baal's altar; names him Jerubbaal", "Judges 6:28-32", {"p": "ophrah", "zh": "為拆毀巴力祭壇的兒子基甸辯護，給他取名耶路巴力"}]],
+  "zebah": [
+    [-1261, "His Midianite army is routed by Gideon's 300 men", "Judges 7:1, 19-25", {"p": "harod", "zh": "他的米甸軍隊被基甸的300人擊潰"}],
+    [-1261, "Caught at Karkor and executed by Gideon", "Judges 8:4-21", {"c": 1, "zh": "在加各被捉住，被基甸處死"}]],
+  "jether-5": [
+    [-1261, "Too afraid as a youth to execute the Midianite kings", "Judges 8:20", {"c": 1, "zh": "年少膽怯，不敢處死米甸的王"}],
+    [-1219, "Killed by his half brother Abimelech", "Judges 9:5", {"c": 1, "p": "ophrah", "zh": "被同父異母的兄弟亞比米勒殺死"}]],
+  "abimelech-4": [
+    [-1219, "Kills his 70 half brothers and is made king at Shechem", "Judges 9:1-6", {"c": 1, "p": "ophrah", "zh": "殺了70個同父異母的兄弟，在示劍被立為王"}],
+    [-1217, "Crushes Gaal's revolt and destroys Shechem", "Judges 9:22-49", {"c": 1, "p": "shechem", "zh": "平定迦阿勒的叛亂，毀了示劍城"}],
+    [-1216, "Dies at Thebez after a woman drops a millstone on him", "Judges 9:50-57", {"c": 1, "zh": "在提備斯被一個婦人用磨石砸中，因而死去"}]],
+  "zebul": [
+    [-1217, "Reports Gaal's revolt to Abimelech and drives Gaal out of Shechem", "Judges 9:30-41", {"c": 1, "p": "shechem", "zh": "向亞比米勒報告迦阿勒叛變，把迦阿勒趕出示劍"}]],
+  "gaal": [
+    [-1217, "Stirs Shechem to revolt against Abimelech; defeated and driven out", "Judges 9:26-41", {"c": 1, "p": "shechem", "zh": "煽動示劍人反叛亞比米勒；戰敗後被趕走"}]],
+  "tola-1b": [
+    [-1215, "Judges Israel for 23 years", "Judges 10:1, 2", {"c": 1, "zh": "作以色列的士師23年"}]],
+  "jair-2": [
+    [-1195, "Judges Israel for 22 years", "Judges 10:3-5", {"c": 1, "p": "gilead", "zh": "作以色列的士師22年"}]],
+  "jephthah-s-daughter": [
+    [-1173, "Meets her father after his victory and lets him keep his vow; serves at Jehovah's house for life", "Judges 11:34-40", {"p": "mizpah", "zh": "在父親得勝後出來迎接他，讓他履行誓言；終身在耶和華的殿裡服務"}]],
+  "ibzan": [
+    [-1167, "Judges Israel for seven years after Jephthah", "Judges 12:8-10", {"c": 1, "zh": "在耶弗他之後作以色列的士師七年"}]],
+  "elon-3": [
+    [-1160, "Judges Israel for ten years", "Judges 12:11, 12", {"c": 1, "zh": "作以色列的士師十年"}]],
+  "abdon-1": [
+    [-1150, "Judges Israel for eight years", "Judges 12:13-15", {"c": 1, "zh": "作以色列的士師八年"}]],
+  "manoah": [
+    [-1161, "An angel foretells his son's birth; he sees the angel ascend in the altar flame", "Judges 13:2-23", {"c": 1, "p": "zorah", "zh": "天使預告他會有兒子；他看見天使在祭壇的火焰中升上去"}]],
+  "samson-s-wife": [
+    [-1140, "Marries Samson; pressed by her people, she coaxes out his riddle", "Judges 14:1-17", {"c": 1, "p": "timnah", "zh": "嫁給參孫；受族人逼迫，套出了他的謎底"}],
+    [-1139, "Burned to death by the Philistines", "Judges 15:6", {"c": 1, "p": "timnah", "zh": "被非利士人燒死"}]],
+  "hophni": [
+    [-1150, "With Phinehas, abuses the offerings and acts immorally at the sanctuary", "1 Samuel 2:12-17, 22-25", {"c": 1, "p": "shiloh", "zh": "和非尼哈一起褻瀆祭物，在聖所行淫亂"}],
+    [-1118, "Killed in battle when the Philistines capture the Ark", "1 Samuel 4:10, 11", {"zh": "非利士人奪走約櫃時在戰爭中被殺"}]],
+  "phinehas-2": [
+    [-1150, "With Hophni, abuses the offerings and acts immorally at the sanctuary", "1 Samuel 2:12-17, 22-25", {"c": 1, "p": "shiloh", "zh": "和何弗尼一起褻瀆祭物，在聖所行淫亂"}],
+    [-1118, "Killed in battle when the Philistines capture the Ark; his widow dies giving birth to Ichabod", "1 Samuel 4:10-22", {"zh": "非利士人奪走約櫃時在戰爭中被殺；他的妻子生以迦博時死了"}]],
+  "delilah": [
+    [-1118, "Bribed by the Philistine lords, she learns the secret of Samson's strength and betrays him", "Judges 16:4-21", {"c": 1, "p": "sorek", "zh": "受非利士首領賄賂，套出參孫力大的秘訣，出賣了他"}]],
+  "kish-3": [
+    [-1117, "Sends his son Saul to look for lost she-asses", "1 Samuel 9:1-4", {"p": "gibeah", "zh": "派兒子掃羅去尋找走失的母驢"}]],
+  "joel-5": [
+    [-1117, "Judges at Beer-sheba; his bribe-taking leads Israel to ask for a king", "1 Samuel 8:1-5", {"c": 1, "p": "beersheba", "zh": "在別是巴作審判官；他收受賄賂，使以色列人要求立王"}]],
+  "abijah-3": [
+    [-1117, "Judges at Beer-sheba; his bribe-taking leads Israel to ask for a king", "1 Samuel 8:1-5", {"c": 1, "p": "beersheba", "zh": "在別是巴作審判官；他收受賄賂，使以色列人要求立王"}]],
+  "hadad-2": [
+    [-1550, "Defeats Midian in the territory of Moab", "Genesis 36:35", {"c": 1, "p": "moab", "zh": "在摩押境內擊敗米甸人"}]],
+  "eleazar-2": [
+    [-1117, "Set apart to guard the Ark at his father's house in Kiriath-jearim", "1 Samuel 7:1", {"c": 1, "zh": "被分別出來，在基列耶琳父親的家裡看守約櫃"}]],
+  "ahijah-3": [
+    [-1110, "Serves as priest with Saul's army at Michmash", "1 Samuel 14:3, 18", {"c": 1, "p": "michmash", "zh": "在密抹與掃羅的軍隊在一起，擔任祭司"}]],
+  "agag-2": [
+    [-1093, "Defeated by Saul, who wrongly spares him; Samuel executes him", "1 Samuel 15:8, 9, 32, 33", {"c": 1, "zh": "被掃羅擊敗，掃羅卻違命饒了他；撒母耳將他處死"}]],
+  "eliab-4": [
+    [-1093, "Samuel thinks he is God's choice, but Jehovah rejects him", "1 Samuel 16:6, 7", {"p": "bethlehem", "zh": "撒母耳以為他是上帝揀選的人，耶和華卻沒有選他"}],
+    [-1093, "Serves in Saul's army facing Goliath; scolds David", "1 Samuel 17:13, 28", {"p": "elah", "zh": "在掃羅的軍隊中對抗歌利亞；斥責大衛"}]],
+  "abinadab-2": [
+    [-1093, "Passed over when Samuel comes to anoint one of Jesse's sons", "1 Samuel 16:8", {"p": "bethlehem", "zh": "撒母耳來膏立耶西的一個兒子時，沒有選他"}],
+    [-1093, "Serves in Saul's army facing Goliath", "1 Samuel 17:13", {"p": "elah", "zh": "在掃羅的軍隊中對抗歌利亞"}]],
+  "shammah-2": [
+    [-1093, "Passed over when Samuel comes to anoint one of Jesse's sons", "1 Samuel 16:9", {"p": "bethlehem", "zh": "撒母耳來膏立耶西的一個兒子時，沒有選他"}],
+    [-1093, "Serves in Saul's army facing Goliath", "1 Samuel 17:13", {"p": "elah", "zh": "在掃羅的軍隊中對抗歌利亞"}]],
+  "merab": [
+    [-1093, "Promised to David by Saul but given to Adriel instead", "1 Samuel 18:17-19", {"c": 1, "zh": "掃羅答應把她嫁給大衛，卻把她給了亞得列"}]],
+  "michal": [
+    [-1086, "Marries David; helps him escape through a window from Saul's men", "1 Samuel 18:27; 19:11-17", {"c": 1, "p": "gibeah", "zh": "嫁給大衛；幫助他從窗戶逃離掃羅派來的人"}],
+    [-1075, "Taken from Paltiel and returned to David", "2 Samuel 3:13-16", {"c": 1, "p": "hebron", "zh": "從帕鐵那裡被帶回大衛身邊"}],
+    [-1070, "Despises David for dancing before the Ark", "2 Samuel 6:16, 20-23", {"c": 1, "p": "jerusalem", "zh": "因大衛在約櫃前跳舞而鄙視他"}]],
+  "paltiel-2": [
+    [-1075, "Weeps as Michal is taken back to David", "2 Samuel 3:15, 16", {"c": 1, "zh": "米甲被帶回大衛那裡時，他一路哭著跟隨"}]],
+  "ahimelech-1": [
+    [-1085, "Gives the fleeing David holy bread and Goliath's sword", "1 Samuel 21:1-9", {"c": 1, "zh": "把聖餅和歌利亞的劍給了逃難的大衛"}],
+    [-1085, "Killed with the priests of Nob by Doeg at Saul's order", "1 Samuel 22:9-19", {"c": 1, "zh": "掃羅下令，多益殺了他和挪伯的祭司"}]],
+  "abiathar": [
+    [-1085, "Escapes the massacre at Nob and joins David", "1 Samuel 22:20-23; 23:6", {"c": 1, "zh": "在挪伯的大屠殺中逃脫，投奔大衛"}],
+    [-1047, "Stays loyal to David in Absalom's revolt; returns the Ark to Jerusalem", "2 Samuel 15:24-29", {"p": "jerusalem", "zh": "在押沙龍叛亂時忠於大衛；把約櫃抬回耶路撒冷"}],
+    [-1037, "Backs Adonijah; Solomon removes him from the priesthood", "1 Kings 1:7; 2:26, 27", {"p": "anathoth", "zh": "支持亞多尼雅；所羅門革除了他的祭司職務"}]],
+  "achish": [
+    [-1085, "David flees to him and pretends to be insane", "1 Samuel 21:10-15", {"c": 1, "p": "gath", "zh": "大衛逃到他那裡，假裝瘋癲"}],
+    [-1079, "Gives the fugitive David the town of Ziklag", "1 Samuel 27:2-7", {"p": "ziklag", "zh": "把洗革拉城給了逃亡的大衛"}],
+    [-1034, "Shimei's runaway slaves flee to him in Solomon's reign", "1 Kings 2:39, 40", {"c": 1, "p": "gath", "zh": "所羅門統治期間，示每的奴隸逃到他那裡"}]],
+  "gad-3": [
+    [-1085, "Advises David to leave the stronghold and go to Judah", "1 Samuel 22:5", {"c": 1, "zh": "勸大衛離開要塞，到猶大地去"}],
+    [-1040, "Gives David three choices of punishment after the census; directs the altar at Araunah's threshing floor", "2 Samuel 24:11-19", {"c": 1, "p": "jerusalem", "zh": "大衛數點人數後，向他提出三種懲罰讓他選；吩咐他在亞勞拿的打穀場上築壇"}]],
+  "eliab-5": [
+    "wilderness"],
+  "eliel-7": [
+    "wilderness"],
+  "elzabad-1": [
+    "wilderness"],
+  "ezer-4": [
+    "wilderness"],
+  "machbannai": [
+    "wilderness"],
+  "mishmannah": [
+    "wilderness"],
+  "eluzai": [
+    "ziklag"],
+  "jehu-1": [
+    "ziklag"],
+  "jeremiah-1": [
+    "ziklag"],
+  "jeziel": [
+    "ziklag"],
+  "joash-4": [
+    "ziklag"],
+  "johanan-1": [
+    "ziklag"],
+  "jozabad-1": [
+    "ziklag"],
+  "ahiezer-b": [
+    "ziklag"],
+  "bealiah": [
+    "ziklag"],
+  "beracah-1": [
+    "ziklag"],
+  "ishmaiah-1": [
+    "ziklag"],
+  "isshiah-2": [
+    "ziklag"],
+  "jashobeam-1": [
+    "ziklag"],
+  "pelet-2": [
+    "ziklag"],
+  "zebadiah-3": [
+    "ziklag"],
+  "adnah-1": [
+    "manassites"],
+  "jozabad-3": [
+    "manassites"],
+  "ahinoam-2": [
+    [-1078, "Taken captive by Amalekite raiders at Ziklag; rescued by David", "1 Samuel 30:1-18", {"p": "ziklag", "zh": "在洗革拉被亞瑪力掠奪隊擄走；大衛救回了她"}],
+    [-1076, "Bears David's firstborn, Amnon, in Hebron", "2 Samuel 3:2", {"c": 1, "p": "hebron", "zh": "在希伯崙給大衛生了長子暗嫩"}]],
+  "spirit-medium-of-en-dor": [
+    [-1078, "Disguised Saul asks her to bring up Samuel, the night before he dies", "1 Samuel 28:7-25", {"p": "endor", "zh": "喬裝的掃羅在死前一晚請她招撒母耳上來"}]],
+  "abinadab-3": [
+    [-1078, "Killed by the Philistines at Mount Gilboa with his father and brothers", "1 Samuel 31:2; 1 Chronicles 10:2", {"p": "gilboa", "zh": "和父親、兄弟一起在基利波山被非利士人殺死"}]],
+  "malchi-shua": [
+    [-1078, "Killed by the Philistines at Mount Gilboa; his body is later buried at Jabesh", "1 Samuel 31:2, 8-13", {"p": "gilboa", "zh": "在基利波山被非利士人殺死；後來屍體被葬在雅比"}]],
+  "ish-bosheth": [
+    [-1077, "Made king over Israel, apart from Judah, by Abner", "2 Samuel 2:8-10", {"c": 1, "p": "mahanaim", "zh": "押尼珥立他作以色列的王，猶大除外"}],
+    [-1075, "Murdered in his bed by Rechab and Baanah", "2 Samuel 4:5-12", {"c": 1, "p": "mahanaim", "zh": "在床上被利甲和巴阿拿殺害"}]],
+  "abner-1": [
+    [-1077, "Makes Saul's son Ish-bosheth king", "2 Samuel 2:8-10", {"c": 1, "p": "mahanaim", "zh": "立掃羅的兒子伊施波設作王"}],
+    [-1077, "Fights Joab's men at the pool of Gibeon; kills Asahel", "2 Samuel 2:12-23", {"c": 1, "p": "gibeon", "zh": "在基遍池邊與約押的人交戰；殺了亞撒黑"}],
+    [-1075, "Comes over to David; killed by Joab at Hebron", "2 Samuel 3:12-30", {"c": 1, "p": "hebron", "zh": "歸向大衛；在希伯崙被約押殺死"}]],
+  "asahel-1": [
+    [-1077, "Chases Abner and is killed by his spear", "2 Samuel 2:18-23", {"c": 1, "p": "gibeon", "zh": "追趕押尼珥，被他用矛刺死"}]],
+  "baanah-1": [
+    [-1075, "With his brother Rechab, murders Ish-bosheth; David has them executed", "2 Samuel 4:5-12", {"c": 1, "p": "hebron", "zh": "和弟兄利甲一起殺了伊施波設；大衛下令處死他們"}]],
+  "rechab-1": [
+    [-1075, "With his brother Baanah, murders Ish-bosheth; David has them executed", "2 Samuel 4:5-12", {"c": 1, "p": "hebron", "zh": "和弟兄巴阿拿一起殺了伊施波設；大衛下令處死他們"}]],
+  "joab-2": [
+    [-1075, "Kills Abner to avenge his brother Asahel", "2 Samuel 3:26, 27", {"c": 1, "p": "hebron", "zh": "殺了押尼珥，為弟弟亞撒黑報仇"}],
+    [-1070, "Leads the capture of Jerusalem and becomes army chief", "1 Chronicles 11:6", {"p": "jerusalem", "zh": "率先攻佔耶路撒冷，成為軍隊的統帥"}],
+    [-1046, "Kills Absalom against David's order", "2 Samuel 18:9-15", {"p": "ephraimforest", "zh": "違背大衛的命令，殺了押沙龍"}],
+    [-1046, "Treacherously kills Amasa", "2 Samuel 20:8-10", {"c": 1, "zh": "用詭計殺了亞瑪撒"}],
+    [-1037, "Backs Adonijah; executed at Solomon's order", "1 Kings 1:7; 2:28-34", {"p": "jerusalem", "zh": "支持亞多尼雅；所羅門下令將他處死"}]],
+  "joel-7": [
+    "ark"],
+  "asaiah-1": [
+    "ark"],
+  "amminadab-3": [
+    "ark"],
+  "benaiah-3": [
+    "arkmusic"],
+  "jaaziel": [
+    "arkmusic"],
+  "jehiel-1": [
+    "arkmusic"],
+  "jeiel-4": [
+    "arkmusic"],
+  "maaseiah-1": [
+    "arkmusic"],
+  "shemiramoth-1": [
+    "arkmusic"],
+  "unni-1": [
+    "arkmusic"],
+  "ben-1": [
+    "arkmusic"],
+  "obed-edom-2": [
+    "arkmusic"],
+  "ethan-3": [
+    "arkmusic"],
+  "asaph-1": [
+    [-1070, "Appointed a chief singer, playing cymbals, when the Ark comes to Jerusalem", "1 Chronicles 15:17-19; 16:4-7", {"c": 1, "p": "jerusalem", "zh": "約櫃運到耶路撒冷時，被委任為首席歌手，敲鐃鈸"}]],
+  "benaiah-4": [
+    "arktrumpet"],
+  "joshaphat-2": [
+    "arktrumpet"],
+  "nethanel-4": [
+    "arktrumpet"],
+  "shebaniah-1": [
+    "arktrumpet"],
+  "jehiah": [
+    "arkgate"],
+  "chenaniah-1": [
+    [-1070, "Instructs the Levites in carrying the Ark properly", "1 Chronicles 15:22, 27", {"c": 1, "p": "jerusalem", "zh": "指導利未人用正確的方式搬運約櫃"}]],
+  "uzzah-2": [
+    [-1070, "Grabs the Ark to steady it and is struck dead", "2 Samuel 6:3-8", {"c": 1, "zh": "伸手扶住約櫃，被上帝擊殺"}]],
+  "ahio-1c": [
+    [-1070, "Walks ahead of the Ark when his brother Uzzah is struck down", "2 Samuel 6:3, 4", {"c": 1, "zh": "走在約櫃前面，那時他的兄弟烏撒被擊殺"}]],
+  "rizpah": [
+    [-1068, "Guards the bodies of her executed sons until David has them buried", "2 Samuel 21:8-14", {"c": 1, "p": "gibeah", "zh": "看守她被處死的兒子們的屍體，直到大衛把他們埋葬"}]],
+  "armoni": [
+    [-1068, "Handed over to the Gibeonites and executed for Saul's bloodguilt", "2 Samuel 21:8, 9", {"c": 1, "p": "gibeah", "zh": "被交給基遍人處死，為掃羅的血債贖罪"}]],
+  "mephibosheth-1": [
+    [-1068, "Handed over to the Gibeonites and executed for Saul's bloodguilt", "2 Samuel 21:8, 9", {"c": 1, "p": "gibeah", "zh": "被交給基遍人處死，為掃羅的血債贖罪"}]],
+  "adriel": [
+    [-1068, "His five sons are executed for Saul's bloodguilt", "2 Samuel 21:8, 9", {"c": 1, "p": "gibeah", "zh": "他的五個兒子被處死，為掃羅的血債贖罪"}]],
+  "hadadezer": [
+    [-1065, "Defeated by David on his way to the Euphrates", "2 Samuel 8:3-8", {"c": 1, "zh": "在往幼發拉底河去的路上被大衛擊敗"}],
+    [-1061, "Allied with Ammon, defeated again; his vassals make peace with Israel", "2 Samuel 10:15-19", {"c": 1, "zh": "與亞捫結盟，再次戰敗；他的附庸與以色列講和"}]],
+  "toi": [
+    [-1065, "Sends his son with gifts to congratulate David on defeating Hadadezer", "2 Samuel 8:9-12", {"c": 1, "zh": "派兒子帶禮物去祝賀大衛打敗哈達德謝"}]],
+  "joram-1": [
+    [-1065, "Sent by his father Toi with costly gifts to congratulate David", "2 Samuel 8:10", {"c": 1, "zh": "奉父親陀以之命，帶貴重禮物去祝賀大衛"}]],
+  "hadoram-2": [
+    [-1065, "Sent by King Tou with gifts to congratulate David", "1 Chronicles 18:10", {"c": 1, "zh": "奉陀烏王之命，帶禮物去祝賀大衛"}]],
+  "hanun-1": [
+    [-1061, "Humiliates David's envoys who come to comfort him", "2 Samuel 10:1-5", {"c": 1, "p": "ammon", "zh": "羞辱大衛派來安慰他的使者"}],
+    [-1060, "Hires Syrians for war; Israel crushes Ammon and takes Rabbah", "2 Samuel 10:6-14; 12:26-31", {"c": 1, "p": "rabbah", "zh": "僱用敘利亞人作戰；以色列人打敗亞捫，攻佔拉巴"}]],
+  "shobach": [
+    [-1061, "Leads Hadadezer's Syrians against David; dies in the defeat", "2 Samuel 10:16-18", {"c": 1, "zh": "率領哈達德謝的敘利亞軍隊攻打大衛；在戰敗中死去"}]],
+  "uriah-1": [
+    [-1060, "Refuses to go home while the army is in the field; David has him killed in battle", "2 Samuel 11:6-17", {"p": "rabbah", "zh": "軍隊在野外作戰，他不肯回家；大衛設計使他戰死"}]],
+  "amnon-1": [
+    [-1058, "Rapes his half sister Tamar", "2 Samuel 13:1-19", {"c": 1, "p": "jerusalem", "zh": "強暴了同父異母的妹妹塔瑪"}],
+    [-1056, "Killed by Absalom's servants at a sheep-shearing feast", "2 Samuel 13:23-29", {"p": "baalhazor", "zh": "在剪羊毛的宴席上被押沙龍的僕人殺死"}]],
+  "tamar-1b": [
+    [-1058, "Raped by her half brother Amnon; lives desolate in Absalom's house", "2 Samuel 13:1-20", {"c": 1, "p": "jerusalem", "zh": "被同父異母的哥哥暗嫩強暴；在押沙龍家裡孤單度日"}]],
+  "talmai-2": [
+    [-1056, "His grandson Absalom flees to him after killing Amnon, for three years", "2 Samuel 13:37, 38", {"c": 1, "zh": "外孫押沙龍殺了暗嫩後逃到他那裡，住了三年"}]],
+  "abishai": [
+    [-1050, "Saves the exhausted David from a Philistine giant", "2 Samuel 21:15-17", {"c": 1, "zh": "在大衛筋疲力盡時，救他脫離一個非利士巨人"}]],
+  "elhanan-1": [
+    [-1050, "Strikes down Lahmi, the brother of Goliath", "1 Chronicles 20:5", {"c": 1, "zh": "擊殺了歌利亞的兄弟拉哈米"}]],
+  "lahmi": [
+    [-1050, "Killed by Elhanan in a war with the Philistines", "1 Chronicles 20:5", {"c": 1, "zh": "在與非利士人的戰爭中被伊勒哈南擊殺"}]],
+  "sibbecai": [
+    [-1050, "Kills Saph (Sippai), a descendant of the Rephaim", "2 Samuel 21:18; 1 Chronicles 20:4", {"c": 1, "zh": "擊殺利乏音人的後代撒弗（細派）"}]],
+  "saph": [
+    [-1050, "Killed by Sibbecai at Gob", "2 Samuel 21:18", {"c": 1, "zh": "在歌伯被西比該擊殺"}]],
+  "sippai": [
+    [-1050, "Killed by Sibbecai at Gezer", "1 Chronicles 20:4", {"c": 1, "zh": "在基色被西比該擊殺"}]],
+  "jonathan-4": [
+    [-1050, "Kills a taunting giant with six fingers on each hand at Gath", "2 Samuel 21:20-22", {"c": 1, "p": "gath", "zh": "在迦特擊殺一個每隻手有六根指頭、向以色列人辱罵的巨人"}]],
+  "eleazar-3": [
+    [-1080, "Holds a barley field at Pas-dammim and strikes down Philistines", "2 Samuel 23:9, 10; 1 Chronicles 11:12-14", {"c": 1, "p": "elah", "zh": "在帕斯達閔守住一塊大麥田，擊殺非利士人"}]],
+  "jashobeam-2": [
+    [-1080, "Kills hundreds with his spear; later leads the first army division", "1 Chronicles 11:11; 27:2", {"c": 1, "zh": "用矛擊殺數百人；後來統領第一班軍隊"}]],
+  "nabal": [
+    [-1080, "Refuses David's men food in return for protecting his flocks", "1 Samuel 25:2-11", {"p": "carmel", "zh": "拒絕給保護他羊群的大衛的人食物"}],
+    [-1080, "Struck by Jehovah; dies about ten days later", "1 Samuel 25:36-38", {"zh": "被耶和華擊打，約十天後死去"}]],
+  "ahithophel": [
+    [-1047, "Leaves David to become Absalom's adviser", "2 Samuel 15:12, 31; 16:20-23", {"p": "jerusalem", "zh": "離開大衛，成為押沙龍的謀士"}],
+    [-1047, "His advice is overruled; he goes home and hangs himself", "2 Samuel 17:1-23", {"zh": "他的計謀不被採納；回家上吊自殺"}]],
+  "hushai": [
+    [-1047, "Pretends to back Absalom; overturns Ahithophel's advice and warns David", "2 Samuel 15:32-37; 17:5-16", {"p": "jerusalem", "zh": "假裝支持押沙龍；推翻亞希多弗的計謀，並通知大衛"}]],
+  "jonathan-3": [
+    [-1047, "With Ahimaaz, carries secret messages to David during Absalom's revolt", "2 Samuel 15:27, 36; 17:17-21", {"c": 1, "zh": "在押沙龍叛亂時，和亞希瑪斯一起把秘密消息傳給大衛"}],
+    [-1037, "Brings Adonijah's guests the news that Solomon is king", "1 Kings 1:41-48", {"p": "jerusalem", "zh": "向亞多尼雅的賓客報告所羅門已經作王"}]],
+  "shimei-12": [
+    [-1047, "Curses David and throws stones at him as he flees from Absalom", "2 Samuel 16:5-13", {"zh": "大衛逃離押沙龍時，咒罵他，向他扔石頭"}],
+    [-1046, "Begs David's pardon and is spared", "2 Samuel 19:16-23", {"zh": "請求大衛寬恕，得到饒命"}],
+    [-1034, "Leaves Jerusalem against his oath; executed at Solomon's order", "1 Kings 2:36-46", {"p": "jerusalem", "zh": "違背誓言離開耶路撒冷；所羅門下令將他處死"}]],
+  "shobi": [
+    [-1047, "Brings supplies to David at Mahanaim", "2 Samuel 17:27-29", {"p": "mahanaim", "zh": "把供應物資帶到瑪哈念給大衛"}]],
+  "machir-b": [
+    [-1047, "Having sheltered Mephibosheth, he brings supplies to David at Mahanaim", "2 Samuel 9:4; 17:27-29", {"p": "mahanaim", "zh": "曾收留米非波設，又把供應物資帶到瑪哈念給大衛"}]],
+  "barzillai-2": [
+    [-1047, "Supplies David at Mahanaim", "2 Samuel 17:27-29", {"p": "mahanaim", "zh": "在瑪哈念供應大衛所需"}],
+    [-1046, "At 80, declines a place at David's court and sends Chimham instead", "2 Samuel 19:31-39", {"zh": "80歲時婉拒到大衛的宮廷生活，請金罕代替他去"}]],
+  "amasa-1": [
+    [-1047, "Commands Absalom's army in the revolt", "2 Samuel 17:25; 18:6, 7", {"p": "ephraimforest", "zh": "在叛亂中統領押沙龍的軍隊"}],
+    [-1046, "Named David's army chief; killed by Joab while pursuing Sheba", "2 Samuel 19:13; 20:4-10", {"c": 1, "zh": "被任命為大衛的軍隊統帥；追擊示巴時被約押殺死"}]],
+  "zadok-1": [
+    [-1047, "Stays loyal to David in Absalom's revolt; returns the Ark to Jerusalem", "2 Samuel 15:24-29", {"p": "jerusalem", "zh": "在押沙龍叛亂時忠於大衛；把約櫃抬回耶路撒冷"}],
+    [-1037, "Anoints Solomon king at Gihon", "1 Kings 1:32-39", {"p": "jerusalem", "zh": "在基訓膏立所羅門為王"}]],
+  "benaiah-1": [
+    [-1037, "Executes Adonijah and Joab for Solomon; made army chief", "1 Kings 1:36-38; 2:25, 34, 35", {"p": "jerusalem", "zh": "奉所羅門之命處決亞多尼雅和約押；被任命為軍隊統帥"}]],
+  "rei": [
+    [-1037, "Stays loyal to David and refuses to back Adonijah", "1 Kings 1:8", {"p": "jerusalem", "zh": "忠於大衛，不支持亞多尼雅"}]],
+  "shimei-11": [
+    [-1037, "Refuses to back Adonijah", "1 Kings 1:8", {"p": "jerusalem", "zh": "不支持亞多尼雅"}]],
+  "adonijah-1": [
+    [-1037, "Tries to seize the throne in David's old age; foiled by Nathan", "1 Kings 1:5-53", {"p": "jerusalem", "zh": "在大衛年老時企圖奪取王位；被拿單阻止"}],
+    [-1036, "Asks for Abishag as wife; executed by Solomon", "1 Kings 2:13-25", {"c": 1, "p": "jerusalem", "zh": "請求娶亞比莎為妻；被所羅門處死"}]],
+  "pharaoh-s-daughter-2": [
+    [-1036, "Marries Solomon in an alliance with Egypt; he later builds her a house", "1 Kings 3:1; 7:8; 9:24", {"c": 1, "p": "jerusalem", "zh": "與所羅門聯姻，使以色列與埃及結盟；後來所羅門為她建了一座宮殿"}]],
+  "hadad-4": [
+    [-1065, "As a boy escapes Joab's massacre of Edom and flees to Egypt", "1 Kings 11:14-20", {"c": 1, "p": "egypt", "zh": "年少時逃過約押對以東人的屠殺，逃到埃及"}],
+    [-1030, "Returns from Egypt to oppose Solomon", "1 Kings 11:21, 22, 25", {"c": 1, "zh": "從埃及回來與所羅門作對"}]],
+  "hiram-2": [
+    [-1030, "Makes the temple furnishings for Solomon", "1 Kings 7:13-47; 2 Chronicles 2:13, 14", {"c": 1, "p": "jerusalem", "zh": "為所羅門製造聖殿的器具"}]],
+  "hiram-abi": [
+    [-1030, "Makes the temple furnishings for Solomon", "2 Chronicles 2:13; 4:16", {"c": 1, "p": "jerusalem", "zh": "為所羅門製造聖殿的器具"}]],
+  "rezon": [
+    [-1010, "Rules Syria from Damascus and opposes Israel throughout Solomon's reign", "1 Kings 11:23-25", {"c": 1, "p": "damascus", "zh": "在大馬士革統治敘利亞，在所羅門統治期間一直與以色列作對"}]],
+  "adoniram": [
+    [-997, "Stoned to death by the rebels at Shechem", "1 Kings 12:18", {"p": "shechem", "zh": "在示劍被叛亂的人用石頭打死"}]],
+  "shemaiah-6": [
+    [-997, "Stops Rehoboam from fighting the ten tribes", "1 Kings 12:22-24", {"p": "jerusalem", "zh": "阻止羅波安攻打十個部族"}],
+    [-993, "Warns Rehoboam when Shishak invades", "2 Chronicles 12:5-8", {"p": "jerusalem", "zh": "示撒入侵時警告羅波安"}]],
+  "ahijah-7": [
+    [-1000, "Tears his garment into 12 pieces: Jeroboam is to rule ten tribes", "1 Kings 11:29-39", {"c": 1, "zh": "把衣服撕成12片：耶羅波安要統治十個部族"}],
+    [-980, "Foretells the death of Jeroboam's son and the end of his house", "1 Kings 14:1-18", {"c": 1, "p": "shiloh", "zh": "預言耶羅波安的兒子會死，他的家族要滅亡"}]],
+  "jeroboam-s-wife": [
+    [-980, "Goes in disguise to the prophet Ahijah about her sick son", "1 Kings 14:1-17", {"c": 1, "p": "shiloh", "zh": "喬裝去見先知亞希雅，詢問生病的兒子"}]],
+  "abijah-6a": [
+    [-980, "Dies as Ahijah foretold; mourned and buried with honor", "1 Kings 14:12-18", {"c": 1, "p": "tirzah", "zh": "如亞希雅所預言的死了；全以色列為他哀哭，得到體面的埋葬"}]],
+  "abijah-5": [
+    [-980, "Becomes king of Judah", "1 Kings 15:1, 2", {"p": "jerusalem", "zh": "成為猶大王"}],
+    [-979, "Denounces calf worship and routs Jeroboam's much larger army", "2 Chronicles 13:3-20", {"c": 1, "zh": "譴責崇拜牛犢的行為，擊潰耶羅波安人數多得多的軍隊"}]],
+  "nadab-4": [
+    [-976, "Becomes king of Israel and keeps up calf worship", "1 Kings 15:25, 26", {"c": 1, "zh": "成為以色列王，繼續崇拜牛犢"}],
+    [-975, "Assassinated by Baasha while besieging Gibbethon", "1 Kings 15:27, 28", {"c": 1, "zh": "圍攻基比頓時被巴沙殺害"}]],
+  "baasha": [
+    [-975, "Kills Nadab, seizes the throne and wipes out Jeroboam's house", "1 Kings 15:27-30", {"c": 1, "zh": "殺了拿答，奪取王位，消滅耶羅波安全家"}],
+    [-962, "Fortifies Ramah against Asa; withdraws when Syria attacks his north", "1 Kings 15:16-22; 2 Chronicles 16:1-6", {"p": "ramah", "zh": "建造拉瑪，對抗亞撒；敘利亞人攻擊北方時撤退"}]],
+  "ben-hadad-a": [
+    [-962, "Bribed by Asa, breaks his treaty with Baasha and attacks northern Israel", "1 Kings 15:18-21; 2 Chronicles 16:1-6", {"p": "ramah", "zh": "接受亞撒的賄賂，背棄與巴沙的盟約，攻擊以色列北部"}]],
+  "hanani-2": [
+    [-962, "Rebukes Asa for relying on Syria; put in the stocks", "2 Chronicles 16:7-10", {"c": 1, "p": "jerusalem", "zh": "責備亞撒倚靠敘利亞；被上了木枷"}]],
+  "azariah-6a": [
+    [-963, "His message moves Asa to remove idols and make a covenant to seek Jehovah", "2 Chronicles 15:1-15", {"p": "jerusalem", "zh": "他的信息促使亞撒除掉偶像，與百姓立約尋求耶和華"}]],
+  "maacah-9": [
+    [-963, "Removed as queen mother by Asa for making an idol for the sacred pole", "1 Kings 15:13; 2 Chronicles 15:16", {"p": "jerusalem", "zh": "因為給神聖柱子造偶像，被亞撒廢去太后的地位"}]],
+  "zerah-6": [
+    [-967, "Invades Judah with a million men; defeated at Mareshah and pursued to Gerar", "2 Chronicles 14:9-15", {"p": "mareshah", "zh": "率領一百萬大軍入侵猶大；在瑪利沙戰敗，被追到基拉耳"}]],
+  "jehu-2": [
+    [-955, "Foretells the end of Baasha's dynasty", "1 Kings 16:1-7", {"c": 1, "zh": "預言巴沙的王朝會滅亡"}],
+    [-920, "Rebukes Jehoshaphat for helping Ahab", "2 Chronicles 19:1-3", {"c": 1, "p": "jerusalem", "zh": "責備約沙法幫助亞哈"}]],
+  "elah-3": [
+    [-952, "Succeeds his father Baasha as king of Israel", "1 Kings 16:6, 8", {"c": 1, "p": "tirzah", "zh": "繼承父親巴沙成為以色列王"}],
+    [-951, "Killed by Zimri while drunk at Arza's house", "1 Kings 16:9, 10", {"c": 1, "p": "tirzah", "zh": "在亞察家裡喝醉時被心利殺死"}]],
+  "arza": [
+    [-951, "Zimri kills the drunken King Elah in his house", "1 Kings 16:9", {"c": 1, "p": "tirzah", "zh": "心利在他家裡殺死喝醉的以拉王"}]],
+  "zimri-3": [
+    [-951, "Murders King Elah and wipes out Baasha's house", "1 Kings 16:9-13", {"c": 1, "p": "tirzah", "zh": "殺了以拉王，消滅巴沙全家"}],
+    [-951, "Rules seven days; when Omri besieges Tirzah, he burns the palace over himself", "1 Kings 16:15-19", {"c": 1, "p": "tirzah", "zh": "作王七天；暗利圍攻得撒時，他放火焚燒王宮，自焚而死"}]],
+  "omri-3": [
+    [-951, "Made king by the army after Zimri's coup", "1 Kings 16:16, 17", {"c": 1, "p": "tirzah", "zh": "心利叛變後被軍隊立為王"}],
+    [-947, "Prevails over Tibni and rules all Israel", "1 Kings 16:21-23", {"p": "tirzah", "zh": "勝過提比尼，統治全以色列"}],
+    [-945, "Buys the hill of Samaria and builds his capital there", "1 Kings 16:24", {"c": 1, "p": "samaria", "zh": "買下撒馬利亞山，在那裡建造首都"}]],
+  "tibni": [
+    [-951, "Vies with Omri for the kingship; dies after some four years", "1 Kings 16:21, 22", {"c": 1, "zh": "與暗利爭奪王位；約四年後死去"}]],
+  "shemer-3": [
+    [-945, "Sells King Omri the hill of Samaria for two silver talents", "1 Kings 16:24", {"c": 1, "p": "samaria", "zh": "以兩他連得銀子把撒馬利亞山賣給暗利王"}]],
+  "widow-of-zarephath": [
+    [-933, "Feeds Elijah with her last flour and oil; the jar and jug do not run out", "1 Kings 17:8-16", {"c": 1, "p": "zarephath", "zh": "用僅存的麵粉和油供養以利亞；她的麵和油一直沒有用盡"}],
+    [-932, "Elijah raises her son from the dead", "1 Kings 17:17-24", {"c": 1, "p": "zarephath", "zh": "以利亞使她的兒子復活"}]],
+  "abiram-2": [
+    [-935, "Dies when his father rebuilds Jericho, as Joshua's curse foretold", "1 Kings 16:34; Joshua 6:26", {"c": 1, "p": "jericho", "zh": "父親重建耶利哥時死去，應驗了約書亞的咒詛"}]],
+  "segub-2": [
+    [-935, "Dies when his father rebuilds Jericho, as Joshua's curse foretold", "1 Kings 16:34; Joshua 6:26", {"c": 1, "p": "jericho", "zh": "父親重建耶利哥時死去，應驗了約書亞的咒詛"}]],
+  "adonijah-2": [
+    "teach"],
+  "nethaniah-b": [
+    "teach"],
+  "zechariah-10": [
+    "teach"],
+  "amasiah": [
+    [-935, "Commands one of Jehoshaphat's army divisions of 200,000", "2 Chronicles 17:16", {"c": 1, "zh": "統領約沙法的一支二十萬人的軍隊"}]],
+  "amariah-3": [
+    [-919, "Appointed chief priest over every matter of Jehovah, especially legal cases", "2 Chronicles 19:8-11", {"c": 1, "p": "jerusalem", "zh": "被委任為祭司長，管理一切有關耶和華的事，特別是審判的案件"}]],
+  "naboth": [
+    [-922, "Refuses to sell his vineyard to Ahab; Jezebel has him falsely accused and stoned", "1 Kings 21:1-16; 2 Kings 9:26", {"p": "jezreel", "zh": "不肯把葡萄園賣給亞哈；耶洗別設計誣告他，使他被石頭打死"}]],
+  "ben-hadad-b": [
+    [-925, "Besieges Samaria with 32 vassal kings; defeated by Ahab, then spared", "1 Kings 20:1-34", {"c": 1, "p": "samaria", "zh": "率領32個附庸王圍攻撒馬利亞；被亞哈擊敗，後來被饒命"}],
+    [-910, "Falls ill; smothered by Hazael", "2 Kings 8:7-15", {"c": 1, "p": "damascus", "zh": "患病；被哈薛悶死"}]],
+  "micaiah-2": [
+    [-920, "Unlike Ahab's 400 prophets, foretells Israel's defeat at Ramoth-gilead", "1 Kings 22:8-28", {"p": "samaria", "zh": "和亞哈的400個先知不同，預言以色列人會在基列拉末戰敗"}]],
+  "zedekiah-1": [
+    [-920, "Makes iron horns to promise Ahab victory; strikes Micaiah on the cheek", "1 Kings 22:11, 24", {"p": "samaria", "zh": "做了鐵角，向亞哈保證會得勝；打了米該雅的臉"}]],
+  "ahaziah-1": [
+    [-920, "Becomes king of Israel and continues Baal worship", "1 Kings 22:51-53", {"c": 1, "p": "samaria", "zh": "成為以色列王，繼續崇拜巴力"}],
+    [-919, "His joint shipping venture with Jehoshaphat fails", "2 Chronicles 20:35-37", {"c": 1, "zh": "與約沙法合作造船，結果失敗"}],
+    [-919, "Falls through a lattice and dies, as Elijah foretold", "2 Kings 1:2-17", {"c": 1, "p": "samaria", "zh": "從窗格子掉下來，後來死了，正如以利亞所預言的"}]],
+  "eliezer-6": [
+    [-919, "Foretells the wreck of the ships Jehoshaphat built with Ahaziah", "2 Chronicles 20:37", {"c": 1, "zh": "預言約沙法和亞哈謝合造的船會毀壞"}]],
+  "jahaziel-4": [
+    [-918, "Under God's spirit, tells Jehoshaphat the battle is God's", "2 Chronicles 20:14-17", {"c": 1, "p": "jerusalem", "zh": "受上帝的靈感動，告訴約沙法這場戰爭是上帝的"}]],
+  "jehoram-3": [
+    [-913, "Becomes sole king of Judah and kills all his brothers", "2 Chronicles 21:1-6", {"p": "jerusalem", "zh": "成為猶大唯一的王，殺了他所有的兄弟"}],
+    [-907, "Dies of a disease foretold in a letter from Elijah", "2 Chronicles 21:12-20", {"c": 1, "p": "jerusalem", "zh": "死於以利亞在信中預言的疾病"}]],
+  "jehiel-4": [
+    "jsons"],
+  "michael-7": [
+    "jsons"],
+  "zechariah-11": [
+    "jsons"],
+  "azariah-6b": [
+    "jsons"],
+  "azariah-6c": [
+    "jsons"],
+  "shephatiah-4a": [
+    "jsons"],
+  "ahaziah-2": [
+    [-906, "Becomes king of Judah under his mother Athaliah's influence", "2 Kings 8:25-27", {"c": 1, "p": "jerusalem", "zh": "在母親亞他利雅的影響下成為猶大王"}],
+    [-905, "Wounded by Jehu's men; dies at Megiddo", "2 Kings 9:27, 28", {"p": "megiddo", "zh": "被耶戶的人射傷，死在米吉多"}]],
+  "athaliah-1": [
+    [-905, "Murders the royal heirs and seizes the throne", "2 Kings 11:1-3", {"p": "jerusalem", "zh": "殺害王室的後裔，篡奪王位"}],
+    [-898, "Executed when Jehoiada crowns Jehoash", "2 Kings 11:13-16", {"p": "jerusalem", "zh": "耶何耶大擁立約阿施作王時被處死"}]],
+  "jehosheba": [
+    [-905, "Rescues the infant Jehoash from Athaliah and hides him in the temple", "2 Kings 11:2, 3; 2 Chronicles 22:11, 12", {"p": "jerusalem", "zh": "從亞他利雅手中救出嬰孩約阿施，把他藏在聖殿裡"}]],
+  "jehoash-1": [
+    [-905, "As a baby, rescued from Athaliah and hidden in the temple six years", "2 Kings 11:2, 3", {"p": "jerusalem", "zh": "還是嬰孩時從亞他利雅手中被救出，在聖殿裡藏了六年"}],
+    [-898, "Crowned king at seven by Jehoiada", "2 Kings 11:4-21", {"p": "jerusalem", "zh": "七歲時被耶何耶大擁立為王"}],
+    [-859, "Killed by his servants after he had Zechariah son of Jehoiada stoned", "2 Kings 12:20, 21; 2 Chronicles 24:25", {"p": "jerusalem", "zh": "他使耶何耶大的兒子撒迦利亞被石頭打死，後來被自己的僕人殺害"}]],
+  "elishaphat": [
+    "athaliah"],
+  "ishmael-4": [
+    "athaliah"],
+  "mattan-1": [
+    [-898, "Killed before Baal's altars when the people tear down Baal's house", "2 Kings 11:18", {"p": "jerusalem", "zh": "百姓拆毀巴力的廟時，他在巴力的祭壇前被殺"}]],
+  "jehonadab-1b": [
+    [-905, "Rides with Jehu and backs his eradication of Baal worship in Samaria", "2 Kings 10:15-27", {"p": "samaria", "zh": "與耶戶同車，支持他在撒馬利亞剷除巴力崇拜"}]],
+  "hazael": [
+    [-910, "Smothers Ben-hadad and seizes the throne of Syria, as Elisha foretold", "2 Kings 8:7-15", {"c": 1, "p": "damascus", "zh": "悶死便哈達，奪取敘利亞的王位，正如以利沙所預言的"}],
+    [-870, "Harshly oppresses Israel", "2 Kings 10:32, 33; 13:3, 22", {"c": 1, "zh": "嚴酷地欺壓以色列人"}]],
+  "gehazi": [
+    [-900, "Points out that the Shunammite has no son; later her son is raised", "2 Kings 4:12-37", {"c": 1, "p": "shunem", "zh": "指出書念婦人沒有兒子；後來她的兒子死而復活"}],
+    [-890, "Takes gifts from Naaman by deceit and is struck with leprosy", "2 Kings 5:20-27", {"c": 1, "p": "samaria", "zh": "用詭計向乃縵索取禮物，結果染上痲瘋"}]],
+  "jehoahaz-2": [
+    [-876, "Succeeds his father Jehu as king of Israel", "2 Kings 10:35; 13:1, 2", {"c": 1, "p": "samaria", "zh": "繼承父親耶戶作以色列王"}],
+    [-865, "Oppressed by Hazael, he seeks Jehovah, who gives Israel a savior", "2 Kings 13:3-5", {"c": 1, "p": "samaria", "zh": "受哈薛欺壓，他懇求耶和華，耶和華就給以色列人一位拯救者"}]],
+  "jehozabad-3": [
+    [-859, "With Jozacar, kills King Jehoash for murdering Zechariah son of Jehoiada", "2 Kings 12:20, 21; 2 Chronicles 24:25, 26", {"p": "jerusalem", "zh": "和約撒甲一起殺了約阿施王，因為王殺害了耶何耶大的兒子撒迦利亞"}],
+    [-858, "Executed by Amaziah when the kingdom is firm in his hand", "2 Kings 14:5, 6", {"c": 1, "p": "jerusalem", "zh": "亞瑪謝掌穩王權後將他處死"}]],
+  "jozacar": [
+    [-859, "With Jehozabad, kills King Jehoash for murdering Zechariah son of Jehoiada", "2 Kings 12:20, 21", {"p": "jerusalem", "zh": "和約薩拔一起殺了約阿施王，因為王殺害了耶何耶大的兒子撒迦利亞"}],
+    [-858, "Executed by Amaziah when the kingdom is firm in his hand", "2 Kings 14:5, 6", {"c": 1, "p": "jerusalem", "zh": "亞瑪謝掌穩王權後將他處死"}]],
+  "amaziah-2": [
+    [-858, "Becomes king of Judah at 25", "2 Kings 14:1, 2", {"p": "jerusalem", "zh": "25歲時成為猶大王"}],
+    [-850, "Defeats Edom in the Valley of Salt, then worships Edom's gods", "2 Chronicles 25:11-16", {"c": 1, "zh": "在鹽谷擊敗以東人，後來卻崇拜以東的神"}],
+    [-846, "Challenges Jehoash of Israel; routed, captured, and Jerusalem's wall is broken", "2 Kings 14:8-14", {"c": 1, "p": "jerusalem", "zh": "向以色列王約阿施挑戰；戰敗被擒，耶路撒冷的城牆被拆毀"}]],
+  "jehoash-2": [
+    [-859, "Becomes king of Israel", "2 Kings 13:10, 11", {"c": 1, "p": "samaria", "zh": "成為以色列王"}],
+    [-846, "Defeats Amaziah of Judah and breaks down part of Jerusalem's wall", "2 Kings 14:8-14", {"c": 1, "p": "jerusalem", "zh": "擊敗猶大王亞瑪謝，拆毀耶路撒冷的一段城牆"}],
+    [-845, "Weeps over the dying Elisha, who promises him victories over Syria", "2 Kings 13:14-19", {"c": 1, "zh": "為垂死的以利沙哭泣；以利沙應許他會戰勝敘利亞"}],
+    [-845, "Defeats Syria three times and wins back Israel's cities", "2 Kings 13:24, 25", {"c": 1, "zh": "三次擊敗敘利亞，收回以色列的城鎮"}]],
+  "ben-hadad-c": [
+    [-845, "Loses the Israelite cities his father took when Jehoash defeats him three times", "2 Kings 13:24, 25", {"c": 1, "zh": "約阿施三次打敗他，他失去了父親奪得的以色列城鎮"}]],
+  "jeroboam-2": [
+    [-844, "Becomes king of Israel and rules 41 years", "2 Kings 14:23, 24", {"c": 1, "p": "samaria", "zh": "成為以色列王，統治41年"}],
+    [-830, "Restores Israel's boundaries, as Jonah foretold", "2 Kings 14:25-28", {"c": 1, "p": "damascus", "zh": "恢復以色列的疆界，正如約拿所預言的"}]],
+  "amaziah-3": [
+    [-804, "Accuses Amos of sedition and tells him to go back to Judah; Amos foretells his ruin", "Amos 7:10-17", {"c": 1, "p": "bethel", "zh": "指控阿摩司謀反，叫他回猶大去；阿摩司預言他會遭禍"}]],
+  "uzziah-3": [
+    [-829, "Becomes king of Judah at 16", "2 Kings 15:1, 2; 2 Chronicles 26:1-5", {"p": "jerusalem", "zh": "16歲時成為猶大王"}],
+    [-790, "Presumptuously burns incense in the temple and is struck with leprosy", "2 Chronicles 26:16-21", {"c": 1, "p": "jerusalem", "zh": "擅自在聖殿裡燒香，結果染上痲瘋"}]],
+  "jotham-3": [
+    [-790, "Handles royal duties while his father Uzziah has leprosy", "2 Chronicles 26:21", {"c": 1, "p": "jerusalem", "zh": "父親烏西雅患痲瘋期間，代他處理王室事務"}],
+    [-777, "Becomes king of Judah", "2 Kings 15:32, 33", {"p": "jerusalem", "zh": "成為猶大王"}],
+    [-770, "Builds extensively and subdues the Ammonites", "2 Chronicles 27:3-5", {"c": 1, "p": "ammon", "zh": "大興土木，並制服了亞捫人"}]],
+  "zechariah-14": [
+    [-792, "Reigns six months, the last of Jehu's dynasty; assassinated by Shallum", "2 Kings 15:8-10", {"c": 1, "p": "samaria", "zh": "作王六個月，是耶戶王朝的最後一個王；被沙龍殺害"}]],
+  "shallum-5": [
+    [-791, "Kills Zechariah and reigns one month; killed by Menahem", "2 Kings 15:10, 13-15", {"c": 1, "p": "samaria", "zh": "殺了撒迦利亞，作王一個月；被米拿現殺死"}]],
+  "menahem": [
+    [-791, "Kills Shallum and becomes king of Israel", "2 Kings 15:14, 17", {"c": 1, "p": "samaria", "zh": "殺了沙龍，成為以色列王"}],
+    [-785, "Pays Assyria's King Pul 1,000 talents of silver", "2 Kings 15:19, 20", {"c": 1, "zh": "向亞述王普勒進貢1000他連得銀子"}]],
+  "pul-1": [
+    [-785, "Invades Israel and takes tribute from King Menahem", "2 Kings 15:19, 20", {"c": 1, "zh": "入侵以色列，向米拿現王索取貢物"}]],
+  "tiglath-pileser-iii": [
+    [-785, "As Pul, invades Israel and takes tribute from King Menahem", "2 Kings 15:19, 20", {"c": 1, "zh": "以普勒之名入侵以色列，向米拿現王索取貢物"}],
+    [-760, "Takes towns of Israel and deports their people to Assyria", "2 Kings 15:29; 1 Chronicles 5:26", {"c": 1, "zh": "攻佔以色列的城鎮，把居民擄到亞述"}],
+    [-759, "Answers Ahaz's call, captures Damascus and kills Rezin", "2 Kings 16:7-9", {"c": 1, "p": "damascus", "zh": "回應亞哈斯的求助，攻佔大馬士革，殺了利迅"}]],
+  "pekahiah": [
+    [-780, "Succeeds his father Menahem as king", "2 Kings 15:22-24", {"c": 1, "p": "samaria", "zh": "繼承父親米拿現作王"}],
+    [-778, "Killed in the palace by his adjutant Pekah", "2 Kings 15:25", {"c": 1, "p": "samaria", "zh": "在王宮裡被副官比加殺害"}]],
+  "argob-1": [
+    [-778, "Possibly killed with King Pekahiah when Pekah seizes the throne", "2 Kings 15:25", {"c": 1, "p": "samaria", "zh": "比加篡位時，可能與比加轄王一同被殺"}]],
+  "arieh": [
+    [-778, "Possibly killed with King Pekahiah when Pekah seizes the throne", "2 Kings 15:25", {"c": 1, "p": "samaria", "zh": "比加篡位時，可能與比加轄王一同被殺"}]],
+  "pekah": [
+    [-778, "Kills Pekahiah and becomes king of Israel", "2 Kings 15:25, 27", {"c": 1, "p": "samaria", "zh": "殺了比加轄，成為以色列王"}],
+    [-760, "With Rezin of Syria, makes war on Judah under Ahaz", "2 Kings 16:5; 2 Chronicles 28:6; Isaiah 7:1-6", {"c": 1, "p": "jerusalem", "zh": "與敘利亞王利迅聯手攻打亞哈斯統治的猶大"}],
+    [-759, "Assassinated by Hoshea", "2 Kings 15:30", {"c": 1, "p": "samaria", "zh": "被何細亞殺害"}]],
+  "rezin-1": [
+    [-760, "With Pekah, besieges Jerusalem; takes Elath", "2 Kings 16:5, 6; Isaiah 7:1", {"c": 1, "p": "jerusalem", "zh": "與比加一起圍攻耶路撒冷；奪取以拉他"}],
+    [-759, "Killed when Tiglath-pileser III captures Damascus", "2 Kings 16:9", {"c": 1, "p": "damascus", "zh": "提革拉比列色攻佔大馬士革時被殺"}]],
+  "ahaz-1": [
+    [-761, "Becomes king of Judah and practices gross idolatry", "2 Kings 16:1-4", {"p": "jerusalem", "zh": "成為猶大王，大行拜偶像的惡事"}],
+    [-760, "Under attack from Syria and Israel, refuses Isaiah's offer of a sign", "Isaiah 7:1-12", {"c": 1, "p": "jerusalem", "zh": "受敘利亞和以色列攻擊時，拒絕以賽亞提出的徵兆"}],
+    [-759, "Pays Tiglath-pileser III; copies a pagan altar he sees at Damascus", "2 Kings 16:7-16", {"c": 1, "p": "damascus", "zh": "向提革拉比列色進貢；仿造在大馬士革看見的異教祭壇"}]],
+  "urijah-1": [
+    [-760, "Serves as a witness when Isaiah writes on a large tablet", "Isaiah 8:1, 2", {"c": 1, "p": "jerusalem", "zh": "以賽亞在大板上寫字時作見證人"}],
+    [-759, "Builds a copy of the Damascus altar at King Ahaz's order", "2 Kings 16:10-16", {"c": 1, "p": "jerusalem", "zh": "奉亞哈斯王之命，仿造大馬士革的祭壇"}]],
+  "zechariah-15": [
+    [-760, "Serves as a witness when Isaiah writes on a large tablet", "Isaiah 8:1, 2", {"c": 1, "p": "jerusalem", "zh": "以賽亞在大板上寫字時作見證人"}]],
+  "shear-jashub": [
+    [-760, "Goes with his father Isaiah to meet King Ahaz", "Isaiah 7:3", {"c": 1, "p": "jerusalem", "zh": "和父親以賽亞一起去見亞哈斯王"}]],
+  "isaiah-s-wife": [
+    [-759, "Bears Maher-shalal-hash-baz, whose name foretells Assyria's plunder", "Isaiah 8:3, 4", {"c": 1, "p": "jerusalem", "zh": "生了瑪黑珥沙拉勒哈施罷斯，這個名字預示亞述會掠奪敘利亞和以色列"}]],
+  "elkanah-8": [
+    "pekahwar"],
+  "maaseiah-4": [
+    "pekahwar"],
+  "azrikam-2": [
+    "pekahwar"],
+  "zichri-10": [
+    [-760, "In Pekah's invasion of Judah, kills a royal prince and two of Ahaz's high officials", "2 Chronicles 28:6, 7", {"c": 1, "zh": "在比加入侵猶大時，殺了一個王子和亞哈斯的兩個高官"}]],
+  "oded-2": [
+    [-760, "Persuades Israel's army to free 200,000 captives taken from Judah", "2 Chronicles 28:9-15", {"c": 1, "p": "samaria", "zh": "說服以色列軍隊釋放從猶大擄來的二十萬人"}]],
+  "jehizkiah": [
+    [-760, "Opposes enslaving the captives from Judah and helps care for them", "2 Chronicles 28:12-15", {"c": 1, "p": "samaria", "zh": "反對奴役從猶大擄來的人，並幫助照顧他們"}]],
+  "hoshea-4": [
+    [-759, "Kills Pekah and takes the throne of Israel", "2 Kings 15:30", {"c": 1, "p": "samaria", "zh": "殺了比加，奪取以色列的王位"}],
+    [-742, "Conspires with Egypt against Assyria and is imprisoned", "2 Kings 17:3-5", {"c": 1, "p": "samaria", "zh": "與埃及合謀反抗亞述，被關進監牢"}]],
+  "so": [
+    [-742, "King Hoshea of Israel sends to him for help against Assyria", "2 Kings 17:4", {"c": 1, "p": "egypt", "zh": "以色列王何細亞派人向他求助，對抗亞述"}]],
+  "shalmaneser-v-2": [
+    [-742, "Makes Hoshea a vassal, then besieges Samaria for three years", "2 Kings 17:3-5; 18:9", {"c": 1, "p": "samaria", "zh": "使何細亞成為附庸，後來圍攻撒馬利亞三年"}],
+    [-740, "Samaria falls; Israel is taken into exile", "2 Kings 17:6; 18:10, 11", {"p": "samaria", "zh": "撒馬利亞陷落；以色列人被擄"}]],
+  "joel-10": [
+    "cleanse"],
+  "jehiel-5": [
+    "cleanse"],
+  "jeuel-a": [
+    "cleanse"],
+  "jeuel-1": [
+    "cleanse"],
+  "joah-2": [
+    "cleanse"],
+  "kish-4": [
+    "cleanse"],
+  "mahath-2": [
+    "cleanse",
+    "contrib"],
+  "mattaniah-3": [
+    "cleanse"],
+  "shemaiah-8": [
+    "cleanse"],
+  "shimei-13": [
+    "cleanse"],
+  "shimri-4": [
+    "cleanse"],
+  "uzziel-4": [
+    "cleanse"],
+  "zechariah-17": [
+    "cleanse"],
+  "eden-3": [
+    "cleanse",
+    "contrib"],
+  "azaziah-3": [
+    "contrib"],
+  "benaiah-7": [
+    "contrib"],
+  "jehiel-6": [
+    "contrib"],
+  "amariah-5": [
+    "contrib"],
+  "jerimoth-7": [
+    "contrib"],
+  "jozabad-4": [
+    "contrib"],
+  "conaniah-1": [
+    [-745, "Put in charge of the contributions brought to the temple", "2 Chronicles 31:12", {"c": 1, "p": "jerusalem", "zh": "負責管理百姓帶到聖殿的捐獻"}]],
+  "jehu-5": [
+    "simeon"],
+  "ziza-2": [
+    "simeon"],
+  "neariah-1": [
+    "seir"],
+  "rephaiah-3": [
+    "seir"],
+  "eliakim-1": [
+    [-735, "Replaces Shebna as steward over the king's house", "Isaiah 22:20-22", {"c": 1, "p": "jerusalem", "zh": "取代舍伯那管理王宮"}],
+    [-732, "Speaks with Sennacherib's Rabshakeh; sent to Isaiah", "2 Kings 18:18, 37; 19:2", {"p": "jerusalem", "zh": "與西拿基立的拉伯沙基交涉；被派去見以賽亞"}]],
+  "shebna-b": [
+    [-735, "Removed as steward of Hezekiah's house for his pride", "Isaiah 22:15-19", {"c": 1, "p": "jerusalem", "zh": "因驕傲被革除管理希西家王宮的職位"}],
+    [-732, "As royal secretary, faces Sennacherib's Rabshakeh", "2 Kings 18:18, 37; 19:2", {"p": "jerusalem", "zh": "以王室書記的身分與西拿基立的拉伯沙基交涉"}]],
+  "tirhakah": [
+    [-732, "Marches out against Sennacherib", "2 Kings 19:9; Isaiah 37:9", {"zh": "出兵攻打西拿基立"}]],
+  "merodach-baladan": [
+    [-732, "Sends letters and a gift to Hezekiah after his recovery", "2 Kings 20:12, 13; Isaiah 39:1, 2", {"c": 1, "p": "babylon", "zh": "希西家病癒後，派人送信和禮物給他"}]],
+  "adrammelech-1": [
+    "sennacherib"],
+  "sharezer-1": [
+    "sennacherib"],
+  "esar-haddon": [
+    [-702, "Succeeds his murdered father Sennacherib as king of Assyria", "2 Kings 19:37; Isaiah 37:38", {"c": 1, "p": "nineveh", "zh": "在父親西拿基立被殺後繼任亞述王"}]],
+  "asenappar": [
+    [-670, "Moves people from Susa and Elam to the cities of Samaria", "Ezra 4:9, 10", {"c": 1, "zh": "把書珊和以攔的人遷到撒馬利亞的城鎮"}]],
+  "amon-2": [
+    [-661, "Becomes king of Judah at 22 and serves idols", "2 Kings 21:19-22", {"p": "jerusalem", "zh": "22歲成為猶大王，事奉偶像"}],
+    [-660, "Murdered by his servants; the people make his son Josiah king", "2 Kings 21:23, 24", {"p": "jerusalem", "zh": "被僕人殺害；百姓立他的兒子約西亞作王"}]],
+  "zephaniah-2": [
+    [-648, "Writes the book of Zephaniah early in Josiah's reign", "Zephaniah 1:1", {"c": 1, "zh": "在約西亞統治初期寫成西番雅書"}]],
+  "joah-4": [
+    "josiahrepair"],
+  "maaseiah-5": [
+    "josiahrepair"],
+  "meshullam-5": [
+    "josiahrepair"],
+  "obadiah-7": [
+    "josiahrepair"],
+  "zechariah-18": [
+    "josiahrepair"],
+  "hilkiah-4": [
+    [-642, "Finds the book of the Law in the temple", "2 Kings 22:8; 2 Chronicles 34:14, 15", {"p": "jerusalem", "zh": "在聖殿裡找到律法書"}],
+    "huldah"],
+  "achbor-2": [
+    "huldah"],
+  "asaiah-3": [
+    "huldah"],
+  "ahikam": [
+    "huldah",
+    [-628, "Protects Jeremiah from being put to death", "Jeremiah 26:24", {"c": 1, "p": "jerusalem", "zh": "保護耶利米，使他不被處死"}]],
+  "huldah": [
+    [-642, "Foretells calamity on Judah but a peaceful death for humble Josiah", "2 Kings 22:14-20", {"p": "jerusalem", "zh": "預言災禍會臨到猶大，但謙卑的約西亞會平平安安地死去"}]],
+  "nahum-1": [
+    [-634, "Writes the book of Nahum, foretelling Nineveh's fall", "Nahum 1:1", {"c": 1, "zh": "寫成那鴻書，預言尼尼微會滅亡"}]],
+  "habakkuk": [
+    [-628, "Writes the book of Habakkuk", "Habakkuk 1:1", {"c": 1, "zh": "寫成哈巴谷書"}]],
+  "jehoahaz-3": [
+    "jehoahaz3"],
+  "shallum-9": [
+    "jehoahaz3"],
+  "jehoiakim": [
+    [-628, "Made king by Pharaoh Necho in place of his brother", "2 Kings 23:34-37", {"p": "jerusalem", "zh": "法老尼哥立他作王，取代他的弟弟"}],
+    [-624, "Cuts up Jeremiah's scroll and burns it piece by piece", "Jeremiah 36:21-24", {"p": "jerusalem", "zh": "把耶利米的書卷一段一段割下，扔進火裡燒掉"}],
+    [-620, "Becomes Nebuchadnezzar's vassal for three years, then rebels", "2 Kings 24:1", {"p": "jerusalem", "zh": "作尼布甲尼撒的附庸三年，後來背叛"}]],
+  "urijah-2": [
+    [-627, "Foretells doom on Judah; flees to Egypt but is brought back and executed by Jehoiakim", "Jeremiah 26:20-23", {"c": 1, "p": "egypt", "zh": "預言猶大會遭毀滅；逃到埃及，卻被帶回來，被約雅敬處死"}]],
+  "elnathan-1": [
+    [-627, "Sent by Jehoiakim to Egypt to bring back the prophet Urijah", "Jeremiah 26:22, 23", {"c": 1, "p": "egypt", "zh": "奉約雅敬之命到埃及把先知烏利雅帶回來"}],
+    [-624, "Begs Jehoiakim not to burn Jeremiah's scroll", "Jeremiah 36:12, 25", {"p": "jerusalem", "zh": "懇求約雅敬不要燒毀耶利米的書卷"}]],
+  "baruch-1": [
+    [-625, "Writes down Jeremiah's prophecies as Jeremiah dictates", "Jeremiah 36:1-4", {"p": "jerusalem", "zh": "把耶利米口述的預言寫下來"}],
+    [-624, "Reads the scroll at the temple; after the king burns it, writes it again", "Jeremiah 36:8-10, 27-32", {"p": "jerusalem", "zh": "在聖殿裡朗讀書卷；王把書卷燒掉後，他重新寫了一卷"}],
+    [-607, "Taken to Egypt with Jeremiah", "Jeremiah 43:5-7", {"p": "tahpanhes", "zh": "和耶利米一起被帶到埃及"}]],
+  "gemariah-1": [
+    [-624, "Baruch reads Jeremiah's scroll from his room at the temple; he begs the king not to burn it", "Jeremiah 36:10-12, 25", {"p": "jerusalem", "zh": "巴錄在他位於聖殿的房間裡朗讀耶利米的書卷；他懇求王不要燒毀書卷"}]],
+  "micaiah-5": [
+    [-624, "Hears Baruch read the scroll and reports it to the princes", "Jeremiah 36:11-13", {"p": "jerusalem", "zh": "聽見巴錄朗讀書卷，就去告訴眾首領"}]],
+  "jehudi": [
+    [-624, "Fetches Baruch and the scroll, then reads it to Jehoiakim, who burns it", "Jeremiah 36:14, 21-23", {"p": "jerusalem", "zh": "去把巴錄和書卷帶來，然後讀給約雅敬聽，王把書卷燒了"}]],
+  "delaiah-2": [
+    [-624, "Hears Jeremiah's scroll and begs the king not to burn it", "Jeremiah 36:12, 25", {"p": "jerusalem", "zh": "聽見耶利米的書卷，懇求王不要燒毀"}]],
+  "jerahmeel-3": [
+    "seize"],
+  "seraiah-4": [
+    "seize"],
+  "shelemiah-5a": [
+    "seize"],
+  "pashhur-3": [
+    [-620, "Strikes Jeremiah and puts him in the stocks; God renames him 'Fright all around'", "Jeremiah 20:1-6", {"c": 1, "p": "jerusalem", "zh": "打了耶利米，把他上了木枷；上帝給他改名為「四面驚嚇」"}]],
+  "jaazaniah-1": [
+    [-620, "Leads the Rechabites, who refuse the wine Jeremiah offers them in the temple", "Jeremiah 35:1-11", {"c": 1, "p": "jerusalem", "zh": "帶領利甲族人；他們在聖殿裡拒絕喝耶利米給他們的酒"}]],
+  "nehushta": [
+    [-617, "Taken to Babylon with her son Jehoiachin", "2 Kings 24:8, 12, 15; Jeremiah 29:2", {"p": "babylon", "zh": "和兒子約雅斤一起被擄到巴比倫"}]],
+  "shemaiah-13": [
+    [-617, "Taken into exile in Babylon", "Jeremiah 29:1, 2", {"p": "babylon", "zh": "被擄到巴比倫"}],
+    [-614, "Writes from Babylon urging that Jeremiah be put in the stocks; God decrees his line will not return", "Jeremiah 29:24-32", {"c": 1, "p": "babylon", "zh": "從巴比倫寫信，要求把耶利米上枷；上帝宣告他的後代不會歸回"}]],
+  "ahab-2": [
+    "falseprophets"],
+  "zedekiah-3": [
+    "falseprophets"],
+  "elasah": [
+    [-617, "Sent by Zedekiah to Babylon; carries Jeremiah's letter to the exiles", "Jeremiah 29:1-3", {"c": 1, "p": "babylon", "zh": "奉西底家之命到巴比倫去；把耶利米的信帶給被擄的人"}]],
+  "gemariah-2": [
+    [-617, "Sent by Zedekiah to Babylon; carries Jeremiah's letter to the exiles", "Jeremiah 29:1-3", {"c": 1, "p": "babylon", "zh": "奉西底家之命到巴比倫去；把耶利米的信帶給被擄的人"}]],
+  "hananiah-5": [
+    [-614, "Predicts that Babylon's yoke will break within two years; breaks Jeremiah's wooden yoke", "Jeremiah 28:1-11", {"p": "jerusalem", "zh": "預言巴比倫的軛會在兩年內折斷；折斷耶利米的木軛"}],
+    [-614, "Dies that same year, as Jeremiah foretold", "Jeremiah 28:15-17", {"p": "jerusalem", "zh": "同年死去，正如耶利米所預言的"}]],
+  "seraiah-5": [
+    [-614, "Goes with Zedekiah to Babylon; reads Jeremiah's scroll on Babylon's fall and sinks it in the Euphrates", "Jeremiah 51:59-64", {"p": "babylon", "zh": "陪西底家去巴比倫；朗讀耶利米關於巴比倫毀滅的書卷，然後把書卷沉到幼發拉底河裡"}]],
+  "jaazaniah-2": [
+    [-612, "Seen in Ezekiel's vision among 70 elders burning incense to idols in the temple", "Ezekiel 8:11, 12", {"p": "jerusalem", "zh": "在以西結的異象中，他和70個長老在聖殿裡向偶像燒香"}]],
+  "ezekiel-s-wife": [
+    [-609, "Dies the year the siege of Jerusalem begins; Ezekiel is told not to mourn, as a sign", "Ezekiel 24:1, 2, 15-18", {"p": "chebar", "zh": "在耶路撒冷被圍困的那一年死去；上帝吩咐以西結不要哀悼，作為一個預兆"}]],
+  "pashhur-2": [
+    [-609, "Sent by Zedekiah to ask Jeremiah about Nebuchadnezzar's attack", "Jeremiah 21:1, 2", {"c": 1, "p": "jerusalem", "zh": "奉西底家之命去向耶利米求問尼布甲尼撒來攻打的事"}],
+    [-608, "Urges that Jeremiah be put to death", "Jeremiah 38:1-4", {"c": 1, "p": "jerusalem", "zh": "要求把耶利米處死"}]],
+  "zephaniah-3": [
+    [-609, "Sent by Zedekiah to Jeremiah", "Jeremiah 21:1, 2; 37:3", {"c": 1, "p": "jerusalem", "zh": "奉西底家之命去見耶利米"}],
+    [-607, "Executed at Riblah after Jerusalem falls", "2 Kings 25:18-21", {"p": "riblah", "zh": "耶路撒冷陷落後在利比拉被處死"}]],
+  "gedaliah-3": [
+    [-608, "Accuses Jeremiah of weakening the soldiers; helps throw him into a miry cistern", "Jeremiah 38:1-6", {"c": 1, "p": "jerusalem", "zh": "指控耶利米使士兵喪膽；幫忙把他扔進泥濘的蓄水池"}]],
+  "jucal": [
+    [-608, "Demands Jeremiah's death for discouraging the soldiers", "Jeremiah 37:3; 38:1-4", {"c": 1, "p": "jerusalem", "zh": "指耶利米使士兵喪膽，要求把他處死"}]],
+  "irijah": [
+    [-608, "Seizes Jeremiah at the Gate of Benjamin, falsely accusing him of deserting", "Jeremiah 37:11-15", {"c": 1, "p": "jerusalem", "zh": "在便雅憫門逮捕耶利米，誣告他投敵"}]],
+  "hanamel": [
+    [-608, "Sells Jeremiah a field in Anathoth during Babylon's siege", "Jeremiah 32:6-15", {"p": "anathoth", "zh": "在巴比倫圍城期間把亞拿突的一塊田賣給耶利米"}]],
+  "seraiah-6": [
+    [-607, "Chief priest executed at Riblah at Nebuchadnezzar's order", "2 Kings 25:18-21; Jeremiah 52:24-27", {"p": "riblah", "zh": "祭司長，奉尼布甲尼撒之命在利比拉被處死"}]],
+  "jehozadak": [
+    [-607, "Taken captive to Babylon after his father Seraiah is executed", "1 Chronicles 6:15", {"p": "babylon", "zh": "父親西萊雅被處死後，他被擄到巴比倫"}]],
+  "johanan-5": [
+    "gedaliah",
+    "toegypt"],
+  "jonathan-8": [
+    "gedaliah"],
+  "seraiah-7": [
+    "gedaliah",
+    "toegypt"],
+  "jaazaniah-4": [
+    [-607, "Comes to Governor Gedaliah with other army chiefs", "Jeremiah 40:7, 8", {"zh": "和其他軍官一起投靠基大利總督"}],
+    "toegypt"],
+  "ishmael-5": [
+    [-607, "Murders Governor Gedaliah and takes the people at Mizpah captive", "Jeremiah 41:1-10; 2 Kings 25:25", {"zh": "殺害基大利總督，擄走在米斯巴的人"}],
+    [-607, "Escapes to the Ammonites when Johanan's men catch up", "Jeremiah 41:11-15", {"p": "ammon", "zh": "約哈南的人追上時，他逃到亞捫人那裡"}]],
+  "baalis": [
+    [-607, "Said to have sent Ishmael to kill Governor Gedaliah", "Jeremiah 40:14", {"p": "ammon", "zh": "據說派以實瑪利去刺殺基大利總督"}]],
+  "obadiah-8": [
+    [-607, "Writes the book of Obadiah", "Obadiah 1", {"c": 1, "zh": "寫成俄巴底亞書"}]],
+  "hophra": [
+    [-607, "Jeremiah foretells his fall as a sign to the Jews in Egypt", "Jeremiah 44:30", {"c": 1, "p": "tahpanhes", "zh": "耶利米預言他會倒台，作為給在埃及的猶太人的徵兆"}]],
+  "arioch-2": [
+    [-606, "Ordered to kill Babylon's wise men; brings Daniel to the king to explain the dream", "Daniel 2:14-25", {"p": "babylon", "zh": "奉命殺巴比倫的智者；帶但以理去見王，解釋王的夢"}]],
+  "evil-merodach": [
+    [-581, "Becomes king and releases Jehoiachin from prison", "2 Kings 25:27-30; Jeremiah 52:31-34", {"p": "babylon", "zh": "成為巴比倫王，把約雅斤從監牢裡釋放出來"}]],
+  "jeshua-4": [
+    [-537, "Returns with Zerubbabel as high priest; rebuilds the altar", "Ezra 2:1, 2; 3:2-6", {"p": "jerusalem", "zh": "以大祭司的身分與所羅巴伯一同歸回；重建祭壇"}],
+    [-536, "Leads in laying the foundation of the temple", "Ezra 3:8-13", {"p": "jerusalem", "zh": "帶頭為聖殿奠基"}],
+    [-520, "Encouraged by Haggai and Zechariah to resume the temple work", "Haggai 1:12-14; Zechariah 3:1-9", {"p": "jerusalem", "zh": "受哈該和撒迦利亞鼓勵，重新展開聖殿的工程"}]],
+  "sheshbazzar": [
+    [-537, "Appointed by Cyrus; brings the temple vessels back to Jerusalem", "Ezra 1:8-11", {"p": "jerusalem", "zh": "被居魯士任命；把聖殿的器皿帶回耶路撒冷"}],
+    [-536, "Lays the foundation of the second temple", "Ezra 5:14-16", {"p": "jerusalem", "zh": "為第二座聖殿奠基"}]],
+  "bakbukiah-1": [
+    "return537"],
+  "binnui-2": [
+    "return537"],
+  "iddo-5": [
+    "return537"],
+  "jeremiah-8": [
+    "return537"],
+  "judah-5": [
+    "return537"],
+  "mordecai-1": [
+    "return537"],
+  "rehum-1": [
+    "return537"],
+  "rehum-2": [
+    "return537"],
+  "seraiah-9": [
+    "return537"],
+  "shemaiah-14": [
+    "return537"],
+  "talmon": [
+    "return537"],
+  "kadmiel": [
+    "return537",
+    "foundation"],
+  "jeshua-6": [
+    "foundation"],
+  "artaxerxes-1": [
+    [-522, "Heeds false charges from Samaria and orders the temple rebuilding stopped", "Ezra 4:7-24", {"p": "susa", "zh": "聽信撒馬利亞人的誣告，下令停止重建聖殿"}]],
+  "bishlam": [
+    "letter"],
+  "mithredath-2": [
+    "letter"],
+  "tabeel-2": [
+    "letter"],
+  "shimshai": [
+    "letter",
+    [-522, "Forcibly stops the Jews' building work", "Ezra 4:23", {"p": "jerusalem", "zh": "用武力強迫猶太人停工"}]],
+  "rehum-3": [
+    "letter",
+    [-522, "Forcibly stops the Jews' building work", "Ezra 4:23", {"p": "jerusalem", "zh": "用武力強迫猶太人停工"}]],
+  "tattenai": [
+    "tattenai",
+    "tattenai2"],
+  "shethar-bozenai": [
+    "tattenai",
+    "tattenai2"],
+  "heldai-2": [
+    "crown"],
+  "hen": [
+    "crown"],
+  "sharezer-2": [
+    [-518, "Sent from Bethel to ask whether the fasts should continue", "Zechariah 7:1-3", {"p": "jerusalem", "zh": "從伯特利被派去詢問是否應該繼續禁食"}]],
+  "ahasuerus-3": [
+    [-493, "Deposes Queen Vashti for refusing to come to his banquet", "Esther 1:3, 10-22", {"c": 1, "p": "susa", "zh": "因瓦實提王后拒絕到宴會中來，把她廢了"}],
+    [-489, "Makes Esther queen", "Esther 2:16, 17", {"p": "susa", "zh": "立以斯帖為王后"}],
+    [-484, "Lets the Jews defend themselves against Haman's plot", "Esther 8:3-14", {"p": "susa", "zh": "准許猶太人自衛，對抗哈曼的陰謀"}]],
+  "vashti": [
+    [-493, "Refuses the king's summons to show her beauty at his banquet; deposed", "Esther 1:9-22", {"c": 1, "p": "susa", "zh": "拒絕王的召喚，不肯到宴會中展示美貌；被廢黜"}]],
+  "mehuman": [
+    "vashti"],
+  "bigtha": [
+    "vashti"],
+  "harbona": [
+    "vashti",
+    [-484, "Mentions the stake Haman made for Mordecai; the king has Haman hanged on it", "Esther 7:9", {"p": "susa", "zh": "提到哈曼為末底改預備的木柱；王就下令把哈曼掛在上面"}]],
+  "hegai": [
+    [-490, "Gives Esther her beauty treatments and favors her", "Esther 2:8, 9, 15", {"c": 1, "p": "susa", "zh": "為以斯帖安排美容護理，對她特別照顧"}]],
+  "bigthan": [
+    "doorkeepers"],
+  "teresh": [
+    "doorkeepers"],
+  "haman": [
+    [-485, "Raised to prime minister; Mordecai refuses to bow to him", "Esther 3:1, 2", {"c": 1, "p": "susa", "zh": "被提拔為宰相；末底改拒絕向他下拜"}],
+    [-484, "Plots to destroy all the Jews in the empire", "Esther 3:6-15", {"p": "susa", "zh": "圖謀消滅帝國裡所有的猶太人"}],
+    [-484, "Exposed by Esther; hanged on the stake he made for Mordecai", "Esther 7:1-10", {"p": "susa", "zh": "被以斯帖揭發；被掛在他為末底改預備的木柱上"}]],
+  "zeresh": [
+    [-484, "Urges Haman to make a tall stake for Mordecai, then warns he will fall before him", "Esther 5:14; 6:13", {"p": "susa", "zh": "勸哈曼為末底改立一根高木柱，後來又警告他會在末底改面前失敗"}]],
+  "hathach": [
+    [-484, "Carries messages between Esther and Mordecai", "Esther 4:5-12", {"p": "susa", "zh": "在以斯帖和末底改之間傳話"}]],
+  "adalia": [
+    "hamansons"],
+  "aridai": [
+    "hamansons"],
+  "aridatha": [
+    "hamansons"],
+  "arisai": [
+    "hamansons"],
+  "aspatha": [
+    "hamansons"],
+  "dalphon": [
+    "hamansons"],
+  "poratha": [
+    "hamansons"],
+  "artaxerxes-2": [
+    [-468, "Authorizes Ezra to take gifts and exiles to Jerusalem", "Ezra 7:11-26", {"p": "susa", "zh": "授權以斯拉帶著禮物和被擄的人回耶路撒冷"}],
+    [-455, "Sends Nehemiah to rebuild Jerusalem's walls", "Nehemiah 2:1-8", {"p": "susa", "zh": "派尼希米回去重建耶路撒冷的城牆"}]],
+  "elieho-enai-2": [
+    "ezrareturn"],
+  "hattush-3": [
+    "ezrareturn"],
+  "jeshaiah-4": [
+    "ezrareturn"],
+  "johanan-6": [
+    "ezrareturn"],
+  "obadiah-11": [
+    "ezrareturn"],
+  "shecaniah-5": [
+    "ezrareturn"],
+  "shelomith-6": [
+    "ezrareturn"],
+  "shemaiah-17": [
+    "ezrareturn"],
+  "zebadiah-8": [
+    "ezrareturn"],
+  "zechariah-23": [
+    "ezrareturn"],
+  "elnathan-2": [
+    "ahava"],
+  "elnathan-3": [
+    "ahava"],
+  "elnathan-4": [
+    "ahava"],
+  "jarib-2": [
+    "ahava"],
+  "joiarib-b": [
+    "ahava"],
+  "nathan-5": [
+    "ahava"],
+  "zechariah-21": [
+    "ahava"],
+  "eliezer-7": [
+    "ahava"],
+  "meremoth-2": [
+    "treasure",
+    "wall"],
+  "noadiah-1": [
+    "treasure"],
+  "jahzeiah": [
+    "debate"],
+  "meshullam-14": [
+    "debate"],
+  "shabbethai": [
+    "debate"],
+  "abdi-3": [
+    "wives"],
+  "adaiah-8": [
+    "wives"],
+  "amariah-8": [
+    "wives"],
+  "amram-2": [
+    "wives"],
+  "athlai": [
+    "wives"],
+  "aziza": [
+    "wives"],
+  "bedeiah": [
+    "wives"],
+  "benaiah-8b": [
+    "wives"],
+  "benjamin-4": [
+    "wives"],
+  "bezalel-2": [
+    "wives"],
+  "binnui-3": [
+    "wives"],
+  "chelal": [
+    "wives"],
+  "cheluhi": [
+    "wives"],
+  "eleazar-6": [
+    "wives"],
+  "elijah-4": [
+    "wives"],
+  "elijah-6": [
+    "wives"],
+  "gedaliah-5": [
+    "wives"],
+  "hanani-3a": [
+    "wives"],
+  "hananiah-9": [
+    "wives"],
+  "ishmael-6": [
+    "wives"],
+  "jashub-2": [
+    "wives"],
+  "jehiel-10": [
+    "wives"],
+  "jeiel-10": [
+    "wives"],
+  "joseph-5": [
+    "wives"],
+  "jozabad-7": [
+    "wives"],
+  "judah-6": [
+    "wives"],
+  "kelita-1": [
+    "wives"],
+  "maadai": [
+    "wives"],
+  "maaseiah-10": [
+    "wives"],
+  "maaseiah-11": [
+    "wives"],
+  "maaseiah-12": [
+    "wives"],
+  "machnadebai": [
+    "wives"],
+  "malchijah-5": [
+    "wives"],
+  "malchijah-6": [
+    "wives"],
+  "malchijah-7": [
+    "wives"],
+  "malluch-3": [
+    "wives"],
+  "malluch-4": [
+    "wives"],
+  "manasseh-5": [
+    "wives"],
+  "manasseh-6": [
+    "wives"],
+  "mattaniah-5": [
+    "wives"],
+  "mattaniah-6": [
+    "wives"],
+  "mattaniah-7": [
+    "wives"],
+  "mattaniah-8": [
+    "wives"],
+  "mattattah": [
+    "wives"],
+  "mattenai-1": [
+    "wives"],
+  "mattenai-2": [
+    "wives"],
+  "mattithiah-4": [
+    "wives"],
+  "meremoth-4": [
+    "wives"],
+  "mijamin-3": [
+    "wives"],
+  "sheal": [
+    "wives"],
+  "shelemiah-5c": [
+    "wives"],
+  "shemariah-1d": [
+    "wives"],
+  "shimei-17a": [
+    "wives"],
+  "telem": [
+    "wives"],
+  "uel": [
+    "wives"],
+  "uri-3": [
+    "wives"],
+  "uzziah-4": [
+    "wives"],
+  "vaniah": [
+    "wives"],
+  "zabad-5": [
+    "wives"],
+  "zabad-6": [
+    "wives"],
+  "zabbai": [
+    "wives"],
+  "zebina": [
+    "wives"],
+  "hanani-3b": [
+    [-456, "Brings Nehemiah word of Jerusalem's broken-down wall", "Nehemiah 1:1-3", {"p": "susa", "zh": "告訴尼希米耶路撒冷城牆被拆毀的消息"}],
+    [-455, "Put in charge of Jerusalem", "Nehemiah 7:2", {"p": "jerusalem", "zh": "被委派管理耶路撒冷"}]],
+  "bavvai": [
+    "wall"],
+  "binnui-5": [
+    "wall"],
+  "ezer-5": [
+    "wall"],
+  "hanun-3": [
+    "wall"],
+  "jadon": [
+    "wall"],
+  "jedaiah-2": [
+    "wall"],
+  "malchijah-8": [
+    "wall"],
+  "malchijah-10": [
+    "wall"],
+  "meshullam-16": [
+    "wall",
+    [-455, "Gives his daughter in marriage to Tobiah's son Jehohanan", "Nehemiah 6:18", {"c": 1, "p": "jerusalem", "zh": "把女兒嫁給多比亞的兒子耶何哈南"}]],
+  "meshullam-17": [
+    "wall"],
+  "nehemiah-2": [
+    "wall"],
+  "palal": [
+    "wall"],
+  "pedaiah-5": [
+    "wall"],
+  "rehum-4": [
+    "wall"],
+  "rephaiah-5": [
+    "wall"],
+  "shallum-13": [
+    "wall"],
+  "shemaiah-20": [
+    "wall"],
+  "zadok-4": [
+    "wall"],
+  "zadok-5": [
+    "wall"],
+  "malchijah-9": [
+    [-455, "Repairs the Gate of the Ash-heaps", "Nehemiah 3:14", {"p": "jerusalem", "zh": "修築糞廠門"}]],
+  "shallun": [
+    [-455, "Repairs the Fountain Gate and the wall of the Pool of the Canal", "Nehemiah 3:15", {"p": "jerusalem", "zh": "修築泉門和水道池的城牆"}]],
+  "eliashib-6": [
+    [-455, "With his fellow priests, rebuilds the Sheep Gate", "Nehemiah 3:1", {"p": "jerusalem", "zh": "和其他祭司一起重建羊門"}],
+    [-443, "Gives his relative Tobiah a dining hall in the temple", "Nehemiah 13:4-9", {"c": 1, "p": "jerusalem", "zh": "在聖殿裡把一個膳堂給了他的親屬多比亞"}]],
+  "sanballat": [
+    [-455, "Mocks the rebuilding of Jerusalem's wall and plots against Nehemiah", "Nehemiah 4:1-8; 6:1-9", {"p": "jerusalem", "zh": "嘲笑重建耶路撒冷城牆的工作，並設計陷害尼希米"}]],
+  "tobiah-2": [
+    [-455, "Mocks and schemes against Nehemiah's rebuilding of the wall", "Nehemiah 4:3, 7, 8; 6:17-19", {"p": "jerusalem", "zh": "嘲笑並陰謀破壞尼希米重建城牆的工作"}],
+    [-443, "Thrown out of a temple dining hall by Nehemiah", "Nehemiah 13:4-9", {"c": 1, "p": "jerusalem", "zh": "被尼希米趕出聖殿的膳堂"}]],
+  "shemaiah-21": [
+    [-455, "Paid by Tobiah and Sanballat to frighten Nehemiah into hiding in the temple", "Nehemiah 6:10-13", {"p": "jerusalem", "zh": "收了多比亞和桑巴拉的錢，想嚇唬尼希米躲進聖殿"}]],
+  "noadiah-2": [
+    [-455, "Tries to frighten Nehemiah into stopping the work on the wall", "Nehemiah 6:14", {"p": "jerusalem", "zh": "想恐嚇尼希米，使他停止建造城牆"}]],
+  "anaiah-1": [
+    "lawstand"],
+  "maaseiah-14": [
+    "lawstand"],
+  "meshullam-18": [
+    "lawstand"],
+  "mishael-3": [
+    "lawstand"],
+  "uriah-3": [
+    "lawstand"],
+  "zechariah-25": [
+    "lawstand"],
+  "bani-4e": [
+    "lawexplain"],
+  "hodiah-2a": [
+    "lawexplain",
+    "confess"],
+  "jamin-3": [
+    "lawexplain"],
+  "jozabad-9": [
+    "lawexplain"],
+  "kelita-2": [
+    "lawexplain"],
+  "maaseiah-15": [
+    "lawexplain"],
+  "pelaiah-1": [
+    "lawexplain"],
+  "sherebiah-1c": [
+    "lawexplain"],
+  "chenani": [
+    "confess"],
+  "shebaniah-3": [
+    "confess"],
+  "abijah-6d": [
+    [-455, "Joins in sealing the covenant resolution", "Nehemiah 10:1-8", {"p": "jerusalem", "zh": "參與在盟約上蓋印"}]],
+  "eleazar-7": [
+    "inaug"],
+  "ezer-6": [
+    "inaug"],
+  "gilalai": [
+    "inaug"],
+  "jehohanan-9": [
+    "inaug"],
+  "jeremiah-10": [
+    "inaug"],
+  "maaseiah-19": [
+    "inaug"],
+  "maaseiah-20": [
+    "inaug"],
+  "malchijah-13": [
+    "inaug"],
+  "milalai": [
+    "inaug"],
+  "miniamin-3": [
+    "inaug"],
+  "shemaiah-25a": [
+    "inaug"],
+  "uzzi-7": [
+    "inaug"],
+  "joiada-2": [
+    [-443, "Nehemiah drives away his son, who has married Sanballat's daughter", "Nehemiah 13:28", {"c": 1, "p": "jerusalem", "zh": "他的兒子娶了桑巴拉的女兒，被尼希米趕走"}]],
+  "hanan-7d": [
+    [-443, "Appointed by Nehemiah to hand out the Levites' shares", "Nehemiah 13:13", {"c": 1, "p": "jerusalem", "zh": "被尼希米委派分配利未人的份"}]],
+  "simeon-3": [
+    [-2, "Holds the infant Jesus in the temple; foretells Mary's grief", "Luke 2:25-35", {"p": "jerusalem", "zh": "在聖殿裡抱著嬰孩耶穌；預言馬利亞會非常傷心"}]],
+  "anna": [
+    [-2, "Sees the infant Jesus at the temple and speaks about him to those awaiting deliverance", "Luke 2:36-38", {"p": "jerusalem", "zh": "在聖殿裡看見嬰孩耶穌，向所有等待救贖的人談論他"}]],
+  "quirinius": [
+    [-2, "Governor of Syria during the registration that brings Joseph and Mary to Bethlehem", "Luke 2:1-7", {"p": "bethlehem", "zh": "在登記戶口期間擔任敘利亞總督；這次登記使約瑟和馬利亞來到伯利恆"}]],
+  "archelaus": [
+    [-1, "Rules Judea after Herod; fearing him, Joseph settles in Nazareth", "Matthew 2:22, 23", {"c": 1, "p": "nazareth", "zh": "在希律之後統治猶地亞；約瑟因怕他而定居在拿撒勒"}]],
+  "judas-the-galilean-2": [
+    [6, "Leads a revolt at the time of the registration; he perishes and his followers scatter", "Acts 5:37", {"c": 1, "zh": "在登記戶口期間發動叛亂；他死了，跟隨他的人都四散了"}]],
+  "lysanias": [
+    "luke3"],
+  "philip-4": [
+    "luke3"],
+  "herod-antipas-2": [
+    [29, "Rules Galilee when John the Baptizer begins preaching", "Luke 3:1, 2", {"zh": "施浸者約翰開始傳道時，他統治加利利"}],
+    [30, "Imprisons John the Baptizer for rebuking his marriage to Herodias", "Mark 6:17-20; Luke 3:19, 20", {"zh": "因施浸者約翰譴責他娶希羅底，把約翰關進監牢"}],
+    [32, "Has John the Baptizer beheaded at his birthday feast", "Mark 6:21-28", {"zh": "在生日宴會上下令斬了施浸者約翰的頭"}],
+    [33, "Mocks Jesus at his trial and sends him back to Pilate", "Luke 23:7-12", {"p": "jerusalem", "zh": "在耶穌受審時嘲弄他，又把他送回彼拉多那裡"}],
+    [39, "Banished to Gaul after Agrippa I accuses him before Caligula", "@it-herod", {"zh": "希律向卡利古拉控告他，他被放逐到高盧"}]],
+  "herodias": [
+    [30, "Resents John the Baptizer's rebuke of her marriage to Antipas", "Mark 6:17-19", {"c": 1, "zh": "施浸者約翰譴責她嫁給安提帕，她因此懷恨在心"}],
+    [32, "Through her daughter, gets John the Baptizer's head", "Mark 6:21-28; Matthew 14:6-11", {"zh": "藉著女兒得到施浸者約翰的頭"}]],
+  "salome-2": [
+    [32, "Dances before Herod Antipas and, prompted by her mother, asks for John the Baptizer's head", "Matthew 14:6-11; Mark 6:21-28", {"zh": "在希律·安提帕面前跳舞，受母親唆使，要求得到施浸者約翰的頭"}]],
+  "nathanael": [
+    [29, "Brought to Jesus by Philip; praised as 'an Israelite in whom there is no deceit'", "John 1:45-51", {"c": 1, "p": "jordanford", "zh": "腓力帶他去見耶穌；耶穌稱讚他是「心裡沒有詭詐的以色列人」"}],
+    [33, "Sees the resurrected Jesus at the Sea of Galilee", "John 21:1, 2", {"p": "galileesea", "zh": "在加利利海邊看見復活的耶穌"}]],
+  "philip-apostle": [
+    [29, "Follows Jesus and brings Nathanael to him", "John 1:43-46", {"c": 1, "p": "jordanford", "zh": "跟從耶穌，並帶拿但業去見他"}],
+    [32, "Jesus asks him where to buy bread for the crowd of 5,000", "John 6:5-7", {"p": "galileesea", "zh": "耶穌問他到哪裡買餅給五千人吃"}],
+    [33, "With Andrew, tells Jesus that some Greeks want to see him", "John 12:20-22", {"p": "jerusalem", "zh": "和安得烈一起告訴耶穌，有些希臘人想見他"}]],
+  "joanna": [
+    [31, "With other women, ministers to Jesus and the apostles from her belongings", "Luke 8:1-3", {"c": 1, "zh": "和其他婦女一起用自己的財物供應耶穌和使徒"}],
+    [33, "Finds Jesus' tomb empty and tells the apostles", "Luke 24:1-10", {"p": "jerusalem", "zh": "發現耶穌的墓是空的，就告訴使徒"}]],
+  "jairus": [
+    [31, "Begs Jesus to heal his dying daughter; Jesus raises her from the dead", "Mark 5:22-24, 35-43", {"c": 1, "p": "capernaum", "zh": "懇求耶穌醫治他垂死的女兒；耶穌使她復活"}]],
+  "jairus-daughter": [
+    [31, "Raised from the dead by Jesus: 'Talitha cumi'", "Mark 5:35-43; Luke 8:49-56", {"c": 1, "p": "capernaum", "zh": "被耶穌復活：「塔利塔，古米」"}]],
+  "legion": [
+    [31, "Freed by Jesus from many demons, which go into a herd of swine", "Mark 5:1-20", {"c": 1, "p": "galileesea", "zh": "耶穌把許多邪靈從他身上趕出去，邪靈進入了一群豬"}]],
+  "simon-3c": [
+    [31, "A sinful woman anoints Jesus' feet at his meal", "Luke 7:36-50", {"c": 1, "zh": "在他的宴席上，一個有罪的女人用油抹耶穌的腳"}]],
+  "caiaphas": [
+    [32, "Counsels that Jesus must die for the nation", "John 11:47-53", {"p": "jerusalem", "zh": "主張耶穌應當為國家而死"}],
+    [33, "Tries Jesus before the Sanhedrin and condemns him", "Matthew 26:57-66", {"p": "jerusalem", "zh": "在猶太公議會審問耶穌，判他有罪"}],
+    [33, "Persecutes the apostles", "Acts 4:5-7; 5:17-28", {"p": "jerusalem", "zh": "迫害使徒"}]],
+  "annas": [
+    [33, "Jesus is brought to him first after his arrest", "John 18:12-14, 19-24", {"p": "jerusalem", "zh": "耶穌被捕後先被帶到他那裡"}],
+    [33, "Opposes the apostles Peter and John", "Acts 4:5-7", {"p": "jerusalem", "zh": "反對使徒彼得和約翰"}]],
+  "john-5": [
+    [33, "Joins in questioning and threatening Peter and John", "Acts 4:5-21", {"p": "jerusalem", "zh": "參與審問並恐嚇彼得和約翰"}]],
+  "malchus": [
+    [33, "Peter cuts off his ear in Gethsemane; Jesus heals it", "John 18:10, 11; Luke 22:50, 51", {"p": "olives", "zh": "在客西馬尼園，彼得砍掉了他的耳朵；耶穌把耳朵治好了"}]],
+  "barabbas": [
+    [33, "Released by Pilate instead of Jesus at the crowd's demand", "Matthew 27:15-26; Mark 15:6-15", {"p": "jerusalem", "zh": "群眾要求釋放他，彼拉多就釋放他而不釋放耶穌"}]],
+  "pilate-s-wife": [
+    [33, "Sends Pilate a warning about Jesus because of a dream", "Matthew 27:19", {"p": "jerusalem", "zh": "因為做了一個夢，派人警告彼拉多不要害耶穌"}]],
+  "evildoer-beside-jesus": [
+    [33, "Rebukes the other criminal; Jesus promises he will be in Paradise", "Luke 23:39-43", {"p": "jerusalem", "zh": "責備另一個罪犯；耶穌應許他會在樂園裡"}]],
+  "poor-widow-at-the-temple": [
+    [33, "Puts two small coins into the treasury, all she had to live on", "Mark 12:41-44; Luke 21:1-4", {"p": "jerusalem", "zh": "把兩個小錢投進聖殿的捐獻箱，那是她全部的生活費"}]],
+  "simon-3d": [
+    [33, "Mary anoints Jesus with costly oil at his house", "Mark 14:3-9; Matthew 26:6-13", {"p": "bethany", "zh": "馬利亞在他家裡用珍貴的香油膏耶穌"}]],
+  "mary-4": [
+    [33, "Watches Jesus' execution from a distance", "Matthew 27:55, 56; Mark 15:40", {"p": "jerusalem", "zh": "在遠處看著耶穌被處死"}],
+    [33, "Finds the tomb empty and meets the resurrected Jesus", "Matthew 28:1, 8-10", {"p": "jerusalem", "zh": "發現墓是空的，遇見了復活的耶穌"}]],
+  "matthias": [
+    [33, "Chosen by lot to replace Judas Iscariot as an apostle", "Acts 1:21-26", {"p": "jerusalem", "zh": "抽籤選出，取代加略人猶大成為使徒"}]],
+  "ananias-1": [
+    [33, "Lies about the price of a field he gave; exposed by Peter, he falls dead", "Acts 5:1-6", {"c": 1, "p": "jerusalem", "zh": "謊報賣田的價錢；被彼得揭穿後倒地死了"}]],
+  "sapphira": [
+    [33, "Joins her husband's lie about the field's price; exposed by Peter, she falls dead", "Acts 5:7-10", {"c": 1, "p": "jerusalem", "zh": "和丈夫一起謊報賣田的價錢；被彼得揭穿後倒地死了"}]],
+  "ananias-2": [
+    [34, "Sent by Jesus in a vision to restore Saul's sight", "Acts 9:10-19", {"p": "damascus", "zh": "耶穌在異象中派他去使保羅恢復視力"}]],
+  "simon-3f": [
+    [34, "Baptized after Philip's preaching; tries to buy the gift of holy spirit", "Acts 8:9-24", {"p": "samariacity", "zh": "聽了腓力傳道後受浸；想用錢買聖靈的恩賜"}]],
+  "ethiopian-eunuch": [
+    [34, "Taught by Philip about Jesus while reading Isaiah; baptized on the road to Gaza", "Acts 8:26-39", {"p": "gazaroad", "zh": "閱讀以賽亞書時，腓力向他講解有關耶穌的事；他在往迦薩的路上受浸"}]],
+  "aretas": [
+    [36, "His governor guards Damascus to seize Paul, who escapes in a basket", "2 Corinthians 11:32, 33; Acts 9:23-25", {"c": 1, "p": "damascus", "zh": "他的總督守住大馬士革要捉拿保羅，保羅坐在筐子裡逃走"}]],
+  "aeneas": [
+    [36, "Paralyzed for eight years, he is healed by Peter at Lydda", "Acts 9:32-35", {"c": 1, "zh": "癱瘓了八年，在呂大被彼得治好"}]],
+  "dorcas": [
+    [36, "Raised from the dead by Peter", "Acts 9:36-42", {"p": "joppa", "zh": "被彼得復活"}]],
+  "simon-9": [
+    [36, "Hosts the apostle Peter for many days in his seaside home", "Acts 9:43; 10:5, 6", {"p": "joppa", "zh": "在海邊的家裡接待使徒彼得多日"}]],
+  "herod-agrippa-i-3": [
+    [37, "Made king by Caligula over the lands his uncle Philip had ruled", "@it-herod", {"zh": "卡利古拉立他為王，統治他叔叔腓力從前的領地"}],
+    [41, "Claudius adds Judea and Samaria to his kingdom", "@it-herod", {"zh": "克勞狄把猶地亞和撒馬利亞也加給他"}],
+    [44, "Has the apostle James put to death by the sword", "Acts 12:1, 2", {"c": 1, "p": "jerusalem", "zh": "用劍殺了使徒雅各"}],
+    [44, "Arrests and imprisons Peter, who is freed by an angel", "Acts 12:3-19", {"c": 1, "p": "jerusalem", "zh": "逮捕並囚禁彼得，天使救了彼得"}],
+    [44, "Struck by Jehovah's angel at Caesarea for not giving glory to God; dies", "Acts 12:20-23", {"p": "caesarea", "zh": "在凱撒里亞因不把榮耀歸給上帝，被耶和華的天使擊打而死"}]],
+  "claudius": [
+    [41, "Becomes emperor of Rome", "@it-caesar", {"zh": "成為羅馬皇帝"}],
+    [46, "A great famine comes in his reign, as Agabus foretold", "Acts 11:28", {"c": 1, "zh": "在他統治期間發生大饑荒，正如亞迦布所預言的"}],
+    [49, "Orders all the Jews to leave Rome", "Acts 18:2", {"c": 1, "p": "rome", "zh": "命令所有猶太人離開羅馬"}]],
+  "agabus": [
+    [45, "Foretells a great famine", "Acts 11:27, 28", {"c": 1, "p": "antioch", "zh": "預言將有大饑荒"}],
+    [56, "Binds himself with Paul's belt to show Paul's coming arrest", "Acts 21:10, 11", {"p": "caesarea", "zh": "用保羅的腰帶綁住自己，預示保羅會被捕"}]],
+  "mary-5": [
+    [44, "Peter comes to her house after his release, where many are praying", "Acts 12:12-17", {"c": 1, "p": "jerusalem", "zh": "彼得獲釋後到她家，那裡有許多人在禱告"}]],
+  "manaen": [
+    "antioch"],
+  "lucius-1": [
+    "antioch"],
+  "bar-jesus": [
+    [47, "Opposes Paul and Barnabas before the proconsul at Paphos; struck blind", "Acts 13:6-12", {"c": 1, "p": "cyprus", "zh": "在帕弗的總督面前反對保羅和巴拿巴；被擊瞎了眼睛"}]],
+  "eunice": [
+    [47, "Probably becomes a believer through Paul's preaching at Lystra", "2 Timothy 1:5; Acts 16:1", {"c": 1, "p": "lystra", "zh": "可能在保羅到路司得傳道時成為信徒"}]],
+  "lois": [
+    [47, "Probably becomes a believer through Paul's preaching at Lystra", "2 Timothy 1:5", {"c": 1, "p": "lystra", "zh": "可能在保羅到路司得傳道時成為信徒"}]],
+  "titus": [
+    [49, "Goes with Paul to Jerusalem; is not compelled to be circumcised", "Galatians 2:1-3", {"p": "jerusalem", "zh": "和保羅一起上耶路撒冷；沒有被強迫受割禮"}],
+    [55, "Helps the Corinthians with the relief collection", "2 Corinthians 7:6, 7; 8:6, 16, 17", {"c": 1, "p": "corinth", "zh": "協助哥林多的信徒籌集救濟款項"}],
+    [62, "Left in Crete to organize the congregations", "Titus 1:4, 5", {"c": 1, "zh": "被留在克里特，整頓各會眾"}]],
+  "lydia": [
+    [50, "Believes and is baptized with her household; hosts Paul's group", "Acts 16:14, 15, 40", {"c": 1, "p": "philippi", "zh": "成為信徒，和全家受浸；接待保羅一行人"}]],
+  "jason": [
+    [50, "Hosts Paul and Silas in Thessalonica; dragged before the city rulers", "Acts 17:5-9", {"c": 1, "zh": "在帖撒羅尼迦接待保羅和西拉；被拖到城中的官長面前"}]],
+  "dionysius": [
+    [50, "Listens to Paul at the Areopagus and becomes a believer", "Acts 17:33, 34", {"c": 1, "p": "athens", "zh": "在亞略巴古聽保羅講話後成為信徒"}]],
+  "crispus": [
+    [50, "Presiding officer of the synagogue; believes with his household; baptized by Paul", "Acts 18:8; 1 Corinthians 1:14", {"c": 1, "p": "corinth", "zh": "會堂主管；和全家成為信徒；由保羅親自施浸"}]],
+  "gaius-3": [
+    [50, "Baptized by Paul", "1 Corinthians 1:14", {"c": 1, "p": "corinth", "zh": "由保羅親自施浸"}],
+    [56, "Hosts Paul and the congregation when Paul writes to the Romans", "Romans 16:23", {"c": 1, "p": "corinth", "zh": "保羅寫信給羅馬的信徒時，他接待保羅和會眾"}]],
+  "stephanas": [
+    [50, "His household is baptized by Paul, the firstfruits of Achaia", "1 Corinthians 1:16; 16:15", {"c": 1, "p": "corinth", "zh": "他的一家由保羅施浸，是亞該亞最早的信徒"}],
+    [55, "Visits Paul in Ephesus", "1 Corinthians 16:17, 18", {"c": 1, "p": "ephesus", "zh": "到以弗所探望保羅"}]],
+  "erastus-1": [
+    [55, "Sent to Macedonia with Timothy", "Acts 19:22", {"c": 1, "p": "ephesus", "zh": "和提摩太一起被派到馬其頓"}]],
+  "aristarchus": [
+    [55, "Seized by the rioting crowd at Ephesus", "Acts 19:29", {"c": 1, "p": "ephesus", "zh": "在以弗所的暴動中被群眾抓住"}],
+    [58, "Sails with Paul for Rome", "Acts 27:1, 2", {"p": "caesarea", "zh": "與保羅一起乘船前往羅馬"}],
+    [60, "Shares Paul's imprisonment in Rome", "Colossians 4:10; Philemon 24", {"c": 1, "p": "rome", "zh": "在羅馬與保羅一同坐牢"}]],
+  "peter-s-wife": [
+    [55, "Travels with Peter as a believing wife", "1 Corinthians 9:5", {"c": 1, "zh": "作為信主的妻子與彼得一起旅行"}]],
+  "lucius-2": [
+    "romans16"],
+  "sosipater": [
+    "romans16"],
+  "erastus-2": [
+    "romans16"],
+  "phoebe": [
+    [56, "Commended by Paul to the Roman congregation; she may carry his letter", "Romans 16:1, 2", {"c": 1, "p": "corinth", "zh": "保羅向羅馬的會眾推薦她；她可能是送信的人"}]],
+  "gaius-2": [
+    [56, "Travels with Paul and goes ahead to wait at Troas", "Acts 20:4-6", {"c": 1, "p": "troas", "zh": "與保羅同行，先到特羅亞等候"}]],
+  "mnason": [
+    [56, "Hosts Paul and his companions in his home", "Acts 21:16", {"p": "jerusalem", "zh": "在家裡接待保羅和他的同伴"}]],
+  "trophimus": [
+    [56, "Jews think Paul brought him into the temple, and a riot breaks out", "Acts 21:27-30", {"p": "jerusalem", "zh": "猶太人以為保羅帶他進了聖殿，於是發生暴動"}],
+    [65, "Left sick at Miletus", "2 Timothy 4:20", {"c": 1, "zh": "生病，留在米利都"}]],
+  "paul-s-nephew": [
+    [56, "Hears of a plot to ambush Paul and reports it", "Acts 23:16-22", {"p": "jerusalem", "zh": "聽說有人計劃埋伏殺害保羅，就去報告"}]],
+  "claudius-lysias": [
+    [56, "Rescues Paul from a mob at the temple", "Acts 21:31-36", {"p": "jerusalem", "zh": "從聖殿的暴民手中救出保羅"}],
+    [56, "Sends Paul under guard to Governor Felix at Caesarea", "Acts 23:23-30", {"p": "jerusalem", "zh": "派兵護送保羅到凱撒里亞的腓力斯總督那裡"}]],
+  "ananias-3": [
+    [56, "Orders Paul struck on the mouth at his Sanhedrin hearing", "Acts 23:1-5", {"p": "jerusalem", "zh": "在猶太公議會審問保羅時，命令人打他的嘴"}],
+    [56, "Comes to Caesarea to accuse Paul before Felix", "Acts 24:1", {"p": "caesarea", "zh": "到凱撒里亞，在腓力斯面前控告保羅"}]],
+  "felix": [
+    [56, "Hears Paul's defense and keeps him in custody", "Acts 24:1-23", {"p": "caesarea", "zh": "聽了保羅的申辯，仍把他拘留"}],
+    [58, "Hoping for a bribe, keeps Paul imprisoned two years", "Acts 24:24-27", {"c": 1, "p": "caesarea", "zh": "指望保羅給他錢，把他關了兩年"}]],
+  "drusilla": [
+    [56, "With Felix, hears Paul speak about faith in Christ", "Acts 24:24", {"c": 1, "p": "caesarea", "zh": "和腓力斯一起聽保羅講論信基督的事"}]],
+  "festus": [
+    [58, "Succeeds Felix; retries Paul, who appeals to Caesar", "Acts 25:1-12", {"c": 1, "p": "caesarea", "zh": "接替腓力斯；重審保羅，保羅要求上訴到凱撒那裡"}],
+    [58, "Hears Paul with Agrippa II and finds him innocent", "Acts 25:13-27; 26:24-32", {"c": 1, "p": "caesarea", "zh": "和亞基帕二世一起聽保羅申辯，認為他無罪"}]],
+  "herod-agrippa-ii-4": [
+    [58, "With Bernice, hears Paul's defense: 'In a short time you would persuade me to become a Christian'", "Acts 25:13-26:32", {"c": 1, "p": "caesarea", "zh": "與百妮基一起聽保羅申辯，說：「你很快就要說服我成為基督徒了」"}]],
+  "julius": [
+    [58, "Takes Paul to Rome and treats him kindly", "Acts 27:1, 3", {"p": "caesarea", "zh": "押送保羅到羅馬，對他很仁慈"}],
+    [58, "Stops the soldiers from killing the prisoners at the shipwreck", "Acts 27:42-44", {"p": "malta", "zh": "船擱淺時，阻止士兵殺死囚犯"}]],
+  "publius": [
+    [58, "Hosts Paul's shipwrecked party; Paul heals his father", "Acts 28:7-10", {"p": "malta", "zh": "接待遭遇船難的保羅一行人；保羅治好了他的父親"}]],
+  "epaphras": [
+    [60, "With Paul in Rome, prays hard for the congregations at Colossae, Laodicea and Hierapolis", "Colossians 1:7, 8; 4:12, 13", {"c": 1, "p": "rome", "zh": "在羅馬與保羅在一起，為歌羅西、老底嘉和希拉波立的會眾竭力禱告"}]],
+  "epaphroditus": [
+    [60, "Brings the Philippians' gift to Paul in Rome; falls ill almost to death", "Philippians 2:25-27; 4:18", {"c": 1, "p": "rome", "zh": "把腓立比會眾的禮物帶到羅馬給保羅；病得幾乎死了"}],
+    [61, "Sent home by Paul with the letter to the Philippians", "Philippians 2:25, 28-30", {"c": 1, "p": "philippi", "zh": "保羅派他帶著給腓立比人的信回去"}]],
+  "justus-3": [
+    [60, "Comforts Paul during his imprisonment in Rome", "Colossians 4:10, 11", {"c": 1, "p": "rome", "zh": "在羅馬安慰坐牢的保羅"}]],
+  "onesimus": [
+    [60, "Becomes a Christian through Paul; sent back to his master Philemon", "Philemon 10-16; Colossians 4:9", {"c": 1, "p": "rome", "zh": "藉著保羅成為基督徒；被送回主人腓利門那裡"}]],
+  "philemon": [
+    [60, "Receives Paul's letter asking him to welcome back Onesimus", "Philemon 1, 2, 10-21", {"c": 1, "zh": "收到保羅的信，請他接納奧尼西慕回來"}]],
+  "tychicus": [
+    [60, "Carries Paul's letters to Ephesus and Colossae", "Ephesians 6:21, 22; Colossians 4:7-9", {"c": 1, "p": "rome", "zh": "把保羅的信帶到以弗所和歌羅西"}]],
+  "demas": [
+    [60, "With Paul during his first imprisonment in Rome", "Colossians 4:14; Philemon 24", {"c": 1, "p": "rome", "zh": "在保羅第一次在羅馬坐牢時與他在一起"}],
+    [65, "Forsakes Paul because he loves the present world", "2 Timothy 4:10", {"c": 1, "p": "rome", "zh": "因為愛現今的世界而離棄保羅"}]],
+  "hymenaeus": [
+    [62, "Teaches that the resurrection has already happened; expelled by Paul", "1 Timothy 1:19, 20; 2 Timothy 2:17, 18", {"c": 1, "zh": "教導復活已經發生了；被保羅開除"}]],
+  "onesiphorus": [
+    [65, "Searches out the imprisoned Paul in Rome and serves him", "2 Timothy 1:16-18", {"c": 1, "p": "rome", "zh": "在羅馬尋找坐牢的保羅，並服侍他"}]],
+  "claudia": [
+    "timothy4"],
+  "eubulus": [
+    "timothy4"],
+  "linus": [
+    "timothy4"],
+  "pudens": [
+    "timothy4"],
+  "jude": [
+    [65, "Writes his letter urging Christians to fight for the faith", "Jude 1, 3", {"c": 1, "zh": "寫信勸勉基督徒為信仰奮鬥"}]],
+  "jezebel-2": [
+    [96, "Rebuked in Jesus' message to Thyatira for teaching idolatry and fornication", "Revelation 2:20-23", {"c": 1, "zh": "耶穌給推雅推喇會眾的信息責備她教導人拜偶像和淫亂"}]],
+  "diotrephes": [
+    [98, "Refuses to receive the brothers and tries to expel those who do", "3 John 9, 10", {"c": 1, "zh": "拒絕接待弟兄，還想把接待弟兄的人趕出會眾"}]],
+  "cain-s-wife": [
+    [-3920, "Goes with Cain to the land of Nod and bears Enoch", "Genesis 4:16, 17", {"c": 1, "zh": "跟該隱到挪得地居住，生下以諾"}]],
+  "lot-s-older-daughter": [
+    [-1919, "Escapes Sodom with her father and sister", "Genesis 19:15-30", {"p": "zoar", "zh": "跟父親羅得和妹妹逃出所多瑪"}],
+    [-1919, "In a cave near Zoar conceives by her father; bears Moab", "Genesis 19:30-37", {"c": 1, "zh": "在瑣珥附近的洞裡跟父親同房懷孕，生下摩押"}]],
+  "lot-s-younger-daughter": [
+    [-1919, "Escapes Sodom with her father and sister", "Genesis 19:15-30", {"p": "zoar", "zh": "跟父親羅得和姐姐逃出所多瑪"}],
+    [-1919, "Also conceives by her father; bears Ben-ammi", "Genesis 19:35, 38", {"c": 1, "zh": "也跟父親同房懷孕，生下本阿米"}]],
+  "deborah-1": [
+    [-1878, "Goes with Rebekah to marry Isaac", "Genesis 24:59", {"p": "haran", "zh": "陪利百加去嫁給以撒"}],
+    [-1760, "Dies near Bethel and is buried under an oak", "Genesis 35:8", {"c": 1, "p": "bethel", "zh": "在伯特利附近去世，葬在一棵大樹下"}]],
+  "laban-1": [
+    [-1878, "Welcomes Abraham's servant who comes for Rebekah", "Genesis 24:29-33", {"p": "haran", "zh": "款待為利百加而來的亞伯拉罕的僕人"}],
+    [-1774, "Gives Leah to Jacob in place of Rachel", "Genesis 29:21-27", {"p": "haran", "zh": "用利亞代替拉結嫁給雅各"}],
+    [-1761, "Pursues Jacob to Gilead; they make a covenant", "Genesis 31:22-55", {"p": "gilead", "zh": "追趕雅各到基列，兩人立約"}]],
+  "eliphaz": [
+    [-1613, "Comes to comfort Job but accuses him of wrongdoing", "Job 4:1; 42:7-9", {"c": 1, "p": "uz", "zh": "來安慰約伯，卻指控他做了錯事"}]],
+  "bildad": [
+    [-1613, "Comes to comfort Job but says his sons were punished for sin", "Job 8:1-6; 42:9", {"c": 1, "p": "uz", "zh": "來安慰約伯，卻說他的兒女是因罪受罰"}]],
+  "zophar": [
+    [-1613, "Comes to comfort Job but speaks harshly against him", "Job 11:1-6; 42:9", {"c": 1, "p": "uz", "zh": "來安慰約伯，卻嚴厲地指責他"}]],
+  "elihu-1": [
+    [-1613, "Speaks after the three companions and corrects both them and Job", "Job 32:1-6; 33:1-7", {"c": 1, "p": "uz", "zh": "在三個同伴之後說話，糾正他們和約伯"}]],
+  "job-s-wife": [
+    [-1613, "Tells Job to curse God and die", "Job 2:9, 10", {"c": 1, "p": "uz", "zh": "叫約伯詛咒上帝，然後死去"}]],
+  "jotham-2": [
+    [-1219, "From Mount Gerizim tells the parable of the trees against Abimelech", "Judges 9:7-21", {"c": 1, "p": "shechem", "zh": "在基利心山上講樹木的比喻，譴責亞比米勒"}]],
+  "elkanah-4": [
+    [-1181, "Goes up yearly to worship at Shiloh with Hannah and Peninnah", "1 Samuel 1:3-8", {"c": 1, "p": "shiloh", "zh": "每年帶哈拿和毗尼拿上示羅崇拜"}]],
+  "elkanah-6": [
+    "ziklag"],
+  "jerimoth-2": [
+    "ziklag"],
+  "joelah": [
+    "ziklag"],
+  "amasai-2": [
+    "ziklag"],
+  "azarel-1": [
+    "ziklag"],
+  "jahaziel-2": [
+    "ziklag"],
+  "shemariah-1a": [
+    "ziklag"],
+  "jozabad-2": [
+    "manassites"],
+  "jeremiah-2": [
+    "wilderness"],
+  "maacah-5": [
+    [-1074, "Bears Absalom to David in Hebron", "2 Samuel 3:2, 3", {"c": 1, "p": "hebron", "zh": "在希伯崙給大衛生下押沙龍"}]],
+  "mattithiah-1-2": [
+    "arkmusic"],
+  "berechiah-2": [
+    "arkgate"],
+  "ittai-1": [
+    [-1047, "Stays loyal and leaves Jerusalem with David", "2 Samuel 15:19-22", {"p": "jerusalem", "zh": "忠於大衛，跟他一起離開耶路撒冷"}],
+    [-1046, "Commands a third of David's army against Absalom", "2 Samuel 18:2, 5", {"c": 1, "p": "ephraimforest", "zh": "率領大衛三分之一的軍隊攻打押沙龍"}]],
+  "jehonadab-1a": [
+    [-1058, "Suggests the scheme by which Amnon gets Tamar alone", "2 Samuel 13:3-5", {"c": 1, "p": "jerusalem", "zh": "給暗嫩出主意，讓他單獨接近塔瑪"}],
+    [-1056, "Tells David that only Amnon has been killed", "2 Samuel 13:32-35", {"p": "jerusalem", "zh": "告訴大衛只有暗嫩被殺"}]],
+  "abishag": [
+    [-1038, "Chosen to care for King David in his old age", "1 Kings 1:1-4", {"c": 1, "p": "jerusalem", "zh": "被選來照顧年老的大衛王"}],
+    [-1037, "Adonijah asks to marry her, which costs him his life", "1 Kings 2:13-25", {"c": 1, "p": "jerusalem", "zh": "亞多尼雅要求娶她，因此喪命"}]],
+  "queen-of-sheba": [
+    [-1010, "Visits Jerusalem to test Solomon's wisdom", "1 Kings 10:1-13", {"c": 1, "p": "jerusalem", "zh": "到耶路撒冷用難題考驗所羅門的智慧"}]],
+  "elishama-5": [
+    "teach"],
+  "naaman-2": [
+    [-890, "Cured of leprosy after dipping in the Jordan as Elisha said", "2 Kings 5:1-19", {"c": 1, "p": "jordanford", "zh": "照以利沙所說在約旦河浸了七次，痲瘋病就好了"}]],
+  "israelite-girl-in-naaman-s-house": [
+    [-890, "Tells Naaman's wife about the prophet in Samaria who can cure him", "2 Kings 5:2-4", {"c": 1, "p": "damascus", "zh": "告訴乃縵的妻子，撒馬利亞的先知能治好乃縵"}]],
+  "amasa-2": [
+    [-760, "Refuses to keep the captives from Judah and helps send them home", "2 Chronicles 28:12-15", {"c": 1, "p": "samariacity", "zh": "拒絕扣留從猶大擄來的人，幫助送他們回家"}]],
+  "berechiah-3": [
+    [-760, "Refuses to keep the captives from Judah and helps send them home", "2 Chronicles 28:12-15", {"c": 1, "p": "samariacity", "zh": "拒絕扣留從猶大擄來的人，幫助送他們回家"}]],
+  "eliel-9": [
+    "contrib"],
+  "rabshakeh": [
+    [-732, "Taunts Jerusalem and Hezekiah for Sennacherib", "2 Kings 18:17-37", {"p": "jerusalem", "zh": "代表西拿基立嘲諷耶路撒冷和希西家"}]],
+  "abijah-6c": [
+    "return537"],
+  "amok": [
+    "return537"],
+  "bilgah-2": [
+    "return537"],
+  "ezra-2": [
+    "return537"],
+  "hattush-1": [
+    "return537"],
+  "hilkiah-7": [
+    "return537"],
+  "maadiah": [
+    "return537"],
+  "malluch-2": [
+    "return537"],
+  "meremoth-1": [
+    "return537"],
+  "sallu-2": [
+    "return537"],
+  "shecaniah-3": [
+    "return537"],
+  "sherebiah-1a": [
+    "return537"],
+  "memucan": [
+    [-493, "Advises the king to remove Queen Vashti", "Esther 1:16-21", {"c": 1, "p": "susa", "zh": "建議國王廢掉瓦實提王后"}]],
+  "ariel-2": [
+    "ahava"],
+  "daniel-3": [
+    "ezrareturn"],
+  "elijah-5": [
+    "ezrareturn"],
+  "jeiel-9": [
+    "ezrareturn"],
+  "jeshaiah-5": [
+    "ezrareturn"],
+  "uthai-2": [
+    "ezrareturn"],
+  "zabbud": [
+    "ezrareturn"],
+  "iddo-7": [
+    [-468, "Sends Levites and temple servants to go with Ezra", "Ezra 8:17-20", {"zh": "派利未人和殿役跟以斯拉一起去"}]],
+  "eleasah-3": [
+    "wives"],
+  "jaasu": [
+    "wives"],
+  "meshullam-15": [
+    "wives"],
+  "bunni-b": [
+    "confess"],
+  "malchijah-11": [
+    "lawstand"],
+  "pedaiah-6": [
+    "lawstand"],
+  "shelemiah-5e": [
+    [-443, "Put in charge of the storehouses by Nehemiah", "Nehemiah 13:13", {"c": 1, "p": "jerusalem", "zh": "被尼希米委派管理倉庫"}]],
+  "peter-s-mother-in-law": [
+    [31, "Healed of a fever by Jesus and serves her guests", "Mark 1:29-31", {"c": 1, "p": "capernaum", "zh": "耶穌基督治好她的熱病，她就招待客人"}]],
+  "zebedee-1": [
+    [30, "His sons James and John leave him in the boat to follow Jesus", "Mark 1:19, 20", {"c": 1, "p": "galileesea", "zh": "兒子雅各和約翰把他留在船上，去跟從耶穌基督"}]],
+  "nicodemus": [
+    [30, "Comes to Jesus at night to learn from him", "John 3:1-21", {"p": "jerusalem", "zh": "夜裡來見耶穌基督，向他請教"}],
+    [32, "Speaks up for Jesus in the Sanhedrin", "John 7:45-52", {"c": 1, "p": "jerusalem", "zh": "在議會中為耶穌基督說話"}],
+    [33, "Brings spices for Jesus' burial", "John 19:39, 40", {"p": "jerusalem", "zh": "帶香料來安葬耶穌基督"}]],
+  "samaritan-woman-at-the-well": [
+    [30, "Learns at Jacob's well that Jesus is the Messiah and tells her town", "John 4:5-42", {"c": 1, "p": "shechem", "zh": "在雅各井旁得知耶穌基督是彌賽亞，回城告訴眾人"}]],
+  "susanna": [
+    [31, "Travels with Jesus and supports him from her belongings", "Luke 8:1-3", {"c": 1, "zh": "跟著耶穌基督到各處去，用自己的財物供應他"}]],
+  "syrophoenician-woman": [
+    [32, "Her humble faith moves Jesus to heal her daughter", "Mark 7:24-30", {"c": 1, "zh": "她謙卑的信心使耶穌基督治好她的女兒"}]],
+  "gamaliel-2": [
+    [33, "Advises the Sanhedrin to leave the apostles alone", "Acts 5:34-39", {"c": 1, "p": "jerusalem", "zh": "勸議會不要管使徒"}]],
+  "joseph-barsabbas-11": [
+    [33, "Put forward with Matthias to replace Judas", "Acts 1:23-26", {"p": "jerusalem", "zh": "跟馬提亞一起被提名接替猶大"}]],
+  "joseph-of-arimathea-10": [
+    [33, "Asks Pilate for Jesus' body and lays it in his own tomb", "John 19:38-42", {"p": "jerusalem", "zh": "向彼拉多要求領取耶穌基督的遺體，安放在自己的墓裡"}]],
+  "zacchaeus": [
+    [33, "Climbs a tree to see Jesus, then hosts him and repents", "Luke 19:1-10", {"p": "jericho", "zh": "爬上樹看耶穌基督，後來接待他並且悔改"}]],
+  "judas-6": [
+    [34, "Saul stays at his house on Straight Street after being blinded", "Acts 9:11, 17", {"c": 1, "p": "damascus", "zh": "保羅失明後住在他位於直街的家"}]],
+  "blastus": [
+    [44, "Helps the people of Tyre and Sidon seek peace with Herod", "Acts 12:20", {"p": "caesarea", "zh": "幫助推羅人和西頓人跟希律講和"}]],
+  "rhoda": [
+    [44, "Hears Peter at the gate after his release from prison", "Acts 12:13-16", {"p": "jerusalem", "zh": "彼得出獄後，她聽見他在門口"}]],
+  "sergius-paulus": [
+    [47, "Becomes a believer after Paul blinds the sorcerer Elymas", "Acts 13:7-12", {"c": 1, "p": "cyprus", "zh": "保羅使術士以呂馬瞎眼後，他成了信徒"}]],
+  "judas-barsabbas-b": [
+    [49, "Carries the letter from Jerusalem to Antioch and encourages the brothers", "Acts 15:22, 32", {"c": 1, "p": "antioch", "zh": "把耶路撒冷的信帶到安提阿，並鼓勵弟兄"}]],
+  "damaris": [
+    [50, "Becomes a believer after Paul speaks at the Areopagus", "Acts 17:34", {"c": 1, "p": "athens", "zh": "保羅在亞略巴古演講後，她成了信徒"}]],
+  "quartus": [
+    "romans16"],
+  "secundus": [
+    [56, "Travels with Paul to Troas", "Acts 20:4-6", {"c": 1, "p": "troas", "zh": "跟保羅一起到特羅亞"}]],
+  "sopater": [
+    [56, "Travels with Paul to Troas", "Acts 20:4-6", {"c": 1, "p": "troas", "zh": "跟保羅一起到特羅亞"}]],
+  "theophilus": [
+    [56, "Luke writes his Gospel account for him", "Luke 1:1-4", {"c": 1, "zh": "路加為他寫福音書"}],
+    [61, "Luke addresses the book of Acts to him", "Acts 1:1", {"c": 1, "zh": "路加寫使徒行傳給他"}]],
+  "carpus": [
+    [65, "Keeps the cloak and scrolls Paul left at Troas", "2 Timothy 4:13", {"c": 1, "p": "troas", "zh": "保管保羅留在特羅亞的外衣和書卷"}]]
+},
+"dates": {"canaan": [-2366, -2290], "judith": [-1845, -1775], "zipporah": [-1575, -1500], "eleazar-1": [-1545, -1445], "sisera-1": [-1350, -1308], "gaal": [-1250, -1200], "hophni": [-1180, -1118], "mephibosheth-1": [-1125, -1068], "hadad-4": [-1072, -1000], "hazael": [-935, -855], "abiathar": [-1110, -1030], "peter-s-wife": [-10, 64], "deborah-1": [-1925, -1760], "laban-1": [-1910, -1750], "eliphaz": [-1700, -1590], "bildad": [-1700, -1590], "zophar": [-1700, -1590], "elihu-1": [-1660, -1570], "job-s-wife": [-1670, -1580], "peter-s-mother-in-law": [-45, 40]}
+}

@@ -247,7 +247,7 @@ tools/build-basemap.mjs     builds data/basemap.js
 
 ## Rebuild the people data
 
-After editing `data/characters.js`, `data/source/insight-people.json`, `data/source/history-people.json` or `data/source/overrides.json`:
+After editing `data/characters.js`, `data/source/insight-people.json`, `data/source/history-people.json`, `data/source/activities.json` or `data/source/overrides.json`:
 
 ```sh
 node tools/build-people.mjs
@@ -267,6 +267,19 @@ The script merges the curated key figures with the Insight records, links relati
 - `dates`: `{ "id": [born, died] }` replaces a placeholder life span that the generation estimate gets wrong (Ruth's family, for example: Obed is born when Ruth marries Boaz, not a generation later). Jesse is set here too: he must be alive at David's birth (1107 B.C.E.) and while David was a fugitive (1 Samuel 22:3, 4), and his father Obed was born in Ruth's day, so both lives are long.
 - `notes`: `{ "id": "text" }` adds a window note to a person who is not a key figure, for example to explain an estimated date.
 - `events`: `{ "id": [[year, "text", "scripture"], ...] }` gives activities to a person who is not a key figure (Joel, Gomer, Belshazzar, Darius the Mede). Their Chinese text goes in the person's `e` list in `data/zh/people.js`, in the same order.
+- `unlink`: `{ "id": { "children": ["other-id"] } }` removes a wrong family link in both directions (Drusilla's son Agrippa had been matched to Herod Agrippa I, her father).
+- `relNames`: `{ "id": { "children": ["Name"] } }` lists a relative by name only, with no link (Drusilla's son Agrippa, who has no record of his own).
+
+## Activities of minor people
+
+`data/source/activities.json` gives major activities to people who are not key figures, so that a person whose window tells what they did also shows it on their lifespan (Herod Agrippa I, Nicodemus, Laban, the men who rebuilt Jerusalem's wall). It covers about 770 people; with the key figures, history people and `overrides.json`, 989 of the 2,795 people now have activities. People known only from a genealogy, or only by an office with nothing they did, have none. The file has four parts:
+
+- `people`: `{ "id": [[year, "text", "scripture", { "c": 1, "p": "place-id", "zh": "Chinese text" }], ...] }`. `c: 1` marks an approximate year, which shows as "c." before the year in the window and the dot's tooltip. `p` is a place id from `data/places.js`, so the activity carries a place tag and a pin on the person's map. `zh` is the Chinese text (no need for a line in `data/zh/people.js`). A string instead of a list names an entry in `shared`.
+- `shared`: one activity done by many people together (the men who joined David at Ziklag, those who returned with Zerubbabel in 537 B.C.E., the builders of each part of the wall in Nehemiah 3).
+- `dates`: placeholder life spans moved so that they take in an activity (Laban must be alive when Jacob leaves him in 1761 B.C.E.); merged into the `dates` of `overrides.json`.
+- `about`: notes on the format.
+
+Years follow the key-figure dates where the activity involves a key figure (Absalom's revolt, Nehemiah's wall), otherwise *Insight on the Scriptures* and the chart of dates in the *New World Translation* (Appendix A6, A7); where the Bible gives no year the activity is placed by the events around it and marked approximate. The texts are short summaries in the site's own words. The build warns about any activity that falls outside the person's life.
 
 ## Hosting
 

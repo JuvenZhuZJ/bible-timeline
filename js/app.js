@@ -76,6 +76,8 @@
       rawEvents.push(ev);
       return [id, ev];
     });
+    // activities from data/source/activities.json carry their place: [year, text, ref, { p }]
+    rawEvents.forEach((ev) => { if (ev[3] && ev[3].p) visits.push([ev[3].p, ev]); });
     c.events = rawEvents.slice().sort((a, b) => a[0] - b[0]);
     c.places = placesOf(c, visits);
     c.jobs = c.jobs || [];
@@ -794,8 +796,8 @@
     hideTip();
     tipAct = a;
     plainTip();
-    const [yr, text, ref] = a.c.events[a.k];
-    tip.innerHTML = `<div class="et-year" style="color:${esc(a.color)}">${esc(fmtYear(yr, true))} · ${esc(a.c.name)}</div><div class="et-act">${esc(text)}</div><div class="et-ref">${isHistRef(ref) ? `${HIST_TAG} · ` : ""}${esc(refsLabel(ref))}</div><div class="et-hint">${esc(T(touch ? "act.hint.tap" : "act.hint.click", { name: a.c.name }, `${touch ? "Tap again" : "Click"} to open in ${a.c.name}’s window`))}</div>`;
+    const [yr, text, ref, f] = a.c.events[a.k];
+    tip.innerHTML = `<div class="et-year" style="color:${esc(a.color)}">${esc(actYear(yr, f))} · ${esc(a.c.name)}</div><div class="et-act">${esc(text)}</div><div class="et-ref">${isHistRef(ref) ? `${HIST_TAG} · ` : ""}${esc(refsLabel(ref))}</div><div class="et-hint">${esc(T(touch ? "act.hint.tap" : "act.hint.click", { name: a.c.name }, `${touch ? "Tap again" : "Click"} to open in ${a.c.name}’s window`))}</div>`;
     tip.style.left = Math.min(W - 150, Math.max(150, a.x)) + "px";
     tip.style.top = Math.max(L.top, a.y - 14 - tip.offsetHeight) + "px";
     tip.classList.add("show");
@@ -1442,14 +1444,17 @@
     return pl.n + sure + (note ? (I18.zh ? `。${note}` : `. ${note}`) : "");
   }
 
+  // an activity's year, with "c." when it is approximate ({ c: 1 } in data/source/activities.json)
+  const actYear = (yr, f) => (f && f.c ? T("c.", null, "c. ") : "") + fmtYear(yr, true);
+
   function windowHTML(c) {
-    const acts = c.events.map(([yr, text, ref], i) => {
+    const acts = c.events.map(([yr, text, ref, f], i) => {
       const age = A(yr) - c.tb;
       const ageS = age >= 0 && age <= c.td - c.tb + 1 ? ` <span class="act-age">· ${T("age.at", { a: SURE_Q(c.q[0]) ? "" : T("age.approx"), n: age }, `${SURE_Q(c.q[0]) ? "" : "~"}age ${age}`)}</span>` : "";
       const sts = c.places ? c.places.filter((p) => p.k === i) : [];
       const pl = sts.map((st) => { const p = BibleMap.place(st.id); return ` <button class="act-p s-${p.s}" data-place="${esc(st.id)}" title="${esc(placeTitle(p))}"><b>${st.n}</b>${esc(BibleMap.shortName(p.n))}${p.s === "possible" && !/^某/.test(p.n) ? "?" : ""}</button>`; }).join("");
       const h = isHistRef(ref);
-      return `<li data-t="${A(yr)}" data-i="${i}"${h ? ` class="hist" title="${esc(HIST_TAG_T)}"` : ""}${sts.length ? ` data-place="${esc(sts.map((st) => st.id).join(" "))}"` : ""}><span class="act-y">${esc(fmtYear(yr, true))}${ageS}${pl}</span><span class="act-t">${esc(text)}</span><span class="act-r">${refsHTML(ref)}</span></li>`;
+      return `<li data-t="${A(yr)}" data-i="${i}"${h ? ` class="hist" title="${esc(HIST_TAG_T)}"` : ""}${sts.length ? ` data-place="${esc(sts.map((st) => st.id).join(" "))}"` : ""}><span class="act-y">${esc(actYear(yr, f))}${ageS}${pl}</span><span class="act-t">${esc(text)}</span><span class="act-r">${refsHTML(ref)}</span></li>`;
     }).join("");
     return `
       <div class="win-head">
