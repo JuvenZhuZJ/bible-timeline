@@ -105,7 +105,7 @@
 
   /* who is shown: everyone, key figures only, or only the line from Adam to Jesus */
   const SHOW_MODES = { all: T("show.all", null, "Everyone"), key: T("show.key", null, "Key figures"), line: T("show.line", null, "Adam to Jesus line"),
-    mine: T("show.mine", null, "My bookmarks"), hist: T("show.hist", null, "From history") };
+    mine: T("show.mine", null, "My bookmarks") };
 
   /* My notes and bookmarks: kept only in this browser (localStorage "bt-notes"),
      as { person id: { s: starred, n: note text, t: last change } } */
@@ -145,7 +145,7 @@
   } catch (_) {}
   const showKey = () => (showMode === "groups" ? (showAll ? "a:" : "g:") + [...showGroups].join(",") : showMode);
   const inMode = (c) => showMode === "all" || (showMode === "groups" ? [...showGroups][showAll ? "every" : "some"]((g) => GROUP[g](c))
-    : showMode === "line" ? !!c.line : showMode === "mine" ? isStarred(c) : showMode === "hist" ? !!c.hist : !!(c.key || c.line));
+    : showMode === "line" ? !!c.line : showMode === "mine" ? isStarred(c) : !!(c.key || c.line));
 
   const T0 = A(-4026) - 90;
   const T1 = A(100) + 70;
@@ -2136,8 +2136,7 @@
     packForce = true; requestRender();
   }
   const closeShow = () => { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); };
-  const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length, mine: CHARS.filter(isStarred).length + [...BOOK_BY_ID.values()].filter(isStarred).length,
-    hist: CHARS.filter((c) => c.hist).length };
+  const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length, mine: CHARS.filter(isStarred).length + [...BOOK_BY_ID.values()].filter(isStarred).length };
   showMenu.querySelectorAll("[data-mode]").forEach((b) => {
     b.querySelector(".sm-n").textContent = counts[b.dataset.mode].toLocaleString();
     b.addEventListener("click", () => { setShowMode(b.dataset.mode); closeShow(); });
