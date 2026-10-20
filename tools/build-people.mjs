@@ -199,6 +199,50 @@ for (const p of people) {
     }
   }
 }
+/* ---------- 4b. people known from history, not from the Bible ----------
+   data/source/history-people.json: hand-written, with their relatives given as ids. They
+   are added after the name matching above, so no Bible person is matched to one of them
+   by name (the Mattathias of Luke 3 is not the Maccabees' father). "replaces" takes over
+   a record already in the data (Alexander the Great has an Insight article because
+   Daniel foretold him); "patch" adds dates and activities to people already in the data. */
+const HIST = fs.existsSync(path.join(ROOT, "data/source/history-people.json")) ? JSON.parse(read("data/source/history-people.json")) : { people: [], patch: {} };
+const histFixed = new Set();
+for (const h of HIST.people || []) {
+  const rec = { aka: [], refs: [], ...h, hist: true, hsrc: h.src || [], src: "", rel: { father: [], mother: [], spouses: [], children: [], siblings: [] }, relNames: h.relNames || {} };
+  delete rec.replaces;
+  let p = h.replaces && people.find((x) => x.id === h.replaces);
+  if (p) { Object.assign(p, rec, { id: p.id, refs: p.refs, src: p.src, aka: [...new Set([...(p.aka || []), ...(h.aka || []), p.name])].filter((a) => a !== rec.name) }); p.rel = rec.rel; }
+  else { usedIds.add(rec.id); p = rec; people.push(p); }
+  p.year = Math.round(mid(p));
+  p.raw = { hints: "" };
+  histFixed.add(p.id);
+}
+{
+  const ids = new Map(people.map((p) => [p.id, p]));
+  for (const h of HIST.people || []) {
+    const p = ids.get(h.replaces || h.id);
+    for (const kind of REL) for (const id of (h.rel || {})[kind] || []) {
+      const r = ids.get(id);
+      if (!r) { console.log(`history-people.json: ${p.id} has unknown relative ${id}`); continue; }
+      if (!p.rel[kind].includes(id)) p.rel[kind].push(id);
+      /* a child listed here gets this person as their parent, in place of a name match */
+      if (kind === "children") {
+        const k = p.gender === "f" ? "mother" : "father";
+        for (const old of r.rel[k]) { const o = ids.get(old); if (o && o !== p) o.rel.children = o.rel.children.filter((x) => x !== r.id); }
+        r.rel[k] = [p.id];
+      }
+    }
+  }
+  for (const [id, pt] of Object.entries(HIST.patch || {})) {
+    const p = ids.get(id);
+    if (!p) { console.log(`history-people.json: patch for unknown person ${id}`); continue; }
+    for (const k of ["born", "died", "q", "note"]) if (pt[k] !== undefined) p[k] = pt[k];
+    if (pt.events) p.events = (p.events || []).concat(pt.events);
+    p.year = Math.round(mid(p));
+    histFixed.add(p.id);
+  }
+}
+
 /* make links two-way */
 const byId = new Map(people.map((p) => [p.id, p]));
 const link = (a, kind, b) => { if (a && b && a !== b && !a.rel[kind].includes(b.id)) a.rel[kind].push(b.id); };
@@ -212,6 +256,10 @@ for (const p of people) for (const id of p.rel.children) {
   const ch = byId.get(id);
   if (!ch || ch.rel.father.includes(p.id) || ch.rel.mother.includes(p.id)) continue;
   link(ch, p.gender === "f" ? "mother" : "father", p);
+}
+/* links a name match got wrong, removed both ways (history-people.json patch "unlink") */
+for (const [id, pt] of Object.entries(HIST.patch || {})) for (const other of pt.unlink || []) {
+  for (const [a, b] of [[id, other], [other, id]]) { const p = byId.get(a); if (p) for (const k of REL) p.rel[k] = p.rel[k].filter((x) => x !== b); }
 }
 /* a parent appears once; drop a second "father" if it came from a weak match */
 for (const p of people) { p.rel.father = p.rel.father.slice(0, 1); p.rel.mother = p.rel.mother.slice(0, 1); }
@@ -290,7 +338,7 @@ for (const [id, evs] of Object.entries(OVR.events || {})) if (byId.get(id)) byId
    dates move; dates from the Bible, the books, curated key figures and
    overrides.json "dates" stay put. A father may die shortly before the birth,
    a mother may not. */
-const fixedId = new Set(Object.keys(OVR.dates || {}));
+const fixedId = new Set([...Object.keys(OVR.dates || {}), ...histFixed]);
 const movable = (p) => !p.curated && !fixedId.has(p.id) && p.q[0] === "assumed" && p.q[1] === "assumed";
 const endable = (p) => !fixedId.has(p.id) && p.q[1] === "assumed";
 /* how far a placeholder may move, and how long a life may be stretched; a
@@ -350,7 +398,7 @@ for (const id of OVR.notLine || []) if (byId.get(id)) byId.get(id).line = false;
 /* ---------- 6. tiers ---------- */
 const NOTABLE = /\b(king|queen|prophet|prophetess|judge|apostle|high priest|pharaoh|emperor|governor)\b/i;
 for (const p of people) {
-  if (p.curated) continue;
+  if (p.curated || p.hist) continue;
   const nRel = REL.reduce((s, k) => s + p.rel[k].length, 0);
   p.tier = (p.line || NOTABLE.test(p.role) || nRel >= 6) ? 3 : 4;
 }
@@ -384,11 +432,11 @@ function jobsFromRole(role) {
 }
 for (const p of people) {
   const set = JOBS.set[p.id];
-  p.jobs = set ? set.slice() : jobsFromRole(p.role || "");
+  p.jobs = set ? set.slice() : p.hist && p.jobs ? p.jobs : jobsFromRole(p.role || "");
 }
 
 /* ---------- 7. write ---------- */
-const KEEP = ["id", "name", "aka", "meaning", "born", "died", "q", "tier", "gender", "role", "look", "portrait", "summary", "family", "note", "events", "refs", "group", "rel", "relNames", "src", "key", "line", "jobs"];
+const KEEP = ["id", "name", "aka", "meaning", "born", "died", "q", "tier", "gender", "role", "look", "portrait", "summary", "family", "note", "events", "refs", "group", "rel", "relNames", "src", "key", "line", "jobs", "hist", "hsrc"];
 const outList = people.slice().sort((a, b) => a.born - b.born || a.name.localeCompare(b.name)).map((p) => {
   const o = {};
   for (const k of KEEP) {

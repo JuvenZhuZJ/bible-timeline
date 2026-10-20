@@ -710,3 +710,21 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 @media (max-width: 760px) { .toast { bottom: calc(176px + var(--safe-b)); } }   /* above the dock */
+
+/* ───── from history, not the Bible: square marks (data/history.js, data/source/history-people.json) ───── */
+.ev-node.hist .ev-ring { stroke: var(--fg-2); }
+.ev-node.hist .ev-core { fill: var(--fg-2); }
+.ev-label.hist { font-style: italic; fill: var(--muted); letter-spacing: 0.14em; }
+.dot.hist .d-name { font-style: italic; }
+.track-ev.sq { transform-box: fill-box; transform-origin: center; transition: transform .15s; }
+.track-act:hover .track-ev.sq, .track-act.active .track-ev.sq { transform: scale(1.75); stroke: var(--bg); stroke-width: 0.7; }
+.mini-ev.hist { stroke: var(--muted); }
+.lg-hist { fill: var(--fg); }
+.hist-tag { display: inline-flex; align-items: center; gap: 5px; font: 400 10.5px var(--sans); letter-spacing: 0.04em; color: var(--fg-2); }
+.hist-tag svg { width: 9px; height: 9px; flex: none; }
+.hist-tag rect { fill: var(--fg-2); }
+.win-hist { margin-top: 6px; }
+.event-tip .et-hist { margin-top: 8px; }
+.event-tip .et-src { font: 300 10.5px var(--mono); color: var(--muted); margin-top: 4px; }
+.event-tip .et-src em, .win-src .src-link em { font-style: italic; }
+.acts li.hist::before { border-radius: 1px; }

@@ -768,7 +768,8 @@ window.TIMELINE_CHARACTERS = [
   summary:"Rebuilt the temple on a grand scale. Hearing of the Messiah's birth from the astrologers, he ordered the slaughter of the boys of Bethlehem.",
   family:"Sons: Archelaus, Antipas, Philip",
   note:"Birth from secular history; death c. 1 B.C.E.",
-  events:[[-18,"Begins rebuilding the temple","John 2:20"],[-2,"Meets the astrologers","Matthew 2:1-8"],[-1,"Massacre at Bethlehem; dies","Matthew 2:16, 19"]] },
+  // activities with an "@" source come from history, not the Bible (sources in data/history.js)
+  events:[[-47,"Made governor of Galilee by his father; clears the region of robber bands","@it-herod"],[-39,"Named king of Judea by the Roman Senate","@it-herod; @dp13"],[-37,"Takes Jerusalem, ending Hasmonaean rule, and executes the leaders of Antigonus' party","@it-herod; @it-jerusalem"],[-30,"After Actium wins the favor of Augustus, who adds Samaria, Gaza, Joppa and lands east of the Jordan to his kingdom","@it-herod"],[-18,"Begins rebuilding the temple","John 2:20"],[-10,"Dedicates Caesarea, the harbor city he built and named after Caesar","@it-caesarea"],[-2,"Meets the astrologers","Matthew 2:1-8"],[-1,"Has his son Antipater executed during his last illness","@it-herod"],[-1,"Massacre at Bethlehem; dies","Matthew 2:16, 19"]] },
 
 { id:"zechariah-priest", name:"Zechariah (priest)", meaning:"Jehovah has remembered", born:-70, died:-1, q:["assumed","assumed"], tier:3, gender:"m",
   role:"Father of John the Baptist", look:{age:"old", head:"priest", beard:"long"},
