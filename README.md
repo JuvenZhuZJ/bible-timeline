@@ -25,9 +25,9 @@ The **People** button in the top bar picks who appears:
 
 | Mode | Shows |
 | --- | --- |
-| Everyone | All 2,795 people, including the people the Bible does not name and 66 known from history (see below). Minor people appear as you zoom in. |
-| Key figures | 217 people: the 140 hand-written key figures, 16 from history (Nabopolassar, Nabonidus, Alexander the Great, Ptolemy I, Seleucus I, Antiochus III, Antiochus IV, Mattathias, Judas Maccabeus, Simon, John Hyrcanus I, Pompey, Julius Caesar, Cleopatra VII, Nero and Titus) and everyone on the Adam-to-Jesus line. |
-| Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
+| Everyone | All 2,794 people, including the people the Bible does not name and 66 known from history (see below). Minor people appear as you zoom in. |
+| Key figures | 228 people: the 140 hand-written key figures, 16 from history (Nabopolassar, Nabonidus, Alexander the Great, Ptolemy I, Seleucus I, Antiochus III, Antiochus IV, Mattathias, Judas Maccabeus, Simon, John Hyrcanus I, Pompey, Julius Caesar, Cleopatra VII, Nero and Titus) and everyone on the Adam-to-Jesus line. |
+| Adam to Jesus line | 115 people: the 97 in Luke 3:23-38 and Matthew 1:1-16 (Mary among them) and the 18 other mothers the Bible names in the line. Eve (Genesis 3:20), Sarah (Genesis 21:2), Rebekah (Genesis 25:21-26) and Leah (Genesis 29:35); Tamar, Rahab, Ruth and Bathsheba, whom Matthew names (Matthew 1:3, 5, 6); and the mothers of the kings in Matthew's list, as Kings and Chronicles give them: Naamah, Maacah, Azubah, Jecoliah, Jerusha, Abijah, Hephzibah, Meshullemeth, Jedidah and Nehushta (1 Kings 14:21; 15:2; 22:42; 2 Kings 15:2, 33; 18:2; 21:1, 19; 22:1; 24:8). Their dates are mostly placeholders. |
 | My bookmarks | Only the people the visitor starred (see [My notes and bookmarks](#my-notes-and-bookmarks)). |
 | By job or family | Any mix of groups, picked as toggles; a switch under the heading shows either anyone in **any** picked group (the default) or only people in **all** of them (Kings and Prophets together gives David and Jesus; the menu shows how many people match). Saved in the browser as `g:` (any) or `a:` (all) in `bt-show`. Jobs: kings and queens, prophets, false prophets, patriarchs, judges, priests, apostles, officials, army commanders, Bible writers (see [Job icons](#job-icons)). Family roles, below a divider and with no timeline icon: husbands and wives (a recorded spouse), sons and daughters (a recorded father or mother). |
 

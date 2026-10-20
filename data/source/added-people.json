@@ -206,5 +206,35 @@
    "Philippians 4:18"
   ],
   "solo": true
+ },
+ {
+  "key": "JERUSHA",
+  "name": "Jerusha",
+  "aka": [
+   "Jerushah"
+  ],
+  "gender": "f",
+  "meaning": "He Has Taken Possession",
+  "role": "Mother of King Jotham",
+  "summary": "Daughter of Zadok, wife of King Uzziah of Judah and mother of King Jotham.",
+  "father": "Zadok",
+  "mother": "",
+  "spouses": [
+   "Uzziah"
+  ],
+  "children": [
+   "Jotham"
+  ],
+  "siblings": [],
+  "relHints": "husband Uzziah king of Judah",
+  "group": "Judah",
+  "year": -802,
+  "born": null,
+  "died": null,
+  "dateQ": "derived",
+  "refs": [
+   "2 Kings 15:32, 33",
+   "2 Chronicles 27:1"
+  ]
  }
 ]

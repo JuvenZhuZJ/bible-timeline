@@ -1,4 +1,8 @@
 {
+  "line": ["eve", "sarah", "rebekah", "leah", "tamar-1a", "rahab", "ruth", "bathsheba",
+    "naamah-2", "maacah-9", "azubah-2", "jecoliah", "jerusha", "abijah-6b", "hephzibah-1", "meshullemeth", "jedidah", "nehushta",
+    "abijah-5"],
+  "notLine": ["abijah-6a"],
   "curated": {
     "john-baptist": "JOHN#1",
     "abigail": "ABIGAIL#1",
@@ -35,9 +39,12 @@
     "HOSHEA#3": "HOSEA",
     "BELTESHAZZAR": "DANIEL#2",
     "CHILEAB": "DANIEL#1",
-    "NAOMI": "MARA"
+    "NAOMI": "MARA",
+    "MICAIAH#1": "MAACAH#9",
+    "JECONIAH": "JEHOIACHIN"
   },
   "dates": {
+    "abijah-5": [-1018, -978], "maacah-9": [-1040, -950], "azubah-2": [-995, -930], "nehushta": [-655, -595],
     "nahshon": [
       -1570,
       -1475
