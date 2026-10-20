@@ -17,16 +17,16 @@ window.TIMELINE_EVENTS = [
   { id: "temple",     year: -1027, title: "Solomon's Temple Completed",  ref: "1 Kings 6:37-38",        text: "The temple in Jerusalem is completed after seven years of building." },
   { id: "division",   year: -997,  title: "The Kingdom Divides",         ref: "1 Kings 12:16-20",       text: "Ten tribes break away under Jeroboam; Judah stays with Rehoboam." },
   { id: "samaria",    year: -740,  title: "Fall of Samaria",             ref: "2 Kings 17:5-6",         text: "Assyria conquers Samaria; the northern kingdom of Israel ends." },
-  { id: "jerusalem1", year: -607,  title: "Jerusalem Destroyed",         ref: "2 Kings 25:8-10",        text: "Babylon destroys Jerusalem and its temple; the exile begins." },
+  { id: "jerusalem1", year: -607,  title: "Jerusalem Destroyed",         ref: "2 Kings 25:8-10",        text: "Babylon destroys Jerusalem and its temple; the exile begins. The 'appointed times of the nations' (the 'seven times' of Daniel 4) start here." },
   { id: "babylon",    year: -539,  title: "Babylon Falls to Cyrus",      ref: "Daniel 5:30-31; Isaiah 45:1", text: "The Medes and Persians under Cyrus take Babylon in one night; Medo-Persia becomes the world power." },
-  { id: "return",     year: -537,  title: "Return from Exile",           ref: "Ezra 1:1-4; 3:1",        text: "Under Cyrus' decree a remnant returns and restores worship in Jerusalem." },
+  { id: "return",     year: -537,  title: "Return from Exile",           ref: "Ezra 1:1-4; 3:1",        text: "Freed by Cyrus, a remnant returns and sets up the altar in Jerusalem, 70 years after the land was left desolate." },
   { id: "temple2",    year: -515,  title: "Temple Rebuilt",              ref: "Ezra 6:14-15",           text: "Encouraged by the prophets Haggai and Zechariah, the returned Jews finish rebuilding the temple." },
-  { id: "walls",      year: -455,  title: "Jerusalem's Walls Rebuilt",   ref: "Nehemiah 2:1-8; 6:15",   text: "Nehemiah is commissioned in Artaxerxes' 20th year; the wall is finished in 52 days." },
+  { id: "walls",      year: -455,  title: "Jerusalem's Walls Rebuilt",   ref: "Nehemiah 2:1-8; 6:15",   text: "Nehemiah is commissioned in Artaxerxes' 20th year; the wall is finished in 52 days. This word to rebuild Jerusalem starts Daniel's '70 weeks' of years." },
   { id: "birth",      year: -2,    title: "Birth of Jesus",              ref: "Luke 2:1-7",             text: "Jesus is born in Bethlehem." },
-  { id: "baptism",    year: 29,    title: "Jesus Baptized",              ref: "Luke 3:21-23",           text: "Jesus is baptized by John and begins his ministry at about 30." },
+  { id: "baptism",    year: 29,    title: "Jesus Baptized",              ref: "Luke 3:21-23",           text: "Jesus is baptized by John and begins his ministry at about 30. As Daniel foretold, 'Messiah the Leader' arrives at the end of 69 'weeks' of years." },
   { id: "pentecost",  year: 33,    title: "Death, Resurrection & Pentecost", ref: "Matthew 27-28; Acts 2", text: "Jesus dies on Nisan 14, is raised on the third day; holy spirit is poured out at Pentecost." },
-  { id: "gentiles",   year: 36,    title: "First Gentiles Baptized",     ref: "Acts 10:44-48",          text: "Holy spirit is poured out on Cornelius and his household, the first uncircumcised Gentile believers." },
-  { id: "jerusalem2", year: 70,    title: "Jerusalem Destroyed by Rome", ref: "Luke 19:43-44",          text: "Roman armies under Titus destroy Jerusalem and its temple." },
+  { id: "gentiles",   year: 36,    title: "First Gentiles Baptized",     ref: "Acts 10:44-48",          text: "Holy spirit is poured out on Cornelius and his household, the first uncircumcised Gentile believers. Daniel's '70 weeks' end this year." },
+  { id: "jerusalem2", year: 70,    title: "Jerusalem Destroyed by Rome", ref: "Luke 19:43-44",          text: "Roman armies under Titus destroy Jerusalem and its temple, as Daniel and Jesus foretold." },
   { id: "revelation", year: 96,    title: "John Receives Revelation",    ref: "Revelation 1:1, 9",      text: "Exiled on Patmos, the aged apostle John receives and records the Revelation." }
 ];
 

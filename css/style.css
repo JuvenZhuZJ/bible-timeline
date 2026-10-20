@@ -201,9 +201,10 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .event-tip .bk-w:hover, .event-tip .bk-w:focus-visible { color: var(--accent); text-decoration-color: var(--accent); outline: none; }
 .event-tip.book { display: flex; flex-direction: column; max-width: 340px; }
 .event-tip.book > * { flex: none; }
+.event-tip .bk-focus { margin: 2px 0 8px; color: var(--fg-2); font: italic 300 12.5px/1.45 var(--serif); }
 .event-tip .bk-evs { list-style: none; margin: 8px 0 0; padding: 6px 0 0; border-top: 1px solid var(--faint); }
-.event-tip.book .bk-evs { flex: 0 1 auto; min-height: 60px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
-.event-tip.book .bk-evs.more { -webkit-mask-image: linear-gradient(#000 calc(100% - 26px), transparent); mask-image: linear-gradient(#000 calc(100% - 26px), transparent); }
+.event-tip.book .bk-scroll { flex: 0 1 auto; min-height: 60px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.event-tip.book .bk-scroll.more { -webkit-mask-image: linear-gradient(#000 calc(100% - 26px), transparent); mask-image: linear-gradient(#000 calc(100% - 26px), transparent); }
 .event-tip .bk-evs button { display: block; width: 100%; padding: 3px 0; border: 0; background: none; color: var(--fg-2); font: 300 12px/1.4 var(--sans); text-align: left; cursor: pointer; }
 .event-tip .bk-evs button:hover, .event-tip .bk-evs button:focus-visible { color: var(--fg); outline: none; }
 .event-tip .bk-y { display: inline-block; min-width: 64px; margin-right: 6px; color: var(--muted); font: 300 10px var(--mono); }
