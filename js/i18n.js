@@ -299,6 +299,8 @@
     for (const c of window.TIMELINE_PEOPLE || []) {
       const z = people[c.id];
       c.en = c.name;
+      // activities from data/source/activities.json carry their Chinese: [year, text, ref, { zh }]
+      if (c.events) c.events = c.events.map((e) => (e[3] && e[3].zh ? [e[0], e[3].zh, ...e.slice(2)] : e));
       if (!z) continue;
       if (z.n) c.name = z.n;
       if (z.r != null) c.role = z.r;
@@ -308,7 +310,7 @@
       if (z.fam != null) c.family = z.fam;
       if (z.src != null) c.srcZh = z.src;
       if (z.aka) c.akaZh = z.aka;
-      if (z.e && c.events) c.events = c.events.map((e, i) => (z.e[i] ? [e[0], z.e[i], e[2]] : e));
+      if (z.e && c.events) c.events = c.events.map((e, i) => (z.e[i] ? [e[0], z.e[i], ...e.slice(2)] : e));
       if (z.rn && c.relNames) for (const k in c.relNames) if (z.rn[k]) c.relNames[k] = z.rn[k];
     }
     const ev = Z.events || {};

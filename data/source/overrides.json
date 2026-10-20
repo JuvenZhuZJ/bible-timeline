@@ -123,6 +123,12 @@
     "obed-1b": "Not recorded. Born when Ruth married Boaz, about the 14th century B.C.E. (Insight, “Boaz”; Ruth 4:13-17). About 250 years separate his birth from David's (1107 B.C.E.) with only Jesse between them (Ruth 4:21, 22), so he must have fathered Jesse very late in life. Years approximate.",
     "joel-9": "Wrote his book perhaps about 820 B.C.E., while Uzziah was king of Judah. Amos, who finished his book about 804, seems to quote him (Joel 3:16; Amos 1:2), as explained in God's Word Is Truth (2026). His references to Judah, Jerusalem and the temple suggest he lived and prophesied there. Life span assumed."
   },
+  "unlink": {
+    "drusilla": {"children": ["herod-agrippa-i-3"]}
+  },
+  "relNames": {
+    "drusilla": {"children": ["Agrippa"]}
+  },
   "events": {
     "joel-9": [
       [-820, "Warns of 'the day of Jehovah' and a locust-like invasion", "Joel 1:4–2:11"],

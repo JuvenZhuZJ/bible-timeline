@@ -25589,7 +25589,7 @@
 "relHints": "grandfather HEROD#1; son HEROD#4; sister HERODIAS",
 "group": "Idumean",
 "year": 43,
-"born": null,
+"born": -11,
 "died": 44,
 "dateQ": "derived",
 "refs": [

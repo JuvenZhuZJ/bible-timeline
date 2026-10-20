@@ -19,6 +19,10 @@
  *   data/source/overrides.json       manual fixes (optional); "same" merges two
  *                                    Insight records of one person ("MISHAEL#2": "MESHACH")
  *   data/source/jobs.json            jobs shown as icons after names (king, prophet ...)
+ *   data/source/activities.json      activities of people who are not key figures, taken
+ *                                    from what their card says they did (Agrippa I kills
+ *                                    James), each with its year, scripture, Chinese text
+ *                                    and place
  * Outputs
  *   data/people.js                   window.TIMELINE_PEOPLE, read by js/app.js
  *   data/ASSUMED_DATES.md            people whose dates are placeholders
@@ -38,6 +42,9 @@ const extra = (f) => fs.existsSync(path.join(ROOT, f)) ? JSON.parse(read(f)) : [
 const INSIGHT = JSON.parse(read("data/source/insight-people.json"))
   .concat(extra("data/source/unnamed-people.json"), extra("data/source/added-people.json"));
 const OVR = fs.existsSync(path.join(ROOT, "data/source/overrides.json")) ? JSON.parse(read("data/source/overrides.json")) : {};
+/* activities of other people (step 5); its "dates" are placeholder lives moved to take in an activity */
+const ACTS = extra("data/source/activities.json");
+OVR.dates = Object.assign({}, OVR.dates, ACTS.dates);
 
 const MIN_Y = -4026, MAX_Y = 100;
 const clampY = (y) => Math.max(MIN_Y, Math.min(MAX_Y, Math.round(y)));
@@ -270,6 +277,14 @@ for (const p of people) for (const id of p.rel.children) {
 for (const [id, pt] of Object.entries(HIST.patch || {})) for (const other of pt.unlink || []) {
   for (const [a, b] of [[id, other], [other, id]]) { const p = byId.get(a); if (p) for (const k of REL) p.rel[k] = p.rel[k].filter((x) => x !== b); }
 }
+/* one wrong link, removed both ways (overrides.json "unlink": { id: { kind: [ids] } }); Drusilla's
+   son Agrippa is not her father Herod Agrippa I */
+const BACK = { father: ["children"], mother: ["children"], children: ["father", "mother"], spouses: ["spouses"], siblings: ["siblings"] };
+for (const [id, kinds] of Object.entries(OVR.unlink || {})) for (const [k, others] of Object.entries(kinds)) for (const other of others) {
+  const p = byId.get(id), o = byId.get(other);
+  if (p) p.rel[k] = p.rel[k].filter((x) => x !== other);
+  if (o) for (const b of BACK[k]) o.rel[b] = o.rel[b].filter((x) => x !== id);
+}
 /* a parent appears once; drop a second "father" if it came from a weak match */
 for (const p of people) { p.rel.father = p.rel.father.slice(0, 1); p.rel.mother = p.rel.mother.slice(0, 1); }
 /* drop plain-text names that ended up resolved through the reverse link */
@@ -278,6 +293,8 @@ for (const p of people) for (const kind of Object.keys(p.relNames)) {
   p.relNames[kind] = p.relNames[kind].filter((n) => !have.has(norm(n)));
   if (!p.relNames[kind].length) delete p.relNames[kind];
 }
+/* relatives known only by name, put back after an unlink (overrides.json "relNames") */
+for (const [id, kinds] of Object.entries(OVR.relNames || {})) { const p = byId.get(id); if (p) for (const [k, names] of Object.entries(kinds)) p.relNames[k] = [...new Set([...(p.relNames[k] || []), ...names])]; }
 
 /* ---------- 5. the line from Adam to Jesus (Luke 3:23-38; Matthew 1:1-16) ---------- */
 const LUKE = "Adam Seth Enosh Kenan Mahalalel Jared Enoch Methuselah Lamech Noah Shem Arpachshad Cainan Shelah Eber Peleg Reu Serug Nahor Terah Abraham Isaac Jacob Judah Perez Hezron Ram Amminadab Nahshon Salmon Boaz Obed Jesse David Nathan Mattatha Menna Melea Eliakim Jonam Joseph Judas Symeon Levi Matthat Jorim Eliezer Jesus Er Elmadam Cosam Addi Melchi Neri Shealtiel Zerubbabel Rhesa Joanan Joda Josech Semein Mattathias Maath Naggai Esli Nahum Amos Mattathias Joseph Jannai Melchi Levi Matthat Heli".split(" ");
@@ -340,6 +357,20 @@ for (const [id, [b, d]] of Object.entries(OVR.dates || {})) {
 for (const [id, note] of Object.entries(OVR.notes || {})) if (byId.get(id)) byId.get(id).note = note;
 /* activities for people who are not key figures (overrides.json "events"): [year, text, scripture] */
 for (const [id, evs] of Object.entries(OVR.events || {})) if (byId.get(id)) byId.get(id).events = evs.concat(byId.get(id).events || []);   // keeps history activities added in step 4b
+/* activities from data/source/activities.json: [year, text, scripture, { c: 1 if the year is approximate,
+   p: place in data/places.js, zh: Chinese text }]; a string names a shared activity in "shared" */
+const actIds = new Set();
+for (const [id, list] of Object.entries(ACTS.people || {})) {
+  const p = byId.get(id);
+  if (!p) { console.log("activities.json: no person", id); continue; }
+  const evs = list.map((e) => {
+    const [y, text, ref, f] = typeof e === "string" ? ACTS.shared[e] : e;
+    if (y === undefined) console.log("activities.json: no shared activity", e);
+    return f && Object.keys(f).length ? [y, text, ref, f] : [y, text, ref];
+  });
+  p.events = (p.events || []).concat(evs);
+  actIds.add(id);
+}
 
 /* ---------- 5b. a parent is alive when each child is born ----------
    Placeholder dates are set one person at a time, so a father or mother can
@@ -493,6 +524,8 @@ let md = `# Assumed dates\n\nGenerated by \`node tools/build-people.mjs\`. These
 for (const p of assumed) md += `| ${p.name} (\`${p.id}\`) | ${p.q[0] === "assumed" ? "~" : ""}${fmt(p.born)} | ${p.q[1] === "assumed" ? "~" : ""}${fmt(p.died)} | ${(p.role || "").replace(/\|/g, "/")} |\n`;
 fs.writeFileSync(path.join(ROOT, "data/ASSUMED_DATES.md"), md);
 
+/* an activity should fall within the person's life */
+for (const p of outList) if (actIds.has(p.id)) for (const e of p.events) if (e[0] < p.born - 1 || e[0] > p.died + 1) console.log(`activity outside life: ${p.id} (${p.born} to ${p.died}) ${e[0]} ${e[1]}`);
 const linked = outList.filter((p) => p.rel).length;
 console.log(`${outList.length} people (${outList.filter((p) => p.key).length} key figures, ${outList.filter((p) => p.line).length} on the Adam-to-Jesus line), ${linked} with family links, ${assumed.length} with assumed dates.`);
 const unmatched = CURATED.filter((c) => !people.find((p) => p.id === c.id && p.ikey)).map((c) => c.id);
