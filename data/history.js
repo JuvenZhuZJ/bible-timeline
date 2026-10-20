@@ -19,6 +19,9 @@ window.HISTORY_SOURCES = {
   "it-alexandria":  { d: "1200000193", en: "<em>Insight on the Scriptures</em>, “Alexandria”", zh: "《洞悉聖經》「亞歷山大（城）」" },
   "it-antonia":     { d: "1200000295", en: "<em>Insight on the Scriptures</em>, “Antonia, Tower of”", zh: "《洞悉聖經》「安東尼亞塔」" },
   "it-caesarea":    { d: "1200000853", en: "<em>Insight on the Scriptures</em>, “Caesarea”", zh: "《洞悉聖經》「凱撒里亞」" },
+  "it-caesar":      { d: "1200000852", en: "<em>Insight on the Scriptures</em>, “Caesar”", zh: "《洞悉聖經》「凱撒」" },
+  "it-dagger":      { d: "1200001106", en: "<em>Insight on the Scriptures</em>, “Dagger Men”", zh: "《洞悉聖經》「匕首黨徒」" },
+  "it-patmos":      { d: "1200003403", en: "<em>Insight on the Scriptures</em>, “Patmos”", zh: "《洞悉聖經》「拔摩」" },
   "it-dedication":  { d: "1200001506", en: "<em>Insight on the Scriptures</em>, “Festival of Dedication”", zh: "《洞悉聖經》「獻殿節」" },
   "it-greece":      { d: "1200001765", en: "<em>Insight on the Scriptures</em>, “Greece, Greeks”", zh: "《洞悉聖經》「希臘，希臘人」" },
   "it-herod":       { d: "1200002000", en: "<em>Insight on the Scriptures</em>, “Herod”", zh: "《洞悉聖經》「希律」" },
@@ -37,6 +40,7 @@ window.HISTORY_SOURCES = {
   "dp14":           { d: "1101999034", en: "<em>Pay Attention to Daniel’s Prophecy!</em>, chapter 14", zh: "《要留意但以理的預言！》第14章" },
   "w98":            { d: "1998847", en: "<em>The Watchtower</em>, November 15, 1998, “Who Were the Maccabees?”", zh: "《守望台》1998年11月15日刊「馬加比家族是誰？」" },
   "w01":            { d: "2001446", en: "<em>The Watchtower</em>, June 15, 2001, “The Hasmonaeans and Their Legacy”", zh: "《守望台》2001年6月15日刊「哈斯蒙家族對後世的影響」" },
+  "w90":            { d: "1990760", en: "<em>The Watchtower</em>, October 15, 1990, “Masada—Why Did It Happen?”", zh: "《守望台》1990年10月15日刊「梅察達——何以有這件事發生？」" },
   "nwt-john10":     { d: "1001070678", en: "<em>New World Translation</em> (Study Edition), study note on John 10:22", zh: "《新世界譯本》研讀版約翰福音10:22注釋" }
 };
 
@@ -79,5 +83,14 @@ window.HISTORY_EVENTS = [
     zh: { title: "希律攻取耶路撒冷", text: "以土邁人希律獲羅馬元老院委任為猶地亞王，從哈斯蒙王朝最後一個統治者安提柯手中奪取耶路撒冷。他一直統治猶太人，直到耶穌出生後不久。" } },
   { id: "h-actium", year: -31, title: "Battle of Actium", src: ["dp14", "dp9"], ref: "Daniel 7:7",
     text: "Octavian defeats Mark Antony and Cleopatra VII at Actium. A year later Egypt becomes a Roman province, the last of the Greek kingdoms falls, and Rome stands as the next world power of Bible prophecy.",
-    zh: { title: "亞克興之役", text: "屋大維在亞克興擊敗馬可·安東尼和克婁巴特拉七世。一年後埃及成為羅馬的行省，最後一個希臘王國也滅亡了，羅馬成為聖經預言所說的下一個世界強國。" } }
+    zh: { title: "亞克興之役", text: "屋大維在亞克興擊敗馬可·安東尼和克婁巴特拉七世。一年後埃及成為羅馬的行省，最後一個希臘王國也滅亡了，羅馬成為聖經預言所說的下一個世界強國。" } },
+  { id: "h-rome-fire", year: 64, title: "Rome Burns", src: ["it-caesar"],
+    text: "A great fire destroys about a quarter of Rome. Rumor blames Nero, and he shifts the blame to the Christians. Mass arrests and executions follow, the start of a wave of persecution by the Roman state.",
+    zh: { title: "羅馬大火", text: "一場大火燒毀了羅馬城大約四分之一的地方。有傳言說是尼祿放的火，他就嫁禍給基督徒。許多基督徒被捕、處死，羅馬政府開始大規模迫害基督徒。" } },
+  { id: "h-revolt", year: 66, title: "Jewish Revolt; Rome Withdraws", src: ["it-jerusalem", "it-dagger", "w90"], ref: "Luke 21:20-22; Matthew 24:15, 16",
+    text: "The Jews rise against Rome, and rebels seize the fortress of Masada. Cestius Gallus brings Roman troops right up to the temple walls, then suddenly pulls back. Christians take the chance to flee, as Jesus told them, and many go to Pella across the Jordan.",
+    zh: { title: "猶太人起義；羅馬撤軍", text: "猶太人起來反抗羅馬，叛軍佔領了梅察達要塞。紹塞斯·加盧斯率領羅馬軍隊一直推進到聖殿的外牆，卻突然撤兵。基督徒就照耶穌的吩咐趁機逃走，許多人逃到約旦河對岸的佩拉。" } },
+  { id: "h-masada", year: 73, title: "Masada Falls", src: ["it-dagger", "w90"],
+    text: "The dagger men under Eleazar, son of Jairus, hold out on Masada after Jerusalem's fall. The Romans wall it in and build a huge ramp to its top. When the wall is breached, the defenders have already killed one another rather than be taken. The Jewish revolt is over.",
+    zh: { title: "梅察達失守", text: "耶路撒冷陷落後，崖魯的兒子以利亞撒率領的匕首黨徒仍然據守梅察達。羅馬人築牆包圍要塞，又堆起一條通往山頂的巨大斜坡。城牆被攻破時，守軍已經互相殺死，不願被俘。猶太人的起義就此結束。" } }
 ];
