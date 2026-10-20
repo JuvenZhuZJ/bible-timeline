@@ -28,8 +28,9 @@ The **People** button in the top bar picks who appears:
 | Everyone | All 2,737 people, including 34 the Bible does not name (see below). Minor people appear as you zoom in. |
 | Key figures | 201 people: the 140 hand-written key figures plus everyone on the Adam-to-Jesus line. |
 | Adam to Jesus line | Only the 97 ancestors in Luke 3:23-38 and Matthew 1:1-16. |
+| By job | Only the people with one job icon (see [Job icons](#job-icons)): kings and queens, prophets, patriarchs, judges, priests, apostles, officials, army commanders or Bible writers. |
 
-All three modes follow the same zoom rule: fully zoomed out you see only the timeline and its events, and people appear as you zoom in, the most important first. The Key figures and Adam-to-Jesus modes show their people a little sooner, since fewer people compete for space.
+All the modes follow the same zoom rule: fully zoomed out you see only the timeline and its events, and people appear as you zoom in, the most important first. The Key figures, Adam-to-Jesus and By job modes show their people a little sooner, since fewer people compete for space.
 
 Searching for a person who is hidden by the current mode switches to Everyone. The choice is remembered in the browser.
 

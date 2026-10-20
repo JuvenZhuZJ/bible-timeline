@@ -96,9 +96,14 @@
 
   /* who is shown: everyone, key figures only, or only the line from Adam to Jesus */
   const SHOW_MODES = { all: T("show.all", null, "Everyone"), key: T("show.key", null, "Key figures"), line: T("show.line", null, "Adam to Jesus line") };
+  // by job: "job:king" shows only the kings and queens, and so on (data/source/jobs.json)
+  const SHOW_JOBS = { king: "Kings and queens", prophet: "Prophets", patriarch: "Patriarchs", judge: "Judges", priest: "Priests",
+    apostle: "Apostles", official: "Officials", commander: "Army commanders", writer: "Bible writers" };
+  for (const [j, en] of Object.entries(SHOW_JOBS)) SHOW_MODES["job:" + j] = T("show.job." + j, null, en);
   let showMode = "all";
   try { const m = localStorage.getItem("bt-show"); if (SHOW_MODES[m]) showMode = m; } catch (_) {}
-  const inMode = (c) => showMode === "all" || (showMode === "line" ? !!c.line : !!(c.key || c.line));
+  const inMode = (c) => showMode === "all" || (showMode.startsWith("job:") ? (c.jobs || []).includes(showMode.slice(4))
+    : showMode === "line" ? !!c.line : !!(c.key || c.line));
 
   const T0 = A(-4026) - 90;
   const T1 = A(100) + 70;
@@ -1517,7 +1522,7 @@
   $("aboutStats").textContent = T("about.stats", { n: CHARS.length.toLocaleString(), e: EVENTS.length, a: nAssumed.toLocaleString() },
     `${CHARS.length.toLocaleString()} people · ${EVENTS.length} major events · ${nAssumed.toLocaleString()} people with at least one assumed date.`);
 
-  /* show: everyone / key figures / Adam-to-Jesus line */
+  /* show: everyone / key figures / Adam-to-Jesus line / one job */
   const showBox = $("show"), showBtn = $("showBtn"), showMenu = $("showMenu");
   function setShowMode(m) {
     showMode = m;
@@ -1529,6 +1534,7 @@
     packForce = true; requestRender();
   }
   const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length };
+  for (const j in SHOW_JOBS) counts["job:" + j] = CHARS.filter((c) => c.jobs.includes(j)).length;
   showMenu.querySelectorAll("[data-mode]").forEach((b) => {
     b.querySelector(".sm-n").textContent = counts[b.dataset.mode].toLocaleString();
     b.addEventListener("click", () => { setShowMode(b.dataset.mode); showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); });

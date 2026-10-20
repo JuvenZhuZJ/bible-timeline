@@ -447,7 +447,7 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .show.filtered .show-dot { display: block; }
 .show.filtered .show-btn { border-color: rgba(217,181,111,0.5); color: var(--accent); }
 .show-menu {
-  display: none; position: absolute; top: 46px; right: 0; width: 290px; padding: 8px; z-index: 5;
+  display: none; position: absolute; top: 46px; right: 0; width: 330px; padding: 8px; z-index: 5;
   background: var(--panel); border: 1px solid var(--faint); border-radius: 12px;
   box-shadow: 0 18px 40px rgba(0,0,0,0.6); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 }
@@ -463,6 +463,11 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .sm-t { font: 500 17px/1.15 var(--serif); }
 .sm-t small { display: block; font: 300 11.5px/1.4 var(--sans); color: var(--muted); margin-top: 2px; }
 .sm-n { font: 300 10.5px var(--mono); color: var(--accent); }
+.sm-h2 { margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--faint); }
+.sm-jobs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.show-menu .sm-jobs button { justify-content: flex-start; gap: 7px; padding: 6px 8px; }
+.sm-jobs .job-ic { color: var(--fg-2); }
+.sm-jobs .sm-j { flex: 1; font: 400 12.5px var(--sans); white-space: nowrap; }
 .search-results li .sr-n { min-width: 0; }
 .search-results li .sr-n small { display: block; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .search-results { max-height: min(60vh, 520px); overflow-y: auto; }
