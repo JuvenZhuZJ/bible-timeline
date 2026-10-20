@@ -96,7 +96,20 @@
   });
 
   /* who is shown: everyone, key figures only, or only the line from Adam to Jesus */
-  const SHOW_MODES = { all: T("show.all", null, "Everyone"), key: T("show.key", null, "Key figures"), line: T("show.line", null, "Adam to Jesus line") };
+  const SHOW_MODES = { all: T("show.all", null, "Everyone"), key: T("show.key", null, "Key figures"), line: T("show.line", null, "Adam to Jesus line"),
+    mine: T("show.mine", null, "My bookmarks") };
+
+  /* My notes and bookmarks: kept only in this browser (localStorage "bt-notes"),
+     as { person id: { s: starred, n: note text, t: last change } } */
+  let NOTES = {};
+  try { NOTES = JSON.parse(localStorage.getItem("bt-notes") || "{}") || {}; } catch (_) {}
+  const isStarred = (c) => !!(NOTES[c.id] && NOTES[c.id].s);
+  const noteText = (c) => (NOTES[c.id] && NOTES[c.id].n) || "";
+  function setNote(c, patch) {
+    const o = Object.assign({}, NOTES[c.id], patch, { t: Date.now() });
+    if (!o.s && !(o.n || "").trim()) delete NOTES[c.id]; else NOTES[c.id] = o;
+    try { localStorage.setItem("bt-notes", JSON.stringify(NOTES)); return true; } catch (_) { return false; }
+  }
   // by job or family role: any number of groups can be picked, and anyone in any of them is shown.
   // The jobs come from data/source/jobs.json; husband/wife/son/daughter from the recorded relatives
   // (they have no icon on the timeline).
@@ -124,7 +137,7 @@
   } catch (_) {}
   const showKey = () => (showMode === "groups" ? (showAll ? "a:" : "g:") + [...showGroups].join(",") : showMode);
   const inMode = (c) => showMode === "all" || (showMode === "groups" ? [...showGroups][showAll ? "every" : "some"]((g) => GROUP[g](c))
-    : showMode === "line" ? !!c.line : !!(c.key || c.line));
+    : showMode === "line" ? !!c.line : showMode === "mine" ? isStarred(c) : !!(c.key || c.line));
 
   const T0 = A(-4026) - 90;
   const T1 = A(100) + 70;
@@ -1066,7 +1079,7 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.target.matches("input, textarea")) return;
-    if (e.key === "Escape") { if (!$("about").hidden) closeAbout(); else { setHover(null); hideTip(); showBox.classList.remove("open"); } return; }
+    if (e.key === "Escape") { if (!$("about").hidden) closeAbout(); else if (!$("notes").hidden) $("notes").hidden = true; else { setHover(null); hideTip(); showBox.classList.remove("open"); } return; }
     if (e.target.closest && e.target.closest(".win")) return;
     if (e.key === "ArrowLeft") { view.t0 -= (W * 0.12) / view.ppy; clampView(); requestRender(); }
     else if (e.key === "ArrowRight") { view.t0 += (W * 0.12) / view.ppy; clampView(); requestRender(); }
@@ -1104,6 +1117,7 @@
     restorePath: "M6 7h12v11H6zM6 10h12",
     close: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     link: '<svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+    star: '<svg viewBox="0 0 24 24"><path d="M12 3.8l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/></svg>',
   };
   const QLABEL = { derived: T("q.derived", null, "from Bible ages"), estimated: T("q.estimated", null, "estimated"), assumed: T("q.assumed", null, "assumed") };
 
@@ -1196,6 +1210,7 @@
         <div class="win-thumb">${window.Portrait.html(c)}</div>
         <div class="win-title"><div class="win-name">${esc(c.name)}</div><div class="win-dates"><span>${esc(fmtRange(c))}</span> · <span>${esc(ageText(c))}</span></div></div>
         <div class="win-btns">
+          <button class="win-btn win-star${isStarred(c) ? " on" : ""}" data-act="star" aria-pressed="${isStarred(c)}" aria-label="${esc(T("star", { name: c.name }, `Bookmark ${c.name}`))}" title="${esc(T("star.t", null, "Bookmark"))}">${ICON.star}</button>
           <button class="win-btn" data-act="locate" aria-label="${esc(T("locate", { name: c.name }, `Show ${c.name} on the timeline`))}" title="${esc(T("locate.t", null, "Show on timeline"))}">${ICON.locate}</button>
           <button class="win-btn" data-act="link" aria-label="${esc(T("link", { name: c.name }, `Copy a link to ${c.name}`))}" title="${esc(T("link.t", null, "Copy link"))}">${ICON.link}</button>
           <button class="win-btn" data-act="min" aria-label="${T("min", null, "Minimize")}" title="${T("min", null, "Minimize")}">${ICON.min}</button>
@@ -1212,6 +1227,11 @@
         </div>
         ${c.note ? `<p class="win-note">${c.assumed ? "⚑ " : ""}${Scripture.linkText(c.note)}</p>` : ""}
         <p class="win-summary">${Scripture.linkText(c.summary)}</p>
+        <div class="win-h">${T("note.h", null, "My notes")}</div>
+        <div class="my-note">
+          <textarea rows="2" aria-label="${esc(T("note.aria", { name: c.name }, `My notes about ${c.name}`))}" placeholder="${esc(T("note.ph", { name: c.name }, `Write your own notes about ${c.name}…`))}">${esc(noteText(c))}</textarea>
+          <div class="mn-foot"><span class="mn-state"></span><span>${T("note.local", null, "Saved only in this browser")}</span></div>
+        </div>
         ${familyHTML(c)}
         ${contemporariesHTML(c)}
         <div class="win-h">${T("lifespan", null, "Lifespan")}</div>
@@ -1328,6 +1348,8 @@
     w.el.querySelector('[data-act="min"]').addEventListener("click", () => minimize(w));
     w.el.querySelector('[data-act="locate"]').addEventListener("click", () => { if (L.mobile) minimize(w); locate(w.c); });
     w.el.querySelector('[data-act="link"]').addEventListener("click", () => copyLink(w.c));
+    w.el.querySelector('[data-act="star"]').addEventListener("click", () => toggleStar(w.c));
+    wireNote(w);
 
     w.el.querySelectorAll(".rel-chip").forEach((b) => b.addEventListener("click", () => {
       const r = CHAR_BY_ID.get(b.dataset.rel); if (!r) return;
@@ -1759,7 +1781,7 @@
     packForce = true; requestRender();
   }
   const closeShow = () => { showBox.classList.remove("open"); showBtn.setAttribute("aria-expanded", "false"); };
-  const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length };
+  const counts = { all: CHARS.length, key: CHARS.filter((c) => c.key || c.line).length, line: CHARS.filter((c) => c.line).length, mine: CHARS.filter(isStarred).length };
   showMenu.querySelectorAll("[data-mode]").forEach((b) => {
     b.querySelector(".sm-n").textContent = counts[b.dataset.mode].toLocaleString();
     b.addEventListener("click", () => { setShowMode(b.dataset.mode); closeShow(); });
@@ -1795,6 +1817,86 @@
   });
   document.addEventListener("pointerdown", (e) => { if (!setBox.contains(e.target)) { setBox.classList.remove("open"); setBtn.setAttribute("aria-expanded", "false"); } });
   setShowMode(showMode, showGroups);
+
+  /* ───────────────────────── my notes and bookmarks ─────────────────────────
+     A star in a window bookmarks the person, and the note box under the summary keeps your own
+     notes; both are saved in this browser only. "My bookmarks" in the People menu shows only the
+     starred people, and "My notes and bookmarks" lists everything, with a download and a print. */
+  const notesBox = $("notes");
+  const nMine = () => CHARS.filter(isStarred).length;
+  function syncStars(c) {
+    const on = isStarred(c);
+    wins.filter((w) => w.c === c).forEach((w) => {
+      const b = w.el.querySelector('[data-act="star"]');
+      b.classList.toggle("on", on); b.setAttribute("aria-pressed", on);
+    });
+    const m = showMenu.querySelector('[data-mode="mine"] .sm-n');
+    if (m) m.textContent = nMine().toLocaleString();
+    if (showMode === "mine") { packForce = true; requestRender(); }
+    if (!notesBox.hidden) renderNotes();
+  }
+  function toggleStar(c) {
+    const on = !isStarred(c);
+    const ok = setNote(c, { s: on });
+    syncStars(c);
+    showToast(!ok ? T("note.fail", null, "This browser could not save it") : on ? T("star.on", { name: c.name }, `${c.name} bookmarked`) : T("star.off", { name: c.name }, `Bookmark removed from ${c.name}`));
+  }
+  function wireNote(w) {
+    const ta = w.el.querySelector(".my-note textarea"), st = w.el.querySelector(".mn-state");
+    let t = 0;
+    const grow = () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight + 2, 260) + "px"; };
+    ta.addEventListener("input", () => {
+      grow();
+      st.textContent = "";
+      clearTimeout(t);
+      t = setTimeout(() => {
+        const ok = setNote(w.c, { n: ta.value });
+        st.textContent = ok ? T("note.saved", null, "Saved") : T("note.fail", null, "This browser could not save it");
+        if (!notesBox.hidden) renderNotes();
+      }, 400);
+    });
+    requestAnimationFrame(grow);
+  }
+  // the people with a bookmark or a note, in timeline order
+  const noted = () => CHARS.filter((c) => NOTES[c.id]).sort((a, b) => a.tb - b.tb);
+  function renderNotes() {
+    const list = noted();
+    $("notesList").innerHTML = list.length ? list.map((c) => `<li>
+        <div class="nl-head"><button class="nl-name" data-id="${esc(c.id)}">${isStarred(c) ? `<span class="nl-star" aria-label="${esc(T("star.t", null, "Bookmark"))}">★</span>` : ""}${esc(c.name)}</button><span class="nl-years">${esc(fmtRange(c))}</span></div>
+        ${noteText(c).trim() ? `<div class="nl-text">${esc(noteText(c).trim())}</div>` : ""}
+      </li>`).join("") : `<li class="nl-empty">${esc(T("notes.empty", null, "Nothing yet. Open a person’s window, then tap the star to bookmark them or write in “My notes”."))}</li>`;
+    $("notesCount").textContent = list.length ? T("notes.count", { n: list.length, s: nMine() }, `${list.length} ${list.length === 1 ? "person" : "people"} · ${nMine()} bookmarked`) : "";
+    $("notesDownload").disabled = $("notesPrint").disabled = !list.length;
+  }
+  function openNotes() { closeShow(); renderNotes(); notesBox.hidden = false; $("notesClose").focus(); }
+  function closeNotes() { notesBox.hidden = true; }
+  $("notesClose").addEventListener("click", closeNotes);
+  notesBox.addEventListener("click", (e) => {
+    if (e.target === notesBox) { closeNotes(); return; }
+    const b = e.target.closest(".nl-name");
+    if (b) { const c = CHAR_BY_ID.get(b.dataset.id); closeNotes(); if (!inMode(c)) setShowMode("all"); openWindow(c); locate(c); }
+  });
+  $("notesOpen").addEventListener("click", openNotes);
+  $("notesDownload").addEventListener("click", () => {
+    const day = new Date().toISOString().slice(0, 10);
+    const lines = [T("notes.file", { d: day }, `Bible Family Tree: my notes and bookmarks (${day})`), ""];
+    for (const c of noted()) {
+      lines.push(`${isStarred(c) ? "★ " : ""}${c.name} (${fmtRange(c)})`);
+      if (noteText(c).trim()) lines.push(noteText(c).trim());
+      lines.push("");
+    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" }));
+    a.download = `bible-family-tree-notes-${day}.txt`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+  $("notesPrint").addEventListener("click", () => {
+    document.body.classList.add("print-notes");
+    window.print();
+    setTimeout(() => document.body.classList.remove("print-notes"), 500);
+  });
+  { const m = showMenu.querySelector('[data-mode="mine"] .sm-n'); if (m) m.textContent = nMine().toLocaleString(); }
 
   /* ───────────────────────── shareable links ─────────────────────────
      The address keeps what is on screen, so it can be bookmarked or sent: #p=david,solomon&y=-1050&z=4

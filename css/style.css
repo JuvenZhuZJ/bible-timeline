@@ -310,10 +310,11 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .win-title { flex: 1; min-width: 0; }
 .win-name { font: 600 21px/1.1 var(--serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .win-dates span { white-space: nowrap; }
+.win-dates span:first-child { white-space: normal; }   /* a long date range may wrap between its years */
 .win-dates { font: 300 10.5px var(--mono); color: var(--wc); margin-top: 4px; letter-spacing: 0.05em; }
-.win-btns { display: flex; gap: 2px; }
+.win-btns { display: flex; gap: 0; flex: none; }
 .win-btn {
-  width: 30px; height: 30px; border-radius: 50%; border: none; background: none; cursor: pointer; display: grid; place-items: center; color: var(--fg-2);
+  width: 29px; height: 29px; border-radius: 50%; border: none; background: none; cursor: pointer; display: grid; place-items: center; color: var(--fg-2);
 }
 .win-btn:hover, .win-btn:focus-visible { background: rgba(235,231,222,0.1); color: var(--fg); outline: none; }
 .win-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
@@ -385,6 +386,44 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .modal-card h3 { font: 500 10px var(--sans); letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); margin: 20px 0 6px; }
 .modal-close { position: absolute; top: 14px; right: 14px; }
 .muted { color: var(--muted); font-size: 12px; }
+
+/* my notes and bookmarks */
+.win-star.on { color: var(--accent); border-color: rgba(217,181,111,0.5); }
+.win-star.on svg { fill: var(--accent); }
+.my-note textarea {
+  display: block; width: 100%; min-height: 52px; resize: vertical; padding: 8px 10px; border: 1px solid var(--faint); border-radius: 8px;
+  background: rgba(235,231,222,0.03); color: var(--fg); font: 300 13px/1.5 var(--sans);
+}
+.my-note textarea:focus { outline: none; border-color: var(--hair); }
+.my-note textarea::placeholder { color: var(--muted); }
+.mn-foot { display: flex; justify-content: space-between; gap: 8px; margin-top: 4px; font: 300 10px var(--sans); color: var(--muted); }
+.mn-state { color: var(--accent); }
+.show-menu .sm-link { justify-content: flex-start; gap: 8px; padding: 8px 10px; font: 400 12.5px var(--sans); color: var(--fg-2); }
+.sm-link svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.notes-card { width: min(560px, 100%); }
+.notes-intro { margin: 0 0 12px; font-size: 13px; }
+.notes-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+.notes-tools .dock-btn:disabled { opacity: 0.4; cursor: default; }
+.notes-list { list-style: none; margin: 0; padding: 0; }
+.notes-list li { padding: 10px 0; border-top: 1px solid var(--faint); }
+.nl-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.nl-name { padding: 0; border: 0; background: none; color: var(--fg); font: 500 18px var(--serif); cursor: pointer; }
+.nl-name:hover, .nl-name:focus-visible { color: var(--accent); outline: none; }
+.nl-star { color: var(--accent); margin-right: 6px; font-size: 14px; }
+.nl-years { font: 300 10.5px var(--mono); color: var(--muted); }
+.nl-text { margin-top: 4px; white-space: pre-wrap; font-size: 13px; line-height: 1.55; color: var(--fg-2); }
+.notes-list .nl-empty { color: var(--muted); font-size: 13px; }
+@media print {
+  body.print-notes { background: #fff; overflow: visible; height: auto; }
+  body.print-notes > *:not(#notes) { display: none !important; }
+  body.print-notes #notes { position: static; display: block; background: none; padding: 0; }
+  body.print-notes .notes-card { max-height: none; overflow: visible; border: 0; background: #fff; color: #000; padding: 0; }
+  body.print-notes .notes-card h2, body.print-notes .nl-name, body.print-notes .nl-text { color: #000; }
+  body.print-notes .nl-star { color: #000; }
+  body.print-notes .nl-years { color: #555; }
+  body.print-notes .notes-list li { border-top-color: #ccc; }
+  body.print-notes .modal-close, body.print-notes .notes-tools, body.print-notes .notes-intro { display: none; }
+}
 
 /* ------------------------------------------------------------- responsive */
 @media (max-width: 760px) {
