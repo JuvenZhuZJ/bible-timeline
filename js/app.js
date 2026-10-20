@@ -170,7 +170,7 @@
     // event labels sit in a fixed band of rows under the axis; the personal tracks start below it
     const evRows = mobile ? 2 : 3, evRow0 = lineY + 40, evRowStep = 22;
     // with the Bible books band on, its rows sit just above the main line and the people move up
-    const bookRows = 4, bookStep = mobile ? 14 : 15;
+    const bookRows = 5, bookStep = mobile ? 14 : 15;
     const band = booksOn ? bookRows * bookStep + 6 : 0;
     L = {
       mobile, top, bottom, lineY, laneStep, evRows, evRow0, evRowStep, bookRows, bookStep, band,
@@ -920,12 +920,20 @@
       }
       const xa = X(o.a), xb = Math.max(X(o.b), xa + 2);
       // the name sits before the line; once the start has gone off the left edge it stays at the edge
-      const nx = Math.max(o.mw + 6, xa - 5);
       if (xb < 0) continue;
-      const a = nx - o.mw - 2, b = Math.max(xb, nx) + 6;
+      // the first row (nearest the line) with room for the name before the line; failing that, the
+      // first with room for it after the line (where the books before it end at the same year, as
+      // the Gospels do where Acts begins); a book that fits nowhere waits for more zoom
+      const free = (a, b) => rows.findIndex((rw) => !rw.some(([p, q]) => a < q + 8 && b > p - 8));
+      let nx = Math.max(o.mw + 6, xa - 5), after = false;
+      let a = nx - o.mw - 2, b = Math.max(xb, nx) + 6;
       if (b < -20 || a > W + 20) continue;
-      // the first row (nearest the line) with room; a book that fits nowhere waits for more zoom
-      const r = rows.findIndex((rw) => !rw.some(([p, q]) => a < q + 8 && b > p - 8));
+      let r = free(a, b);
+      if (r < 0 && xb + o.mw + 12 < W) {
+        const a2 = xa - 6, b2 = xb + o.mw + 12;
+        r = free(a2, b2);
+        if (r >= 0) { after = true; nx = xb + 5; a = a2; b = b2; }
+      }
       if (r < 0) continue;
       rows[r].push([a, b]);
       const y = rowY(r);
@@ -933,11 +941,11 @@
       const grp = el("g", { class: "book" + (tipEv === o ? " active" : ""), tabindex: "0", role: "button", "aria-label": o.name }, g.books);
       grp.__book = o;
       el("rect", { class: "hit", x: a, y: y - 7, width: b - a, height: 14 }, grp);
-      const x1 = Math.max(xa, nx + 4);   // a name held at the edge sits on the line, so the line starts after it
+      const x1 = after ? xa : Math.max(xa, nx + 4);   // a name held at the edge sits on the line, so the line starts after it
       if (xb > x1) el("line", { class: "book-line", x1, x2: xb, y1: y, y2: y }, grp);
       if (x1 === xa) el("line", { class: "book-end", x1: xa, x2: xa, y1: y - 3.5, y2: y + 3.5 }, grp);
       if (o.b > o.a) el("line", { class: "book-end", x1: xb, x2: xb, y1: y - 3.5, y2: y + 3.5 }, grp);
-      const nm = el("text", { class: "book-name", x: nx, y: y + 3.5, "text-anchor": "end" }, grp);
+      const nm = el("text", { class: "book-name", x: nx, y: y + 3.5, "text-anchor": after ? "start" : "end" }, grp);
       nm.textContent = o.name;
       for (const e of o.evs) {
         const x = X(A(e.y));
