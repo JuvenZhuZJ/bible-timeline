@@ -859,8 +859,14 @@
   }
   function bookCard(o) {
     const bk = o.books[0];
-    const who = bk.w.map((id) => CHAR_BY_ID.get(id)).filter(Boolean)
-      .map((c) => `<button class="bk-w" data-id="${esc(c.id)}">${esc(c.name)}</button>`).join(I18.zh ? "、" : ", ");
+    const wBtn = (c) => `<button class="bk-w" data-id="${esc(c.id)}">${esc(c.name)}</button>`;
+    // a book with several writers lists who wrote which part, one to a line
+    const who = bk.parts
+      ? bk.parts.map(([w, en, zh]) => {
+          const c = typeof w === "string" && CHAR_BY_ID.get(w);
+          return `<span class="bk-part">${c ? wBtn(c) : esc(Array.isArray(w) ? w[I18.zh ? 1 : 0] : w)} <span class="bk-p">· ${esc(I18.zh ? zh : en)}</span></span>`;
+        }).join("")
+      : bk.w.map((id) => CHAR_BY_ID.get(id)).filter(Boolean).map(wBtn).join(I18.zh ? "、" : ", ");
     // a range keeps the era once, at its end: "c. 60–65 C.E.", "745–740 B.C.E."
     const done = bk.doneTo ? bookYear(bk.dq, bk.doneTo).replace(String(Math.abs(bk.doneTo)), `${Math.abs(bk.done)}–${Math.abs(bk.doneTo)}`) : bookYear(bk.dq, bk.done);
     const span = bk.from == null ? "" : bk.from === bk.to ? bookYear(bk.fq, bk.from) : `${bookYear(bk.fq, bk.from)} – ${bookYear(bk.tq, bk.to)}`;
@@ -874,7 +880,7 @@
       ${bk.focus ? `<div class="bk-focus">${esc(bk.focus[I18.zh ? 1 : 0])}</div>` : ""}
       ${row("bk.writer", bk.w.length > 1 ? "Writers" : "Writer", `<span class="bk-v">${who}</span>`)}
       ${bk.at ? row("bk.at", "Written in", `<span class="bk-v">${esc(bk.at[I18.zh ? 1 : 0])}</span>`) : ""}
-      ${row("bk.done", "Completed", `<span class="bk-v">${esc(done)}</span>`)}
+      ${row("bk.done", "Completed", `<span class="bk-v">${esc(done)}${bk.by ? `<span class="bk-by">${esc(bk.by[I18.zh ? 2 : 1])}</span>` : ""}</span>`)}
       ${span ? row("bk.span", "Time covered", `<span class="bk-v">${esc(span)}</span>`) : ""}
       ${evs ? `<ol class="bk-evs">${evs}</ol>` : ""}
       </div>
