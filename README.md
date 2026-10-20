@@ -118,7 +118,8 @@ The data is in `data/books.js` (hand-editable). A dot is either `"person-id:n"`,
 The star at the top of a person's window bookmarks them, and the **My notes** box under the summary keeps the visitor's own notes (saved as they type). Both are stored only in that browser (`localStorage` key `bt-notes`, `{ id: { s: starred, n: note, t: last change } }`); nothing is sent anywhere, and clearing the browser's data removes them.
 
 - **My bookmarks** in the People menu shows only the starred people (it follows the same zoom rule as the other modes).
-- **My notes and bookmarks** in the People menu lists everyone with a star or a note in timeline order; click a name to open their window. **Download** saves them as a text file, and **Print** prints just the list.
+- **My notes and bookmarks** in the People menu lists everyone with a star or a note in timeline order; click a name to open their window. **Download** saves them as a text file, **Load** reads such a file back in (to move notes to another device or restore them), and **Print** prints just the list.
+- **The file:** a readable list, then one `BFT-NOTES {…}` line with the same notes as data, which is what Load reads. Loading merges: a bookmark on either side stays, and when both sides have different notes for a person both texts are kept, the newer first, so nothing is lost.
 
 ## Read more
 

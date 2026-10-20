@@ -208,9 +208,11 @@
     <div class="modal-card notes-card" role="dialog" aria-modal="true" aria-labelledby="notesTitle">
       <button class="icon-btn modal-close" id="notesClose" aria-label="Close" data-i18n-aria="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <h2 id="notesTitle" data-i18n="notes.title">My notes and bookmarks</h2>
-      <p class="notes-intro" data-i18n="notes.intro">These are kept only in this browser on this device. Clearing the browser’s data removes them, so download a copy now and then.</p>
+      <p class="notes-intro" data-i18n="notes.intro">These are kept only in this browser on this device. Clearing the browser’s data removes them, so download a copy now and then. To use them on another device, download them here and use <strong>Load</strong> there to bring the file in.</p>
       <div class="notes-tools">
         <button class="dock-btn" id="notesDownload"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg><span data-i18n="notes.download">Download</span></button>
+        <button class="dock-btn" id="notesLoad"><svg viewBox="0 0 24 24"><path d="M12 15.5V4.5M7 9l5-5 5 5M5 19.5h14"/></svg><span data-i18n="notes.load">Load</span></button>
+        <input type="file" id="notesFile" accept=".txt,text/plain" hidden>
         <button class="dock-btn" id="notesPrint"><svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H4.5v-7h15v7H17M7 14h10v6H7z"/></svg><span data-i18n="notes.print">Print</span></button>
         <span class="muted" id="notesCount"></span>
       </div>
@@ -231,7 +233,7 @@
       <h3 data-i18n="about.books.h">Bible books</h3>
       <p data-i18n="about.books">The book button in the top bar shows the books of the Bible as lines just above the main line. Each line spans the years the book covers, and the dots on it are main events the book tells about. Hover over a book (or tap it) to see who wrote it, where, and when the writing was completed, with a link to read it online. Click it (or tap again) to zoom to it, and click a dot to open that event in the person’s window. Books that cover no set period, such as Psalms or the letters, are a short mark at the year they were completed. The years come from the table of the books of the Bible in the <em>New World Translation</em>.</p>
       <h3 data-i18n="about.notes.h">My notes and bookmarks</h3>
-      <p data-i18n="about.notes">The star at the top of a window bookmarks the person, and the <strong>My notes</strong> box under their summary keeps anything you want to write about them. <strong>My bookmarks</strong> in the people menu shows only the people you starred, and <strong>My notes and bookmarks</strong> lists them all, ready to download or print. They are saved only in this browser on this device.</p>
+      <p data-i18n="about.notes">The star at the top of a window bookmarks the person, and the <strong>My notes</strong> box under their summary keeps anything you want to write about them. <strong>My bookmarks</strong> in the people menu shows only the people you starred, and <strong>My notes and bookmarks</strong> lists them all, ready to download or print. They are saved only in this browser on this device; to carry them to another device, download the file and load it there with <strong>Load</strong>.</p>
       <h3 data-i18n="about.dates.h">Reading the dates</h3>
       <p data-i18n="about.dates">Each birth and death year is one of three kinds, and the <strong>Legend</strong> button shows how each is drawn. A <strong>solid dot</strong> means the year is worked out from ages and reign lengths the Bible gives. A <strong>ring with a small dot</strong> means the year is <strong>estimated</strong>: the Bible gives a clue, such as an age at death, but no exact year. A <strong>dashed ring</strong> means the year is <strong>assumed</strong>: the Bible does not record it, so the person is placed by their generation or the period they appear in. Most people have assumed dates, so take their place on the timeline as a rough guide. “c.” before a year means it is approximate.</p>
       <h3 data-i18n="about.places.h">Places</h3>
