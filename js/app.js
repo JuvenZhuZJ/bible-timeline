@@ -170,7 +170,7 @@
     // event labels sit in a fixed band of rows under the axis; the personal tracks start below it
     const evRows = mobile ? 2 : 3, evRow0 = lineY + 40, evRowStep = 22;
     // with the Bible books band on, its rows sit just above the main line and the people move up
-    const bookRows = 5, bookStep = mobile ? 14 : 15;
+    const bookRows = mobile ? 6 : 7, bookStep = mobile ? 14 : 15;
     const band = booksOn ? bookRows * bookStep + 6 : 0;
     L = {
       mobile, top, bottom, lineY, laneStep, evRows, evRow0, evRowStep, bookRows, bookStep, band,
@@ -886,12 +886,17 @@
       </div>
       <div class="bk-read">${read}</div>`;
   }
+  // the books under a "+3": each opens its card, zoomed in on it
+  function groupCard(o) {
+    const items = o.books.map((b, i) => [b, i]).sort((p, q) => p[0].d - q[0].d).map(([b, i]) => `<li><button class="bk-grp" data-i="${i}"><span class="bk-y">${esc(fmtT(b.d))}</span>${esc(b.name)}</button></li>`).join("");
+    return `<div class="et-year">${esc(T("bk.kind.n", { n: o.books.length }, `${o.books.length} Bible books`))}</div><div class="bk-scroll"><ol class="bk-evs">${items}</ol></div><div class="et-hint">${esc(T("bk.more.hint", null, "Zoom in to see their names on the band"))}</div>`;
+  }
   function showBookTip(o) {
     clearTimeout(tipTimer);
     if (tipEv === o && tip.classList.contains("show")) return;
     hideActTip();
     tipEv = o;
-    tip.innerHTML = bookCard(o);
+    tip.innerHTML = o.group ? groupCard(o) : bookCard(o);
     tip.classList.add("book");
     // the card never covers the band, so the pointer can move along a book to its dots: it sits above
     // the band's top row, its list of events scrolling when long; with too little room there, it
@@ -903,9 +908,25 @@
       tip.style.top = bandTop - tip.offsetHeight + "px";
     } else {
       const top = L.lineY + 30;   // clear of the year marks under the line
-      tip.style.maxHeight = Math.max(160, H - L.bottom - top - 8) + "px";
+      // and clear of the dock's buttons when windows are open
+      const dr = dock.getBoundingClientRect(), oy = tip.offsetParent ? tip.offsetParent.getBoundingClientRect().top : 0;
+      const foot = dr.height ? Math.min(H - L.bottom, dr.top - oy) : H - L.bottom;
+      tip.style.maxHeight = Math.max(160, foot - top - 8) + "px";
       tip.style.top = top + "px";
     }
+    // an open window covers the timeline, so the card moves to the side of it that has room
+    const tw = tip.offsetWidth, pr = tip.offsetParent ? tip.offsetParent.getBoundingClientRect() : { left: 0, top: 0 };
+    const tt = tip.offsetTop, tb = tt + tip.offsetHeight;
+    let cx = parseFloat(tip.style.left);
+    for (const w of wins) {
+      if (w.minimized) continue;
+      const v = w.el.getBoundingClientRect();
+      const r = { left: v.left - pr.left, right: v.right - pr.left, top: v.top - pr.top, bottom: v.bottom - pr.top };
+      if (cx + tw / 2 <= r.left || cx - tw / 2 >= r.right || tb <= r.top || tt >= r.bottom) continue;
+      if (r.left - 8 >= tw + 8) cx = r.left - 8 - tw / 2;
+      else if (W - r.right - 8 >= tw + 8) cx = r.right + 8 + tw / 2;
+    }
+    tip.style.left = cx + "px";
     tip.classList.add("show", "live");
     // a card that runs on (a long list of events, or a phone's short room) scrolls between its title
     // and its links, and fades at its foot until it is scrolled to the end
@@ -931,6 +952,8 @@
   tip.addEventListener("click", (e) => {
     const o = tipEv && tipEv.books ? tipEv : null;
     if (!o) return;
+    const gb = o.group && e.target.closest(".bk-grp");
+    if (gb) { goToBook(o.books[+gb.dataset.i]); return; }
     const w = e.target.closest(".bk-w"), li = e.target.closest(".bk-evs button");
     if (w && CHAR_BY_ID.get(w.dataset.id)) { hideTip(); openWindow(CHAR_BY_ID.get(w.dataset.id)); }
     else if (li) { const ev = o.evs[+li.dataset.i]; hideTip(); if (ev.ev) zoomToEvent(ev.ev); else openActivity(ev.c, ev.k); }
@@ -940,8 +963,11 @@
     g.books.textContent = "";
     if (!booksOn) return;
     const rows = Array.from({ length: L.bookRows }, () => []);   // [a, b] taken in each row, in px
+    for (const o of bookLines) o.shown = false;
     const rowY = (r) => L.lineY - 22 - r * L.bookStep;
     const hitR = L.mobile ? 11 : 8;
+    const free = (a, b) => rows.findIndex((rw) => !rw.some(([p, q]) => a < q + 8 && b > p - 8));
+    const left = [];   // books with no room for their name
     for (const o of bookLines) {
       if (!o.mw) {   // measure the name once (again when the web fonts arrive)
         const t = el("text", { class: "book-name" }, g.books);
@@ -951,38 +977,80 @@
       }
       // xd: where the writing was completed, a diamond; most books were finished the year their
       // account ends, the rest (Genesis, the Gospels...) get a dotted tail on to it
-      const xa = X(o.a), xb = Math.max(X(o.b), xa + 2), xd = Math.max(X(o.d), xb), tail = xd - xb > 8;
-      // the name sits before the line; once the start has gone off the left edge it stays at the edge
-      if (xb < 0) continue;
-      // the first row (nearest the line) with room for the name before the line; failing that, the
+      const xa = X(o.a), xb = Math.max(X(o.b), xa + 2), xd = Math.max(X(o.d), xb);
+      if (xd < -6 || xa > W + 6) continue;
+      // the name sits before the line; once the start has gone off the left edge it stays at the edge.
+      // The first row (nearest the line) with room for the name before the line; failing that, the
       // first with room for it after the line (where the books before it end at the same year, as
-      // the Gospels do where Acts begins); a book that fits nowhere waits for more zoom
-      const free = (a, b) => rows.findIndex((rw) => !rw.some(([p, q]) => a < q + 8 && b > p - 8));
+      // the Gospels do where Acts begins)
       let nx = Math.max(o.mw + 6, xa - 5), after = false;
       let a = nx - o.mw - 2, b = Math.max(xd, nx) + 6;
-      if (b < -20 || a > W + 20) continue;
       let r = free(a, b);
       if (r < 0 && xd + o.mw + 12 < W) {
         const a2 = xa - 6, b2 = xd + o.mw + 12;
         r = free(a2, b2);
         if (r >= 0) { after = true; nx = xd + 6; a = a2; b = b2; }
       }
-      if (r < 0) continue;
+      if (r < 0) { left.push({ o, xa, xb, xd }); continue; }
       rows[r].push([a, b]);
+      drawBook(o, rowY(r), xa, xb, xd, { nx, after, a, b });
+    }
+    // no book is ever left out: one with no room for its name is drawn as its line alone (its name is
+    // on its card), and where even that has no room, a "+3" marks the books there; it zooms in on them
+    const crowd = [];
+    for (const it of left) {
+      const a = it.xa - 7, b = it.xd + 7, r = free(a, b);
+      if (r >= 0) { rows[r].push([a, b]); drawBook(it.o, rowY(r), it.xa, it.xb, it.xd, null); }
+      else crowd.push(it);
+    }
+    crowd.sort((p, q) => p.xa - q.xa);
+    const groups = [];
+    for (const it of crowd) {
+      const gr = groups[groups.length - 1];
+      if (gr && it.xa < gr.x2 + 24) { gr.items.push(it); gr.x2 = Math.max(gr.x2, it.xd); }
+      else groups.push({ items: [it], x1: it.xa, x2: it.xd });
+    }
+    for (const gr of groups) {
+      const label = "+" + gr.items.length, w = tlen(label) * 6.5 + 12;
+      let cx = Math.min(W - w / 2 - 2, Math.max(w / 2 + 2, (Math.max(gr.x1, 0) + Math.min(gr.x2, W)) / 2));
+      // the nearest free spot to the books it stands for, in any row
+      let r = -1;
+      for (let k = 0; k <= 16 && r < 0; k++) for (const sgn of k ? [1, -1] : [1]) {
+        const c2 = cx + sgn * k * 10;
+        if (c2 - w / 2 < 2 || c2 + w / 2 > W - 2) continue;
+        r = free(c2 - w / 2 + 6, c2 + w / 2 - 6);
+        if (r >= 0) { cx = c2; break; }
+      }
+      if (r < 0) r = L.bookRows - 1;
+      rows[r].push([cx - w / 2, cx + w / 2]);
       const y = rowY(r);
-      o.y = y; o.lx = (Math.max(xa, 0) + Math.min(xb, W)) / 2;
-      const grp = el("g", { class: "book" + (tipEv === o ? " active" : ""), tabindex: "0", role: "button", "aria-label": o.name }, g.books);
+      const o = { group: true, books: gr.items.map((it) => it.o), a: Math.min(...gr.items.map((it) => it.o.a)), b: Math.max(...gr.items.map((it) => it.o.d)), lx: cx, y };
+      const grp = el("g", { class: "book book-more" + (tipEv && tipEv.group && tipEv.lx === cx ? " active" : ""), tabindex: "0", role: "button", "aria-label": o.books.map((x) => x.name).join(", ") }, g.books);
       grp.__book = o;
-      el("rect", { class: "hit", x: a, y: y - 7, width: b - a, height: 14 }, grp);
-      const x1 = after ? xa : Math.max(xa, nx + 4);   // a name held at the edge sits on the line, so the line starts after it
+      el("rect", { class: "bm-chip", x: cx - w / 2, y: y - 7, width: w, height: 14, rx: 7 }, grp);
+      const t = el("text", { class: "bm-n", x: cx, y: y + 3.5, "text-anchor": "middle" }, grp);
+      t.textContent = label;
+      for (const it of gr.items) it.o.shown = false;
+    }
+    function drawBook(o, y, xa, xb, xd, nm) {
+      const tail = xd - xb > 8;
+      o.y = y; o.lx = (Math.max(xa, 0) + Math.min(xd, W)) / 2; o.shown = true;
+      const grp = el("g", { class: "book" + (nm ? "" : " nameless") + (tipEv === o ? " active" : ""), tabindex: "0", role: "button", "aria-label": o.name }, g.books);
+      grp.__book = o;
+      const ha = nm ? nm.a : xa - 7, hb = nm ? nm.b : xd + 7;
+      el("rect", { class: "hit", x: ha, y: y - 7, width: hb - ha, height: 14 }, grp);
+      // a name held at the edge sits on the line, so the line starts after it
+      const x1 = !nm || nm.after ? xa : Math.max(xa, nm.nx + 4);
       if (xb > x1) el("line", { class: "book-line", x1, x2: xb, y1: y, y2: y }, grp);
       if (x1 === xa && o.b > o.a) el("line", { class: "book-end", x1: xa, x2: xa, y1: y - 3.5, y2: y + 3.5 }, grp);
       if (o.b > o.a && tail) el("line", { class: "book-end", x1: xb, x2: xb, y1: y - 3.5, y2: y + 3.5 }, grp);
       if (tail) el("line", { class: "book-tail", x1: xb + 2, x2: xd - 5.5, y1: y, y2: y }, grp);
       // a hollow frame, under the event dots, so a dot on or next to the completion year shows inside it
       if (xd > -6) el("path", { class: "book-done", d: `M${xd} ${y - 5.5}L${xd + 5.5} ${y}L${xd} ${y + 5.5}L${xd - 5.5} ${y}Z` }, grp);
-      const nm = el("text", { class: "book-name", x: nx, y: y + 3.5, "text-anchor": after ? "start" : "end" }, grp);
-      nm.textContent = o.name;
+      if (nm) {
+        const t = el("text", { class: "book-name", x: nm.nx, y: y + 3.5, "text-anchor": nm.after ? "start" : "end" }, grp);
+        t.textContent = o.name;
+      }
       for (const e of o.evs) {
         const x = X(A(e.y));
         if (x < x1 - 2) continue;   // under a name held at the edge
@@ -1008,6 +1076,28 @@
   });
   g.books.addEventListener("focusin", (e) => { const n = e.target.closest(".book"); if (n) showBookTip(n.__book); });
   g.books.addEventListener("keydown", (e) => { const n = e.target.closest(".book"); if (n && e.key === "Enter") zoomToBook(n.__book); });
+
+  /* the books each writer had a part in, for "Bible books written" in their window: the book's
+     writers, who wrote which part, and who finished it (data/books.js w, parts, by) */
+  const BOOKS_BY = new Map();
+  for (const o of bookLines) for (const bk of o.books) {
+    const add = (id, part) => {
+      if (!BOOKS_BY.has(id)) BOOKS_BY.set(id, []);
+      const list = BOOKS_BY.get(id);
+      if (!list.some((x) => x.bk === bk)) list.push({ o, bk, part });
+    };
+    for (const [w, en, zh] of bk.parts || []) if (typeof w === "string") add(w, [en, zh]);
+    if (bk.by) for (const id of bk.by[0]) add(id, [bk.by[1], bk.by[2]]);
+    for (const id of bk.w) add(id, null);
+  }
+  for (const list of BOOKS_BY.values()) list.sort((p, q) => p.bk.b - q.bk.b);
+  // from a window to the book: the band comes on, the timeline zooms to the book and its card opens
+  function goToBook(o) {
+    if (!booksOn) setBooks(true);
+    hideTip();
+    zoomToBook(o);
+    setTimeout(() => { if (o.shown) showBookTip(o); }, 760);
+  }
 
   const booksBtn = $("booksBtn");
   function setBooks(on) {
@@ -1294,6 +1384,7 @@
         ${c.places ? `<div class="win-map">${mapViews(c, true)}</div>` : ""}
         ${acts ? `<div class="win-h">${T("acts", null, "Major activities")}</div><ul class="acts">${acts}</ul>` : ""}
         ${c.refs.length ? `<div class="win-h">${T("keyrefs", null, "Key scriptures")}</div><div class="win-refs">${c.refs.map(Scripture.linkRefs).join(" · ")}</div>` : ""}
+        ${booksWrittenHTML(c)}
         ${readMoreHTML(c)}
         ${I18.zh ? sourcesZh(c) : `<div class="win-src">Scripture: <em>New World Translation of the Holy Scriptures</em> (Study Edition). ${c.src ? `Person: <em>Insight on the Scriptures</em>, “${esc(c.src)}.” ` : ""}Chronology after <em>Insight on the Scriptures</em>, “Chronology.”${c.places && c.places.length ? " Places: OpenBible.info Bible Geocoding Data (CC BY 4.0), checked against <em>Insight</em> and the maps in the <em>New World Translation</em> (Appendix A7 and B)." : ""}</div>`}
       </div>`;
@@ -1301,6 +1392,14 @@
 
   // a document on wol.jw.org, which has the same number in English and Chinese
   const wolDoc = (d) => I18.zh ? `https://wol.jw.org/cmn-Hant/wol/d/r24/lp-ch/${d}` : `https://wol.jw.org/en/wol/d/r1/lp-e/${d}`;
+
+  // "Bible books written": each opens the book's card on the books band
+  function booksWrittenHTML(c) {
+    const list = BOOKS_BY.get(c.id);
+    if (!list) return "";
+    const items = list.map(({ bk, part }) => `<li><button class="bw-book" data-b="${bk.b}"><span class="bw-name">${esc(Scripture.bookName(bk.b))}</span>${part ? ` <span class="bw-part">· ${esc(part[I18.zh ? 1 : 0])}</span>` : ""}</button></li>`);
+    return `<div class="win-h">${T("books.written", null, "Bible books written")}</div><ul class="books-written">${items.join("")}</ul>`;
+  }
 
   // "Read more": the person's Insight article and the chapters of the study books about them (data/reading.js)
   function readMoreHTML(c) {
@@ -1424,6 +1523,12 @@
       more.textContent = open ? T("show.fewer", null, "Show fewer") : T("show.all.n", { n }, `Show all ${n}`);
     });
     wirePlaces(w);
+    w.el.querySelectorAll(".bw-book").forEach((b) => b.addEventListener("click", () => {
+      const o = bookLines.find((x) => x.books.some((bk) => bk.b === +b.dataset.b));
+      if (!o) return;
+      if (L.mobile) minimize(w);   // on a phone the window would cover the band
+      goToBook(o);
+    }));
     const acts = w.el.querySelector(".acts");
     if (acts) acts.addEventListener("pointerover", (e) => { const li = e.target.closest("li"); if (li) { cursorT = +li.dataset.t; requestRender(); } });
     if (acts) acts.addEventListener("pointerleave", () => { cursorT = null; requestRender(); });
