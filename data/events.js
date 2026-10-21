@@ -45,5 +45,11 @@ window.TIMELINE_ERAS = [
   { from: -537,  to: -400,  name: "Restoration" },
   { from: -400,  to: -2,    name: "Between the Testaments" },
   { from: -2,    to: 33,    name: "Life of Jesus" },
-  { from: 33,    to: 100,   name: "The Early Congregation" }
+  { from: 33,    to: 100,   name: "The Early Congregation" },
+  // after the Bible: history only (data/history.js)
+  { from: 100,   to: 313,   name: "After the Apostles" },
+  { from: 313,   to: 622,   name: "Church and Empire" },
+  { from: 622,   to: 1455,  name: "The Middle Ages" },
+  { from: 1455,  to: 1870,  name: "The Printed Bible" },
+  { from: 1870,  to: 1914,  name: "The Bible Students" },
 ];
