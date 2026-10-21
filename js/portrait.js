@@ -124,7 +124,29 @@
       // Cushites
       { name: "Cushite with close curls", cult: ["cushite"], age: "adult", head: "bare", hair: "coils", beard: "none", face: "round", extras: ["earrings"] },
       { name: "Cushite with a short beard", cult: ["cushite"], age: "adult", head: "band", hair: "coils", beard: "short", bs: "curly", face: "square" },
-      { name: "Cushite elder", cult: ["cushite"], age: "old", head: "bare", hair: "coils", beard: "full", bs: "curly", eye: "downcast" }
+      { name: "Cushite elder", cult: ["cushite"], age: "old", head: "bare", hair: "coils", beard: "full", bs: "curly", eye: "downcast" },
+      // Greek kings after Alexander: the plain ribbon diadem tied at the back, as on their coins
+      { name: "Hellenistic king's diadem", cult: ["greek"], royal: "only", age: "adult", head: "band", hair: "curly", beard: "none", face: "square", brow: "heavy", mouth: "stern" },
+      // After the Bible: one design for each person, named by `look.design`, drawn
+      // after the coins, statues, paintings and photographs that the Watchtower
+      // publications on wol.jw.org reproduce in their articles on these people
+      { name: "Emperor's pearl diadem", cult: ["lateroman"], age: "adult", head: "pearls", hair: "cropped", beard: "none", shaven: true, face: "square", eye: "open", mouth: "stern", dress: "cloak" },
+      { name: "Emperor's jewelled diadem", cult: ["lateroman"], age: "adult", head: "pearls", hair: "cropped", beard: "none", shaven: true, face: "long", eye: "narrow", dress: "cloak" },
+      { name: "Bishop with a pallium", cult: ["church"], age: "old", head: "bare", hair: "short", beard: "full", bs: "pointed", face: "long", brow: "heavy", dress: "pallium" },
+      { name: "Bishop of Rome", cult: ["church"], age: "old", head: "bare", hair: "cropped", beard: "short", face: "round", mouth: "stern", dress: "pallium" },
+      { name: "Monk and translator", cult: ["church"], age: "old", head: "bare", hair: "bald", beard: "long", face: "long", eye: "downcast" },
+      { name: "Pope's mitre", cult: ["medieval"], age: "old", head: "mitre", beard: "none", shaven: true, face: "round", mouth: "stern", dress: "pallium" },
+      { name: "Merchant in a felt cap", cult: ["medieval"], age: "adult", head: "roundcap", beard: "full", bs: "curly", face: "square" },
+      { name: "Scholar in a skullcap", cult: ["medieval"], age: "old", head: "skullcap", hair: "short", beard: "long", face: "long", eye: "downcast", dress: "gown" },
+      { name: "Preacher with a pointed beard", cult: ["medieval"], age: "adult", head: "bare", hair: "short", beard: "full", bs: "pointed", face: "long", brow: "heavy", dress: "gown" },
+      { name: "Printer in a fur hat", cult: ["medieval"], age: "old", head: "furhat", beard: "long", bs: "pointed", face: "long", eye: "narrow", dress: "gown" },
+      { name: "Sultan's great turban", cult: ["ottoman"], age: "adult", head: "kavuk", beard: "full", bs: "pointed", face: "long", eye: "narrow", dress: "gown" },
+      { name: "Doctor's cap", cult: ["reformation"], age: "adult", head: "doctorcap", beard: "none", shaven: true, face: "square", brow: "heavy", mouth: "stern", dress: "gown" },
+      { name: "Tudor flat cap", cult: ["reformation"], age: "adult", head: "flatcap", beard: "short", face: "square", eye: "narrow", mouth: "stern", dress: "gown", extras: ["necklace"] },
+      { name: "Translator in a skullcap", cult: ["reformation"], age: "adult", head: "skullcap", hair: "short", beard: "full", face: "long", eye: "downcast", dress: "gown" },
+      { name: "Reformer with a long beard", cult: ["reformation"], age: "adult", head: "skullcap", hair: "short", beard: "long", bs: "pointed", face: "long", eye: "narrow", dress: "gown" },
+      { name: "Frock coat and white beard", cult: ["modern"], age: "old", head: "bare", hair: "short", beard: "long", face: "oval", eye: "open", mouth: "calm", dress: "coat" },
+      { name: "High collar and glasses", cult: ["modern"], age: "adult", head: "bare", hair: "short", beard: "none", shaven: true, face: "square", mouth: "stern", dress: "coat", extras: ["glasses"] }
     ],
     f: [
       { name: "Wavy hair", cult: ["israelite", "transjordan"], age: "adult", head: "bare", hair: "wavy" },
@@ -258,6 +280,8 @@
   }
   function presetOf(c) {
     if (c._preset != null) return PRESETS[group(c)][c._preset];
+    // a well-known person after Bible times is drawn with their own design
+    if (c.look && c.look.design) { const p = PRESETS[group(c)].find((d) => d.name === c.look.design); if (p) return p; }
     if (!assigned) assign(window.TIMELINE_PEOPLE || window.TIMELINE_CHARACTERS || []);
     if (!assigned.has(c.id)) { const ids = pool(group(c), culture(c)); return PRESETS[group(c)][ids[hash(c.id) % ids.length]]; }
     return PRESETS[group(c)][assigned.get(c.id)];
@@ -279,7 +303,7 @@
     // Foreign rulers whose people had their own royal headwear get it from their
     // role too ("King of Assyria", "Pharaoh of Egypt", "Roman emperor").
     let crowned = null;
-    if (c._preset == null && (hint.head === "crown" || RULER.test(c.role || ""))) crowned = royal(group(c), culture(c));
+    if (c._preset == null && !hint.design && (hint.head === "crown" || RULER.test(c.role || ""))) crowned = royal(group(c), culture(c));
     if (crowned) {
       for (const k of ["head", "hair", "bs", "shaven"]) look[k] = crowned[k];
       look.extras = (crowned.extras || []).slice();
@@ -348,7 +372,7 @@
       `C${f(cx - rx * jaw)},${f(chin)} ${f(cx - rx * 0.9)},${f(cy + ry * 0.62)} ${f(cx - rx * 0.97)},${f(cy + 8)} ` +
       `C${f(cx - rx * 1.02)},${f(cy - 8)} ${f(cx - rx * 1.05)},${f(top)} ${cx},${f(top)} Z`;
     const hairline = cy - ry * 0.5;
-    const showsHair = /^(bare|crown|band|battle|wreath|net)$/.test(head);
+    const showsHair = /^(bare|crown|band|battle|wreath|net|pearls)$/.test(head);
     // hats that sit on top of the head, leaving long or curled hair showing behind
     const hatHair = showsHair || /^(tallcap|fez|fluted|cone|roundcap|feathers|conehelm)$/.test(head);
     const wig = hair === "wig" || hair === "longwig";
@@ -362,7 +386,8 @@
     const sh = fem ? 62 : 72;
     const robe = `M${cx - sh - 18},240 C${cx - sh - 10},${chin + 40} ${cx - 40},${chin + 22} ${cx - 16},${chin + 14} L${cx + 16},${chin + 14} C${cx + 40},${chin + 22} ${cx + sh + 10},${chin + 40} ${cx + sh + 18},240`;
     fillP(robe, 1.3);
-    S(`M${cx - 18},${chin + 15} L${cx},${chin + 40} L${cx + 18},${chin + 15}`, 1);
+    const dress = L.dress || "robe";
+    if (dress !== "coat") S(`M${cx - 18},${chin + 15} L${cx},${chin + 40} L${cx + 18},${chin + 15}`, 1);
     for (let i = 0; i < 4; i++) {
       const x = cx + (i < 2 ? -1 : 1) * r(26, sh - 2);
       P(`M${f(x)},${f(chin + r(36, 50))} q${f(r(-6, 6))},${f(r(18, 28))} ${f(r(-4, 4))},${f(r(34, 46))}`, 0.7, 0.55);
@@ -370,6 +395,42 @@
     // neck
     S(`M${cx - 13},${chin - 10} C${cx - 13},${chin + 4} ${cx - 15},${chin + 10} ${cx - 17},${chin + 16}`, 1.1);
     S(`M${cx + 13},${chin - 10} C${cx + 13},${chin + 4} ${cx + 15},${chin + 10} ${cx + 17},${chin + 16}`, 1.1);
+    // a quadratic curve's point at t, for laying beads and trims along a line
+    const qp = (x0, y0, x1, y1, x2, y2, t) => [(1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * x1 + t * t * x2, (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * y1 + t * t * y2];
+    if (dress === "gown") {
+      // scholar's or nobleman's gown with a broad fur collar falling down the front
+      for (const sg of [-1, 1]) {
+        fillP(`M${cx + sg * 16},${chin + 13} C${cx + sg * 40},${chin + 18} ${cx + sg * 62},${chin + 30} ${cx + sg * (sh + 8)},${chin + 52} L${cx + sg * (sh - 4)},${chin + 64} C${cx + sg * 54},${chin + 46} ${cx + sg * 38},${chin + 38} ${cx + sg * 30},${chin + 42} L${cx + sg * 30},240 L${cx + sg * 12},240 L${cx + sg * 12},${chin + 30} Z`, 1.2);
+        for (let k = 0; k < 16; k++) curl(cx + sg * r(18, 28), chin + 30 + k * ((240 - chin - 34) / 16), r(1.8, 2.6), 0.6, 0.6);
+        for (let k = 0; k < 10; k++) { const t = k / 10; curl(cx + sg * (22 + t * (sh - 14)), chin + 24 + t * 30 + r(-2, 2), r(1.8, 2.6), 0.6, 0.6); }
+      }
+    } else if (dress === "coat") {
+      // nineteenth-century coat: turned-down shirt collar, necktie, lapels
+      const y0 = chin + 12;
+      fillP(`M${cx - 15},${y0} L${cx},${y0 + 62} L${cx + 15},${y0} Z`, 1);
+      fillP(`M${cx - 3.5},${y0 + 10} L${cx + 3.5},${y0 + 10} L${cx + 6.5},${y0 + 48} L${cx},${y0 + 57} L${cx - 6.5},${y0 + 48} Z`, 1);
+      for (let k = 0; k < 6; k++) P(`M${cx - 5},${f(y0 + 16 + k * 6)} l10,-5`, 0.5, 0.55);
+      fillP(`M${cx - 4.5},${y0 + 3} L${cx + 4.5},${y0 + 3} L${cx + 3.5},${y0 + 10} L${cx - 3.5},${y0 + 10} Z`, 1);
+      for (const sg of [-1, 1]) {
+        fillP(`M${cx + sg * 15},${y0 - 3} L${cx + sg * 4},${y0 + 3} L${cx + sg * 11},${y0 + 15} Z`, 1);
+        S(`M${cx + sg * 17},${y0 + 1} L${cx + sg * 34},${y0 + 16} L${cx + sg * 27},${y0 + 25} L${cx + sg * 37},${y0 + 32} L${cx + sg * 3},${y0 + 74}`, 1.1);
+      }
+      for (const yy of [y0 + 80, y0 + 96]) ring(cx, yy, 2.2, 0.9, 0, true);
+    } else if (dress === "pallium") {
+      // a bishop's woollen band over the shoulders with a strip down the front, marked with crosses
+      const y1 = chin + 30;
+      fillP(`M${cx - 50},${y1} Q${cx},${y1 + 50} ${cx + 50},${y1} L${cx + 48},${y1 - 9} Q${cx},${y1 + 38} ${cx - 48},${y1 - 9} Z`, 1.1);
+      fillP(`M${cx - 6},${y1 + 22} L${cx + 6},${y1 + 22} L${cx + 6},240 L${cx - 6},240 Z`, 1.1);
+      for (const [x, y] of [[cx, y1 + 30], [cx, y1 + 62], [cx - 30, y1 + 12], [cx + 30, y1 + 12]]) P(`M${x - 3.5},${y} h7 M${x},${y - 3.5} v7`, 1, 0.9);
+    } else if (dress === "cloak") {
+      // general's cloak pinned with a round brooch on the right shoulder (late Roman emperors)
+      const bx = cx + 42, by = chin + 30;
+      S(`M${bx},${by} C${cx + 10},${chin + 56} ${cx - 34},${chin + 70} ${cx - 54},240`, 1.2);
+      for (let k = 0; k < 4; k++) P(`M${bx - 2},${by + 4} q${-14 - k * 6},${30 + k * 8} ${-20 - k * 10},${70 + k * 6}`, 0.6, 0.5);
+      for (let k = 0; k < 3; k++) P(`M${bx + 2},${by + 5} q${4 + k * 4},${26 + k * 6} ${6 + k * 6},${60 + k * 8}`, 0.6, 0.5);
+      ring(bx, by, 6, 1.2, 0, true); ring(bx, by, 2.6, 0.8, 0.8);
+      for (let k = 0; k < 8; k++) { const a = (Math.PI * k) / 4; out.push(`<circle cx="${f(bx + Math.cos(a) * 8.4)}" cy="${f(by + Math.sin(a) * 8.4)}" r="1" fill="currentColor" stroke="none" opacity="0.8"/>`); }
+    }
 
     // ── back layers: long hair / cloth / veil drape behind the face ──
     if (showsHair && fem && (hair === "long" || hair === "curly" || hair === "ringlets")) {
@@ -531,6 +592,15 @@
         const by = ey - r(8, 11), bw = fem ? 1.1 : 2;
         S(`M${f(ex - s * 9)},${f(by + 1 + (s > 0 ? r(-1, 1) : 0))} Q${f(ex)},${f(by - 3 - r(0, 2))} ${f(ex + s * 10)},${f(by + r(0, 2))}`, bw);
       }
+    }
+
+    // round spectacles
+    if (has("glasses")) {
+      for (const s of [-1, 1]) {
+        ring(cx + s * es, ey, 9.5, 1.1, 0.95);
+        P(`M${f(cx + s * (es + 9.5))},${f(ey - 1)} L${f(cx + s * rx * 0.97)},${f(ey - 3)}`, 0.9, 0.85);
+      }
+      P(`M${f(cx - es + 9.5)},${f(ey - 1)} Q${cx},${f(ey - 6)} ${f(cx + es - 9.5)},${f(ey - 1)}`, 1, 0.9);
     }
 
     // nose
@@ -806,6 +876,76 @@
           for (const off of [-1, 1]) fillP(`M${f(x)},${f(py)} q${f(-sg * 4)},${f(off * 6 - 2)} ${f(-sg * 12)},${f(off * 5)} q${f(sg * 5)},${f(-off * 1)} ${f(sg * 12)},${f(-off * 5)} Z`, 0.9);
         }
       }
+      if (head === "pearls") {
+        // a band of pearls with a jewel at the brow, its ties hanging behind (Constantine's coins)
+        const y = hairline - 6, x0 = cx - rx - 3, x2 = cx + rx + 3;
+        P(`M${f(x0)},${f(y + 7)} Q${cx},${f(y - 11)} ${f(x2)},${f(y + 7)}`, 0.8, 0.7);
+        for (let k = 0; k <= 16; k++) { const [x, yy] = qp(x0, y + 4, cx, y - 14, x2, y + 4, k / 16); ring(x, yy, 2, 0.8, 0.9, true); }
+        fillP(`M${cx},${f(y - 13)} l5,6 l-5,6 l-5,-6 Z`, 1);
+        ring(cx, y - 7, 1.6, 0.7, 0.9);
+        const s = hash(c.id + "tie") % 2 ? 1 : -1, kx = cx + s * (rx + 3);
+        P(`M${f(kx)},${f(y + 6)} q${f(s * 6)},10 ${f(s * 3)},24 M${f(kx)},${f(y + 6)} q${f(s * 10)},6 ${f(s * 12)},20`, 0.9, 0.8);
+      }
+    } else if (head === "skullcap" || head === "doctorcap") {
+      // the black skullcap of late medieval scholars (Wycliffe, Calvin, Tyndale) and
+      // the softer, wider cap of a doctor of theology (Luther); hair shows below
+      const hairTop = `M${f(cx - rx - 2)},${f(cy + 2)} C${f(cx - rx - 8)},${f(top - 12)} ${f(cx + rx + 8)},${f(top - 12)} ${f(cx + rx + 2)},${f(cy + 2)} C${f(cx + rx - 2)},${f(hairline + 4)} ${f(cx + rx * 0.4)},${f(hairline - 4)} ${cx},${f(hairline - 4)} C${f(cx - rx * 0.4)},${f(hairline - 4)} ${f(cx - rx + 2)},${f(hairline + 4)} ${f(cx - rx - 2)},${f(cy + 2)} Z`;
+      fillP(hairTop, 1.3);
+      for (let i = 0; i < 8; i++) { const x = cx + r(-rx, rx); P(`M${f(x)},${f(hairline - 14)} q${f(r(-4, 4))},5 ${f(r(-6, 6))},${f(r(8, 12))}`, 0.6, 0.6); }
+      const cap = head === "skullcap"
+        ? `M${f(cx - rx - 1)},${f(hairline - 10)} C${f(cx - rx - 3)},${f(top - 14)} ${f(cx + rx + 3)},${f(top - 14)} ${f(cx + rx + 1)},${f(hairline - 10)} Q${cx},${f(hairline - 20)} ${f(cx - rx - 1)},${f(hairline - 10)} Z`
+        : `M${f(cx - rx - 7)},${f(cy - 6)} C${f(cx - rx - 14)},${f(top - 18)} ${f(cx + rx + 14)},${f(top - 22)} ${f(cx + rx + 7)},${f(cy - 8)} C${f(cx + rx)},${f(hairline - 6)} ${f(cx + rx * 0.5)},${f(hairline - 12)} ${cx},${f(hairline - 11)} C${f(cx - rx * 0.5)},${f(hairline - 12)} ${f(cx - rx)},${f(hairline - 6)} ${f(cx - rx - 7)},${f(cy - 6)} Z`;
+      fillP(cap, 1.4);
+      // dense hatching makes the cap read as black
+      const cc = `cc-${uid}`;
+      out.push(`<clipPath id="${cc}"><path d="${cap}"/></clipPath><g clip-path="url(#${cc})">`);
+      for (let k = -12; k <= 12; k++) P(`M${f(cx + k * 3.2 - 30)},${f(top - 30)} l40,${f(cy - top + 10)}`, 0.7, 0.75);
+      out.push(`</g>`);
+      if (head === "doctorcap") for (let i = -2; i <= 2; i++) P(`M${f(cx + i * rx * 0.36)},${f(hairline - 13)} Q${f(cx + i * rx * 0.3)},${f(top - 6)} ${f(cx + i * 3)},${f(top - 16)}`, 0.6, 0.45);
+    } else if (head === "flatcap") {
+      // Tudor flat cap: a soft crown, a wide stiff brim worn at an angle, a feather and a badge
+      for (const sg of [-1, 1]) S(`M${f(cx + sg * (rx + 1))},${f(cy - 2)} C${f(cx + sg * (rx + 3))},${f(hairline + 4)} ${f(cx + sg * (rx - 2))},${f(hairline - 2)} ${f(cx + sg * (rx - 6))},${f(hairline - 6)}`, 1.2);
+      const hb = hairline - 4, s = hash(c.id + "cap") % 2 ? 1 : -1;
+      fillP(`M${f(cx - rx + 2)},${f(hb - 2)} C${f(cx - rx)},${f(top - 18)} ${f(cx + rx)},${f(top - 20)} ${f(cx + rx - 2)},${f(hb - 4)} Z`, 1.3);
+      for (let i = -3; i <= 3; i++) P(`M${f(cx + i * rx * 0.24)},${f(hb - 6)} Q${f(cx + i * rx * 0.2)},${f(top - 8)} ${f(cx + i * 2)},${f(top - 14)}`, 0.6, 0.5);
+      fillP(`M${f(cx - rx - 18)},${f(hb + 2 - s * 4)} Q${cx},${f(hb - 16)} ${f(cx + rx + 18)},${f(hb + 2 + s * 4)} Q${cx},${f(hb + 12)} ${f(cx - rx - 18)},${f(hb + 2 - s * 4)} Z`, 1.3);
+      P(`M${f(cx - rx - 12)},${f(hb + 3 - s * 3)} Q${cx},${f(hb + 6)} ${f(cx + rx + 12)},${f(hb + 3 + s * 3)}`, 0.7, 0.6);
+      const fx = cx + s * (rx - 6), fy = hb - 6;
+      fillP(`M${f(fx)},${f(fy)} C${f(fx + s * 8)},${f(fy - 26)} ${f(fx + s * 30)},${f(fy - 28)} ${f(fx + s * 40)},${f(fy - 10)} C${f(fx + s * 28)},${f(fy - 18)} ${f(fx + s * 14)},${f(fy - 14)} ${f(fx)},${f(fy)} Z`, 1);
+      for (let k = 1; k < 9; k++) { const t = k / 9, [x, y] = qp(fx, fy, fx + s * 14, fy - 30, fx + s * 40, fy - 10, t); P(`M${f(x)},${f(y)} l${f(s * 2)},-6`, 0.6, 0.7); }
+      ring(cx - s * 8, hb - 3, 3.2, 1, 0, true); ring(cx - s * 8, hb - 3, 1.2, 0.6, 0.9);
+    } else if (head === "furhat") {
+      // tall hat with a turned-up fur brim (the printer Gutenberg as usually pictured)
+      for (const sg of [-1, 1]) S(`M${f(cx + sg * (rx + 1))},${f(cy - 2)} C${f(cx + sg * (rx + 3))},${f(hairline + 4)} ${f(cx + sg * (rx - 2))},${f(hairline - 2)} ${f(cx + sg * (rx - 6))},${f(hairline - 6)}`, 1.2);
+      const fb = hairline - 2;
+      fillP(`M${f(cx - rx + 2)},${f(fb - 12)} C${f(cx - rx - 4)},${f(top - 34)} ${f(cx + rx + 6)},${f(top - 38)} ${f(cx + rx - 2)},${f(fb - 12)} Z`, 1.3);
+      for (let i = -2; i <= 2; i++) P(`M${f(cx + i * rx * 0.34)},${f(fb - 14)} Q${f(cx + i * rx * 0.3 + 4)},${f(top - 18)} ${f(cx + i * 3 + 6)},${f(top - 30)}`, 0.6, 0.5);
+      const brim = `M${f(cx - rx - 6)},${f(fb + 2)} C${f(cx - rx - 8)},${f(fb - 10)} ${f(cx - rx - 6)},${f(fb - 16)} ${f(cx - rx + 2)},${f(fb - 18)} Q${cx},${f(fb - 26)} ${f(cx + rx - 2)},${f(fb - 18)} C${f(cx + rx + 6)},${f(fb - 16)} ${f(cx + rx + 8)},${f(fb - 10)} ${f(cx + rx + 6)},${f(fb + 2)} Q${cx},${f(fb - 8)} ${f(cx - rx - 6)},${f(fb + 2)} Z`;
+      fillP(brim, 1.4);
+      for (let k = 0; k < 22; k++) { const t = k / 21, [x, y] = qp(cx - rx - 3, fb - 6, cx, fb - 22, cx + rx + 3, fb - 6, t); curl(x, y + r(-2, 2), r(1.8, 2.6), 0.6, 0.65); }
+    } else if (head === "mitre") {
+      // a bishop's mitre: a pointed cap with a band round the base and up the middle, ribbons behind
+      for (const sg of [-1, 1]) {
+        fillP(`M${f(cx + sg * (rx + 1))},${f(cy + 4)} L${f(cx + sg * (rx + 7))},${f(cy + 4)} L${f(cx + sg * (rx + 10))},${f(chin + 22)} L${f(cx + sg * (rx + 3))},${f(chin + 22)} Z`, 1);
+        P(`M${f(cx + sg * (rx + 3))},${f(chin + 16)} L${f(cx + sg * (rx + 10))},${f(chin + 16)}`, 0.7, 0.7);
+        S(`M${f(cx + sg * (rx + 1))},${f(cy - 2)} C${f(cx + sg * (rx + 2))},${f(hairline + 4)} ${f(cx + sg * (rx - 2))},${f(hairline + 2)} ${f(cx + sg * (rx - 5))},${f(hairline)}`, 1.1);
+      }
+      const mb = hairline;
+      fillP(`M${f(cx - rx - 1)},${f(mb)} L${f(cx - rx + 3)},${f(top - 6)} Q${f(cx - 12)},${f(top - 24)} ${cx},${f(top - 42)} Q${f(cx + 12)},${f(top - 24)} ${f(cx + rx - 3)},${f(top - 6)} L${f(cx + rx + 1)},${f(mb)} Q${cx},${f(mb - 8)} ${f(cx - rx - 1)},${f(mb)} Z`, 1.4);
+      P(`M${f(cx - rx)},${f(mb - 9)} Q${cx},${f(mb - 17)} ${f(cx + rx)},${f(mb - 9)}`, 0.9, 0.8);
+      P(`M${cx - 4},${f(mb - 12)} L${cx - 4},${f(top - 32)} M${cx + 4},${f(mb - 12)} L${cx + 4},${f(top - 32)}`, 0.9, 0.8);
+      P(`M${cx - 3.5},${f(top - 14)} h7 M${cx},${f(top - 18)} v8`, 0.9, 0.9);
+    } else if (head === "kavuk") {
+      // the Ottoman sultan's great round turban wound about a tall cap whose top shows (Bellini's portrait of Mehmed II)
+      const kb = hairline + 2;
+      fillP(`M${cx - 7},${f(top - 30)} Q${cx},${f(top - 50)} ${cx + 7},${f(top - 30)} Z`, 1.1);
+      const dome = `M${f(cx - rx - 8)},${f(kb)} C${f(cx - rx - 22)},${f(top - 4)} ${f(cx - rx + 2)},${f(top - 38)} ${cx},${f(top - 36)} C${f(cx + rx - 2)},${f(top - 38)} ${f(cx + rx + 22)},${f(top - 4)} ${f(cx + rx + 8)},${f(kb)} Q${cx},${f(kb - 10)} ${f(cx - rx - 8)},${f(kb)} Z`;
+      fillP(dome, 1.4);
+      const kc = `kc-${uid}`;
+      out.push(`<clipPath id="${kc}"><path d="${dome}"/></clipPath><g clip-path="url(#${kc})">`);
+      for (let k = -5; k <= 5; k++) P(`M${f(cx - rx - 14 + k * 9)},${f(kb + 2)} Q${f(cx + k * 6)},${f(top - 4)} ${f(cx + rx + 6 + k * 9)},${f(top - 40)}`, 0.7, 0.6);
+      out.push(`</g>`);
+      S(`M${f(cx - rx - 8)},${f(kb)} Q${cx},${f(kb - 10)} ${f(cx + rx + 8)},${f(kb)}`, 1.6);
     } else if (head === "softcap") {
       // soft cap whose crown falls forward to a point, as on Jehu's envoys (Black Obelisk)
       for (const sg of [-1, 1]) S(`M${f(cx + sg * (rx + 1))},${f(cy - 2)} C${f(cx + sg * (rx + 3))},${f(hairline + 4)} ${f(cx + sg * (rx - 2))},${f(hairline - 2)} ${f(cx + sg * (rx - 6))},${f(hairline - 6)}`, 1.2);
@@ -945,8 +1085,9 @@
     /** Returns an HTML string: <svg> drawing or <img> override. */
     html(c, cls) {
       if (c.portrait) return `<img class="${cls || ""}" src="${c.portrait}" alt="Portrait of ${c.name}">`;
-      // after Bible times the Bible-era dress would be wrong, so these people get their initial instead of a drawing
-      if (c.hist && c.born > 150) {
+      // Muhammad and the first leaders of Islam are not drawn: Muslims hold that he must not
+      // be pictured, and "Mankind's Search for God" (ch. 12) shows only places, never him
+      if (c.look && c.look.initial) {
         const ch = String(c.name || "?").trim().charAt(0).toUpperCase();
         return `<svg class="${cls || ""}" viewBox="0 0 200 240" fill="none" stroke="currentColor" role="img" aria-label="${c.name}"><circle cx="100" cy="120" r="62" stroke-width="1.4" opacity="0.7"/><circle cx="100" cy="120" r="54" stroke-width="0.7" opacity="0.4"/><text x="100" y="120" text-anchor="middle" dominant-baseline="central" fill="currentColor" stroke="none" font-family="Georgia, 'Times New Roman', serif" font-size="64" font-style="italic">${ch}</text></svg>`;
       }
