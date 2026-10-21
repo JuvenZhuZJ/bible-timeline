@@ -53,7 +53,10 @@
     if (!list.length) return "";
     const pts = list.map((s) => proj(P[s.id].ll));
     // a lone place (Job in Uz, Noah at Ararat) is shown with its surroundings, not a blank close-up
-    const span = opt.minSpan || (new Set(list.map((s) => s.id)).size === 1 ? 7 : 0);
+    let span = opt.minSpan || (new Set(list.map((s) => s.id)).size === 1 ? 7 : 0);
+    // places in Europe and America (history after the Bible) are inland and far from any river drawn,
+    // so a close-up would be plain land: keep enough around them to show the coasts
+    if (list.every((s) => P[s.id].ll[1] > 42 || P[s.id].ll[0] < -30)) span = Math.max(span, 9);
     const v = view(pts, w, h, span && span * KY);
     const u = v.w / w;                       // map units per screen pixel
     const X = (x) => ((x - v.x) / u).toFixed(1), Y = (y) => ((y - v.y) / u).toFixed(1);
