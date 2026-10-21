@@ -66,6 +66,9 @@
     c.td = A(c.died);
     c.assumed = c.q.includes("assumed");
     c.tier = c.tier || 3;
+    // the zoom a person shows up at: key figures from history appear with the best-known Bible people,
+    // but keep their tier-2 label style (tier 1 would draw their names larger and bolder)
+    c.zt = c.hist && c.key ? 1 : c.tier;
     // the places in data/places.js that are not one of the activities become activities too, so the
     // window has one list
     const rawEvents = (c.events || []).slice();
@@ -463,7 +466,7 @@
 
     // characters
     // with a filter on, fewer people compete for space, so they show up sooner
-    const need = (c) => TIER[filtered() ? Math.min(c.tier, 3) : c.tier];
+    const need = (c) => TIER[filtered() ? Math.min(c.zt, 3) : c.zt];
     const cands = dotEls.filter((d) => isPinned(d.c) || hoverC === d.c || (inMode(d.c) && view.ppy >= need(d.c)));
     packLanes(cands, packForce); packForce = false;
     const relSet = new Set(hoverC ? hoverC.relIds : []);
