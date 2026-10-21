@@ -154,7 +154,8 @@
   const filtered = () => showMode !== "all" || showGroups.size > 0;
 
   const T0 = A(-4026) - 90;
-  const T1 = A(100) + 70;
+  const T1 = A(1914) + 70;   // history after the Bible runs to 1914
+  const TB = A(100) + 70;    // the Bible's years end here; the opening view fits T0 to TB
   const TIER = { 1: 0.45, 2: 1.4, 3: 3.4, 4: 7 };   // px-per-year needed to show each tier
   const MAX_PPY = 140;
 
@@ -197,12 +198,14 @@
 
   /* ───────────────────────── view ───────────────────────── */
   const view = { t0: T0, ppy: 0.3 };
-  const fitPpy = () => (W - (L.mobile ? 32 : 80)) / (T1 - T0);
+  // zoom is measured against the Bible's years (shared links keep their meaning); you can zoom out to see everything
+  const fitPpy = () => (W - (L.mobile ? 32 : 80)) / (TB - T0);
+  const allPpy = () => (W - (L.mobile ? 32 : 80)) / (T1 - T0);
   const X = (t) => (t - view.t0) * view.ppy;
   const tAt = (x) => view.t0 + x / view.ppy;
 
   function clampView() {
-    const minP = fitPpy() * 0.85;
+    const minP = allPpy() * 0.85;
     view.ppy = Math.min(MAX_PPY, Math.max(minP, view.ppy));
     const span = W / view.ppy;
     if (span >= T1 - T0) {
@@ -212,7 +215,7 @@
       view.t0 = Math.max(T0 - pad, Math.min(T1 + pad - span, view.t0));
     }
   }
-  function fit() { view.ppy = fitPpy(); view.t0 = (T0 + T1) / 2 - W / view.ppy / 2; clampView(); }
+  function fit() { view.ppy = fitPpy(); view.t0 = (T0 + TB) / 2 - W / view.ppy / 2; clampView(); }
   function zoomAt(factor, x) {
     const t = tAt(x);
     view.ppy *= factor; clampView();
@@ -223,7 +226,7 @@
   let anim = null;
   function animateTo(centerT, ppy, dur) {
     const from = { c: tAt(W / 2), p: Math.log(view.ppy) };
-    const to = { c: centerT, p: Math.log(Math.min(MAX_PPY, Math.max(fitPpy() * 0.85, ppy))) };
+    const to = { c: centerT, p: Math.log(Math.min(MAX_PPY, Math.max(allPpy() * 0.85, ppy))) };
     const start = performance.now(); dur = dur || 700;
     if (anim) cancelAnimationFrame(anim);
     const step = (now) => {
@@ -392,9 +395,9 @@
 
     // axis
     g.axis.textContent = "";
-    const steps = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
+    const steps = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000];
     const minPx = L.mobile ? 64 : 84;
-    const step = steps.find((s) => s * view.ppy >= minPx) || 1000;
+    const step = steps.find((s) => s * view.ppy >= minPx) || 2000;
     const minor = steps[Math.max(0, steps.indexOf(step) - 2)];
     const tA = tAt(-40), tB = tAt(W + 40);
     const ticks = (st) => {
@@ -1273,8 +1276,9 @@
   /* controls */
   $("zoomIn").addEventListener("click", () => { hideHint(); animateTo(tAt(W / 2), view.ppy * 1.9, 420); });
   $("zoomOut").addEventListener("click", () => animateTo(tAt(W / 2), view.ppy / 1.9, 420));
-  $("zoomFit").addEventListener("click", () => animateTo((T0 + T1) / 2, fitPpy(), 600));
-  $("brand").addEventListener("click", (e) => { e.preventDefault(); setHover(null); animateTo((T0 + T1) / 2, fitPpy(), 600); });
+  // the fit button shows the whole timeline; the title goes back to the opening view of the Bible's years
+  $("zoomFit").addEventListener("click", () => animateTo((T0 + T1) / 2, allPpy(), 600));
+  $("brand").addEventListener("click", (e) => { e.preventDefault(); setHover(null); animateTo((T0 + TB) / 2, fitPpy(), 600); });
 
   document.addEventListener("keydown", (e) => {
     if (e.target.matches("input, textarea")) return;
@@ -1284,7 +1288,7 @@
     else if (e.key === "ArrowRight") { view.t0 += (W * 0.12) / view.ppy; clampView(); requestRender(); }
     else if (e.key === "+" || e.key === "=") zoomAt(1.4, W / 2);
     else if (e.key === "-" || e.key === "_") zoomAt(1 / 1.4, W / 2);
-    else if (e.key === "0") animateTo((T0 + T1) / 2, fitPpy(), 600);
+    else if (e.key === "0") animateTo((T0 + T1) / 2, allPpy(), 600);
   });
 
   /* hint */
@@ -2369,7 +2373,7 @@
   window.addEventListener("resize", () => {
     clearTimeout(resizeT);
     resizeT = setTimeout(() => {
-      const c = W ? tAt(W / 2) : (T0 + T1) / 2;
+      const c = W ? tAt(W / 2) : (T0 + TB) / 2;
       const rel = W ? view.ppy / fitPpy() : 1;
       layout();
       view.ppy = fitPpy() * rel; view.t0 = c - W / 2 / view.ppy; clampView();

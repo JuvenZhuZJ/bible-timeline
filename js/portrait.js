@@ -945,6 +945,11 @@
     /** Returns an HTML string: <svg> drawing or <img> override. */
     html(c, cls) {
       if (c.portrait) return `<img class="${cls || ""}" src="${c.portrait}" alt="Portrait of ${c.name}">`;
+      // after Bible times the Bible-era dress would be wrong, so these people get their initial instead of a drawing
+      if (c.hist && c.born > 150) {
+        const ch = String(c.name || "?").trim().charAt(0).toUpperCase();
+        return `<svg class="${cls || ""}" viewBox="0 0 200 240" fill="none" stroke="currentColor" role="img" aria-label="${c.name}"><circle cx="100" cy="120" r="62" stroke-width="1.4" opacity="0.7"/><circle cx="100" cy="120" r="54" stroke-width="0.7" opacity="0.4"/><text x="100" y="120" text-anchor="middle" dominant-baseline="central" fill="currentColor" stroke="none" font-family="Georgia, 'Times New Roman', serif" font-size="64" font-style="italic">${ch}</text></svg>`;
+      }
       const uid = c.id + "-" + (counter++);
       return `<svg class="${cls || ""}" viewBox="0 0 200 240" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Drawing of ${c.name}">${build(c, uid)}</svg>`;
     },
