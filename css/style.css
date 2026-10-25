@@ -634,10 +634,16 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .acts li.at-place { background: rgba(235, 231, 222, 0.05); }
 /* the map: in the map window on a computer, pinned under the lifespan bar in the window on a phone */
 .win-map { display: none; }
-/* the bar scrolls sideways on narrow phones, and a scrolling box clips at its edge: 1px of padding
+/* the bar scrolls sideways when the buttons do not fit, and a scrolling box clips at its edge: 1px of padding
    (taken back from the margins) keeps the buttons' top and bottom borders inside it at any zoom */
 .bm-bar { display: flex; gap: 5px; align-items: center; padding: 1px 0; margin: -1px 0 5px; overflow-x: auto; scrollbar-width: none; }
 .bm-bar::-webkit-scrollbar { display: none; }
+/* when the buttons do not all fit, the bar slides (js/app.js wireBar) and fades at the edge where more lie */
+.bm-bar.more-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+.bm-bar.more-l { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 28px), transparent); }
+.bm-bar.more-l.more-r { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
+.bm-bar.more-l, .bm-bar.more-r { cursor: grab; }
+.bm-bar.dragging, .bm-bar.dragging .bm-sw { cursor: grabbing; }
 .bm-sw, .bm-hide { font: 300 10px var(--sans); color: var(--muted); background: none; border: 1px solid var(--faint); border-radius: 10px; padding: 2px 8px; cursor: pointer; white-space: nowrap; flex: none; }
 .bm-sw:hover, .bm-hide:hover, .bm-sw:focus-visible, .bm-hide:focus-visible { color: var(--fg); outline: none; }
 .bm-sw[aria-pressed="true"] { color: var(--fg); border-color: var(--wc, var(--accent)); }

@@ -1813,6 +1813,7 @@
     const show = () => {
       views.dataset.v = v;
       views.querySelectorAll(".bm-sw").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === v));
+      barToButton(views.querySelector(".bm-bar"), views.querySelector(`.bm-sw[data-v="${v}"]`));
     };
     if (from === v) return;
     const fEl = views.querySelector(`.bm-v[data-k="${from}"]`), tEl = views.querySelector(`.bm-v[data-k="${v}"]`);
@@ -1936,8 +1937,60 @@
     w.el.querySelectorAll(".acts li.act-hl").forEach((o) => o.classList.remove("act-hl"));
     rows.forEach((li) => { void li.offsetWidth; li.classList.add("act-hl"); });
   }
+  /* the switch of maps slides sideways when its buttons do not fit: by touch, a trackpad, the mouse
+     wheel or dragging with the mouse; a fade at an edge shows that more buttons lie that way, and the
+     switch slides to show the map's button when the map turns by itself */
+  function barEdges(bar) {
+    if (!bar) return;
+    const x = bar.scrollLeft, max = bar.scrollWidth - bar.clientWidth;
+    bar.classList.toggle("more-l", x > 1);
+    bar.classList.toggle("more-r", x < max - 1);
+  }
+  function barToButton(bar, b) {
+    if (!bar || !b) return;
+    const l = b.offsetLeft - bar.offsetLeft, r = l + b.offsetWidth, pad = 24;
+    if (l - pad < bar.scrollLeft) bar.scrollLeft = l - pad;
+    else if (r + pad > bar.scrollLeft + bar.clientWidth) bar.scrollLeft = r + pad - bar.clientWidth;
+    barEdges(bar);
+  }
+  function wireBar(box) {
+    const fit = () => box.querySelectorAll(".bm-bar").forEach(barEdges);
+    fit();
+    new MutationObserver(fit).observe(box, { childList: true });
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(box);
+    box.addEventListener("scroll", (e) => { if (e.target.classList && e.target.classList.contains("bm-bar")) barEdges(e.target); }, true);
+    box.addEventListener("wheel", (e) => {
+      const bar = e.target.closest(".bm-bar");
+      if (!bar || bar.scrollWidth <= bar.clientWidth || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      bar.scrollLeft += e.deltaY;
+    }, { passive: false });
+    box.addEventListener("pointerdown", (e) => {
+      const bar = e.pointerType === "mouse" && e.button === 0 && e.target.closest(".bm-bar");
+      if (bar && bar.scrollWidth > bar.clientWidth) barDrag = { box, bar, x: e.clientX, left: bar.scrollLeft, moved: false };
+    });
+  }
+  let barDrag = null;
+  window.addEventListener("pointermove", (e) => {
+    const d = barDrag;
+    if (!d) return;
+    const dx = e.clientX - d.x;
+    if (Math.abs(dx) > 4) d.moved = true;
+    if (d.moved) { d.bar.scrollLeft = d.left - dx; d.bar.classList.add("dragging"); }
+  });
+  window.addEventListener("pointerup", () => {
+    const d = barDrag;
+    if (!d) return;
+    barDrag = null; d.bar.classList.remove("dragging");
+    // a drag is not a click on the button it ended on
+    if (!d.moved) return;
+    const eat = (e) => { e.stopPropagation(); e.preventDefault(); };
+    d.box.addEventListener("click", eat, { capture: true, once: true });
+    setTimeout(() => d.box.removeEventListener("click", eat, { capture: true }), 300);
+  });
   // the map's own controls and pins, in a window (phone) or in the map window (computer)
   function wireMapBox(box, who) {
+    wireBar(box);
     box.addEventListener("pointerover", (e) => { const n = e.target.closest(".bm-pin, .bm-label"); const w = who(); if (w) markPlace(w, n ? n.dataset.place : null); });
     box.addEventListener("pointerleave", () => { const w = who(); if (w) markPlace(w, null); });
     box.addEventListener("click", (e) => {
