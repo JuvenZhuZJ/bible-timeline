@@ -159,14 +159,16 @@
       const one = ins.name.split(/ \+ |＋/)[0];
       for (const nm of one === ins.name ? [ins.name] : [ins.name, one]) {
         const tw = 14 + 6 * tlen(nm);
-        const side = [[bx + bw + 4, by + bh / 2 + 3], [bx - tw - 2, by + bh / 2 + 3], [bx - tw - 2, by + bh - 2], [bx - tw - 2, by + 9], [bx + bw + 4, by + bh - 2], [bx + bw + 4, by + 9]];
-        const ends = [[bx, by - 4], [bx, by + bh + 10], [bx + bw - tw, by - 4], [bx + bw - tw, by + bh + 10], [bx + 24 - tw, by + bh + 10], [bx + bw - 24, by - 4]];
+        // each with the arrow that points from the name to its box
+        const R = "←", L = "→", U = "↑", D = "↓";
+        const side = [[bx + bw + 4, by + bh / 2 + 3, R], [bx - tw - 2, by + bh / 2 + 3, L], [bx - tw - 2, by + bh - 2, L], [bx - tw - 2, by + 9, L], [bx + bw + 4, by + bh - 2, R], [bx + bw + 4, by + 9, R]];
+        const ends = [[bx, by - 4, D], [bx, by + bh + 10, U], [bx + bw - tw, by - 4, D], [bx + bw - tw, by + bh + 10, U], [bx + 24 - tw, by + bh + 10, U], [bx + bw - 24, by - 4, D]];
         const cands = opt.insets.length > 1 ? ends.concat(side) : side.concat(ends);
         const box = ([tx, ty]) => [tx - 1, ty - 9, tx + tw, ty + 2];
         const fits = cands.filter((c) => !hitsI(box(c)));
         const at = fits.find((c) => !onRoute(box(c))) || fits[0];
         if (!at) continue;
-        s += `<text class="bm-label bm-inset-t" data-k="${ins.k}" x="${at[0].toFixed(1)}" y="${at[1].toFixed(1)}">${esc(nm)} ↓</text>`; labelBoxes.push(box(at)); break;
+        s += `<text class="bm-label bm-inset-t" data-k="${ins.k}" x="${at[0].toFixed(1)}" y="${at[1].toFixed(1)}">${esc(nm)} ${at[2]}</text>`; labelBoxes.push(box(at)); break;
       }
     });
     for (const q of pins) if (q.dx != null) marks += `<path class="bm-lead" d="M${q.ax} ${q.ay} L${q.x} ${q.y}"/><circle class="bm-at" cx="${q.ax}" cy="${q.ay}" r="1.5"/>`;
