@@ -52,4 +52,5 @@ window.TIMELINE_ERAS = [
   { from: 622,   to: 1455,  name: "The Middle Ages" },
   { from: 1455,  to: 1870,  name: "The Printed Bible" },
   { from: 1870,  to: 1914,  name: "The Bible Students" },
+  { from: 1914,  to: 2025,  name: "The Last Days" },
 ];

@@ -39,6 +39,8 @@
     const ca = T("c.", null, "c. ");
     const pb = SURE_Q(c.q[0]) ? "" : ca;
     const pd = SURE_Q(c.q[1]) ? "" : ca;
+    // someone with no death in the sources (a living member of the Governing Body): an open end
+    if (c.living) return I18.zh ? T("range.open", { pb, b: c.born }) : `${pb}${c.born} C.E. –`;
     if (I18.zh) {
       const v = { pb, pd, b: Math.abs(c.born), d: Math.abs(c.died) };
       return T(c.born < 0 && c.died < 0 ? "range.bce" : c.born < 0 ? "range.cross" : "range.ce", v);
@@ -58,7 +60,7 @@
   };
   const jobIcon = (j) => `<svg class="job-ic" aria-hidden="true"><use href="#job-${j}"/></svg>`;
   const JOB_STEP = 12;   // px per icon after a name on the timeline
-  const ageText = (c) => T("age", { a: c.assumed ? T("age.approx") : "", n: c.td - c.tb }, `${c.assumed ? "~" : ""}${c.td - c.tb} yrs`);
+  const ageText = (c) => c.living ? "" : T("age", { a: c.assumed ? T("age.approx") : "", n: c.td - c.tb }, `${c.assumed ? "~" : ""}${c.td - c.tb} yrs`);
 
   CHARS.forEach((c) => {
     c.q = c.q || ["assumed", "assumed"];
@@ -157,7 +159,9 @@
   const filtered = () => showMode !== "all" || showGroups.size > 0;
 
   const T0 = A(-4026) - 90;
-  const T1 = A(1914) + 70;   // history after the Bible runs to 1914
+  const TIMELINE_END = 2025;  // history after the Bible runs to here; nothing is drawn after it
+  const TEND = A(TIMELINE_END);
+  const T1 = TEND + 50;
   const TB = A(100) + 70;    // the Bible's years end here; the opening view fits T0 to TB
   const TIER = { 1: 0.45, 2: 1.4, 3: 3.4, 4: 7 };   // px-per-year needed to show each tier
   const MAX_PPY = 140;
@@ -393,7 +397,7 @@
     });
 
     // main line
-    const x0 = Math.max(-10, X(T0 + 40)), x1 = Math.min(W + 10, X(T1 - 30));
+    const x0 = Math.max(-10, X(T0 + 40)), x1 = Math.min(W + 10, X(TEND));
     for (const ln of [mainLine, mainGlow]) { ln.setAttribute("x1", x0); ln.setAttribute("x2", x1); ln.setAttribute("y1", lineY); ln.setAttribute("y2", lineY); }
 
     // axis
@@ -406,7 +410,7 @@
     const ticks = (st) => {
       const out = [];
       for (let bce = Math.ceil((1 - tB) / st) * st; bce <= 1 - tA; bce += st) if (bce >= 1) out.push(1 - bce);
-      for (let ce = Math.ceil(Math.max(1, tA) / st) * st; ce <= tB; ce += st) out.push(ce);
+      for (let ce = Math.ceil(Math.max(1, tA) / st) * st; ce <= Math.min(tB, TEND); ce += st) out.push(ce);
       return out;
     };
     if (minor * view.ppy >= 9) for (const t of ticks(minor)) el("line", { class: "axis-tick minor", x1: X(t), x2: X(t), y1: lineY, y2: lineY + 4 }, g.axis);
@@ -686,7 +690,7 @@
         portraitFor = c;
       }
       $("pcName").textContent = c.name;
-      $("pcYears").textContent = `${fmtRange(c)} · ${ageText(c)}`;
+      $("pcYears").textContent = c.living ? fmtRange(c) : `${fmtRange(c)} · ${ageText(c)}`;
       $("pcRole").textContent = c.role || "";
       $("pcHint").textContent = isPinned(c) ? T("hint.front", null, "Tap again to bring its window forward") : T("hint.again", null, "Tap again for details");
       placePortrait();
@@ -1339,7 +1343,7 @@
       s += isHistRef(ref) ? `<rect class="mt-ev" data-i="${i}" cx="${x.toFixed(1)}" x="${(x - 2.2).toFixed(1)}" y="13.8" width="4.4" height="4.4" fill="var(--wc)"/>`
         : `<circle class="mt-ev" data-i="${i}" cx="${x.toFixed(1)}" cy="16" r="2.4" fill="var(--wc)"/>`;
     });
-    s += `<text x="${pad - 2}" y="36">${esc(fmtYear(c.born))}</text><text x="${w - pad + 2}" y="36" text-anchor="end">${esc(fmtYear(c.died))}</text>`;
+    s += `<text x="${pad - 2}" y="36">${esc(fmtYear(c.born))}</text><text x="${w - pad + 2}" y="36" text-anchor="end">${esc(c.living ? "" : fmtYear(c.died))}</text>`;
     s += `<text x="${w / 2}" y="36" text-anchor="middle">${esc(ageText(c))}</text></svg>`;
     return s;
   }
@@ -1478,7 +1482,7 @@
     return `
       <div class="win-head">
         <div class="win-thumb">${window.Portrait.html(c)}</div>
-        <div class="win-title"><div class="win-name">${esc(c.name)}</div><div class="win-dates"><span>${esc(fmtRange(c))}</span> · <span>${esc(ageText(c))}</span></div></div>
+        <div class="win-title"><div class="win-name">${esc(c.name)}</div><div class="win-dates"><span>${esc(fmtRange(c))}</span>${c.living ? "" : ` · <span>${esc(ageText(c))}</span>`}</div></div>
         ${winBtns(c)}
       </div>
       <div class="win-body">
@@ -1488,7 +1492,8 @@
         ${c.meaning ? `<div class="win-meaning">${I18.zh ? "「" : "“"}${esc(c.meaning)}${I18.zh ? "」" : "”"}</div>` : ""}
         <div class="badges">
           <span class="badge${c.q[0] === "assumed" ? " assumed" : ""}">${T("birth", { q: QLABEL[c.q[0]] }, `Birth: ${QLABEL[c.q[0]]}`)}</span>
-          <span class="badge${c.q[1] === "assumed" ? " assumed" : ""}">${T("death", { q: QLABEL[c.q[1]] }, `Death: ${QLABEL[c.q[1]]}`)}</span>
+          ${c.living ? `<span class="badge">${T("death.none", null, "No death recorded")}</span>`
+            : `<span class="badge${c.q[1] === "assumed" ? " assumed" : ""}">${T("death", { q: QLABEL[c.q[1]] }, `Death: ${QLABEL[c.q[1]]}`)}</span>`}
         </div>
         ${c.note ? `<p class="win-note">${c.assumed ? "⚑ " : ""}${Scripture.linkText(c.note)}</p>` : ""}
         <p class="win-summary">${Scripture.linkText(c.summary)}</p>
