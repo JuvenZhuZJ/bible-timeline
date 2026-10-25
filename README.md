@@ -289,7 +289,7 @@ The script merges the curated key figures with the Insight records, links relati
 - `dates`: placeholder life spans moved so that they take in an activity (Laban must be alive when Jacob leaves him in 1761 B.C.E.); merged into the `dates` of `overrides.json`.
 - `about`: notes on the format.
 
-Years follow the key-figure dates where the activity involves a key figure (Absalom's revolt, Nehemiah's wall), otherwise *Insight on the Scriptures* and the chart of dates in the *New World Translation* (Appendix A6, A7); where the Bible gives no year the activity is placed by the events around it and marked approximate. The texts are short summaries in the site's own words. The build warns about any activity that falls outside the person's life.
+Years follow the key-figure dates where the activity involves a key figure (Absalom's revolt, Nehemiah's wall), otherwise *Insight on the Scriptures* and the chart of dates in the *New World Translation* (Appendix A6, A7); where the Bible gives no year the activity is placed by the events around it and marked approximate. The texts are short summaries in the site's own words. A place the Bible gives only indirectly is still tagged when the verses show it, and the activity cites them: Philemon lived in Colossae because the congregation met in his house (Philemon 2) and Paul's letter to Colossae calls Onesimus "one of you" and greets Archippus (Colossians 4:9, 17), as *The Watchtower* study article "An Appeal on the Basis of Love" (October 19-25, 2026) also says. The build warns about any activity that falls outside the person's life.
 
 ## Hosting
 

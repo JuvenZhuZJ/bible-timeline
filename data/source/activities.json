@@ -1587,11 +1587,16 @@
   "justus-3": [
     [60, "Comforts Paul during his imprisonment in Rome", "Colossians 4:10, 11", {"c": 1, "p": "rome", "zh": "在羅馬安慰坐牢的保羅"}]],
   "onesimus": [
-    [60, "Becomes a Christian through Paul; sent back to his master Philemon", "Philemon 10-16; Colossians 4:9", {"c": 1, "p": "rome", "zh": "藉著保羅成為基督徒；被送回主人腓利門那裡"}]],
+    [59, "Runs away from his master Philemon in Colossae, perhaps after wronging him, and makes his way to Rome", "Philemon 15, 18; Colossians 4:9", {"c": 1, "p": "colossae", "zh": "從歌羅西的主人腓利門那裡逃走，可能還虧負了他，後來到了羅馬"}],
+    [60, "Becomes a Christian through Paul; sent back to his master Philemon", "Philemon 10-16; Colossians 4:9", {"c": 1, "p": "rome", "zh": "藉著保羅成為基督徒；被送回主人腓利門那裡"}],
+    [60, "Travels with Tychicus back to Philemon in Colossae, a journey of more than 1,400 km", "Colossians 4:7-9; Philemon 12", {"c": 1, "p": "colossae", "zh": "和推基古一起回到歌羅西的腓利門那裡，路程超過1400公里"}]],
   "philemon": [
-    [60, "Receives Paul's letter asking him to welcome back Onesimus", "Philemon 1, 2, 10-21", {"c": 1, "zh": "收到保羅的信，請他接納奧尼西慕回來"}]],
+    [60, "Opens his home in Colossae to the congregation for its meetings", "Philemon 1, 2, 7; Colossians 4:9, 17", {"c": 1, "p": "colossae", "zh": "在歌羅西打開家門，讓會眾在他家聚會"}],
+    [60, "Receives Paul's letter asking him to welcome back Onesimus and to get a guest room ready for Paul", "Philemon 1, 2, 10-22", {"c": 1, "p": "colossae", "zh": "收到保羅的信，請他接納奧尼西慕回來，並為保羅預備住處"}]],
   "tychicus": [
-    [60, "Carries Paul's letters to Ephesus and Colossae", "Ephesians 6:21, 22; Colossians 4:7-9", {"c": 1, "p": "rome", "zh": "把保羅的信帶到以弗所和歌羅西"}]],
+    [60, "Sent from Rome by Paul, who is under house arrest, to carry his letters and news of him", "Ephesians 6:21, 22; Colossians 4:7-9", {"c": 1, "p": "rome", "zh": "被在羅馬受軟禁的保羅派去送信，並報告保羅的近況"}],
+    [60, "Brings Paul's letter to the congregation in Ephesus", "Ephesians 6:21, 22", {"c": 1, "p": "ephesus", "zh": "把保羅的信送到以弗所會眾"}],
+    [60, "Arrives in Colossae with Onesimus, bringing Paul's letters to the congregation and to Philemon", "Colossians 4:7-9", {"c": 1, "p": "colossae", "zh": "和奧尼西慕一起到達歌羅西，把保羅的信交給會眾和腓利門"}]],
   "demas": [
     [60, "With Paul during his first imprisonment in Rome", "Colossians 4:14; Philemon 24", {"c": 1, "p": "rome", "zh": "在保羅第一次在羅馬坐牢時與他在一起"}],
     [65, "Forsakes Paul because he loves the present world", "2 Timothy 4:10", {"c": 1, "p": "rome", "zh": "因為愛現今的世界而離棄保羅"}]],

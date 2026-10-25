@@ -118,7 +118,7 @@ window.ROADS = [
   // Asia Minor, Greece, Cyprus and Italy (B13)
   { n: "Road through the Cilician Gates", src: "B13", pts: ["tarsus", "ciliciangates", "derbe", "lystra", "iconium", "pantioch"] },
   { n: "Road to Perga", src: "B13", pts: ["pantioch", [31.0, 37.6], "perga", "attalia"] },
-  { n: "Road to Ephesus", src: "B13", pts: ["pantioch", "apameaphr", "laodicea", "ephesus"] },
+  { n: "Road to Ephesus", src: "B13", pts: ["pantioch", "apameaphr", "colossae", "laodicea", "ephesus"] },
   { n: "Road to Troas", src: "B13", pts: ["ephesus", "smyrna", "pergamum", "assos", "troas"] },
   { n: "Road to Miletus", src: "B13", pts: ["ephesus", "miletus"] },
   { n: "Egnatian Way", src: "B13", pts: ["neapolis", "philippi", "amphipolis", "apollonia", "thessalonica", "berea"] },
