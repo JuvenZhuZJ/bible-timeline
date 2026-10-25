@@ -138,23 +138,39 @@
     const edges = [];     // the sides of the closer maps' boxes, which distances keep off too
     // the stops of each closer map are drawn there; here each closer map is one marked area,
     // with its name to click
-    for (const ins of opt.insets || []) {
+    const rects = (opt.insets || []).map((ins) => {
       const nb = pins.filter((q) => q.small && ins.ids.includes(q.st.id));
-      if (!nb.length) continue;
+      if (!nb.length) return null;
       const xs = nb.map((q) => q.x), ys = nb.map((q) => q.y);
-      const bx = Math.min(...xs) - 8, by = Math.min(...ys) - 8, bw = Math.max(...xs) - bx + 8, bh = Math.max(...ys) - by + 8;
-      const ex = bx + bw, ey = by + bh;
+      const bx = Math.min(...xs) - 8, by = Math.min(...ys) - 8;
+      return [bx, by, Math.max(...xs) - bx + 8, Math.max(...ys) - by + 8];
+    });
+    (opt.insets || []).forEach((ins, i) => {
+      if (!rects[i]) return;
+      const [bx, by, bw, bh] = rects[i], ex = bx + bw, ey = by + bh;
+      // a name keeps off the other boxes too, so it is not read as theirs
+      const others = rects.filter((r, j) => r && j !== i).map(([x, y, w2, h2]) => [x, y, x + w2, y + h2]);
+      const hitsI = (b) => hits(b) || over(b, others);
       edges.push([bx, by, ex, by], [ex, by, ex, ey], [bx, ey, ex, ey], [bx, by, bx, ey]);
       s += `<rect class="bm-inset" data-k="${ins.k}" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="4"/>`;
-      const tw = 14 + 6 * ins.name.length;
-      const cands = [[bx + bw + 4, by + bh / 2 + 3], [bx - tw - 2, by + bh / 2 + 3], [bx, by - 4], [bx, by + bh + 10]];
-      const box = ([tx, ty]) => [tx - 1, ty - 9, tx + tw, ty + 2];
-      for (const [tx, ty] of cands.filter((c) => !hitsR(box(c))).concat(cands)) {
-        const lb = box([tx, ty]);
-        if (hits(lb)) continue;
-        s += `<text class="bm-label bm-inset-t" data-k="${ins.k}" x="${tx.toFixed(1)}" y="${ty.toFixed(1)}">${esc(ins.name)} ↓</text>`; labelBoxes.push(lb); break;
+      // beside the box, or with several boxes, right above or below it, so each name is plainly its box's;
+      // where there is no room clear of the other boxes, the first land of a two-land name (Cyprus for
+      // Cyprus + Syria), and failing that no name (the switch above still has it)
+      const one = ins.name.split(/ \+ |＋/)[0];
+      for (const nm of one === ins.name ? [ins.name] : [ins.name, one]) {
+        const tw = 14 + 6 * tlen(nm);
+        // each with the arrow that points from the name to its box
+        const R = "←", L = "→", U = "↑", D = "↓";
+        const side = [[bx + bw + 4, by + bh / 2 + 3, R], [bx - tw - 2, by + bh / 2 + 3, L], [bx - tw - 2, by + bh - 2, L], [bx - tw - 2, by + 9, L], [bx + bw + 4, by + bh - 2, R], [bx + bw + 4, by + 9, R]];
+        const ends = [[bx, by - 4, D], [bx, by + bh + 10, U], [bx + bw - tw, by - 4, D], [bx + bw - tw, by + bh + 10, U], [bx + 24 - tw, by + bh + 10, U], [bx + bw - 24, by - 4, D]];
+        const cands = opt.insets.length > 1 ? ends.concat(side) : side.concat(ends);
+        const box = ([tx, ty]) => [tx - 1, ty - 9, tx + tw, ty + 2];
+        const fits = cands.filter((c) => !hitsI(box(c)));
+        const at = fits.find((c) => !onRoute(box(c))) || fits[0];
+        if (!at) continue;
+        s += `<text class="bm-label bm-inset-t" data-k="${ins.k}" x="${at[0].toFixed(1)}" y="${at[1].toFixed(1)}">${esc(nm)} ${at[2]}</text>`; labelBoxes.push(box(at)); break;
       }
-    }
+    });
     for (const q of pins) if (q.dx != null) marks += `<path class="bm-lead" d="M${q.ax} ${q.ay} L${q.x} ${q.y}"/><circle class="bm-at" cx="${q.ax}" cy="${q.ay}" r="1.5"/>`;
     for (const { st, x, y, pl, small, dx, dy } of pins) {
       const id = esc(st.id);
@@ -488,45 +504,73 @@
   const shortName = (n) => n.replace(/ \(.*\)$/, "").replace(/（.*）$/, "").replace(/, (near|by|plains of|Cyprus|Hebron).*$/i, "").replace(/^(Torrent valley of|A city in the land of) /, "");
 
   /* the maps of a person's places, widest first: the whole journey; for a life that ranges far
-     beyond Canaan (Abraham from Ur, Paul to Rome) a closer map of the stops in and around Canaan;
-     then a close-up of each small area where three or more places crowd together (Jesus in Galilee
-     and in Judea), and inside a close-up, a closer one still where places lie only a few km apart
-     (Jerusalem, the Mount of Olives and Bethany), up to five maps in all, so the towns are big enough
-     to read and the trail is easy to follow. Places left out of a closer map stay on the wider one.
+     (Abraham from Ur, Paul to Rome) a closer map of each region where its places crowd together
+     (Canaan; Macedonia; Galatia); then a close-up of each small area
+     where three or more places crowd together (Jesus in Galilee and in Judea), and inside a
+     close-up, a closer one still where places lie only a few km apart (Jerusalem, the Mount of
+     Olives and Bethany), up to eight maps in all, so the towns are big enough to read and the trail
+     is easy to follow. Places left out of a closer map stay on the wider one.
      Returns [{ stops, name, depth, parent, minSpan }] in the order of the switch. */
   const LEVANT = [33.6, 29.3, 36.9, 33.7];
-  const WINDOWS = [[0.65, 0.55], [0.15, 0.12]];   // half a close-up's width and height, in degrees (about 120 km, then 25 km across)
+  const REGION = [2.2, 1.3];                      // half a region's width and height, in degrees (about 400 km by 290 km)
+  const WINDOWS = [[0.65, 0.55], [0.15, 0.12]];   // half a close-up's width and height (about 120 km, then 25 km across)
   const MIN_SPANS = [0.8, 0.12];                  // and how far in it may zoom
-  const MAX_MAPS = 5;
+  const MAX_MAPS = 8;
   const lls = (stops) => stops.map((s) => P[s.id] && P[s.id].ll).filter(Boolean);
   function spanOf(stops) {
     const ll = lls(stops), lat = ll.map((p) => p[1]), lon = ll.map((p) => p[0]);
     return Math.max(Math.max(...lat) - Math.min(...lat), (Math.max(...lon) - Math.min(...lon)) * 0.6);
   }
   const ids = (stops) => new Set(stops.map((s) => s.id));
-  // the busiest small areas of a map, busiest first, each with three or more places
-  function clusters(stops, win) {
-    const out = [], n = ids(stops).size, span = spanOf(stops);
-    let rest = stops;
-    while (out.length < 3) {
-      let best = null;
-      for (const [cx, cy] of lls(rest)) {
-        const inn = rest.filter((s) => { const p = P[s.id] && P[s.id].ll; return p && Math.abs(p[0] - cx) <= win[0] && Math.abs(p[1] - cy) <= win[1]; });
-        if (!best || ids(inn).size > ids(best).size) best = inn;
+  /* the places split into groups that each fit in a window, the closest places joined first, so
+     each group is one area on the ground (Galilee and Judea, not a window across both);
+     the groups of at least min places (three unless said), busiest first */
+  function groups(stops, win, min = 3) {
+    let gs = [...ids(stops)].filter((id) => P[id] && P[id].ll).map((id) => { const [x, y] = P[id].ll; return { ids: [id], x0: x, x1: x, y0: y, y1: y }; });
+    for (;;) {
+      let best = null, bd = Infinity;
+      for (let a = 0; a < gs.length; a++) for (let b = a + 1; b < gs.length; b++) {
+        const g = gs[a], h = gs[b], x0 = Math.min(g.x0, h.x0), x1 = Math.max(g.x1, h.x1), y0 = Math.min(g.y0, h.y0), y1 = Math.max(g.y1, h.y1);
+        if (x1 - x0 > 2 * win[0] || y1 - y0 > 2 * win[1]) continue;
+        const d = Math.hypot((x1 - x0) * 0.8, y1 - y0);
+        if (d < bd) { bd = d; best = [a, b, { ids: g.ids.concat(h.ids), x0, x1, y0, y1 }]; }
       }
-      const k = best ? ids(best).size : 0;
-      if (k < 3 || k >= n || span <= 1.6 * spanOf(best)) break;
-      out.push(best);
-      const got = ids(best); rest = rest.filter((s) => !got.has(s.id));
+      if (!best) break;
+      gs = gs.filter((g, i) => i !== best[0] && i !== best[1]).concat([best[2]]);
     }
-    return out;
+    return gs.filter((g) => g.ids.length >= min).sort((a, b) => b.ids.length - a.ids.length)
+      .map((g) => stops.filter((s) => g.ids.includes(s.id)));
+  }
+  /* the busiest small areas of a map where pins crowd (two places closer than about a tenth of
+     the map), each drawn much closer than the map draws them (a map never zooms in past its least
+     span, in degrees: minIn for the map, minOut for the close-up); an area too big for that is
+     looked into with a smaller window (Hebron and Bethel in Abraham's Canaan) */
+  const shown = (span, min) => Math.max(span * 1.3, min);
+  const crowded = (stops, at) => { const ll = [...new Set(lls(stops))]; return ll.some((p, i) => ll.slice(i + 1).some((q) => Math.hypot((p[0] - q[0]) * 0.8, p[1] - q[1]) < at / 10)); };
+  function clusters(stops, win, minIn, minOut) {
+    const n = ids(stops).size, at = shown(spanOf(stops), minIn);
+    const look = (part, f) => groups(part, [win[0] * f, win[1] * f]).flatMap((c) =>
+      ids(c).size < n && at > 1.6 * shown(spanOf(c), minOut) ? (crowded(c, at) ? [c] : []) : f > 0.3 ? look(c, f * 0.6) : []);
+    return look(stops, 1).sort((a, b) => ids(b).size - ids(a).size).slice(0, 3);
   }
   /* what the land of the map was called in the person's day: Canaan before the kings (Joshua 14:1),
      Israel under Saul, David and Solomon, Israel and Judah once the kingdom split (1 Kings 12:19-20),
      and Galilee, Samaria and Judea in Jesus' day (Luke 3:1; Acts 9:31), with Syria for Damascus;
-     a map mostly outside the land before the kings (Kadesh, the plains of Moab) is Near Canaan */
+     a map mostly outside the land before the kings (Kadesh, the plains of Moab) is Near Canaan.
+     Farther off, the lands and Roman provinces as the Bible names them (Acts 13-28; NWT maps B13, B14) */
+  const WIDE = [   // [name, west, south, east, north], the first that holds the place
+    ["Malta", 14, 35.7, 14.7, 36.2], ["Sicily", 12, 36.5, 15.7, 38.4], ["Italy", 6, 37.8, 19, 47],
+    ["Crete", 23.3, 34.7, 26.5, 35.8], ["Cyprus", 32, 34.4, 34.7, 35.8],
+    ["Macedonia", 20.4, 39.8, 26, 42.5], ["Achaia", 19.5, 36.2, 24.6, 39.8], ["Illyricum", 13, 40.4, 20.4, 46.5],
+    ["Bithynia", 28.5, 40.3, 33, 42], ["Asia", 25.8, 36, 30.1, 40.6], ["Pamphylia", 30.1, 36.4, 32.3, 37.2],
+    ["Galatia", 30.1, 37.2, 34.5, 40.5], ["Cilicia", 32.3, 36.4, 36, 37.6], ["Syria", 35.6, 33.3, 39.5, 37.6],
+    ["Egypt", 24, 22, 32.4, 31.7], ["Sinai", 32.4, 27.5, 35, 31], ["Arabia", 35, 12, 50, 29.5],
+    ["Persia", 46.5, 25, 62, 38], ["Assyria", 42.4, 35.2, 46.5, 38], ["Babylonia", 42.4, 29.5, 48, 35.2], ["Mesopotamia", 37.5, 33, 46.5, 38.5],
+  ];
+  const inBox = ([lon, lat], b) => lon >= b[0] && lon <= b[2] && lat >= b[1] && lat <= b[3];
   function partOf(ll, y) {
     const [lon, lat] = ll;
+    if (!inBox(ll, LEVANT)) { const r = WIDE.find((r) => inBox(ll, r.slice(1))); if (r || lat < 29 || lat > 34.5 || lon < 33 || lon > 37.5) return r ? r[0] : ""; }
     if (lat > 33.3 && lon < 35.5) return "Phoenicia";
     if (lat > 33.3 || lon > 35.9) return y < -63 ? "Aram" : "Syria";
     if (y < -1117) return lon < 35.58 && lat > 31.0 ? "Canaan" : "";
@@ -534,56 +578,68 @@
     if (y < -63) return lat >= 31.85 || lon >= 35.58 ? "Israel" : "Judah";
     return lat >= 32.55 ? "Galilee" : lat >= 32.1 && lon > 35.0 ? "Samaria" : "Judea";
   }
-  const ORDER = ["Canaan", "Israel", "Judah", "Galilee", "Samaria", "Judea", "Phoenicia", "Aram", "Syria"];
-  function areaName(stops, y) {
+  const ORDER = ["Canaan", "Israel", "Judah", "Galilee", "Samaria", "Judea", "Phoenicia", "Aram", "Syria", ...WIDE.map((r) => r[0])];
+  function areaName(stops, y, wide) {
     const n = new Map(), seen = stops.filter((s) => P[s.id]);
     for (const s of seen) { const k = partOf(P[s.id].ll, y); n.set(k, (n.get(k) || 0) + 1); }
     const total = seen.length;
+    // a region far off is named for the two lands the person spent most time in (Syria + Cyprus)
+    if (wide) return [...n].filter(([k]) => k).sort((a, b) => b[1] - a[1] || ORDER.indexOf(a[0]) - ORDER.indexOf(b[0])).slice(0, 2).map(([k]) => TR(k)).join(ZHM ? "＋" : " + ");
     // the parts the person was in more than once; a single visit (Zarephath, Caesarea Philippi) does not rename the map
     const parts = ORDER.filter((k) => n.get(k) && (n.get(k) >= 2 || n.get(k) === total));
-    if (!parts.length || (n.get("") || 0) * 2 > total) return "";
+    if (!parts.length || parts.length > 2 || (n.get("") || 0) * 2 > total) return "";
     return parts.map(TR).join(ZHM ? "＋" : " + ");    // short, so the map switch stays on one line
   }
   const midYear = (stops) => { const y = stops.map((s) => s.y).filter((v) => v != null).sort((a, b) => a - b); return y.length ? y[y.length >> 1] : 0; };
   function levels(stops) {
     // "Journey" (the whole journey) only for a life that took the person far from home (Abraham from Ur,
     // Paul to Rome); names are kept short so the switch fits on one line, with the full name as its tooltip
-    const far = spanOf(stops) > 6;
+    const span = spanOf(stops), far = span > 6;
     const out = [{ stops, name: TR(far ? "Journey" : "All"), full: TR(far ? "Whole journey" : "All places"), depth: 0, parent: -1 }];
     if (!stops.some((s) => P[s.id])) return out;
     const y = midYear(stops);
-    const inL = (s) => { const p = P[s.id] && P[s.id].ll; return p && p[0] >= LEVANT[0] && p[0] <= LEVANT[2] && p[1] >= LEVANT[1] && p[1] <= LEVANT[3]; };
+    const inL = (s) => { const p = P[s.id] && P[s.id].ll; return p && inBox(p, LEVANT); };
     const near = stops.filter(inL);
-    let mid = spanOf(stops) > 2.6 && ids(near).size >= 3 && near.length < stops.length ? near : null;
-    let cs = clusters(mid || stops, WINDOWS[0]);
+    let mid = span > 2.6 && ids(near).size >= 3 && near.length < stops.length ? near : null;
+    const midCs = clusters(mid || stops, WINDOWS[0], 1.5, MIN_SPANS[0]);
     // a region map that only adds a place or two to its one close-up (Kadesh) is left out: those stay on the first map
-    if (mid && cs.length === 1 && ids(cs[0]).size >= ids(mid).size * 2 / 3 && ids(mid).size - ids(cs[0]).size <= 2) mid = null;
-    if (mid) out.push({ stops: mid, name: areaName(mid, y) || TR(y < -1117 ? "Near Canaan" : "Close-up"), depth: 1, parent: 0 });
+    const kadesh = mid && midCs.length === 1 && ids(midCs[0]).size >= ids(mid).size * 2 / 3 && ids(mid).size - ids(midCs[0]).size <= 2;
+    if (kadesh) mid = null;
+    // on a long journey, each crowded region away from the land (Macedonia, Galatia) gets its map too, even
+    // with only two places (Athens and Corinth) when the journey has ten or more
+    const regs = far ? groups(stops.filter((s) => P[s.id] && !inL(s)), REGION, ids(stops).size >= 10 ? 2 : 3).filter((r) => span > 4 * spanOf(r) && crowded(r, shown(span, 0))) : [];
+    // the maps to draw, the regions first, then their close-ups, then closer maps still; past eight, the busiest areas keep theirs
+    const tops = (mid ? [{ stops: mid, cs: midCs, mid: 1 }] : []).concat(regs.map((r) => ({ stops: r, cs: clusters(r, WINDOWS[0], 1.5, MIN_SPANS[0]) })));
+    // close-ups straight on the first map: those of the land when it has no map of its own (Kadesh), or of a life close to home
+    if (kadesh || !mid && !regs.length) tops.push({ stops, cs: midCs, root: 1 });
+    let room = MAX_MAPS - 1 - tops.filter((t) => !t.root).length;
+    tops.splice(MAX_MAPS - 1);
+    for (const t of tops) t.kids = [];
+    for (const t of tops) for (const c of t.cs) if (room > 0) { t.kids.push({ stops: c, kids: [] }); room--; }
+    for (const t of tops) for (const k of t.kids) for (const c of clusters(k.stops, WINDOWS[1], MIN_SPANS[0], MIN_SPANS[1])) if (room > 0) { k.kids.push({ stops: c, kids: [] }); room--; }
+
     const used = new Set(out.map((l) => l.name));
-    const around = (c) => {    // named for the place visited most often there
+    const around = (c) => {    // named for the place visited most often there that no other map is named for
       const n = new Map(); for (const s of c) n.set(s.id, (n.get(s.id) || 0) + 1);
-      return shortName(P[[...n].sort((a, b) => b[1] - a[1])[0][0]].n);
+      const names = [...n].sort((a, b) => b[1] - a[1]).map(([id]) => shortName(P[id].n));
+      return names.find((m) => !used.has(m)) || names[0];
     };
-    const add = (c, w, parent) => {
-      if (out.length >= MAX_MAPS) return;
-      let name = w ? "" : areaName(c, y);
+    const add = (c, w, parent, name) => {
+      name = name || (w ? "" : areaName(c, y, w == null));
       let full = name;
       if (!name || used.has(name)) { name = around(c); full = ZHM ? name + "一帶" : "Around " + name; }
       used.add(name);
-      out.push({ stops: c, name, full, depth: out[parent].depth + 1, parent, minSpan: MIN_SPANS[w] });
+      out.push({ stops: c, name, full, depth: out[parent].depth + 1, parent, minSpan: w == null ? undefined : MIN_SPANS[w] });
       return out.length - 1;
     };
-    // close-ups in the order the person first went there, each followed by a closer map still
-    // inside it; past five maps, the busiest areas keep theirs
+    // each in the order the person first went there, followed by the closer maps inside it
     const first = (c) => Math.min(...c.map((s) => (s.k == null ? Infinity : s.k)));
-    const subs = cs.map((c) => clusters(c, WINDOWS[1]));
-    let room = Math.max(0, MAX_MAPS - out.length - cs.length);
-    const order = cs.map((c, i) => i).sort((a, b) => first(cs[a]) - first(cs[b]));
-    const top = mid ? 1 : 0;
-    for (const i of order) {
-      const k = add(cs[i], 0, top);
-      if (k == null) continue;
-      for (const c of subs[i].slice(0, room)) { add(c, 1, k); room--; }
+    const byFirst = (list) => list.slice().sort((a, b) => first(a.stops) - first(b.stops));
+    const tree = (list, w, parent) => { for (const t of byFirst(list)) tree(t.kids, w + 1, add(t.stops, w, parent)); };
+    for (const t of byFirst(tops)) {
+      if (t.root) { tree(t.kids, 0, 0); continue; }
+      const k = add(t.stops, null, 0, t.mid ? areaName(t.stops, y) || TR(y < -1117 ? "Near Canaan" : "Close-up") : "");
+      tree(t.kids, 0, k);
     }
     return out;
   }
