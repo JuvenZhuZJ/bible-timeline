@@ -37,7 +37,7 @@ All the modes follow the same zoom rule: fully zoomed out you see only the timel
 
 Searching for a person who is hidden by the current mode switches to Everyone. The choice is remembered in the browser.
 
-The legend sits open at the bottom left on a computer. On a phone or a tablet (any touch screen without hover, so an iPad held either way round) it folds behind a **Legend** button so it never covers the timeline; tap the button to open or close it (the media query `(max-width: 760px), (hover: none) and (pointer: coarse)` in `css/style.css`). On touch screens the activity and book dots also get the larger tap targets and the "Tap again" hints that phones use.
+The legend folds behind a **Legend** button at the bottom left on every screen (computer, tablet and phone) so it never covers the timeline; click or tap the button to open or close it. If a short window leaves too little room, the open list scrolls. On touch screens the activity and book dots also get the larger tap targets and the "Tap again" hints that phones use.
 
 On a phone the search box opens across the top bar, so the site title and the People button are hidden while it is open and come back when it closes (a CSS rule in the phone section of `css/style.css`). On a computer the search box sits beside the title and nothing is hidden.
 
