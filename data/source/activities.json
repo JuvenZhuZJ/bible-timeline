@@ -1432,7 +1432,9 @@
     [29, "Brought to Jesus by Philip; praised as 'an Israelite in whom there is no deceit'", "John 1:45-51", {"c": 1, "p": "jordanford", "zh": "腓力帶他去見耶穌；耶穌稱讚他是「心裡沒有詭詐的以色列人」"}],
     [33, "Sees the resurrected Jesus at the Sea of Galilee", "John 21:1, 2", {"p": "galileesea", "zh": "在加利利海邊看見復活的耶穌"}]],
   "philip-apostle": [
-    [29, "Follows Jesus and brings Nathanael to him", "John 1:43-46", {"c": 1, "p": "jordanford", "zh": "跟從耶穌，並帶拿但業去見他"}],
+    [29, "Follows Jesus and brings Nathanael to him", "John 1:43-46", {"c": 1, "p": "jordanford", "zh": "跟從耶穌，並帶拿但業去見他"},
+    [29, "From Bethsaida, the town of Andrew and Peter", "John 1:44", {"c": 1, "p": "bethsaida", "zh": "來自伯賽大，就是安得烈和彼得的家鄉"}],
+    [33, "Waits and prays with the other apostles in the upper room in Jerusalem", "Acts 1:13, 14", {"p": "jerusalem", "zh": "和其他使徒一起在耶路撒冷的樓上房間等候、禱告"}]],
     [32, "Jesus asks him where to buy bread for the crowd of 5,000", "John 6:5-7", {"p": "galileesea", "zh": "耶穌問他到哪裡買餅給五千人吃"}],
     [33, "With Andrew, tells Jesus that some Greeks want to see him", "John 12:20-22", {"p": "jerusalem", "zh": "和安得烈一起告訴耶穌，有些希臘人想見他"}]],
   "joanna": [
@@ -1485,7 +1487,7 @@
   "aretas": [
     [36, "His governor guards Damascus to seize Paul, who escapes in a basket", "2 Corinthians 11:32, 33; Acts 9:23-25", {"c": 1, "p": "damascus", "zh": "他的總督守住大馬士革要捉拿保羅，保羅坐在筐子裡逃走"}]],
   "aeneas": [
-    [36, "Paralyzed for eight years, he is healed by Peter at Lydda", "Acts 9:32-35", {"c": 1, "zh": "癱瘓了八年，在呂大被彼得治好"}]],
+    [36, "Paralyzed for eight years, he is healed by Peter at Lydda", "Acts 9:32-35", {"c": 1, "p": "lydda", "zh": "癱瘓了八年，在呂大被彼得治好"}]],
   "dorcas": [
     [36, "Raised from the dead by Peter", "Acts 9:36-42", {"p": "joppa", "zh": "被彼得復活"}]],
   "simon-9": [
@@ -1518,11 +1520,12 @@
   "titus": [
     [49, "Goes with Paul to Jerusalem; is not compelled to be circumcised", "Galatians 2:1-3", {"p": "jerusalem", "zh": "和保羅一起上耶路撒冷；沒有被強迫受割禮"}],
     [55, "Helps the Corinthians with the relief collection", "2 Corinthians 7:6, 7; 8:6, 16, 17", {"c": 1, "p": "corinth", "zh": "協助哥林多的信徒籌集救濟款項"}],
-    [62, "Left in Crete to organize the congregations", "Titus 1:4, 5", {"c": 1, "zh": "被留在克里特，整頓各會眾"}]],
+    [62, "Left in Crete to organize the congregations", "Titus 1:4, 5", {"c": 1, "p": "crete", "zh": "被留在克里特，整頓各會眾"}]],
   "lydia": [
-    [50, "Believes and is baptized with her household; hosts Paul's group", "Acts 16:14, 15, 40", {"c": 1, "p": "philippi", "zh": "成為信徒，和全家受浸；接待保羅一行人"}]],
+    [50, "Believes and is baptized with her household; hosts Paul's group", "Acts 16:14, 15, 40", {"c": 1, "p": "philippi", "zh": "成為信徒，和全家受浸；接待保羅一行人"}],
+    [50, "A seller of purple from the city of Thyatira", "Acts 16:14", {"p": "thyatira", "zh": "是推雅推拉城的人，以賣紫色衣物為業"}]],
   "jason": [
-    [50, "Hosts Paul and Silas in Thessalonica; dragged before the city rulers", "Acts 17:5-9", {"c": 1, "zh": "在帖撒羅尼迦接待保羅和西拉；被拖到城中的官長面前"}]],
+    [50, "Hosts Paul and Silas in Thessalonica; dragged before the city rulers", "Acts 17:5-9", {"c": 1, "p": "thessalonica", "zh": "在帖撒羅尼迦接待保羅和西拉；被拖到城中的官長面前"}]],
   "dionysius": [
     [50, "Listens to Paul at the Areopagus and becomes a believer", "Acts 17:33, 34", {"c": 1, "p": "athens", "zh": "在亞略巴古聽保羅講話後成為信徒"}]],
   "crispus": [
@@ -1534,9 +1537,11 @@
     [50, "His household is baptized by Paul, the firstfruits of Achaia", "1 Corinthians 1:16; 16:15", {"c": 1, "p": "corinth", "zh": "他的一家由保羅施浸，是亞該亞最早的信徒"}],
     [55, "Visits Paul in Ephesus", "1 Corinthians 16:17, 18", {"c": 1, "p": "ephesus", "zh": "到以弗所探望保羅"}]],
   "erastus-1": [
-    [55, "Sent to Macedonia with Timothy", "Acts 19:22", {"c": 1, "p": "ephesus", "zh": "和提摩太一起被派到馬其頓"}]],
+    [55, "Sent to Macedonia with Timothy", "Acts 19:22", {"c": 1, "p": "ephesus", "zh": "和提摩太一起被派到馬其頓"}],
+    [65, "Stays in Corinth", "2 Timothy 4:20", {"c": 1, "p": "corinth", "zh": "留在哥林多"}]],
   "aristarchus": [
-    [55, "Seized by the rioting crowd at Ephesus", "Acts 19:29", {"c": 1, "p": "ephesus", "zh": "在以弗所的暴動中被群眾抓住"}],
+    [55, "Seized by the rioting crowd at Ephesus", "Acts 19:29", {"c": 1, "p": "ephesus", "zh": "在以弗所的暴動中被群眾抓住"},
+    [56, "Travels with Paul from Greece toward Asia", "Acts 20:4", {"c": 1, "p": "troas", "zh": "和保羅一起從希臘前往亞細亞"}]],
     [58, "Sails with Paul for Rome", "Acts 27:1, 2", {"p": "caesarea", "zh": "與保羅一起乘船前往羅馬"}],
     [60, "Shares Paul's imprisonment in Rome", "Colossians 4:10; Philemon 24", {"c": 1, "p": "rome", "zh": "在羅馬與保羅一同坐牢"}]],
   "peter-s-wife": [
@@ -1548,14 +1553,14 @@
   "erastus-2": [
     "romans16"],
   "phoebe": [
-    [56, "Commended by Paul to the Roman congregation; she may carry his letter", "Romans 16:1, 2", {"c": 1, "p": "corinth", "zh": "保羅向羅馬的會眾推薦她；她可能是送信的人"}]],
+    [56, "From the congregation in Cenchreae; commended by Paul to the congregation in Rome, she may carry his letter", "Romans 16:1, 2", {"c": 1, "p": "cenchreae", "zh": "來自堅革里的會眾；保羅向羅馬的會眾推薦她，她可能是送信的人"}]],
   "gaius-2": [
     [56, "Travels with Paul and goes ahead to wait at Troas", "Acts 20:4-6", {"c": 1, "p": "troas", "zh": "與保羅同行，先到特羅亞等候"}]],
   "mnason": [
     [56, "Hosts Paul and his companions in his home", "Acts 21:16", {"p": "jerusalem", "zh": "在家裡接待保羅和他的同伴"}]],
   "trophimus": [
     [56, "Jews think Paul brought him into the temple, and a riot breaks out", "Acts 21:27-30", {"p": "jerusalem", "zh": "猶太人以為保羅帶他進了聖殿，於是發生暴動"}],
-    [65, "Left sick at Miletus", "2 Timothy 4:20", {"c": 1, "zh": "生病，留在米利都"}]],
+    [65, "Left sick at Miletus", "2 Timothy 4:20", {"c": 1, "p": "miletus", "zh": "生病，留在米利都"}]],
   "paul-s-nephew": [
     [56, "Hears of a plot to ambush Paul and reports it", "Acts 23:16-22", {"p": "jerusalem", "zh": "聽說有人計劃埋伏殺害保羅，就去報告"}]],
   "claudius-lysias": [
@@ -1580,7 +1585,8 @@
   "publius": [
     [58, "Hosts Paul's shipwrecked party; Paul heals his father", "Acts 28:7-10", {"p": "malta", "zh": "接待遭遇船難的保羅一行人；保羅治好了他的父親"}]],
   "epaphras": [
-    [60, "With Paul in Rome, prays hard for the congregations at Colossae, Laodicea and Hierapolis", "Colossians 1:7, 8; 4:12, 13", {"c": 1, "p": "rome", "zh": "在羅馬與保羅在一起，為歌羅西、老底嘉和希拉波立的會眾竭力禱告"}]],
+    [60, "With Paul in Rome, prays hard for the congregations at Colossae, Laodicea and Hierapolis", "Colossians 1:7, 8; 4:12, 13", {"c": 1, "p": "rome", "zh": "在羅馬與保羅在一起，為歌羅西、老底嘉和希拉波立的會眾竭力禱告"}],
+    [55, "Teaches the good news to the people of Colossae, his own city", "Colossians 1:7; 4:12", {"c": 1, "p": "colossae", "zh": "把好消息傳給他家鄉歌羅西的人"}]],
   "epaphroditus": [
     [60, "Brings the Philippians' gift to Paul in Rome; falls ill almost to death", "Philippians 2:25-27; 4:18", {"c": 1, "p": "rome", "zh": "把腓立比會眾的禮物帶到羅馬給保羅；病得幾乎死了"}],
     [61, "Sent home by Paul with the letter to the Philippians", "Philippians 2:25, 28-30", {"c": 1, "p": "philippi", "zh": "保羅派他帶著給腓立比人的信回去"}]],
@@ -1599,11 +1605,12 @@
     [60, "Arrives in Colossae with Onesimus, bringing Paul's letters to the congregation and to Philemon", "Colossians 4:7-9", {"c": 1, "p": "colossae", "zh": "和奧尼西慕一起到達歌羅西，把保羅的信交給會眾和腓利門"}]],
   "demas": [
     [60, "With Paul during his first imprisonment in Rome", "Colossians 4:14; Philemon 24", {"c": 1, "p": "rome", "zh": "在保羅第一次在羅馬坐牢時與他在一起"}],
-    [65, "Forsakes Paul because he loves the present world", "2 Timothy 4:10", {"c": 1, "p": "rome", "zh": "因為愛現今的世界而離棄保羅"}]],
+    [65, "Forsakes Paul because he loves the present world, and goes to Thessalonica", "2 Timothy 4:10", {"c": 1, "p": "thessalonica", "zh": "因為愛現今的世界而離棄保羅，去了帖撒羅尼迦"}]],
   "hymenaeus": [
-    [62, "Teaches that the resurrection has already happened; expelled by Paul", "1 Timothy 1:19, 20; 2 Timothy 2:17, 18", {"c": 1, "zh": "教導復活已經發生了；被保羅開除"}]],
+    [62, "Teaches that the resurrection has already happened; expelled by Paul", "1 Timothy 1:3, 20; 2 Timothy 2:17, 18", {"c": 1, "p": "ephesus", "zh": "教導復活已經發生了；被保羅開除"}]],
   "onesiphorus": [
-    [65, "Searches out the imprisoned Paul in Rome and serves him", "2 Timothy 1:16-18", {"c": 1, "p": "rome", "zh": "在羅馬尋找坐牢的保羅，並服侍他"}]],
+    [65, "Searches out the imprisoned Paul in Rome and serves him", "2 Timothy 1:16-18", {"c": 1, "p": "rome", "zh": "在羅馬尋找坐牢的保羅，並服侍他"}],
+    [55, "Serves Paul in Ephesus", "2 Timothy 1:18", {"c": 1, "p": "ephesus", "zh": "在以弗所服侍保羅"}]],
   "claudia": [
     "timothy4"],
   "eubulus": [
@@ -1615,7 +1622,7 @@
   "jude": [
     [65, "Writes his letter urging Christians to fight for the faith", "Jude 1, 3", {"c": 1, "zh": "寫信勸勉基督徒為信仰奮鬥"}]],
   "jezebel-2": [
-    [96, "Rebuked in Jesus' message to Thyatira for teaching idolatry and fornication", "Revelation 2:20-23", {"c": 1, "zh": "耶穌給推雅推喇會眾的信息責備她教導人拜偶像和淫亂"}]],
+    [96, "Rebuked in Jesus' message to Thyatira for teaching idolatry and fornication", "Revelation 2:20-23", {"c": 1, "p": "thyatira", "zh": "耶穌給推雅推喇會眾的信息責備她教導人拜偶像和淫亂"}]],
   "diotrephes": [
     [98, "Refuses to receive the brothers and tries to expel those who do", "3 John 9, 10", {"c": 1, "zh": "拒絕接待弟兄，還想把接待弟兄的人趕出會眾"}]],
   "cain-s-wife": [
@@ -1796,7 +1803,93 @@
     [56, "Luke writes his Gospel account for him", "Luke 1:1-4", {"c": 1, "zh": "路加為他寫福音書"}],
     [61, "Luke addresses the book of Acts to him", "Acts 1:1", {"c": 1, "zh": "路加寫使徒行傳給他"}]],
   "carpus": [
-    [65, "Keeps the cloak and scrolls Paul left at Troas", "2 Timothy 4:13", {"c": 1, "p": "troas", "zh": "保管保羅留在特羅亞的外衣和書卷"}]]
+    [65, "Keeps the cloak and scrolls Paul left at Troas", "2 Timothy 4:13", {"c": 1, "p": "troas", "zh": "保管保羅留在特羅亞的外衣和書卷"}]],
+  "ampliatus": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:8", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "andronicus": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:7", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "apelles": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:10", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "asyncritus": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:14", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "epaenetus": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:5", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "herodion": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:11", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "julia": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:15", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候她"}]],
+  "mary-6": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:6", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候她"}]],
+  "nereus": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:15", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "olympas": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:15", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "patrobas": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:14", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "persis": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:12", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候她"}]],
+  "philologus": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:15", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "phlegon": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:14", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "rufus-2": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:13", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "stachys": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:9", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "tryphaena": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:12", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候她"}]],
+  "tryphosa": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:12", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候她"}]],
+  "urbanus": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:9", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他"}]],
+  "junias": [
+    [56, "Greeted by Paul in his letter to the congregation in Rome", "Romans 16:7", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候這位信徒"}]],
+  "aristobulus": [
+    [56, "Paul greets those of his household in his letter to the congregation in Rome", "Romans 16:10", {"c": 1, "p": "rome", "zh": "保羅寫信給羅馬的會眾時問候他家裡的人"}]],
+  "paul-s-sister": [
+    [56, "Her son, in Jerusalem, warns Paul of a plot against his life", "Acts 23:16", {"c": 1, "p": "jerusalem", "zh": "她的兒子在耶路撒冷向保羅通報有人要殺他的陰謀"}]],
+  "james-3": [
+    [33, "Waits and prays with the other apostles in the upper room in Jerusalem", "Acts 1:13, 14", {"p": "jerusalem", "zh": "和其他使徒一起在耶路撒冷的樓上房間等候、禱告"}]],
+  "simon-3a": [
+    [33, "Waits and prays with the other apostles in the upper room in Jerusalem", "Acts 1:13, 14", {"p": "jerusalem", "zh": "和其他使徒一起在耶路撒冷的樓上房間等候、禱告"}]],
+  "judas-3": [
+    [33, "Waits and prays with the other apostles in the upper room in Jerusalem", "Acts 1:13, 14", {"p": "jerusalem", "zh": "和其他使徒一起在耶路撒冷的樓上房間等候、禱告"}]],
+  "simon-3b": [
+    [33, "With Jesus' mother and the disciples in Jerusalem before Pentecost", "Acts 1:14", {"p": "jerusalem", "zh": "五旬節前和耶穌的母親以及門徒一起在耶路撒冷"}]],
+  "joseph-9": [
+    [33, "With Jesus' mother and the disciples in Jerusalem before Pentecost", "Acts 1:14", {"p": "jerusalem", "zh": "五旬節前和耶穌的母親以及門徒一起在耶路撒冷"}]],
+  "prochorus": [
+    [33, "Chosen as one of the seven men to look after the daily food distribution in Jerusalem", "Acts 6:1-6", {"c": 1, "p": "jerusalem", "zh": "被選為在耶路撒冷負責每天分發食物的七個人之一"}]],
+  "timon": [
+    [33, "Chosen as one of the seven men to look after the daily food distribution in Jerusalem", "Acts 6:1-6", {"c": 1, "p": "jerusalem", "zh": "被選為在耶路撒冷負責每天分發食物的七個人之一"}]],
+  "sosthenes": [
+    [51, "Beaten by the crowd in front of Gallio's judgment seat in Corinth", "Acts 18:12, 17", {"c": 1, "p": "corinth", "zh": "在哥林多迦流的審判台前被群眾毆打"}]],
+  "sceva": [
+    [54, "His seven sons try to expel a demon in Jesus' name in Ephesus and are overpowered", "Acts 19:13-16", {"c": 1, "p": "ephesus", "zh": "他的七個兒子在以弗所奉耶穌的名趕鬼，反被制伏"}]],
+  "alexander-4": [
+    [55, "Tries to speak to the rioting crowd in the theater at Ephesus", "Acts 19:33, 34", {"c": 1, "p": "ephesus", "zh": "在以弗所的劇場想向暴動的群眾講話"}]],
+  "demetrius-1": [
+    [55, "Stirs up the silversmiths of Ephesus to riot against Paul", "Acts 19:24-29", {"c": 1, "p": "ephesus", "zh": "煽動以弗所的銀匠暴動，反對保羅"}]],
+  "gaius-1": [
+    [55, "Dragged into the theater at Ephesus with Aristarchus", "Acts 19:29", {"c": 1, "p": "ephesus", "zh": "和亞里達古一起被拉進以弗所的劇場"}]],
+  "eutychus": [
+    [56, "Falls from a third-story window during Paul's long talk in Troas and is brought back to life", "Acts 20:7-12", {"p": "troas", "zh": "保羅在特洛阿斯講話很久時，他從三樓窗口掉下去死了，後來復活"}]],
+  "bernice": [
+    [58, "With her brother Agrippa II at Paul's hearing in Caesarea", "Acts 25:13, 23; 26:30", {"c": 1, "p": "caesarea", "zh": "和弟弟亞基帕二世一起在凱撒里亞聽保羅申辯"}]],
+  "clement": [
+    [60, "Named in Paul's letter as one of his fellow workers in Philippi", "Philippians 4:3", {"c": 1, "p": "philippi", "zh": "保羅在信中說他是在腓立比和自己一起努力的同工"}]],
+  "euodia": [
+    [60, "Urged in Paul's letter to be of the same mind as Syntyche; she had worked hard with him in Philippi", "Philippians 4:2, 3", {"c": 1, "p": "philippi", "zh": "保羅在信中勸她和循都姬同心；她曾在腓立比和保羅一起努力"}]],
+  "syntyche": [
+    [60, "Urged in Paul's letter to be of the same mind as Euodia; she had worked hard with him in Philippi", "Philippians 4:2, 3", {"c": 1, "p": "philippi", "zh": "保羅在信中勸她和友阿蝶同心；她曾在腓立比和保羅一起努力"}]],
+  "jesus-4": [
+    [60, "Works with Paul in Rome and sends greetings to Colossae", "Colossians 4:11", {"c": 1, "p": "rome", "zh": "在羅馬和保羅一起工作，向歌羅西的弟兄問安"}]],
+  "nympha": [
+    [60, "Greeted with the brothers in Laodicea; a congregation meets in her house", "Colossians 4:15", {"c": 1, "p": "laodicea", "zh": "保羅問候老底嘉的弟兄和她；會眾在她家裡聚會"}]],
+  "apphia": [
+    [60, "Greeted in Paul's letter to Philemon's household in Colossae, where the congregation meets", "Philemon 1, 2; Colossians 4:9", {"c": 1, "p": "colossae", "zh": "保羅寫信給歌羅西的腓利門一家時問候她，會眾在那裡聚會"}]],
+  "antipas-1": [
+    [95, "Put to death for his faith in Pergamum", "Revelation 2:13", {"c": 1, "p": "pergamum", "zh": "在別迦摩為信仰被殺"}]]
 },
-"dates": {"canaan": [-2366, -2290], "judith": [-1845, -1775], "zipporah": [-1575, -1500], "eleazar-1": [-1545, -1445], "sisera-1": [-1350, -1308], "gaal": [-1250, -1200], "hophni": [-1180, -1118], "mephibosheth-1": [-1125, -1068], "hadad-4": [-1072, -1000], "hazael": [-935, -855], "abiathar": [-1110, -1030], "peter-s-wife": [-10, 64], "deborah-1": [-1925, -1760], "laban-1": [-1910, -1750], "eliphaz": [-1700, -1590], "bildad": [-1700, -1590], "zophar": [-1700, -1590], "elihu-1": [-1660, -1570], "job-s-wife": [-1670, -1580], "peter-s-mother-in-law": [-45, 40]}
+"dates": {"canaan": [-2366, -2290], "judith": [-1845, -1775], "zipporah": [-1575, -1500], "eleazar-1": [-1545, -1445], "sisera-1": [-1350, -1308], "gaal": [-1250, -1200], "hophni": [-1180, -1118], "mephibosheth-1": [-1125, -1068], "hadad-4": [-1072, -1000], "hazael": [-935, -855], "abiathar": [-1110, -1030], "peter-s-wife": [-10, 64], "deborah-1": [-1925, -1760], "laban-1": [-1910, -1750], "eliphaz": [-1700, -1590], "bildad": [-1700, -1590], "zophar": [-1700, -1590], "elihu-1": [-1660, -1570], "job-s-wife": [-1670, -1580], "peter-s-mother-in-law": [-45, 40], "paul-s-sister": [-10, 70]}
 }
