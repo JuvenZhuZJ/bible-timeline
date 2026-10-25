@@ -10,6 +10,10 @@
  *   "Acts 27" etc.  – the Bible account the way is traced from
  *   "common route"  – no source map shows it; the usual caravan or walking way of the region
  *                     (along valleys and the coast, around seas and mountains) is used
+ * For people from Alexander the Great on, a leg not given here and leaving the land of Israel takes the
+ * quickest way of ORBIS, the Stanford model of the roads and sea lanes of the Roman world (data/orbis.js,
+ * tools/build-orbis.mjs). A sea voyage here bends around the capes and islands in its way, along the
+ * corners tools/sea-way.mjs finds across the water of the map.
  * Points are place ids from data/places.js, names from WAY below, or [longitude, latitude].
  *
  * ROADS    { n: name, src, pts: [...] }        a road, drawn through its points in order
@@ -45,9 +49,15 @@ window.ROUTE_WAY = {
   neapolis: [24.41, 40.94], amphipolis: [23.84, 40.82], apollonia: [23.5, 40.6],
   megara: [23.35, 38.0],
   citium: [33.63, 34.92], amathus: [33.13, 34.71], curium: [32.88, 34.66],
+  // ports and capes of Paul's voyages (Acts 16-28), placed as in ORBIS
+  samothrace: [25.55, 40.42], mitylene: [26.56, 39.1], chios: [26.14, 38.37], samos: [26.94, 37.69], trogyllium: [27.02, 37.67],
+  cos: [27.29, 36.89], rhodes: [28.23, 36.44], patara: [29.32, 36.26], myra: [29.98, 36.2], cnidus: [27.37, 36.68],
+  salmone: [26.3, 35.25], fairhavens: [24.8, 34.93], cauda: [24.08, 34.85], piraeus: [23.63, 37.94],
   syracuse: [15.29, 37.07], rhegium: [15.65, 38.11], puteoli: [14.12, 40.82], capua: [14.25, 41.08],
   appiiforum: [13.1, 41.4], threetaverns: [12.9, 41.6],
   beneventum: [14.78, 41.13], venusia: [15.81, 40.96], tarentum: [17.24, 40.47], brundisium: [17.94, 40.63], lechaeum: [22.89, 37.93],
+  // Ireland and Britain (the Bible Students' and translators' day)
+  holyhead: [-4.63, 53.31],
 };
 
 window.ROADS = [
@@ -110,7 +120,7 @@ window.ROADS = [
   { n: "Way of the Arabah", src: "B3", pts: ["hor", "elath"] },
   { n: "Road to Paran", src: "B2", pts: ["kadesh", "paran"] },
   { n: "Wilderness of Sinai", src: "B3", pts: ["kadesh", "zin", "rithmah", "hazeroth", "kibroth", "sinai"] },
-  { n: "Wilderness of Sinai", src: "B3", pts: ["hazeroth", "elath"] },
+  { n: "Wilderness of Sinai", src: "B3", pts: ["hazeroth", [34.55, 29.2], [34.8, 29.48], [34.92, 29.56], "elath"] },
   { n: "Road to Midian", src: "common route", pts: ["elath", "midian"] },
   { n: "Pilgrims' road across Sinai", src: "common route", pts: ["clysma", "nakhl", "elath"] },
   { n: "Road to Clysma", src: "common route", pts: ["memphis", "clysma"] },
@@ -146,21 +156,21 @@ window.TRAVELS = {
   "cyprus>pantioch": { src: "B13; Acts 13:13-14", via: ["cyprus", "=cyprus>perga", "perga", [31.0, 37.6], "pantioch"] },
   "lystra>jerusalem": { src: "B13; Acts 14:21-26; 15:2-4", via: ["lystra", "iconium", "pantioch", [31.0, 37.6], "perga", "attalia", [31.4, 36.35], [33.4, 35.85], [35.3, 35.95], "seleucia", ">", "jerusalem"] },
   "jerusalem>philippi": { src: "B13; Acts 15:40-16:12", via: ["jerusalem", ">", "antioch", ">", "lystra", "iconium", "pantioch", [29.6, 38.9], [27.6, 39.45], "troas", "=troas>philippi", "philippi"] },
-  "troas>philippi": { src: "B13; Acts 16:11-12", via: ["troas", [25.53, 40.47], "neapolis", "philippi"] },
-  "philippi>athens": { src: "B13; Acts 16:12-17:15", via: ["philippi", ">", "beroea", [22.6, 40.33], [23.4, 39.95], [24.0, 39.5], [24.55, 38.95], [24.75, 38.25], [24.15, 37.55], [23.62, 37.9], "athens"] },
-  "corinth>ephesus": { src: "B13; Acts 18:18-19", via: ["corinth", "cenchreae", [23.45, 37.65], [24.2, 37.5], [25.55, 37.28], [26.45, 37.52], [26.7, 37.95], [27.2, 37.9], "ephesus"] },
-  "ephesus>jerusalem": { src: "B13; Acts 20:15-21:15", via: ["ephesus", "miletus", "=miletus>tyre", "tyre", ">", "jerusalem"] },
-  "miletus>tyre": { src: "B13; Acts 20:15-21:3", via: ["miletus", [27.35, 37.1], [27.3, 36.9], [27.95, 36.6], [28.25, 36.5], [28.9, 36.25], [29.3, 36.2], [31.5, 34.95], [33.6, 34.3], "tyre"] },
-  "caesarea>malta": { src: "B13; Acts 27:1-28:1", via: ["caesarea", [34.75, 32.9], "sidon", [35.1, 34.3], [34.85, 35.45], [33.5, 35.82], [32.0, 36.15], [30.6, 36.15], [29.98, 36.18], [28.7, 36.45], [27.95, 36.6], [27.37, 36.62], [26.6, 35.6], [26.35, 35.2], [25.6, 34.88], [24.8, 34.88], [24.08, 34.75], [20.0, 35.2], [16.5, 35.7], "malta"] },
-  "malta>rome": { src: "B13; Acts 28:11-16", via: ["malta", [15.0, 36.6], "syracuse", [15.55, 37.6], "rhegium", [15.5, 38.6], [14.9, 39.6], [14.1, 40.6], "puteoli", ">", "rome"] },
+  "troas>philippi": { src: "B13; Acts 16:11-12", via: ["troas", [25.84, 39.86], [25.54, 40.34], "samothrace", "neapolis", "philippi"] },
+  "philippi>athens": { src: "B13; Acts 16:12-17:15", via: ["philippi", ">", "beroea", "=beroea>athens", "athens"] },
+  "beroea>athens": { src: "B13; Acts 17:14-15", via: ["beroea", [22.6, 40.33], [23.4, 39.95], [24.0, 39.5], [24.55, 38.95], [24.74, 38.76], [24.75, 38.25], [24.39, 37.74], [24.15, 37.55], [23.64, 37.86], "piraeus", "athens"] },
+  "corinth>ephesus": { src: "B13; Acts 18:18-19", via: ["corinth", "cenchreae", [23.71, 37.74], [24.2, 37.5], [24.74, 37.39], [25.09, 37.29], [25.55, 37.28], [26.45, 37.52], [26.7, 37.95], [27.2, 37.9], "ephesus"] },
+  "ephesus>jerusalem": { src: "B13; Acts 20:15-21:15", via: ["ephesus", ">", "miletus", "=miletus>tyre", "tyre", ">", "jerusalem"] },
+  "miletus>tyre": { src: "B13; Acts 21:1-3", via: ["miletus", [27.21, 37.46], [27.16, 36.99], "cos", [27.41, 36.59], "rhodes", "patara", [31.31, 35.16], [31.5, 34.95], [33.6, 34.3], "tyre"] },
+  "caesarea>malta": { src: "B13; Acts 27:1-28:1", via: ["caesarea", [34.91, 32.89], [35.31, 33.56], "sidon", [34.85, 35.45], [34.46, 35.76], [33.5, 35.82], [32.0, 36.15], "myra", [29.46, 36.06], [28.06, 36.51], [27.74, 36.51], [27.39, 36.66], "cnidus", "salmone", [26.36, 35.11], [26.09, 34.94], [24.79, 34.91], "fairhavens", "cauda", [20.0, 35.2], [16.5, 35.7], [14.44, 35.96], "malta"] },
+  "malta>rome": { src: "B13; Acts 28:11-16", via: ["malta", [15.19, 36.74], [15.34, 37.04], "syracuse", [15.55, 37.6], "rhegium", [15.61, 38.24], [15.64, 38.26], [15.5, 38.6], [14.9, 39.6], [14.1, 40.6], "puteoli", ">", "rome"] },
   // the companions' legs: the same voyages, joined (Acts 13:4-13; 16:11; 17:14-18:5; 20:6-28:16)
   "philippi>corinth": { src: "B13; Acts 17:14-15; 18:5", via: ["philippi", "=philippi>athens", "athens", ">", "corinth"] },
-  "philippi>rome": { src: "B13; Acts 20:6-28:16", via: ["philippi", "neapolis", [25.53, 40.47], "troas", [26.1, 39.47], "assos", [26.56, 39.1], [26.3, 38.45], [26.95, 37.65], "miletus", "=miletus>tyre", "tyre", ">", "caesarea", "=caesarea>malta", "malta", "=malta>rome", "rome"] },
+  "philippi>rome": { src: "B13; Acts 20:6-28:16", via: ["philippi", "neapolis", [24.99, 40.64], [26.06, 39.74], "troas", ">", "assos", [26.59, 39.11], "mitylene", [26.66, 39.01], [26.24, 38.56], "chios", [26.54, 37.86], [26.61, 37.64], [26.91, 37.64], "samos", "trogyllium", [27.21, 37.46], "miletus", "=miletus>tyre", "tyre", ">", "caesarea", "=caesarea>malta", "malta", "=malta>rome", "rome"] },
   "jerusalem>perga": { src: "B13; Acts 12:25-13:13", via: ["jerusalem", ">", "antioch", "=antioch>salamis", "salamis", ">", "cyprus", "=cyprus>perga", "perga"] },
-  // no source map: the usual ways by sea and through the wilderness
-  "rome>corinth": { src: "common route", via: ["rome", ">", "brundisium", [18.7, 40.1], [19.75, 39.35], [20.4, 38.75], [21.0, 38.3], [21.8, 38.32], [22.4, 38.15], "lechaeum", "corinth"] },
-  "alexandria>ephesus": { src: "common route", via: ["alexandria", [29.9, 31.6], [28.3, 36.3], [27.95, 36.6], [27.3, 36.9], [27.35, 37.1], [27.0, 37.65], [27.2, 37.9], "ephesus"] },
-  "alexandria>corinth": { src: "common route", via: ["alexandria", [29.9, 31.6], [26.9, 35.3], [25.6, 36.15], [24.4, 36.9], [23.45, 37.65], "cenchreae", "corinth"] },
-  "jerusalem>patmos": { src: "common route", via: ["jerusalem", ">", "tyre", "=tyre>miletus", "miletus", [27.0, 37.4], "patmos"] },
-  "midian>sinai": { src: "common route", via: ["midian", "elath", [34.6, 29.1], "sinai"] },
+  // no source map: the usual ways through the wilderness, and by sea and road where ORBIS has no way
+  "midian>sinai": { src: "common route", via: ["midian", "elath", [34.92, 29.56], [34.8, 29.48], [34.6, 29.1], "sinai"] },
+  // Dublin to Holyhead by the packet boat, then the post road through Shrewsbury and Birmingham to London
+  "dublin>london": { src: "common route", via: ["dublin", "holyhead", [-4.13, 53.23], [-3.17, 52.97], [-2.75, 52.71], [-1.9, 52.48], [-1.51, 52.41], [-0.99, 52.13], [-0.34, 51.75], "london"] },
+  "dublin>cambridge": { src: "common route", via: ["dublin", "=dublin>london", "london", "cambridge"] },
 };
