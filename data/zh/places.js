@@ -152,6 +152,13 @@ window.ZH.places = {
  "shiloh": {
   "n": "示羅"
  },
+ "aphek": {
+  "n": "亞非克（以便以謝）",
+  "note": "以色列人在附近的以便以謝紮營（撒母耳記上4:1）"
+ },
+ "kiriathjearim": {
+  "n": "基烈耶琳"
+ },
  "debir": {
   "n": "底比爾",
   "note": "認定為 Khirbet Rabud"
@@ -165,6 +172,12 @@ window.ZH.places = {
  "kedesh": {
   "n": "基底斯（拿弗他利）"
  },
+ "hazor": {
+  "n": "夏瑣"
+ },
+ "merom": {
+  "n": "米倫水"
+ },
  "tabor": {
   "n": "他泊山"
  },
@@ -174,6 +187,9 @@ window.ZH.places = {
  "ophrah": {
   "n": "俄弗拉",
   "note": "《洞悉》：暫定為 el-ʽAffuleh"
+ },
+ "thebez": {
+  "n": "提備斯"
  },
  "harod": {
   "n": "哈律泉"
@@ -210,6 +226,31 @@ window.ZH.places = {
  },
  "gibeah": {
   "n": "基比亞"
+ },
+ "nob": {
+  "n": "挪伯",
+  "note": "在耶路撒冷以北不遠"
+ },
+ "engedi": {
+  "n": "隱基底"
+ },
+ "carmeljudah": {
+  "n": "猶大的迦密",
+  "note": "在瑪雲附近，不是迦密山"
+ },
+ "bahurim": {
+  "n": "巴戶琳",
+  "note": "在耶路撒冷以東，靠近橄欖山"
+ },
+ "gezer": {
+  "n": "基瑟"
+ },
+ "geshur": {
+  "n": "基述",
+  "note": "加利利海以東的亞蘭王國"
+ },
+ "hamath": {
+  "n": "哈馬"
  },
  "michmash": {
   "n": "密抹"
