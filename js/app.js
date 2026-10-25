@@ -1407,25 +1407,35 @@
       + `<details class="comp-refs"><summary>${T("comp.refs", null, "Verses")}</summary>${Scripture.linkRefs(refs)}</details></span></div>`;
   }
 
-  /* contemporaries: other key figures whose lifespans overlap this key figure's, family left out
-     (it is listed above), most years shared first. Most of them have assumed dates placed by their
-     generation, so the list is a guide; their chips are dashed. Collapsed until opened. */
-  const CONTEMP_SHOWN = 8;
+  /* contemporaries: in everyone's window, the key figures whose lifespans overlap this person's,
+     family left out (it is listed above), most years shared first. A person no key figure lived
+     alongside gets everyone who did, and one nobody else lived alongside (a few from history) gets
+     the people who lived nearest in time, so the list is never missing. Most of them have assumed
+     dates placed by their generation, so the list is a guide; their chips are dashed. Collapsed until opened. */
+  const CONTEMP_SHOWN = 8, CONTEMP_NEAR = 4;
   function contemporariesHTML(c) {
-    if (!c.key) return "";
     const fam = new Set(c.relIds), shared = (o) => Math.min(o.td, c.td) - Math.max(o.tb, c.tb);
-    const list = CHARS.filter((o) => o.key && o !== c && !fam.has(o.id) && shared(o) > 0)
-      .sort((a, b) => shared(b) - shared(a) || a.tier - b.tier);
+    const others = CHARS.filter((o) => o !== c && !fam.has(o.id));
+    let list = others.filter((o) => o.key && shared(o) > 0);
+    const anyone = !list.length;
+    if (anyone) list = others.filter((o) => shared(o) > 0);
+    const near = !list.length;
+    if (near) list = others.slice().sort((a, b) => shared(b) - shared(a) || a.tier - b.tier).slice(0, CONTEMP_NEAR);
+    else list.sort((a, b) => shared(b) - shared(a) || a.tier - b.tier);
     if (!list.length) return "";
     const chips = list.map((o, i) => {
       const yrs = shared(o), approx = c.assumed || o.assumed;
-      const tip = I18.zh ? `${o.role || ""}${o.role ? "。" : ""}${T("overlap", { a: approx ? T("overlap.about") : "", n: yrs, q: o.assumed ? T("overlap.approx") : "" })}`
+      const tip = near ? (I18.zh ? `${o.role || ""}${o.role ? "。" : ""}${T("apart", { n: -yrs })}` : `${o.role || ""}${o.role ? ". " : ""}Lived ${-yrs} year${yrs < -1 ? "s" : ""} apart`)
+        : I18.zh ? `${o.role || ""}${o.role ? "。" : ""}${T("overlap", { a: approx ? T("overlap.about") : "", n: yrs, q: o.assumed ? T("overlap.approx") : "" })}`
         : `${o.role || ""}${o.role ? ". " : ""}Lifespans overlap ${approx ? "about " : ""}${yrs} year${yrs > 1 ? "s" : ""}${o.assumed ? " (dates approximate)" : ""}`;
       return `<button class="rel-chip${o.assumed ? " approx" : ""}" data-rel="${esc(o.id)}" title="${esc(tip)}"${i >= CONTEMP_SHOWN ? " hidden" : ""}>${esc(o.name)}</button>`;
     }).join("");
     const more = list.length > CONTEMP_SHOWN ? `<button class="contemp-more" aria-expanded="false">${T("show.all.n", { n: list.length }, `Show all ${list.length}`)}</button>` : "";
-    return `<details class="contemp"><summary class="win-h">${T("contemp", null, "Contemporaries")} <span class="contemp-n">${list.length}</span></summary>`
-      + `<div class="rel-v">${chips}${more}</div><div class="contemp-note">${T("contemp.note", null, "Key figures alive at the same time, most years shared first. Dashed: dates assumed.")}</div></details>`;
+    const note = near ? T("contemp.near", null, "No one else on this timeline lived at the same time; these lived nearest.")
+      : anyone ? T("contemp.all", null, "People alive at the same time, most years shared first. Dashed: dates assumed.")
+      : T("contemp.note", null, "Key figures alive at the same time, most years shared first. Dashed: dates assumed.");
+    return `<details class="contemp"><summary class="win-h">${T("contemp", null, "Contemporaries")}${near ? "" : ` <span class="contemp-n">${list.length}</span>`}</summary>`
+      + `<div class="rel-v">${chips}${more}</div><div class="contemp-note">${note}</div></details>`;
   }
 
   /* the map of a person's places: on a computer it is drawn in the map window (mapW, below), which
