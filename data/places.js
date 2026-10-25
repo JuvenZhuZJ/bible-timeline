@@ -251,7 +251,7 @@ window.PERSON_PLACES = {
   "benjamin": [["bethlehem",0], ["egypt",1]],
   "miriam": [["egypt",0], ["redsea",1], ["hazeroth",2], ["kadesh",3]],
   "aaron": [["egypt",0], ["sinai",1], ["sinai",2], ["hor",3]],
-  "job": [["uz",-1620,"Lives in the land of Uz, upright and wealthy","Job 1:1-3"], ["uz",0], ["uz",2]],
+  "job": [["uz",-1620,"Lives in the land of Uz, upright and wealthy","Job 1:1-3"], ["uz",0], ["uz",2], ["uz",1]],
   "moses": [["egypt",0], ["midian",1], ["sinai",2], ["redsea",-1513,"Israel crosses the Red Sea","Exodus 14:21-22"], ["sinai",3], ["kadesh",-1512,"Sends 12 spies from Kadesh","Numbers 13:3, 26"], ["shittim",-1473,"Speaks Deuteronomy on the plains of Moab","Deuteronomy 1:5"], ["nebo",4], ["kadesh",5]],
   "jethro": [["midian",0], ["sinai",1]],
   "balaam": [["moab",0], ["midian",1]],
@@ -295,15 +295,15 @@ window.PERSON_PLACES = {
   "hezekiah": [["jerusalem",0], ["jerusalem",1], ["jerusalem",2], ["jerusalem",3], ["jerusalem",4]],
   "manasseh": [["jerusalem",0], ["babylon",1], ["jerusalem",2]],
   "josiah": [["jerusalem",0], ["jerusalem",2], ["megiddo",3], ["jerusalem",1]],
-  "jeremiah": [["anathoth",0], ["jerusalem",2], ["jerusalem",3], ["tahpanhes",4]],
+  "jeremiah": [["anathoth",0], ["jerusalem",2], ["jerusalem",3], ["tahpanhes",4], ["jerusalem",1]],
   "nebuchadnezzar": [["carchemish",-625,"Defeats Pharaoh Nechoh at Carchemish","Jeremiah 46:2"], ["babylon",0], ["jerusalem",2], ["riblah",-607,"Sentences Zedekiah at Riblah","2 Kings 25:6-7"], ["babylon",3], ["babylon",4], ["jerusalem",6], ["babylon",7], ["babylon",8], ["jerusalem",1]],
   "zedekiah": [["jerusalem",0], ["riblah",2], ["babylon",-607,"Dies a prisoner in Babylon","Jeremiah 52:11"], ["jerusalem",1]],
   "ezekiel": [["jerusalem",-630,"A priest of Jerusalem","Ezekiel 1:3"], ["babylon",0], ["chebar",1], ["chebar",3], ["chebar",2], ["chebar",4], ["chebar",5], ["chebar",6], ["chebar",7], ["chebar",8], ["chebar",9], ["chebar",10], ["chebar",11]],
-  "daniel": [["jerusalem",-630,"Grows up in Judah","Daniel 1:3-6"], ["babylon",0], ["babylon",2], ["susa",9], ["babylon",3], ["tigris",4], ["babylon",5], ["babylon",6], ["babylon",7], ["babylon",8]],
+  "daniel": [["jerusalem",-630,"Grows up in Judah","Daniel 1:3-6"], ["babylon",0], ["babylon",2], ["susa",9], ["babylon",3], ["tigris",4], ["babylon",5], ["babylon",6], ["babylon",7], ["babylon",8], ["babylon",1]],
   "cyrus": [["babylon",0], ["babylon",1]],
   "zerubbabel": [["babylon",-537,"Leaves Babylon with the exiles","Ezra 2:1-2"], ["jerusalem",1], ["jerusalem",3], ["jerusalem",0], ["jerusalem",2]],
   "haggai": [["jerusalem",0]],
-  "zechariah-prophet": [["jerusalem",0]],
+  "zechariah-prophet": [["jerusalem",0], ["jerusalem",1]],
   "esther": [["susa",0], ["susa",1], ["susa",2], ["susa",3]],
   "mordecai": [["susa",0], ["susa",1], ["susa",2]],
   "ezra": [["babylon",-468,"Sets out from Babylon","Ezra 7:6, 9"], ["jerusalem",0], ["jerusalem",1], ["jerusalem",2]],
@@ -339,6 +339,7 @@ window.PERSON_PLACES = {
   "priscilla": [["rome",49,"Leaves Rome when Claudius expels the Jews","Acts 18:2"], ["corinth",0], ["ephesus",1], ["rome",56,"Back in Rome; a congregation meets in their house","Romans 16:3-5"], ["ephesus",65,"Greeted in Paul's last letter, evidently in Ephesus again","2 Timothy 4:19; 1 Timothy 1:3"]],
   "aquila": [["rome",49,"Leaves Rome when Claudius expels the Jews","Acts 18:2"], ["corinth",0], ["ephesus",1], ["rome",56,"Back in Rome; a congregation meets in their house","Romans 16:3-5"], ["ephesus",65,"Greeted in Paul's last letter, evidently in Ephesus again","2 Timothy 4:19; 1 Timothy 1:3"]],
   "apollos": [["alexandria",52,"A native of Alexandria","Acts 18:24"], ["ephesus",0], ["corinth",1], ["crete",62,"Paul asks Titus in Crete to send him on his way with all he needs","Titus 3:13"]],
+  "malachi": [["jerusalem",0], ["jerusalem",1]]
 };
 
 window.EVENT_PLACES = {"covenant":"shechem", "egypt":"goshen", "exodus":"rameses", "canaan":"jericho", "monarchy":"zuph", "temple":"jerusalem", "division":"shechem", "samaria":"samaria", "jerusalem1":"jerusalem", "return":"jerusalem", "walls":"jerusalem", "birth":"bethlehem", "baptism":"jordanford", "pentecost":"jerusalem", "jerusalem2":"jerusalem", "revelation":"patmos", "flood":"ararat", "babylon":"babylon", "temple2":"jerusalem", "gentiles":"caesarea"};

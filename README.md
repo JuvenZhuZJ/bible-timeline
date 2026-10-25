@@ -276,7 +276,7 @@ The script merges the curated key figures with the Insight records, links relati
 - `tier`: `{ "id": 1-4 }` sets how far you must zoom in before a person appears (1 is always shown).
 - `dates`: `{ "id": [born, died] }` replaces a placeholder life span that the generation estimate gets wrong (Ruth's family, for example: Obed is born when Ruth marries Boaz, not a generation later). Jesse is set here too: he must be alive at David's birth (1107 B.C.E.) and while David was a fugitive (1 Samuel 22:3, 4), and his father Obed was born in Ruth's day, so both lives are long.
 - `notes`: `{ "id": "text" }` adds a window note to a person who is not a key figure, for example to explain an estimated date.
-- `events`: `{ "id": [[year, "text", "scripture"], ...] }` gives activities to a person who is not a key figure (Joel, Gomer, Belshazzar, Darius the Mede). Their Chinese text goes in the person's `e` list in `data/zh/people.js`, in the same order.
+- `events`: `{ "id": [[year, "text", "scripture", { "p": "place-id" }], ...] }` gives activities to a person who is not a key figure (Joel, Gomer, Belshazzar, Darius the Mede); the place is optional, as in `activities.json`. Their Chinese text goes in the person's `e` list in `data/zh/people.js`, in the same order.
 - `unlink`: `{ "id": { "children": ["other-id"] } }` removes a wrong family link in both directions (Drusilla's son Agrippa had been matched to Herod Agrippa I, her father).
 - `relNames`: `{ "id": { "children": ["Name"] } }` lists a relative by name only, with no link (Drusilla's son Agrippa, who has no record of his own).
 

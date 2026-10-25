@@ -34,7 +34,7 @@
   "toegypt": [-607, "Rescues Ishmael's captives, then leads the remnant to Egypt against Jeremiah's advice", "Jeremiah 41:11-16; 43:4-7", {"p": "tahpanhes", "zh": "救回被以實瑪利擄走的人，後來不聽耶利米的勸告，帶領餘下的人到埃及"}],
   "return537": [-537, "Returns from Babylon with Zerubbabel", "Ezra 2:1, 2; Nehemiah 12:1-9", {"p": "jerusalem", "zh": "與所羅巴伯一同從巴比倫歸回"}],
   "foundation": [-536, "Helps oversee the rebuilding of the temple", "Ezra 3:8, 9", {"p": "jerusalem", "zh": "協助監督重建聖殿的工程"}],
-  "letter": [-522, "Helps write a letter to King Artaxerxes falsely accusing the Jews", "Ezra 4:7-16", {"zh": "協助寫信給亞達薛西王，誣告猶太人"}],
+  "letter": [-522, "Helps write a letter to King Artaxerxes falsely accusing the Jews", "Ezra 4:7-16", {"p": "samaria", "zh": "協助寫信給亞達薛西王，誣告猶太人"}],
   "tattenai": [-520, "Questions the temple rebuilding and writes to King Darius", "Ezra 5:3-17", {"p": "jerusalem", "zh": "質問重建聖殿的事，並寫信給大流士王"}],
   "tattenai2": [-519, "Ordered by Darius to support the work, and does so promptly", "Ezra 6:6-13", {"c": 1, "p": "jerusalem", "zh": "大流士王命令他支持重建工程，他就立刻照辦"}],
   "crown": [-519, "Brings gold and silver from Babylon that is made into a crown for High Priest Joshua", "Zechariah 6:9-14", {"p": "jerusalem", "zh": "從巴比倫帶來金銀，用來為大祭司約書亞製作冠冕"}],
@@ -878,7 +878,7 @@
   "esar-haddon": [
     [-702, "Succeeds his murdered father Sennacherib as king of Assyria", "2 Kings 19:37; Isaiah 37:38", {"c": 1, "p": "nineveh", "zh": "在父親西拿基立被殺後繼任亞述王"}]],
   "asenappar": [
-    [-670, "Moves people from Susa and Elam to the cities of Samaria", "Ezra 4:9, 10", {"c": 1, "zh": "把書珊和以攔的人遷到撒馬利亞的城鎮"}]],
+    [-670, "Moves people from Susa and Elam to the cities of Samaria", "Ezra 4:9, 10", {"c": 1, "p": "samaria", "zh": "把書珊和以攔的人遷到撒馬利亞的城鎮"}]],
   "amon-2": [
     [-661, "Becomes king of Judah at 22 and serves idols", "2 Kings 21:19-22", {"p": "jerusalem", "zh": "22歲成為猶大王，事奉偶像"}],
     [-660, "Murdered by his servants; the people make his son Josiah king", "2 Kings 21:23, 24", {"p": "jerusalem", "zh": "被僕人殺害；百姓立他的兒子約西亞作王"}]],
