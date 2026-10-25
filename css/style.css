@@ -644,7 +644,8 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bm-hide { margin-left: auto; padding: 2px 7px; }
 @media (max-width: 760px) { .bm-bar { gap: 4px; } .bm-sw { padding: 2px 6px; } }
 .bm-views[data-v="0"] .bm-v:not([data-k="0"]), .bm-views[data-v="1"] .bm-v:not([data-k="1"]), .bm-views[data-v="2"] .bm-v:not([data-k="2"]),
-.bm-views[data-v="3"] .bm-v:not([data-k="3"]), .bm-views[data-v="4"] .bm-v:not([data-k="4"]) { display: none; }
+.bm-views[data-v="3"] .bm-v:not([data-k="3"]), .bm-views[data-v="4"] .bm-v:not([data-k="4"]), .bm-views[data-v="5"] .bm-v:not([data-k="5"]),
+.bm-views[data-v="6"] .bm-v:not([data-k="6"]), .bm-views[data-v="7"] .bm-v:not([data-k="7"]) { display: none; }   /* up to eight maps (MAX_MAPS in js/map.js) */
 .bm-views.folded .bm-v, .bm-views.folded .bm-cap { display: none; }
 .bm-views.folded .bm-bar { margin-bottom: -1px; }
 .bm-cap { font: 300 11px/1.45 var(--sans); color: var(--muted); min-height: 3em; margin-top: 7px; }
