@@ -218,7 +218,18 @@ window.BIBLE_PLACES = {
   "hierapolis": {"n":"Hierapolis","ll":[29.125,37.925],"s":"known","note":"Near modern Pamukkale, Turkey"},
   "carthage": {"n":"Carthage","ll":[10.323,36.853],"s":"known","note":"Near modern Tunis, Tunisia"},
   "hippo": {"n":"Hippo","ll":[7.75,36.883],"s":"known","note":"Modern Annaba, Algeria"},
-  "reims": {"n":"Reims","ll":[4.034,49.258],"s":"known"}
+  "reims": {"n":"Reims","ll":[4.034,49.258],"s":"known"},
+  "beziers": {"n":"Béziers","ll":[3.215,43.344],"s":"known"},
+  "paris": {"n":"Paris","ll":[2.352,48.857],"s":"known"},
+  "alcala": {"n":"Alcalá de Henares","ll":[-3.364,40.482],"s":"known"},
+  "zurich": {"n":"Zurich","ll":[8.541,47.377],"s":"known"},
+  "juterbog": {"n":"Jüterbog","ll":[13.07,51.993],"s":"known"},
+  "venice": {"n":"Venice","ll":[12.316,45.441],"s":"known"},
+  "basel": {"n":"Basel","ll":[7.589,47.56],"s":"known"},
+  "amsterdam": {"n":"Amsterdam","ll":[4.9,52.373],"s":"known"},
+  "neuchatel": {"n":"Neuchâtel","ll":[6.931,46.99],"s":"known"},
+  "nuremberg": {"n":"Nuremberg","ll":[11.077,49.452],"s":"known"},
+  "seville": {"n":"Seville","ll":[-5.984,37.389],"s":"known"}
 };
 
 window.PERSON_PLACES = {

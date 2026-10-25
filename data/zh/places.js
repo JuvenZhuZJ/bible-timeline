@@ -594,7 +594,18 @@ window.ZH.places = {
  "hierapolis": {"n":"希拉波利斯"},
  "carthage": {"n":"迦太基"},
  "hippo": {"n":"希波"},
- "reims": {"n":"蘭斯"}
+ "reims": {"n":"蘭斯"},
+ "beziers": {"n":"貝濟耶"},
+ "paris": {"n":"巴黎"},
+ "alcala": {"n":"埃納雷斯堡阿爾卡拉"},
+ "zurich": {"n":"蘇黎世"},
+ "juterbog": {"n":"于特博格"},
+ "venice": {"n":"威尼斯"},
+ "basel": {"n":"巴塞爾"},
+ "amsterdam": {"n":"阿姆斯特丹"},
+ "neuchatel": {"n":"納沙泰爾"},
+ "nuremberg": {"n":"紐倫堡"},
+ "seville": {"n":"塞維利亞"}
 };
 window.ZH.events = {
  "creation": {
