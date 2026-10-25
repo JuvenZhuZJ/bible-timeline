@@ -589,7 +589,12 @@ window.ZH.places = {
  "pampa": {"n":"德克薩斯州潘帕"},
  "eisleben": {"n":"艾斯萊本"},
  "oxford": {"n":"牛津"},
- "noyon": {"n":"努瓦永"}
+ "noyon": {"n":"努瓦永"},
+ "smyrna": {"n":"士每拿"},
+ "hierapolis": {"n":"希拉波利斯"},
+ "carthage": {"n":"迦太基"},
+ "hippo": {"n":"希波"},
+ "reims": {"n":"蘭斯"}
 };
 window.ZH.events = {
  "creation": {

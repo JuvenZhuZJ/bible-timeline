@@ -213,7 +213,12 @@ window.BIBLE_PLACES = {
   "pampa": {"n":"Pampa, Texas","ll":[-100.96,35.536],"s":"known"},
   "eisleben": {"n":"Eisleben","ll":[11.548,51.528],"s":"known"},
   "oxford": {"n":"Oxford","ll":[-1.257,51.754],"s":"known"},
-  "noyon": {"n":"Noyon","ll":[2.999,49.581],"s":"known"}
+  "noyon": {"n":"Noyon","ll":[2.999,49.581],"s":"known"},
+  "smyrna": {"n":"Smyrna","ll":[27.142,38.419],"s":"known","note":"Modern İzmir, Turkey"},
+  "hierapolis": {"n":"Hierapolis","ll":[29.125,37.925],"s":"known","note":"Near modern Pamukkale, Turkey"},
+  "carthage": {"n":"Carthage","ll":[10.323,36.853],"s":"known","note":"Near modern Tunis, Tunisia"},
+  "hippo": {"n":"Hippo","ll":[7.75,36.883],"s":"known","note":"Modern Annaba, Algeria"},
+  "reims": {"n":"Reims","ll":[4.034,49.258],"s":"known"}
 };
 
 window.PERSON_PLACES = {
