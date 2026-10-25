@@ -29,7 +29,7 @@ window.ROUTE_WAY = {
   // the land
   ramahb: [35.233, 31.85], hazor: [35.57, 33.02], jacobsford: [35.63, 33.0], bethshean: [35.5, 32.5], adam: [35.55, 32.1],
   aphek: [34.93, 32.1], bethhoron: [35.12, 31.88], ashdod: [34.65, 31.8], ashkelon: [34.55, 31.66],
-  raphia: [34.25, 31.29], arad: [35.13, 31.28], ginae: [35.3, 32.46], nain: [35.35, 32.63], sepphoris: [35.28, 32.75],
+  raphia: [34.25, 31.29], arad: [35.13, 31.28], ginae: [35.3, 32.46], sepphoris: [35.28, 32.75],
   tiberias: [35.53, 32.79], ashteroth: [36.0, 32.83], edrei: [36.1, 32.62],
   heshbon: [35.8, 31.8], medeba: [35.8, 31.72], dibon: [35.78, 31.5], kirhareseth: [35.7, 31.18], bozrah: [35.6, 30.73],
   elath: [34.98, 29.55],

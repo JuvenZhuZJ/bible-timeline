@@ -1429,7 +1429,8 @@
   "salome-2": [
     [32, "Dances before Herod Antipas and, prompted by her mother, asks for John the Baptizer's head", "Matthew 14:6-11; Mark 6:21-28", {"zh": "在希律·安提帕面前跳舞，受母親唆使，要求得到施浸者約翰的頭"}]],
   "nathanael": [
-    [29, "Brought to Jesus by Philip; praised as 'an Israelite in whom there is no deceit'", "John 1:45-51", {"c": 1, "p": "jordanford", "zh": "腓力帶他去見耶穌；耶穌稱讚他是「心裡沒有詭詐的以色列人」"}],
+    [29, "Brought to Jesus by Philip; praised as 'an Israelite in whom there is no deceit'", "John 1:45-51", {"c": 1, "p": "jordanford", "zh": "腓力帶他去見耶穌；耶穌稱讚他是「心裡沒有詭詐的以色列人」"},
+    [29, "From Cana in Galilee", "John 21:2", {"c": 1, "p": "cana", "zh": "來自加利利的迦拿"}]],
     [33, "Sees the resurrected Jesus at the Sea of Galilee", "John 21:1, 2", {"p": "galileesea", "zh": "在加利利海邊看見復活的耶穌"}]],
   "philip-apostle": [
     [29, "Follows Jesus and brings Nathanael to him", "John 1:43-46", {"c": 1, "p": "jordanford", "zh": "跟從耶穌，並帶拿但業去見他"},
@@ -1620,7 +1621,9 @@
   "pudens": [
     "timothy4"],
   "jude": [
-    [65, "Writes his letter urging Christians to fight for the faith", "Jude 1, 3", {"c": 1, "zh": "寫信勸勉基督徒為信仰奮鬥"}]],
+    [65, "Writes his letter urging Christians to fight for the faith", "Jude 1, 3", {"c": 1, "zh": "寫信勸勉基督徒為信仰奮鬥"}],
+    [30, "Goes down to Capernaum with Jesus and their mother", "John 2:12", {"c": 1, "p": "capernaum", "zh": "和耶穌以及母親下到迦百農"}],
+    [32, "Named among Jesus' brothers by the people of Nazareth", "Matthew 13:54-56", {"c": 1, "p": "nazareth", "zh": "拿撒勒的人提到他是耶穌的弟弟之一"}]],
   "jezebel-2": [
     [96, "Rebuked in Jesus' message to Thyatira for teaching idolatry and fornication", "Revelation 2:20-23", {"c": 1, "p": "thyatira", "zh": "耶穌給推雅推喇會眾的信息責備她教導人拜偶像和淫亂"}]],
   "diotrephes": [
@@ -1772,13 +1775,14 @@
   "susanna": [
     [31, "Travels with Jesus and supports him from her belongings", "Luke 8:1-3", {"c": 1, "zh": "跟著耶穌基督到各處去，用自己的財物供應他"}]],
   "syrophoenician-woman": [
-    [32, "Her humble faith moves Jesus to heal her daughter", "Mark 7:24-30", {"c": 1, "zh": "她謙卑的信心使耶穌基督治好她的女兒"}]],
+    [32, "Her humble faith moves Jesus to heal her daughter", "Mark 7:24-30", {"c": 1, "p": "tyre", "zh": "她謙卑的信心使耶穌基督治好她的女兒"}]],
   "gamaliel-2": [
     [33, "Advises the Sanhedrin to leave the apostles alone", "Acts 5:34-39", {"c": 1, "p": "jerusalem", "zh": "勸議會不要管使徒"}]],
   "joseph-barsabbas-11": [
     [33, "Put forward with Matthias to replace Judas", "Acts 1:23-26", {"p": "jerusalem", "zh": "跟馬提亞一起被提名接替猶大"}]],
   "joseph-of-arimathea-10": [
-    [33, "Asks Pilate for Jesus' body and lays it in his own tomb", "John 19:38-42", {"p": "jerusalem", "zh": "向彼拉多要求領取耶穌基督的遺體，安放在自己的墓裡"}]],
+    [33, "Asks Pilate for Jesus' body and lays it in his own tomb", "John 19:38-42", {"p": "jerusalem", "zh": "向彼拉多要求領取耶穌基督的遺體，安放在自己的墓裡"}],
+    [33, "From Arimathea, a city of the Judeans", "Luke 23:50, 51", {"c": 1, "p": "arimathea", "zh": "來自猶太人的城亞利馬太"}]],
   "zacchaeus": [
     [33, "Climbs a tree to see Jesus, then hosts him and repents", "Luke 19:1-10", {"p": "jericho", "zh": "爬上樹看耶穌基督，後來接待他並且悔改"}]],
   "judas-6": [
@@ -1855,9 +1859,13 @@
   "judas-3": [
     [33, "Waits and prays with the other apostles in the upper room in Jerusalem", "Acts 1:13, 14", {"p": "jerusalem", "zh": "和其他使徒一起在耶路撒冷的樓上房間等候、禱告"}]],
   "simon-3b": [
-    [33, "With Jesus' mother and the disciples in Jerusalem before Pentecost", "Acts 1:14", {"p": "jerusalem", "zh": "五旬節前和耶穌的母親以及門徒一起在耶路撒冷"}]],
+    [33, "With Jesus' mother and the disciples in Jerusalem before Pentecost", "Acts 1:14", {"p": "jerusalem", "zh": "五旬節前和耶穌的母親以及門徒一起在耶路撒冷"}],
+    [30, "Goes down to Capernaum with Jesus and their mother", "John 2:12", {"c": 1, "p": "capernaum", "zh": "和耶穌以及母親下到迦百農"}],
+    [32, "Named among Jesus' brothers by the people of Nazareth", "Mark 6:1-3", {"c": 1, "p": "nazareth", "zh": "拿撒勒的人提到他是耶穌的弟弟之一"}]],
   "joseph-9": [
-    [33, "With Jesus' mother and the disciples in Jerusalem before Pentecost", "Acts 1:14", {"p": "jerusalem", "zh": "五旬節前和耶穌的母親以及門徒一起在耶路撒冷"}]],
+    [33, "With Jesus' mother and the disciples in Jerusalem before Pentecost", "Acts 1:14", {"p": "jerusalem", "zh": "五旬節前和耶穌的母親以及門徒一起在耶路撒冷"}],
+    [30, "Goes down to Capernaum with Jesus and their mother", "John 2:12", {"c": 1, "p": "capernaum", "zh": "和耶穌以及母親下到迦百農"}],
+    [32, "Named among Jesus' brothers by the people of Nazareth", "Mark 6:1-3", {"c": 1, "p": "nazareth", "zh": "拿撒勒的人提到他是耶穌的弟弟之一"}]],
   "prochorus": [
     [33, "Chosen as one of the seven men to look after the daily food distribution in Jerusalem", "Acts 6:1-6", {"c": 1, "p": "jerusalem", "zh": "被選為在耶路撒冷負責每天分發食物的七個人之一"}]],
   "timon": [
@@ -1889,7 +1897,12 @@
   "apphia": [
     [60, "Greeted in Paul's letter to Philemon's household in Colossae, where the congregation meets", "Philemon 1, 2; Colossians 4:9", {"c": 1, "p": "colossae", "zh": "保羅寫信給歌羅西的腓利門一家時問候她，會眾在那裡聚會"}]],
   "antipas-1": [
-    [95, "Put to death for his faith in Pergamum", "Revelation 2:13", {"c": 1, "p": "pergamum", "zh": "在別迦摩為信仰被殺"}]]
+    [95, "Put to death for his faith in Pergamum", "Revelation 2:13", {"c": 1, "p": "pergamum", "zh": "在別迦摩為信仰被殺"}]],
+  "simon-3e": [
+    [33, "A man from Cyrene, coming in from the country, made to carry Jesus' torture stake", "Matthew 27:32; Mark 15:21; Luke 23:26", {"p": "jerusalem", "zh": "從鄉下進城的古利奈人，被迫替耶穌扛苦刑柱"}]],
+  "salome-1": [
+    [33, "Watches Jesus' execution from a distance", "Mark 15:40, 41", {"p": "jerusalem", "zh": "從遠處看著耶穌被處死"}],
+    [33, "Brings spices to Jesus' tomb and finds it empty", "Mark 16:1-6", {"p": "jerusalem", "zh": "帶香料到耶穌的墓那裡，發現墓是空的"}]]
 },
-"dates": {"canaan": [-2366, -2290], "judith": [-1845, -1775], "zipporah": [-1575, -1500], "eleazar-1": [-1545, -1445], "sisera-1": [-1350, -1308], "gaal": [-1250, -1200], "hophni": [-1180, -1118], "mephibosheth-1": [-1125, -1068], "hadad-4": [-1072, -1000], "hazael": [-935, -855], "abiathar": [-1110, -1030], "peter-s-wife": [-10, 64], "deborah-1": [-1925, -1760], "laban-1": [-1910, -1750], "eliphaz": [-1700, -1590], "bildad": [-1700, -1590], "zophar": [-1700, -1590], "elihu-1": [-1660, -1570], "job-s-wife": [-1670, -1580], "peter-s-mother-in-law": [-45, 40], "paul-s-sister": [-10, 70]}
+"dates": {"canaan": [-2366, -2290], "judith": [-1845, -1775], "zipporah": [-1575, -1500], "eleazar-1": [-1545, -1445], "sisera-1": [-1350, -1308], "gaal": [-1250, -1200], "hophni": [-1180, -1118], "mephibosheth-1": [-1125, -1068], "hadad-4": [-1072, -1000], "hazael": [-935, -855], "abiathar": [-1110, -1030], "peter-s-wife": [-10, 64], "deborah-1": [-1925, -1760], "laban-1": [-1910, -1750], "eliphaz": [-1700, -1590], "bildad": [-1700, -1590], "zophar": [-1700, -1590], "elihu-1": [-1660, -1570], "job-s-wife": [-1670, -1580], "peter-s-mother-in-law": [-45, 40], "paul-s-sister": [-10, 70], "jude": [5, 90]}
 }
