@@ -29,7 +29,7 @@
   "jehoahaz3": [-628, "Made king at 23; after three months Pharaoh Necho deposes him and takes him to Egypt", "2 Kings 23:30-34; Jeremiah 22:10-12", {"p": "riblah", "zh": "23歲被立為王；三個月後被法老尼哥廢黜，帶到埃及"}],
   "seize": [-624, "Sent by Jehoiakim to seize Jeremiah and Baruch, but Jehovah hides them", "Jeremiah 36:26", {"p": "jerusalem", "zh": "奉約雅敬之命去捉拿耶利米和巴錄，耶和華卻把他們藏起來"}],
   "falseprophets": [-614, "Prophesies falsely among the exiles; Jeremiah foretells that Nebuchadnezzar will roast him in fire", "Jeremiah 29:21-23", {"c": 1, "p": "babylon", "zh": "在被擄的人當中假預言；耶利米預言尼布甲尼撒會用火燒死他"}],
-  "gedaliah": [-607, "Comes to Governor Gedaliah and warns him of Ishmael's plot", "Jeremiah 40:7-9, 13, 14", {"zh": "投靠基大利總督，並警告他以實瑪利的陰謀"}],
+  "gedaliah": [-607, "Comes to Governor Gedaliah and warns him of Ishmael's plot", "Jeremiah 40:7-9, 13, 14", {"p": "mizpahb", "zh": "投靠基大利總督，並警告他以實瑪利的陰謀"}],
   "jacobegypt": [-1728, "Goes down to Egypt with Jacob's household and settles in Goshen", "Genesis 46:8-27; 47:27", {"p": "goshen", "zh": "跟隨雅各全家下到埃及，住在歌珊"}],
   "toegypt": [-607, "Rescues Ishmael's captives, then leads the remnant to Egypt against Jeremiah's advice", "Jeremiah 41:11-16; 43:4-7", {"p": "tahpanhes", "zh": "救回被以實瑪利擄走的人，後來不聽耶利米的勸告，帶領餘下的人到埃及"}],
   "return537": [-537, "Returns from Babylon with Zerubbabel", "Ezra 2:1, 2; Nehemiah 12:1-9", {"p": "jerusalem", "zh": "與所羅巴伯一同從巴比倫歸回"}],
@@ -598,7 +598,7 @@
     [-997, "Stops Rehoboam from fighting the ten tribes", "1 Kings 12:22-24", {"p": "jerusalem", "zh": "阻止羅波安攻打十個部族"}],
     [-993, "Warns Rehoboam when Shishak invades", "2 Chronicles 12:5-8", {"p": "jerusalem", "zh": "示撒入侵時警告羅波安"}]],
   "ahijah-7": [
-    [-1000, "Tears his garment into 12 pieces: Jeroboam is to rule ten tribes", "1 Kings 11:29-39", {"c": 1, "zh": "把衣服撕成12片：耶羅波安要統治十個部族"}],
+    [-1000, "Tears his garment into 12 pieces: Jeroboam is to rule ten tribes", "1 Kings 11:29-39", {"c": 1, "p": "jerusalem", "zh": "把衣服撕成12片：耶羅波安要統治十個部族"}],
     [-980, "Foretells the death of Jeroboam's son and the end of his house", "1 Kings 14:1-18", {"c": 1, "p": "shiloh", "zh": "預言耶羅波安的兒子會死，他的家族要滅亡"}]],
   "jeroboam-s-wife": [
     [-980, "Goes in disguise to the prophet Ahijah about her sick son", "1 Kings 14:1-17", {"c": 1, "p": "shiloh", "zh": "喬裝去見先知亞希雅，詢問生病的兒子"}]],
@@ -609,9 +609,9 @@
     [-979, "Denounces calf worship and routs Jeroboam's much larger army", "2 Chronicles 13:3-20", {"c": 1, "zh": "譴責崇拜牛犢的行為，擊潰耶羅波安人數多得多的軍隊"}]],
   "nadab-4": [
     [-976, "Becomes king of Israel and keeps up calf worship", "1 Kings 15:25, 26", {"c": 1, "zh": "成為以色列王，繼續崇拜牛犢"}],
-    [-975, "Assassinated by Baasha while besieging Gibbethon", "1 Kings 15:27, 28", {"c": 1, "zh": "圍攻基比頓時被巴沙殺害"}]],
+    [-975, "Assassinated by Baasha while besieging Gibbethon", "1 Kings 15:27, 28", {"c": 1, "p": "gibbethon", "zh": "圍攻基比頓時被巴沙殺害"}]],
   "baasha": [
-    [-975, "Kills Nadab, seizes the throne and wipes out Jeroboam's house", "1 Kings 15:27-30", {"c": 1, "zh": "殺了拿答，奪取王位，消滅耶羅波安全家"}],
+    [-975, "Kills Nadab, seizes the throne and wipes out Jeroboam's house", "1 Kings 15:27-30", {"c": 1, "p": "gibbethon", "zh": "殺了拿答，奪取王位，消滅耶羅波安全家"}],
     [-962, "Fortifies Ramah against Asa; withdraws when Syria attacks his north", "1 Kings 15:16-22; 2 Chronicles 16:1-6", {"p": "ramah", "zh": "建造拉瑪，對抗亞撒；敘利亞人攻擊北方時撤退"}]],
   "ben-hadad-a": [
     [-962, "Bribed by Asa, breaks his treaty with Baasha and attacks northern Israel", "1 Kings 15:18-21; 2 Chronicles 16:1-6", {"p": "ramah", "zh": "接受亞撒的賄賂，背棄與巴沙的盟約，攻擊以色列北部"}]],
@@ -670,10 +670,10 @@
     [-920, "Makes iron horns to promise Ahab victory; strikes Micaiah on the cheek", "1 Kings 22:11, 24", {"p": "samaria", "zh": "做了鐵角，向亞哈保證會得勝；打了米該雅的臉"}]],
   "ahaziah-1": [
     [-920, "Becomes king of Israel and continues Baal worship", "1 Kings 22:51-53", {"c": 1, "p": "samaria", "zh": "成為以色列王，繼續崇拜巴力"}],
-    [-919, "His joint shipping venture with Jehoshaphat fails", "2 Chronicles 20:35-37", {"c": 1, "zh": "與約沙法合作造船，結果失敗"}],
+    [-919, "His joint shipping venture with Jehoshaphat fails", "2 Chronicles 20:35-37", {"c": 1, "p": "eziongeber", "zh": "與約沙法合作造船，結果失敗"}],
     [-919, "Falls through a lattice and dies, as Elijah foretold", "2 Kings 1:2-17", {"c": 1, "p": "samaria", "zh": "從窗格子掉下來，後來死了，正如以利亞所預言的"}]],
   "eliezer-6": [
-    [-919, "Foretells the wreck of the ships Jehoshaphat built with Ahaziah", "2 Chronicles 20:37", {"c": 1, "zh": "預言約沙法和亞哈謝合造的船會毀壞"}]],
+    [-919, "Foretells the wreck of the ships Jehoshaphat built with Ahaziah", "2 Chronicles 20:37", {"c": 1, "p": "eziongeber", "zh": "預言約沙法和亞哈謝合造的船會毀壞"}]],
   "jahaziel-4": [
     [-918, "Under God's spirit, tells Jehoshaphat the battle is God's", "2 Chronicles 20:14-17", {"c": 1, "p": "jerusalem", "zh": "受上帝的靈感動，告訴約沙法這場戰爭是上帝的"}]],
   "jehoram-3": [
@@ -755,12 +755,12 @@
     [-791, "Kills Zechariah and reigns one month; killed by Menahem", "2 Kings 15:10, 13-15", {"c": 1, "p": "samaria", "zh": "殺了撒迦利亞，作王一個月；被米拿現殺死"}]],
   "menahem": [
     [-791, "Kills Shallum and becomes king of Israel", "2 Kings 15:14, 17", {"c": 1, "p": "samaria", "zh": "殺了沙龍，成為以色列王"}],
-    [-785, "Pays Assyria's King Pul 1,000 talents of silver", "2 Kings 15:19, 20", {"c": 1, "zh": "向亞述王普勒進貢1000他連得銀子"}]],
+    [-785, "Pays Assyria's King Pul 1,000 talents of silver", "2 Kings 15:19, 20", {"c": 1, "p": "samaria", "zh": "向亞述王普勒進貢1000他連得銀子"}]],
   "pul-1": [
     [-785, "Invades Israel and takes tribute from King Menahem", "2 Kings 15:19, 20", {"c": 1, "zh": "入侵以色列，向米拿現王索取貢物"}]],
   "tiglath-pileser-iii": [
     [-785, "As Pul, invades Israel and takes tribute from King Menahem", "2 Kings 15:19, 20", {"c": 1, "zh": "以普勒之名入侵以色列，向米拿現王索取貢物"}],
-    [-760, "Takes towns of Israel and deports their people to Assyria", "2 Kings 15:29; 1 Chronicles 5:26", {"c": 1, "zh": "攻佔以色列的城鎮，把居民擄到亞述"}],
+    [-760, "Takes towns of Israel and deports their people to Assyria", "2 Kings 15:29; 1 Chronicles 5:26", {"c": 1, "p": "hazor", "zh": "攻佔以色列的城鎮，把居民擄到亞述"}],
     [-759, "Answers Ahaz's call, captures Damascus and kills Rezin", "2 Kings 16:7-9", {"c": 1, "p": "damascus", "zh": "回應亞哈斯的求助，攻佔大馬士革，殺了利迅"}]],
   "pekahiah": [
     [-780, "Succeeds his father Menahem as king", "2 Kings 15:22-24", {"c": 1, "p": "samaria", "zh": "繼承父親米拿現作王"}],
@@ -994,10 +994,10 @@
     "gedaliah",
     "toegypt"],
   "jaazaniah-4": [
-    [-607, "Comes to Governor Gedaliah with other army chiefs", "Jeremiah 40:7, 8", {"zh": "和其他軍官一起投靠基大利總督"}],
+    [-607, "Comes to Governor Gedaliah with other army chiefs", "Jeremiah 40:7, 8", {"p": "mizpahb", "zh": "和其他軍官一起投靠基大利總督"}],
     "toegypt"],
   "ishmael-5": [
-    [-607, "Murders Governor Gedaliah and takes the people at Mizpah captive", "Jeremiah 41:1-10; 2 Kings 25:25", {"zh": "殺害基大利總督，擄走在米斯巴的人"}],
+    [-607, "Murders Governor Gedaliah and takes the people at Mizpah captive", "Jeremiah 41:1-10; 2 Kings 25:25", {"p": "mizpahb", "zh": "殺害基大利總督，擄走在米斯巴的人"}],
     [-607, "Escapes to the Ammonites when Johanan's men catch up", "Jeremiah 41:11-15", {"p": "ammon", "zh": "約哈南的人追上時，他逃到亞捫人那裡"}]],
   "baalis": [
     [-607, "Said to have sent Ishmael to kill Governor Gedaliah", "Jeremiah 40:14", {"p": "ammon", "zh": "據說派以實瑪利去刺殺基大利總督"}]],

@@ -605,7 +605,7 @@
   "hezekiah": {"events":[[-732,"The Siloam Tunnel, cut through rock from Gihon, bears an inscription about its digging","@it-archaeology; 2 Kings 20:20"],[-732,"Sennacherib's prism boasts of shutting him in Jerusalem but never claims to take the city","@it-sennacherib; @it-archaeology; 2 Kings 19:32-36"]]},
   "sennacherib": {"events":[[-732,"His palace reliefs at Nineveh show Judean captives taken at Lachish","@it-archaeology; @it-lachish; 2 Kings 18:13, 14"]]},
   "manasseh": {"events":[[-680,"Named among the kings who paid tribute to Esar-haddon of Assyria","@it-assyria"]]},
-  "jehoiachin": {"events":[[-600,"Babylonian ration lists name 'Yaukin, king of the land of Yahud,' and five of his sons","@it-archaeology; 2 Kings 25:27-30; 1 Chronicles 3:17, 18"]]},
+  "jehoiachin": {"events":[[-600,"Babylonian ration lists name 'Yaukin, king of the land of Yahud,' and five of his sons","@it-archaeology; 2 Kings 25:27-30; 1 Chronicles 3:17, 18", {"p": "babylon"}]]},
   "zedekiah": {"events":[[-608,"Letters found at Lachish show the crisis just before Babylon's last attack, and use God's name","@it-archaeology; @it-lachish; Jeremiah 34:7"]]},
   "gedaliah-4": {"events":[[-607,"A seal impression reads 'Gedaliah, who is over the house'","@it-archaeology; 2 Kings 25:22"]]},
   "belshazzar": {"events":[[-553,"Cuneiform texts show his father Nabonidus made him king in Babylon","@it-nabonidus; @it-archaeology"]]},
