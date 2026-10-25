@@ -23,20 +23,20 @@ window.ROUTE_WAY = {
   // Mesopotamia and Syria
   sippar: [44.25, 33.06], nippur: [45.23, 32.13], der: [45.75, 33.12], assur: [43.26, 35.46], nisibis: [41.22, 37.07],
   mari: [40.89, 34.55], tuttul: [39.05, 35.95], emar: [38.1, 35.98], tadmor: [38.27, 34.55],
-  aleppo: [37.16, 36.2], ebla: [36.8, 35.8], hamath: [36.75, 35.13], apamea: [36.4, 35.42], homs: [36.71, 34.73],
+  aleppo: [37.16, 36.2], ebla: [36.8, 35.8], apamea: [36.4, 35.42], homs: [36.71, 34.73],
   issus: [36.17, 36.84], seleucia: [35.93, 36.12], laodiceasyr: [35.78, 35.52], arvad: [35.86, 34.86],
   tripoli: [35.84, 34.43], byblos: [35.65, 34.12], sidon: [35.37, 33.56], tyre: [35.2, 33.27], ptolemais: [35.08, 32.92],
   // the land
-  ramahb: [35.233, 31.85], hazor: [35.57, 33.02], jacobsford: [35.63, 33.0], bethshean: [35.5, 32.5], adam: [35.55, 32.1],
-  aphek: [34.93, 32.1], bethhoron: [35.12, 31.88], ashdod: [34.65, 31.8], ashkelon: [34.55, 31.66],
+  ramahb: [35.233, 31.85], jacobsford: [35.63, 33.0], bethshean: [35.5, 32.5], adam: [35.55, 32.1],
+  bethhoron: [35.12, 31.88], ashdod: [34.65, 31.8], ashkelon: [34.55, 31.66],
   raphia: [34.25, 31.29], arad: [35.13, 31.28], ginae: [35.3, 32.46], sepphoris: [35.28, 32.75],
-  tiberias: [35.53, 32.79], ashteroth: [36.0, 32.83], edrei: [36.1, 32.62],
+  tiberias: [35.53, 32.79], ashteroth: [36.0, 32.83], 
   heshbon: [35.8, 31.8], medeba: [35.8, 31.72], dibon: [35.78, 31.5], kirhareseth: [35.7, 31.18], bozrah: [35.6, 30.73],
   elath: [34.98, 29.55],
   // Egypt and Sinai
   sile: [32.55, 30.97], on: [31.29, 30.13], memphis: [31.25, 29.85], clysma: [32.55, 29.97], nakhl: [33.75, 29.9],
   succothegypt: [32.1, 30.55], etham: [32.35, 30.45], pihahiroth: [32.45, 30.05],
-  marah: [32.95, 29.45], elim: [33.1, 29.1], wildsin: [33.3, 28.95], dophkah: [33.55, 28.85], rephidim: [33.85, 28.7],
+  marah: [32.95, 29.45], elim: [33.1, 29.1], wildsin: [33.3, 28.95], dophkah: [33.55, 28.85], 
   kibroth: [34.15, 28.75], rithmah: [34.7, 29.4], zin: [34.55, 29.95], punon: [35.5, 30.63], oboth: [35.65, 30.78],
   iyeabarim: [35.75, 30.95], zered: [35.78, 31.06], arnon: [35.8, 31.44], almon: [35.82, 31.6],
   // Asia Minor, Greece, Italy
