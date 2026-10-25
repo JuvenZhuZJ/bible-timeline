@@ -270,8 +270,16 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 
 /* ------------------------------------------------------------- legend / controls / minimap */
 .legend { position: fixed; left: 20px; bottom: calc(64px + var(--safe-b)); z-index: 20; font-size: 11px; color: var(--fg-2); }
-.legend-toggle { display: none; }
-.legend-body { display: flex; flex-direction: column; gap: 5px; }
+/* the legend folds behind a "Legend" button on every screen, as the open list would sit over the timeline */
+.legend-toggle {
+  display: block; border: 1px solid var(--faint); background: rgba(5,5,5,0.7); border-radius: 14px; padding: 5px 12px;
+  font: 500 9.5px var(--sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-2); cursor: pointer;
+}
+.legend-body {
+  display: none; flex-direction: column; gap: 5px; position: absolute; bottom: 36px; left: 0; width: max-content; min-width: 220px;
+  max-height: calc(100vh - var(--top) - 140px); overflow-y: auto; padding: 12px; background: var(--panel); border: 1px solid var(--faint); border-radius: 10px;
+}
+.legend.open .legend-body { display: flex; }
 .lg-row { display: flex; align-items: center; gap: 8px; }
 .lg-row svg { width: 16px; height: 16px; }
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
@@ -450,16 +458,6 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 }
 
 /* ------------------------------------------------------------- responsive */
-/* the legend folds behind a "Legend" button on phones and on tablets (any touch screen without
-   hover, e.g. an iPad either way round), where the open list would sit over the timeline */
-@media (max-width: 760px), (hover: none) and (pointer: coarse) {
-  .legend-toggle {
-    display: block; border: 1px solid var(--faint); background: rgba(5,5,5,0.7); border-radius: 14px; padding: 5px 12px;
-    font: 500 9.5px var(--sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-2); cursor: pointer;
-  }
-  .legend-body { display: none; position: absolute; bottom: 36px; left: 0; width: max-content; min-width: 220px; padding: 12px; background: var(--panel); border: 1px solid var(--faint); border-radius: 10px; }
-  .legend.open .legend-body { display: flex; }
-}
 @media (max-width: 760px) {
   :root { --top: 56px; }
   .topbar { padding: 0 12px; gap: 8px; }
