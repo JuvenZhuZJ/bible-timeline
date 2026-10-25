@@ -132,6 +132,7 @@
       // publications on wol.jw.org reproduce in their articles on these people
       { name: "Emperor's pearl diadem", cult: ["lateroman"], age: "adult", head: "pearls", hair: "cropped", beard: "none", shaven: true, face: "square", eye: "open", mouth: "stern", dress: "cloak" },
       { name: "Emperor's jewelled diadem", cult: ["lateroman"], age: "adult", head: "pearls", hair: "cropped", beard: "none", shaven: true, face: "long", eye: "narrow", dress: "cloak" },
+      { name: "Frankish king's long hair", cult: ["lateroman"], age: "adult", head: "band", hair: "long", beard: "short", face: "long", mouth: "stern", dress: "cloak" },
       { name: "Bishop with a pallium", cult: ["church"], age: "old", head: "bare", hair: "short", beard: "full", bs: "pointed", face: "long", brow: "heavy", dress: "pallium" },
       { name: "Bishop of Rome", cult: ["church"], age: "old", head: "bare", hair: "cropped", beard: "short", face: "round", mouth: "stern", dress: "pallium" },
       { name: "Monk and translator", cult: ["church"], age: "old", head: "bare", hair: "bald", beard: "long", face: "long", eye: "downcast" },
@@ -145,6 +146,8 @@
       { name: "Tudor flat cap", cult: ["reformation"], age: "adult", head: "flatcap", beard: "short", face: "square", eye: "narrow", mouth: "stern", dress: "gown", extras: ["necklace"] },
       { name: "Translator in a skullcap", cult: ["reformation"], age: "adult", head: "skullcap", hair: "short", beard: "full", face: "long", eye: "downcast", dress: "gown" },
       { name: "Reformer with a long beard", cult: ["reformation"], age: "adult", head: "skullcap", hair: "short", beard: "long", bs: "pointed", face: "long", eye: "narrow", dress: "gown" },
+      { name: "Periwig and cravat", cult: ["modern"], age: "adult", head: "bare", hair: "curled", beard: "none", shaven: true, face: "long", eye: "open", mouth: "calm", dress: "coat" },
+      { name: "Orthodox patriarch's tall hat", cult: ["church"], age: "old", head: "tallcap", beard: "long", bs: "pointed", face: "long", eye: "narrow", dress: "gown" },
       { name: "Frock coat and white beard", cult: ["modern"], age: "old", head: "bare", hair: "short", beard: "long", face: "oval", eye: "open", mouth: "calm", dress: "coat" },
       { name: "High collar and glasses", cult: ["modern"], age: "adult", head: "bare", hair: "short", beard: "none", shaven: true, face: "square", mouth: "stern", dress: "coat", extras: ["glasses"] }
     ],

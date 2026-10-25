@@ -589,7 +589,30 @@ window.ZH.places = {
  "pampa": {"n":"德克薩斯州潘帕"},
  "eisleben": {"n":"艾斯萊本"},
  "oxford": {"n":"牛津"},
- "noyon": {"n":"努瓦永"}
+ "noyon": {"n":"努瓦永"},
+ "smyrna": {"n":"士每拿"},
+ "hierapolis": {"n":"希拉波利斯"},
+ "carthage": {"n":"迦太基"},
+ "hippo": {"n":"希波"},
+ "reims": {"n":"蘭斯"},
+ "beziers": {"n":"貝濟耶"},
+ "paris": {"n":"巴黎"},
+ "alcala": {"n":"埃納雷斯堡阿爾卡拉"},
+ "zurich": {"n":"蘇黎世"},
+ "juterbog": {"n":"于特博格"},
+ "venice": {"n":"威尼斯"},
+ "basel": {"n":"巴塞爾"},
+ "amsterdam": {"n":"阿姆斯特丹"},
+ "neuchatel": {"n":"納沙泰爾"},
+ "nuremberg": {"n":"紐倫堡"},
+ "seville": {"n":"塞維利亞"},
+ "dublin": {"n":"都柏林"},
+ "cambridge": {"n":"劍橋"},
+ "stpetersburg": {"n":"聖彼得堡"},
+ "philadelphia": {"n":"費拉德爾菲亞"},
+ "edinboro": {"n":"埃丁伯勒"},
+ "capetown": {"n":"開普敦"},
+ "stcatherine": {"n":"聖凱瑟琳修道院"}
 };
 window.ZH.events = {
  "creation": {
