@@ -187,18 +187,33 @@
     const mobile = W < 760;
     const top = (mobile ? 56 + (ERA_ROWS - 1) * 15 : 64) + 30;   // room for the era names above the people
     const bottom = mobile ? 104 : 108;
-    const lineY = Math.round(top + (H - top - bottom) * (mobile ? 0.5 : 0.55));
-    const laneStep = mobile ? 28 : 31;
+    let lineY = Math.round(top + (H - top - bottom) * (mobile ? 0.5 : 0.55));
+    const laneStep = mobile ? 28 : 31, trackStep = mobile ? 30 : 34;
     // event labels sit in a fixed band of rows under the axis; the personal tracks start below it
-    const evRows = mobile ? 2 : 3, evRow0 = lineY + 40, evRowStep = 22;
-    // with the Bible books band on, its rows sit just above the main line and the people move up
-    const bookRows = mobile ? 6 : 7, bookStep = mobile ? 14 : 15;
-    const band = booksOn ? bookRows * bookStep + 6 : 0;
+    const evRows = mobile ? 2 : 3, evRowStep = 22, under = 40 + (evRows - 1) * evRowStep + 11 + 22;
+    // with the Bible books band on, its rows sit just above the main line and the people move up.
+    // So that the top people stay on screen, the line moves down as far as it needs to (keeping room
+    // for three opened lifespans under it); where even that is not enough, the band has fewer rows
+    // and the books that don't fit go into its "+3" marks
+    const lanesFor = (y, band) => Math.floor((y - band - top - 22) / laneStep);
+    let bookRows = mobile ? 6 : 7;
+    const bookStep = mobile ? 14 : 15;
+    let band = 0;
+    if (booksOn) {
+      const want = Math.max(1, Math.min(lanesFor(lineY, 0), mobile ? 3 : 4));
+      band = bookRows * bookStep + 6;
+      const need = Math.max(0, top + 22 + want * laneStep + band - lineY);
+      const limit = mobile ? H - bottom - 4 : H - 58;
+      lineY += Math.max(0, Math.min(need, limit - 16 - 2 * trackStep - under - lineY));
+      bookRows = Math.max(2, Math.min(bookRows, Math.floor((lineY - top - 22 - want * laneStep - 6) / bookStep)));
+      band = bookRows * bookStep + 6;
+    }
+    const evRow0 = lineY + 40;
     L = {
       mobile, top, bottom, lineY, laneStep, evRows, evRow0, evRowStep, bookRows, bookStep, band,
-      maxLanes: Math.max(3, Math.floor((lineY - band - top - 22) / laneStep)),
-      trackY0: evRow0 + (evRows - 1) * evRowStep + 11 + 22,
-      trackStep: mobile ? 30 : 34,
+      maxLanes: booksOn ? Math.max(1, lanesFor(lineY, band)) : Math.max(3, lanesFor(lineY, 0)),
+      trackY0: lineY + under,
+      trackStep,
     };
     lastPack.key = "";
   }
