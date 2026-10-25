@@ -2,7 +2,7 @@
  * Small maps of Bible places: the "Places" map in each person's window and the locator map
  * in a major event's tooltip. Plain SVG strings, drawn from data/basemap.js and data/places.js.
  *
- *   BibleMap.svg(stops, { w, h, cls, route, minSpan })   stops: [{ id, n }] (n = the number on the pin); returns SVG markup
+ *   BibleMap.svg(stops, { w, h, cls, route, roman, minSpan })   stops: [{ id, n }] (n = the number on the pin); returns SVG markup
  *   BibleMap.place(id)                   a place from data/places.js
  *
  * The base map is pre-projected (x = lon * cos 31° * 10, y = -lat * 10), so each map is the same
@@ -112,7 +112,7 @@
         const a = seq[i - 1], b = seq[i], key = [a.st.id, b.st.id].sort().join(">");
         if (done.has(key)) continue;
         done.add(key);
-        const wy = way(a.st.id, b.st.id).pts;
+        const wy = way(a.st.id, b.st.id, opt.roman).pts;
         const mid = wy.slice(1, -1).map((ll) => { const [mx, my] = proj(ll); return [+X(mx), +Y(my)]; });
         const p = [[a.x, a.y], ...mid, [b.x, b.y]];
         d += smooth(p);
@@ -368,39 +368,64 @@
   }
 
   /* the way between two places along the roads of data/routes.js: a leg TRAVELS describes takes that
-     way (the Exodus, Paul's voyages); any other takes the shortest way along the ROADS, with a place off
-     the roads joined to the nearest road towns; failing a road way not much longer than the straight
-     line, the line goes straight. Returns { pts: [[lon, lat], ...], src: [...] } */
+     way (the Exodus, Paul's voyages: the Bible account first); any other takes the shortest way along the
+     ROADS, with a place off the roads joined to the nearest road towns; failing a road way not much longer
+     than the straight line, the line goes straight. In the Greek and Roman world (opt.roman: a person who
+     lived after Alexander the Great), a leg that leaves the land of Israel takes instead the quickest way
+     of ORBIS (data/orbis.js: its roads, coastal and open-sea lanes and rivers, in days of travel), joined to
+     the roads of the NWT maps (a sea lane bends around the capes and islands in its way: tools/sea-way.mjs).
+     Returns { pts: [[lon, lat], ...], src: [...] } */
   const RW = window.ROUTE_WAY || {}, ROADS = window.ROADS || [], TRAVELS = window.TRAVELS || {};
+  const ORB = window.ORBIS || null;
   const llOf = (p) => (Array.isArray(p) ? p : (P[p] && P[p].ll) || RW[p]);
   const keyOf = (p) => (Array.isArray(p) ? p.join(",") : p);
   const kmOf = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos(((a[1] + b[1]) * Math.PI) / 360), a[1] - b[1]) * 111;
-  let G = null;
-  function graph() {
-    if (G) return G;
-    G = new Map();
+  const FOOT = 30;    // km a day on foot, as ORBIS reckons, so the roads of the NWT maps count in days beside its ways
+  const Gs = [null, null];
+  function graph(roman) {
+    if (Gs[+roman]) return Gs[+roman];
+    const G = (Gs[+roman] = new Map());
     const node = (p) => { const k = keyOf(p); if (!G.has(k)) G.set(k, { ll: llOf(p), e: [], road: true }); return G.get(k); };
     for (const r of ROADS) for (let i = 1; i < r.pts.length; i++) {
       if (!llOf(r.pts[i - 1]) || !llOf(r.pts[i])) continue;
-      const a = node(r.pts[i - 1]), b = node(r.pts[i]), d = kmOf(a.ll, b.ll);
+      const a = node(r.pts[i - 1]), b = node(r.pts[i]), d = kmOf(a.ll, b.ll) / (roman ? FOOT : 1);
       a.e.push({ to: b, d, src: r.src }); b.e.push({ to: a, d, src: r.src });
+    }
+    if (roman && ORB) {
+      // an ORBIS town within a few km of a town on the roads is that town; capes and road junctions
+      // (rank under 70) carry the ways but no place off the roads is joined to them
+      const towns = [...G.values()], at = {};
+      for (const [id, [name, lon, lat, rank]] of Object.entries(ORB.n)) {
+        const ll = [lon, lat];
+        let m = null, md = 8;
+        for (const t of towns) { const d = kmOf(ll, t.ll); if (d < md) { md = d; m = t; } }
+        if (!m) G.set("orbis:" + id, (m = { ll, e: [], road: rank >= 70 && name !== "x" }));
+        at[id] = m;
+      }
+      for (const [a, b, days, , via] of ORB.e) {
+        const A = at[a], B = at[b];
+        if (A && B && A !== B) A.e.push({ to: B, d: days, src: "ORBIS", via });
+      }
     }
     return G;
   }
-  function attach(id) {
-    const g = graph();
+  function attach(id, roman) {
+    const g = graph(roman);
     if (g.has(id)) return g.get(id);
     const ll = llOf(id);
     if (!ll) return null;
     const n = { ll, e: [] };
     const near = [...g.values()].filter((m) => m.road).map((m) => [m, kmOf(ll, m.ll)]).sort((a, b) => a[1] - b[1])
       .slice(0, 2).filter(([, d], i) => d < 150 && (!i || d < 40));
-    for (const [m, d] of near) { n.e.push({ to: m, d: d * 1.3, src: "common route" }); m.e.push({ to: n, d: d * 1.3, src: "common route" }); }
+    for (const [m, km] of near) {
+      const d = (km * 1.3) / (roman ? FOOT : 1);
+      n.e.push({ to: m, d, src: "common route" }); m.e.push({ to: n, d, src: "common route" });
+    }
     g.set(id, n);
     return n;
   }
-  function shortest(a, b) {
-    const s = attach(a), t = attach(b);
+  function shortest(a, b, roman) {
+    const s = attach(a, roman), t = attach(b, roman);
     if (!s || !t) return null;
     const dist = new Map([[s, 0]]), prev = new Map(), done = new Set(), q = [s];
     while (q.length) {
@@ -412,37 +437,48 @@
       if (n === t) break;
       for (const e of n.e) {
         const nd = dist.get(n) + e.d;
-        if (nd < (dist.has(e.to) ? dist.get(e.to) : Infinity)) { dist.set(e.to, nd); prev.set(e.to, [n, e.src]); q.push(e.to); }
+        if (nd < (dist.has(e.to) ? dist.get(e.to) : Infinity)) { dist.set(e.to, nd); prev.set(e.to, [n, e]); q.push(e.to); }
       }
     }
     if (!dist.has(t)) return null;
     const pts = [t.ll], src = new Set(), seg = [];
-    for (let n = t; prev.has(n); ) { const [p, sr] = prev.get(n); pts.unshift(p.ll); seg.unshift(sr); src.add(sr); n = p; }
-    return { pts, src: [...src], seg, d: dist.get(t) };
+    for (let n = t; prev.has(n); ) {
+      const [p, e] = prev.get(n), via = e.via || [];
+      pts.unshift(p.ll, ...via); seg.unshift(e.src, ...via.map(() => e.src)); src.add(e.src); n = p;
+    }
+    const km = pts.reduce((k, ll, i) => (i ? k + kmOf(pts[i - 1], ll) : 0), 0);
+    return { pts, src: [...src], seg, d: dist.get(t), km };
   }
   const ways = new Map();
-  function way(a, b) {
-    const key = a + ">" + b;
+  const inIsrael = (ll) => ll[0] >= LEVANT[0] && ll[0] <= LEVANT[2] && ll[1] >= LEVANT[1] && ll[1] <= LEVANT[3];
+  function way(a, b, roman) {
+    const key = (roman ? "r:" : "") + a + ">" + b;
     if (ways.has(key)) return ways.get(key);
     let r;
-    const t = TRAVELS[key] || TRAVELS[b + ">" + a];
+    const t = TRAVELS[key.replace("r:", "")] || TRAVELS[b + ">" + a];
     if (t) {
       // seg: the source of each piece of the line, for checking (tools: which legs follow a source map)
-      const via = TRAVELS[key] ? t.via : t.via.slice().reverse(), pts = [], src = new Set([t.src]), seg = [];
+      const via = TRAVELS[a + ">" + b] ? t.via : t.via.slice().reverse(), pts = [], src = new Set([t.src]), seg = [];
       for (let i = 0; i < via.length; i++) {
         if (typeof via[i] === "string" && via[i][0] === "=") {   // the way another travel gives
-          const [x, y] = via[i].slice(1).split(">"), sub = way(x, y);
+          // taken backwards when this leg runs the other way
+          const [x, y] = via[i].slice(1).split(">"), sub = keyOf(via[i - 1]) === y ? way(y, x) : way(x, y);
           pts.push(...sub.pts.slice(1, -1)); seg.push(...sub.seg.slice(0, -1)); sub.src.forEach((v) => src.add(v));
           continue;
         }
         if (via[i] !== ">") { pts.push(llOf(via[i])); if (i < via.length - 1 && via[i + 1] !== ">") seg.push(t.src); continue; }
-        const sp = shortest(keyOf(via[i - 1]), keyOf(via[i + 1]));
+        const sp = shortest(keyOf(via[i - 1]), keyOf(via[i + 1]), false);
         if (sp) { pts.push(...sp.pts.slice(1, -1)); seg.push(...sp.seg); sp.src.forEach((x) => src.add(x)); }
       }
       r = { pts, src: [...src], seg };
     } else {
-      const A = llOf(a), Bp = llOf(b), sp = shortest(a, b), direct = kmOf(A, Bp);
-      r = sp && sp.d <= direct * 1.8 + 15 ? { pts: sp.pts, src: sp.src, seg: sp.seg } : { pts: [A, Bp], src: ["straight"], seg: ["straight"] };
+      const A = llOf(a), Bp = llOf(b), direct = kmOf(A, Bp);
+      const orb = roman && ORB && !(inIsrael(A) && inIsrael(Bp)) ? shortest(a, b, true) : null;
+      if (orb && orb.km <= direct * 2.5 + 50) r = { pts: orb.pts, src: orb.src, seg: orb.seg };
+      else {
+        const sp = shortest(a, b, false);
+        r = sp && sp.d <= direct * 1.8 + 15 ? { pts: sp.pts, src: sp.src, seg: sp.seg } : { pts: [A, Bp], src: ["straight"], seg: ["straight"] };
+      }
     }
     ways.set(key, r);
     return r;

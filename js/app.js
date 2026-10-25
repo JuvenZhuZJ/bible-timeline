@@ -1448,12 +1448,14 @@
      (Abraham from Ur, Paul to Rome) gets a closer map of Canaan, and stops crowded into one small
      area get a close-up (BibleMap.levels), chosen with a switch. */
   const SURE = { likely: T("site.likely", null, "likely site"), possible: T("site.possible", null, "location uncertain") };
+  // from Alexander the Great on, the routes of the Greek and Roman world (ORBIS) are used: see way() in js/map.js
+  const ROMAN_FROM = A(-336);
   function mapViews(c, phone) {
     const lv = BibleMap.levels(c.places), h0 = phone ? 150 : 210, h1 = phone ? 150 : 230;
     const maps = lv.map((l, k) => {
       const insets = lv.map((m, j) => ({ m, j })).filter(({ m }) => m.parent === k).map(({ m, j }) => ({ ids: [...new Set(m.stops.map((s) => s.id))], name: m.name, k: j }));
       return `<div class="bm-v" data-k="${k}" data-d="${l.depth}" data-p="${l.parent}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
-        + BibleMap.svg(l.stops, { w: 340, h: k ? h1 : h0, route: true, labels: insets.length ? "far" : true, insets, minSpan: l.minSpan || 0,
+        + BibleMap.svg(l.stops, { w: 340, h: k ? h1 : h0, route: true, roman: c.td > ROMAN_FROM, labels: insets.length ? "far" : true, insets, minSpan: l.minSpan || 0,
           label: k ? T("map.label.k", { map: l.full || l.name, name: c.name }, `${l.full || l.name} map of places in the life of ${c.name}`) : T("map.label", { name: c.name }, `Places in the life of ${c.name}`) }) + `</div>`;
     }).join("");
     const sw = lv.length > 1 ? lv.map((l, k) => `<button class="bm-sw" data-v="${k}" aria-pressed="${!k}" title="${esc(l.full || l.name)}">${esc(l.name)}</button>`).join("") : "";
