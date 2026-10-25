@@ -30,6 +30,7 @@
   "seize": [-624, "Sent by Jehoiakim to seize Jeremiah and Baruch, but Jehovah hides them", "Jeremiah 36:26", {"p": "jerusalem", "zh": "奉約雅敬之命去捉拿耶利米和巴錄，耶和華卻把他們藏起來"}],
   "falseprophets": [-614, "Prophesies falsely among the exiles; Jeremiah foretells that Nebuchadnezzar will roast him in fire", "Jeremiah 29:21-23", {"c": 1, "p": "babylon", "zh": "在被擄的人當中假預言；耶利米預言尼布甲尼撒會用火燒死他"}],
   "gedaliah": [-607, "Comes to Governor Gedaliah and warns him of Ishmael's plot", "Jeremiah 40:7-9, 13, 14", {"zh": "投靠基大利總督，並警告他以實瑪利的陰謀"}],
+  "jacobegypt": [-1728, "Goes down to Egypt with Jacob's household and settles in Goshen", "Genesis 46:8-27; 47:27", {"p": "goshen", "zh": "跟隨雅各全家下到埃及，住在歌珊"}],
   "toegypt": [-607, "Rescues Ishmael's captives, then leads the remnant to Egypt against Jeremiah's advice", "Jeremiah 41:11-16; 43:4-7", {"p": "tahpanhes", "zh": "救回被以實瑪利擄走的人，後來不聽耶利米的勸告，帶領餘下的人到埃及"}],
   "return537": [-537, "Returns from Babylon with Zerubbabel", "Ezra 2:1, 2; Nehemiah 12:1-9", {"p": "jerusalem", "zh": "與所羅巴伯一同從巴比倫歸回"}],
   "foundation": [-536, "Helps oversee the rebuilding of the temple", "Ezra 3:8, 9", {"p": "jerusalem", "zh": "協助監督重建聖殿的工程"}],
@@ -67,19 +68,19 @@
   "haran-1": [
     [-1990, "Dies in Ur while his father Terah is still alive", "Genesis 11:28", {"c": 1, "p": "ur", "zh": "在父親他拉還活著時死在吾珥"}]],
   "chedorlaomer": [
-    [-1933, "Crushes the revolt of five kings at the Low Plain of Siddim; carries off Lot", "Genesis 14:1-12", {"c": 1, "zh": "在西訂平原擊潰五王的叛亂，擄走羅得"}],
+    [-1933, "Crushes the revolt of five kings at the Low Plain of Siddim; carries off Lot", "Genesis 14:1-12", {"c": 1, "p": "siddim", "zh": "在西訂谷擊潰五王的叛亂，擄走羅得"}],
     [-1933, "Routed by Abram in a night attack; the captives are freed", "Genesis 14:13-17", {"c": 1, "p": "dan", "zh": "被亞伯拉罕夜襲擊敗，被擄的人獲救"}]],
   "tidal": [
-    [-1933, "With Chedorlaomer, crushes the revolt of five kings and carries off Lot", "Genesis 14:1-12", {"c": 1, "zh": "和基度勞瑪一起擊潰五王的叛亂，擄走羅得"}],
+    [-1933, "With Chedorlaomer, crushes the revolt of five kings and carries off Lot", "Genesis 14:1-12", {"c": 1, "p": "siddim", "zh": "和基度勞瑪一起擊潰五王的叛亂，擄走羅得"}],
     [-1933, "Routed by Abram, who frees the captives", "Genesis 14:13-17", {"c": 1, "p": "dan", "zh": "被亞伯拉罕擊敗，被擄的人獲救"}]],
   "arioch-1": [
-    [-1933, "With Chedorlaomer, crushes the revolt of five kings and carries off Lot", "Genesis 14:1-12", {"c": 1, "zh": "和基度勞瑪一起擊潰五王的叛亂，擄走羅得"}],
+    [-1933, "With Chedorlaomer, crushes the revolt of five kings and carries off Lot", "Genesis 14:1-12", {"c": 1, "p": "siddim", "zh": "和基度勞瑪一起擊潰五王的叛亂，擄走羅得"}],
     [-1933, "Routed by Abram, who frees the captives", "Genesis 14:13-17", {"c": 1, "p": "dan", "zh": "被亞伯拉罕擊敗，被擄的人獲救"}]],
   "bera": [
-    [-1933, "Defeated by Chedorlaomer's coalition in the Low Plain of Siddim", "Genesis 14:2, 8-10", {"c": 1, "zh": "在西訂平原被基度勞瑪的聯軍打敗"}],
+    [-1933, "Defeated by Chedorlaomer's coalition in the Low Plain of Siddim", "Genesis 14:2, 8-10", {"c": 1, "p": "siddim", "zh": "在西訂谷被基度勞瑪的聯軍打敗"}],
     [-1933, "Meets Abram after the victory; Abram refuses to keep any of the spoil", "Genesis 14:17-24", {"c": 1, "p": "salem", "zh": "在亞伯拉罕得勝後迎接他；亞伯拉罕不肯拿任何戰利品"}]],
   "shemeber": [
-    [-1933, "Defeated by Chedorlaomer's coalition in the Low Plain of Siddim", "Genesis 14:2, 8-10", {"c": 1, "zh": "在西訂平原被基度勞瑪的聯軍打敗"}]],
+    [-1933, "Defeated by Chedorlaomer's coalition in the Low Plain of Siddim", "Genesis 14:2, 8-10", {"c": 1, "p": "siddim", "zh": "在西訂谷被基度勞瑪的聯軍打敗"}]],
   "eshcol-1": [
     [-1933, "Allied with Abram when he defeats the eastern kings and rescues Lot", "Genesis 14:13, 24", {"c": 1, "p": "dan", "zh": "與亞伯拉罕結盟，亞伯拉罕打敗東方諸王，救回羅得"}]],
   "abimelech-1": [
@@ -99,11 +100,11 @@
   "judith": [
     [-1818, "Married by Esau at 40; the marriage makes life bitter for Isaac and Rebekah", "Genesis 26:34, 35", {"p": "hebron", "zh": "以掃40歲時娶她，這婚事使以撒和利百加心裡愁苦"}]],
   "adah-2": [
-    [-1818, "Married by Esau; the marriage grieves Isaac and Rebekah", "Genesis 26:34, 35; 36:2", {"c": 1, "zh": "嫁給以掃，使以撒和利百加憂傷"}]],
+    [-1818, "Married by Esau; the marriage grieves Isaac and Rebekah", "Genesis 26:34, 35; 36:2", {"c": 1, "p": "beersheba", "zh": "嫁給以掃，使以撒和利百加憂傷"}]],
   "mahalath-1": [
-    [-1781, "Married by Esau, who hopes to please his father", "Genesis 28:6-9", {"zh": "以掃娶了她，希望討父親喜悅"}]],
+    [-1781, "Married by Esau, who hopes to please his father", "Genesis 28:6-9", {"p": "beersheba", "zh": "以掃娶了她，希望討父親喜悅"}]],
   "basemath-2": [
-    [-1781, "Married by Esau, who hopes to please his parents", "Genesis 28:6-9; 36:3", {"zh": "以掃娶了她，希望討父母喜悅"}]],
+    [-1781, "Married by Esau, who hopes to please his parents", "Genesis 28:6-9; 36:3", {"p": "beersheba", "zh": "以掃娶了她，希望討父母喜悅"}]],
   "zilpah": [
     [-1774, "Given by Laban to Leah as her maidservant at her marriage", "Genesis 29:24", {"p": "haran", "zh": "利亞出嫁時，拉班把她給了利亞作婢女"}],
     [-1770, "Given to Jacob by Leah; bears Gad and Asher", "Genesis 30:9-13", {"c": 1, "p": "haran", "zh": "利亞把她給了雅各，她生了迦得和亞設"}]],
@@ -111,7 +112,8 @@
     [-1772, "Given to Jacob by Rachel; bears Dan and Naphtali", "Genesis 30:3-8", {"c": 1, "p": "haran", "zh": "拉結把她給了雅各，她生了但和拿弗他利"}],
     [-1750, "Reuben lies with her", "Genesis 35:22", {"c": 1, "zh": "呂便與她同寢"}]],
   "dinah": [
-    [-1752, "Violated by Shechem; her brothers Simeon and Levi avenge her", "Genesis 34:1-31", {"c": 1, "p": "shechem", "zh": "被示劍玷污；她的哥哥西緬和利未為她報仇"}]],
+    [-1752, "Violated by Shechem; her brothers Simeon and Levi avenge her", "Genesis 34:1-31", {"c": 1, "p": "shechem", "zh": "被示劍玷污；她的哥哥西緬和利未為她報仇"}],
+    "jacobegypt"],
   "hamor": [
     [-1752, "Killed with his son Shechem by Simeon and Levi after Dinah is violated", "Genesis 34:1-31", {"c": 1, "p": "shechem", "zh": "底拿被玷污後，他和兒子示劍被西緬和利未殺死"}]],
   "shechem-1": [
@@ -221,9 +223,9 @@
   "balak": [
     [-1473, "Hires Balaam to curse Israel, but Balaam blesses them", "Numbers 22:2-37; 23:1-30", {"p": "shittim", "zh": "僱用巴蘭咒詛以色列人，巴蘭卻祝福他們"}]],
   "sihon": [
-    [-1473, "Refuses Israel passage; defeated and killed at Jahaz", "Numbers 21:21-24; Deuteronomy 2:30-33", {"zh": "不讓以色列人過境；在雅雜被擊敗殺死"}]],
+    [-1473, "Refuses Israel passage; defeated and killed at Jahaz", "Numbers 21:21-24; Deuteronomy 2:30-33", {"p": "jahaz", "zh": "不讓以色列人過境；在雅雜被擊敗殺死"}]],
   "og": [
-    [-1473, "Defeated by Israel at Edrei; his 60 fortified cities are taken", "Numbers 21:33-35; Deuteronomy 3:1-11", {"zh": "在以得來被以色列人擊敗；他的60座設防城被攻佔"}]],
+    [-1473, "Defeated by Israel at Edrei; his 60 fortified cities are taken", "Numbers 21:33-35; Deuteronomy 3:1-11", {"p": "edrei", "zh": "在以得雷被以色列人擊敗；他的60座設防城被攻佔"}]],
   "evi": [
     "midiankings"],
   "hur-3": [
@@ -1632,10 +1634,10 @@
     [-3920, "Goes with Cain to the land of Nod and bears Enoch", "Genesis 4:16, 17", {"c": 1, "zh": "跟該隱到挪得地居住，生下以諾"}]],
   "lot-s-older-daughter": [
     [-1919, "Escapes Sodom with her father and sister", "Genesis 19:15-30", {"p": "zoar", "zh": "跟父親羅得和妹妹逃出所多瑪"}],
-    [-1919, "In a cave near Zoar conceives by her father; bears Moab", "Genesis 19:30-37", {"c": 1, "zh": "在瑣珥附近的洞裡跟父親同房懷孕，生下摩押"}]],
+    [-1919, "In a cave near Zoar conceives by her father; bears Moab", "Genesis 19:30-37", {"c": 1, "p": "zoar", "zh": "在瑣珥附近的洞裡跟父親同房懷孕，生下摩押"}]],
   "lot-s-younger-daughter": [
     [-1919, "Escapes Sodom with her father and sister", "Genesis 19:15-30", {"p": "zoar", "zh": "跟父親羅得和姐姐逃出所多瑪"}],
-    [-1919, "Also conceives by her father; bears Ben-ammi", "Genesis 19:35, 38", {"c": 1, "zh": "也跟父親同房懷孕，生下本阿米"}]],
+    [-1919, "Also conceives by her father; bears Ben-ammi", "Genesis 19:35, 38", {"c": 1, "p": "zoar", "zh": "也跟父親同房懷孕，生下本阿米"}]],
   "deborah-1": [
     [-1878, "Goes with Rebekah to marry Isaac", "Genesis 24:59", {"p": "haran", "zh": "陪利百加去嫁給以撒"}],
     [-1760, "Dies near Bethel and is buried under an oak", "Genesis 35:8", {"c": 1, "p": "bethel", "zh": "在伯特利附近去世，葬在一棵大樹下"}]],
@@ -1902,7 +1904,140 @@
     [33, "A man from Cyrene, coming in from the country, made to carry Jesus' torture stake", "Matthew 27:32; Mark 15:21; Luke 23:26", {"p": "jerusalem", "zh": "從鄉下進城的古利奈人，被迫替耶穌扛苦刑柱"}]],
   "salome-1": [
     [33, "Watches Jesus' execution from a distance", "Mark 15:40, 41", {"p": "jerusalem", "zh": "從遠處看著耶穌被處死"}],
-    [33, "Brings spices to Jesus' tomb and finds it empty", "Mark 16:1-6", {"p": "jerusalem", "zh": "帶香料到耶穌的墓那裡，發現墓是空的"}]]
+    [33, "Brings spices to Jesus' tomb and finds it empty", "Mark 16:1-6", {"p": "jerusalem", "zh": "帶香料到耶穌的墓那裡，發現墓是空的"}]],
+  "dan-1": [
+    "jacobegypt"],
+  "naphtali-1": [
+    "jacobegypt"],
+  "gad-1": [
+    "jacobegypt"],
+  "kohath": [
+    "jacobegypt"],
+  "zerah-3": [
+    "jacobegypt"],
+  "issachar-1": [
+    "jacobegypt"],
+  "sered": [
+    "jacobegypt"],
+  "ahiram": [
+    "jacobegypt"],
+  "ard": [
+    "jacobegypt"],
+  "areli": [
+    "jacobegypt"],
+  "arod": [
+    "jacobegypt"],
+  "ashbel": [
+    "jacobegypt"],
+  "becher-1": [
+    "jacobegypt"],
+  "bela-a": [
+    "jacobegypt"],
+  "beriah-1": [
+    "jacobegypt"],
+  "carmi-1": [
+    "jacobegypt"],
+  "elon-2": [
+    "jacobegypt"],
+  "eri": [
+    "jacobegypt"],
+  "ezbon-1": [
+    "jacobegypt"],
+  "gera-1": [
+    "jacobegypt"],
+  "guni-1": [
+    "jacobegypt"],
+  "haggi": [
+    "jacobegypt"],
+  "hamul": [
+    "jacobegypt"],
+  "hanoch-1b": [
+    "jacobegypt"],
+  "hezron-1": [
+    "jacobegypt"],
+  "jemuel": [
+    "jacobegypt"],
+  "jezer": [
+    "jacobegypt"],
+  "malchiel": [
+    "jacobegypt"],
+  "merari": [
+    "jacobegypt"],
+  "muppim": [
+    "jacobegypt"],
+  "naaman-1": [
+    "jacobegypt"],
+  "nemuel-1": [
+    "jacobegypt"],
+  "ohad": [
+    "jacobegypt"],
+  "ozni": [
+    "jacobegypt"],
+  "pallu": [
+    "jacobegypt"],
+  "puvah": [
+    "jacobegypt"],
+  "rosh-1": [
+    "jacobegypt"],
+  "serah": [
+    "jacobegypt"],
+  "shaul-2": [
+    "jacobegypt"],
+  "shillem": [
+    "jacobegypt"],
+  "shimron-1": [
+    "jacobegypt"],
+  "shuham": [
+    "jacobegypt"],
+  "shuni": [
+    "jacobegypt"],
+  "tola-1a": [
+    "jacobegypt"],
+  "zephon": [
+    "jacobegypt"],
+  "zohar-2": [
+    "jacobegypt"],
+  "zebulun-1": [
+    "jacobegypt"],
+  "heber-1": [
+    "jacobegypt"],
+  "imnah-1": [
+    "jacobegypt"],
+  "iob": [
+    "jacobegypt"],
+  "ishvah": [
+    "jacobegypt"],
+  "ishvi-1": [
+    "jacobegypt"],
+  "jachin-1": [
+    "jacobegypt"],
+  "jahleel": [
+    "jacobegypt"],
+  "jahzeel": [
+    "jacobegypt"],
+  "jamin-1": [
+    "jacobegypt"],
+  "shallum-1": [
+    "jacobegypt"],
+  "hupham": [
+    "jacobegypt"],
+  "huppim": [
+    "jacobegypt"],
+  "shuppim-1": [
+    "jacobegypt"],
+  "talmai-1": [
+    [-1512, "Living in Hebron when the 12 spies come", "Numbers 13:22", {"p": "hebron", "zh": "十二個探子來到時，他住在希伯崙"}],
+    [-1467, "Driven out of Hebron by Caleb", "Joshua 15:14; Judges 1:10", {"c": 1, "p": "hebron", "zh": "被迦勒趕出希伯崙"}]],
+  "moab-1": [
+    [-1918, "Born to Lot's older daughter in the mountain region near Zoar", "Genesis 19:30, 36, 37", {"c": 1, "p": "zoar", "zh": "在瑣珥附近的山區由羅得的大女兒所生"}]],
+  "ben-ammi": [
+    [-1918, "Born to Lot's younger daughter in the mountain region near Zoar", "Genesis 19:30, 38", {"c": 1, "p": "zoar", "zh": "在瑣珥附近的山區由羅得的小女兒所生"}]],
+  "milcah-1": [
+    [-1878, "Lives in the city of Nahor in Mesopotamia, where her granddaughter Rebekah grows up", "Genesis 24:10, 15, 24", {"c": 1, "p": "haran", "zh": "住在美索不達米亞的拿鶴城，她的孫女利百加在那裡長大"}]],
+  "bezalel-1": [
+    [-1513, "Leads the work of making the tabernacle and its furnishings at Mount Sinai", "Exodus 31:1-5; 36:1, 2; 38:22", {"c": 1, "p": "sinai", "zh": "在西奈山帶領製作會幕和其中的器具"}]],
+  "oholiab": [
+    [-1513, "Works with Bezalel making the tabernacle at Mount Sinai", "Exodus 31:6; 38:23", {"c": 1, "p": "sinai", "zh": "在西奈山和比撒列一起製作會幕"}]]
 },
-"dates": {"canaan": [-2366, -2290], "judith": [-1845, -1775], "zipporah": [-1575, -1500], "eleazar-1": [-1545, -1445], "sisera-1": [-1350, -1308], "gaal": [-1250, -1200], "hophni": [-1180, -1118], "mephibosheth-1": [-1125, -1068], "hadad-4": [-1072, -1000], "hazael": [-935, -855], "abiathar": [-1110, -1030], "peter-s-wife": [-10, 64], "deborah-1": [-1925, -1760], "laban-1": [-1910, -1750], "eliphaz": [-1700, -1590], "bildad": [-1700, -1590], "zophar": [-1700, -1590], "elihu-1": [-1660, -1570], "job-s-wife": [-1670, -1580], "peter-s-mother-in-law": [-45, 40], "paul-s-sister": [-10, 70], "jude": [5, 90]}
+"dates": {"canaan": [-2366, -2290], "judith": [-1845, -1775], "zipporah": [-1575, -1500], "eleazar-1": [-1545, -1445], "sisera-1": [-1350, -1308], "gaal": [-1250, -1200], "hophni": [-1180, -1118], "mephibosheth-1": [-1125, -1068], "hadad-4": [-1072, -1000], "hazael": [-935, -855], "abiathar": [-1110, -1030], "peter-s-wife": [-10, 64], "deborah-1": [-1925, -1760], "laban-1": [-1910, -1750], "eliphaz": [-1700, -1590], "bildad": [-1700, -1590], "zophar": [-1700, -1590], "elihu-1": [-1660, -1570], "job-s-wife": [-1670, -1580], "peter-s-mother-in-law": [-45, 40], "paul-s-sister": [-10, 70], "jude": [5, 90], "dinah": [-1795, -1700], "milcah-1": [-2010, -1870], "talmai-1": [-1560, -1460]}
 }
