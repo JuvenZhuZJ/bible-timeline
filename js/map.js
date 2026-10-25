@@ -592,10 +592,11 @@
   }
   const midYear = (stops) => { const y = stops.map((s) => s.y).filter((v) => v != null).sort((a, b) => a - b); return y.length ? y[y.length >> 1] : 0; };
   function levels(stops) {
-    // "Journey" (the whole journey) only for a life that took the person far from home (Abraham from Ur,
-    // Paul to Rome); names are kept short so the switch fits on one line, with the full name as its tooltip
+    // the first map is "Overall" for everyone, its tooltip "Whole journey" for a life that took the person far
+    // from home (Abraham from Ur, Paul to Rome); names are kept short so the switch fits on one line, with the
+    // full name as its tooltip
     const span = spanOf(stops), far = span > 6;
-    const out = [{ stops, name: TR(far ? "Journey" : "All"), full: TR(far ? "Whole journey" : "All places"), depth: 0, parent: -1 }];
+    const out = [{ stops, name: TR("Overall"), full: TR(far ? "Whole journey" : "All places"), depth: 0, parent: -1 }];
     if (!stops.some((s) => P[s.id])) return out;
     const y = midYear(stops);
     const inL = (s) => { const p = P[s.id] && P[s.id].ll; return p && inBox(p, LEVANT); };
