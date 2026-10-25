@@ -696,7 +696,8 @@ window.ZH.eras = [
  "教會與帝國",
  "中世紀",
  "印刷的聖經",
- "聖經研究者"
+ "聖經研究者",
+ "末世"
 ];
 window.ZH.terrain = {
  "Lebanon Mts.": "黎巴嫩山脈",

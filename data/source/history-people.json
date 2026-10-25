@@ -1,5 +1,5 @@
 {
-"about": "People known from history, not from the Bible text: between the Testaments, around the Bible's events, and after the Bible up to 1914 (church councils, Islam, Bible translators, the Reformation and the Bible Students). tools/build-people.mjs adds them to data/people.js with hist: true. Dates: q 'history' = the year is given in the source publications; 'estimated' = approximate (a clue in the sources, or a year from general histories); 'assumed' = not recorded, placed by generation. Activity references: '@key' is a source in data/history.js (HISTORY_SOURCES), anything else is a scripture. 'replaces' takes over a person already in the data; 'patch' adds to people already in the data. Write every text in your own words.",
+"about": "People known from history, not from the Bible text: between the Testaments, around the Bible's events, and after the Bible up to 2025 (church councils, Islam, Bible translators, the Reformation, the Bible Students and the Governing Body of Jehovah's Witnesses). tools/build-people.mjs adds them to data/people.js with hist: true. Dates: q 'history' = the year is given in the source publications; 'estimated' = approximate (a clue in the sources, or a year from general histories); 'assumed' = not recorded, placed by generation. 'living': true = no death in the sources; the line runs to the timeline's end. Activity references: '@key' is a source in data/history.js (HISTORY_SOURCES), anything else is a scripture. 'replaces' takes over a person already in the data; 'patch' adds to people already in the data. Write every text in your own words.",
 "people": [
 
 {"id":"artaxerxes-ii","name":"Artaxerxes II","aka":["Artaxerxes Mnemon"],"gender":"m","born":-445,"died":-359,"q":["assumed","history"],"tier":4,
@@ -584,7 +584,199 @@
  "role":"Lawyer; second president of the Watch Tower Society","look":{"age":"old","design":"High collar and glasses"},
  "summary":"A lawyer who served as the Watch Tower Society's legal counsel and helped arrange its move to Brooklyn. After Russell died he was chosen president.",
  "events":[[1908,"As legal counsel helps arrange the move to Brooklyn","@jv5",{"p":"brooklyn"}],[1917,"Is chosen president of the Watch Tower Society","@jv6"]],
- "src":["jv5","jv6"]}
+ "src":["jv5","jv6"]},
+
+{"id":"nathan-knorr","name":"Nathan H. Knorr","aka":["N. H. Knorr","Knorr"],"gender":"m","born":1905,"died":1977,"q":["estimated","history"],"tier":3,
+ "role":"Third president of the Watch Tower Society; Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Chosen president a few days after Rutherford died, he took the lead in the work for 35 years. He put the stress on training: a school for public speaking in every congregation and Gilead School to train missionaries.",
+ "events":[[1923,"Is baptized; Frederick Franz gives the baptism talk","@w77-knorr"],[1942,"Is chosen the third president of the Watch Tower Society, aged 36","@jv8"],[1942,"Suggests a school to train missionaries; Gilead School opens the next year","@jv8"],[1977,"Dies; Frederick Franz is chosen president after him","@w77-knorr"]],
+ "src":["w77-knorr","jv8"]},
+
+{"id":"frederick-franz","name":"Frederick W. Franz","aka":["F. W. Franz","Fred Franz"],"gender":"m","born":1893,"died":1992,"q":["history","history"],"tier":3,
+ "role":"Fourth president of the Watch Tower Society; Governing Body member","look":{"age":"old","initial":true},
+ "summary":"A university student who gave up training to be a Presbyterian minister to preach with the Bible Students. He worked on the Society's publications for decades, served as vice president from 1945 and as president from 1977 until he died at 99.",
+ "events":[[1913,"Is baptized, and the next year leaves university to preach full-time","@w93-franz"],[1920,"Joins the headquarters staff in Brooklyn","@w93-franz",{"p":"brooklyn"}],[1945,"Becomes vice president of the Watch Tower Society","@w93-franz"],[1971,"Is the first to chair the Governing Body when the chair starts to rotate yearly","@jv8"],[1977,"Is chosen the fourth president of the Watch Tower Society","@w77-knorr"],[1992,"Dies in Brooklyn at 99","@w93-franz",{"p":"brooklyn"}]],
+ "src":["w93-franz","jv8","w77-knorr"]},
+
+{"id":"thomas-sullivan","name":"Thomas J. Sullivan","aka":["T. J. Sullivan"],"gender":"m","born":1888,"died":1974,"q":["history","history"],"tier":4,
+ "role":"Governing Body member; head of the Service Department","look":{"age":"old","initial":true},
+ "summary":"Born in Ireland, he oversaw the Service Department at headquarters for many years and regularly visited Witnesses jailed in the United States for their neutrality. He was one of the eleven members of the Governing Body when he died.",
+ "events":[[1916,"Is baptized","@w74-sullivan"],[1924,"Joins the headquarters staff in Brooklyn with his wife, Evelyn","@w74-sullivan",{"p":"brooklyn"}],[1932,"Becomes a director of the Watch Tower Society","@w74-sullivan"],[1974,"Dies at 86 as one of the eleven members of the Governing Body","@w74-sullivan"]],
+ "src":["w74-sullivan"]},
+
+{"id":"john-groh","name":"John O. Groh","gender":"m","born":1906,"died":1975,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"A trained metallurgist who took up full-time preaching with his wife, Helen. At headquarters he became chief purchaser and helped run many large conventions in New York and elsewhere.",
+ "events":[[1934,"Is baptized","@w75-groh"],[1953,"Joins the headquarters staff in Brooklyn","@w75-groh",{"p":"brooklyn"}],[1974,"Is one of the ten members already on the Governing Body when it is enlarged","@w75-gb"],[1975,"Dies after 41 years of devoted service","@w75-groh"]],
+ "src":["w75-groh","w75-gb"]},
+
+{"id":"grant-suiter","name":"Grant Suiter","gender":"m","born":1908,"died":1983,"q":["estimated","history"],"tier":4,
+ "role":"Secretary-treasurer of the Watch Tower Society; Governing Body member","look":{"age":"old","initial":true},
+ "summary":"He met the Bible Students as a boy in California through the talk 'Millions Now Living Will Never Die.' He served as the Society's secretary-treasurer for 36 years and on the Governing Body.",
+ "events":[[1922,"Hears of the Bible Students in California, aged 14","@w83-suiter"],[1947,"Becomes secretary-treasurer of the Watch Tower Society","@w84-suiter"],[1983,"Dies months after a severe spinal injury","@w84-suiter"]],
+ "src":["w83-suiter","w84-suiter"]},
+
+{"id":"lyman-swingle","name":"Lyman A. Swingle","aka":["Swingle"],"gender":"m","born":1910,"died":2001,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Raised in a Bible Student family in Salt Lake City, he served at headquarters for almost 71 years: in the ink room, on the writing staff and in the Treasurer's Office. He attended a Governing Body meeting a week before he died at 90.",
+ "events":[[1923,"Is baptized at 12","@w01-swingle"],[1930,"Begins serving at headquarters in Brooklyn","@w01-swingle",{"p":"brooklyn"}],[1956,"Marries Crystal Zircher","@w01-swingle"],[2001,"Dies at 90, still serving on the Governing Body","@w01-swingle"]],
+ "src":["w01-swingle"]},
+
+{"id":"william-jackson","name":"William K. Jackson","aka":["Bill Jackson"],"gender":"m","born":1901,"died":1981,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Known to thousands simply as 'Bill,' he worked with the legal counsel Hayden Covington in the court cases that won many freedoms for Jehovah's Witnesses before the U.S. Supreme Court.",
+ "events":[[1915,"Dedicates himself to Jehovah at 14","@w82-jackson"],[1937,"Joins the headquarters staff in Brooklyn","@w82-jackson",{"p":"brooklyn"}],[1941,"Begins working with Hayden Covington on legal cases","@w82-jackson"],[1971,"Is appointed to the Governing Body","@w82-jackson"],[1981,"Dies","@w82-jackson"]],
+ "src":["w82-jackson"]},
+
+{"id":"george-gangas","name":"George D. Gangas","aka":["Gangas"],"gender":"m","born":1896,"died":1994,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Remembered for his love of righteousness and of Bible questions, which he would put to anyone he talked with. He was in full-time service for 66 years and on the Governing Body for almost 23.",
+ "events":[[1921,"Is baptized","@w94-gangas"],[1928,"Joins the headquarters staff in Brooklyn","@w94-gangas",{"p":"brooklyn"}],[1971,"Becomes a member of the Governing Body","@w94-gangas"],[1994,"Dies at 98","@w94-gangas"]],
+ "src":["w94-gangas"]},
+
+{"id":"milton-henschel","name":"Milton G. Henschel","aka":["Henschel"],"gender":"m","born":1920,"died":2003,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"He became Nathan Knorr's secretary as a young man and travelled with him to over 150 lands. In Liberia he was mistreated for refusing a patriotic ceremony, yet went back months later to ask the president for freedom of worship.",
+ "events":[[1939,"Becomes secretary to Nathan Knorr","@w03-henschel"],[1956,"Marries Lucille Bennett","@w03-henschel"],[1963,"Is mistreated at a convention in Liberia for refusing a patriotic ceremony","@w03-henschel"],[1974,"Is one of the ten members already on the Governing Body when it is enlarged","@w75-gb"],[2003,"Dies at 82","@w03-henschel"]],
+ "src":["w03-henschel","w75-gb"]},
+
+{"id":"lloyd-barry","name":"W. Lloyd Barry","aka":["Lloyd Barry"],"gender":"m","born":1916,"died":1999,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"A New Zealander with a science degree who served at the Australia branch and then for 25 years as a missionary in Japan, where there were only a dozen preachers when he arrived.",
+ "events":[[1939,"Starts full-time service at the Australia branch","@w99-barry"],[1949,"Arrives in Japan as a missionary","@w99-barry"],[1974,"Is appointed to the Governing Body while branch overseer in Japan","@w75-gb"],[1975,"Moves to headquarters in Brooklyn","@w99-barry",{"p":"brooklyn"}],[1999,"Dies while serving at a convention in Hawaii","@w99-barry"]],
+ "src":["w99-barry","w75-gb"]},
+
+{"id":"john-booth","name":"John C. Booth","aka":["Booth"],"gender":"m","born":1902,"died":1996,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"A dairy farmer's son from New York State who pioneered in the rural South, then visited congregations as a traveling overseer, facing mobs, courts and jail. He served at Kingdom Farm for 28 years.",
+ "events":[[1923,"Is baptized","@w96-booth"],[1928,"Starts full-time preaching","@w96-booth"],[1935,"Becomes a traveling overseer","@w96-booth"],[1941,"Is assigned to Kingdom Farm near Ithaca, New York","@w96-booth"],[1974,"Is appointed to the Governing Body","@w96-booth"],[1996,"Dies at 93","@w96-booth"]],
+ "src":["w96-booth"]},
+
+{"id":"charles-fekel","name":"Charles J. Fekel","aka":["Fekel"],"gender":"m","born":1897,"died":1977,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Born in Bohemia, he knew he had found the truth when he heard Charles Taze Russell speak. He oversaw the composition department of the Brooklyn factory for more than 50 years.",
+ "events":[[1916,"Is baptized","@w77-fekel"],[1921,"Begins serving at headquarters in Brooklyn","@w77-fekel",{"p":"brooklyn"}],[1974,"Is appointed to the Governing Body","@w77-fekel"],[1977,"Dies at 80","@w77-fekel"]],
+ "src":["w77-fekel"]},
+
+{"id":"karl-klein","name":"Karl F. Klein","aka":["Klein"],"gender":"m","born":1905,"died":2001,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Born in Germany and raised near Chicago, he loved music and played the cello in the Society's radio orchestra. He worked in the Writing Department for half a century.",
+ "events":[[1918,"Is baptized","@w01-klein"],[1925,"Joins the headquarters staff in Brooklyn","@w01-klein",{"p":"brooklyn"}],[1974,"Is appointed to the Governing Body","@w75-gb"],[2001,"Dies at 95","@w01-klein"]],
+ "src":["w01-klein","w75-gb"]},
+
+{"id":"theodore-jaracz","name":"Theodore Jaracz","aka":["Jaracz"],"gender":"m","born":1925,"died":2010,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"He entered full-time service at 17 and spent nearly 67 years in it, as a Gilead graduate, a traveling overseer and branch servant in Australia.",
+ "events":[[1941,"Is baptized at 15","@w10-jaracz"],[1946,"Attends the seventh class of Gilead School","@w10-jaracz"],[1951,"Becomes branch servant in Australia","@w10-jaracz"],[1974,"Is invited to join the Governing Body","@w10-jaracz"],[2010,"Dies at 84","@w10-jaracz"]],
+ "src":["w10-jaracz"]},
+
+{"id":"albert-schroeder","name":"Albert D. Schroeder","aka":["Schroeder"],"gender":"m","born":1911,"died":2006,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"He left engineering studies for full-time preaching, oversaw the work in Britain, and helped write the course for Gilead School, where he taught missionaries for years.",
+ "events":[[1932,"Joins the headquarters staff in Brooklyn","@w06-schroeder",{"p":"brooklyn"}],[1937,"Is sent to oversee the work in Britain","@w06-schroeder"],[1942,"Is deported from Britain and helps prepare the course for Gilead School","@w06-schroeder"],[1974,"Begins serving on the Governing Body","@w06-schroeder"],[2006,"Dies at 94","@w06-schroeder"]],
+ "src":["w06-schroeder"]},
+
+{"id":"daniel-sydlik","name":"Daniel Sydlik","aka":["Sydlik"],"gender":"m","born":1919,"died":2006,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Jailed in World War II for his neutrality, he then served at headquarters for almost 60 years. He was known as down-to-earth and approachable, and for his love of life.",
+ "events":[[1946,"Joins the headquarters staff in Brooklyn","@w07-sydlik",{"p":"brooklyn"}],[1970,"Marries Marina Hodson from England","@w07-sydlik"],[1974,"Is appointed to the Governing Body","@w07-sydlik"],[2006,"Dies at 87","@w07-sydlik"]],
+ "src":["w07-sydlik"]},
+
+{"id":"carey-barber","name":"Carey W. Barber","aka":["Barber"],"gender":"m","born":1905,"died":2007,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Born in England and baptized in Canada, he went to Brooklyn with his twin brother to help the Society print its own books. He later visited congregations in the western United States and served on the Governing Body for 30 years, until he died at 101.",
+ "events":[[1921,"Is baptized in Winnipeg, Canada","@w07-barber"],[1923,"Moves to Brooklyn to help print the Society's books","@w07-barber",{"p":"brooklyn"}],[1948,"Becomes a traveling overseer in the western United States","@w07-barber"],[1977,"Is appointed to the Governing Body","@w77-gb"],[2007,"Dies at 101","@w07-barber"]],
+ "src":["w07-barber","w77-gb"]},
+
+{"id":"john-barr","name":"John E. Barr","aka":["Jack Barr"],"gender":"m","born":1913,"died":2010,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Born in Aberdeen, Scotland, to anointed parents, he overcame his shyness to preach from house to house at 14. He served at the London Bethel and then on the Governing Body for 33 years.",
+ "events":[[1927,"Starts preaching from house to house with his father, aged 14","@w11-barr"],[1939,"Joins the Bethel family in London","@w11-barr"],[1960,"Marries Mildred Willett","@w11-barr"],[1977,"Is appointed to the Governing Body","@w77-gb"],[2010,"Dies at 97","@w11-barr"]],
+ "src":["w11-barr","w77-gb"]},
+
+{"id":"martin-poetzinger","name":"Martin Poetzinger","aka":["Poetzinger"],"gender":"m","born":1904,"died":1988,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"A pioneer from Munich who was sent to Bulgaria, Hungary and Yugoslavia, then spent nine years in Dachau and Mauthausen for refusing to give up his faith.",
+ "events":[[1928,"Is baptized","@w88-poetzinger"],[1933,"Is sent to look after the preaching in Bulgaria","@w88-poetzinger"],[1936,"Is sent to a Nazi concentration camp, the year he marries","@w88-poetzinger"],[1945,"Is freed and reunited with his wife, Gertrud","@w88-poetzinger"],[1977,"Is appointed to the Governing Body","@w88-poetzinger"],[1988,"Dies in Brooklyn","@w88-poetzinger",{"p":"brooklyn"}]],
+ "src":["w88-poetzinger"]},
+
+{"id":"gerrit-losch","name":"Gerrit Lösch","aka":["Losch"],"gender":"m","born":1941,"living":true,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Born in Austria, he lost his father in World War II when he was about two. He served as a circuit and district overseer in Austria and at the Vienna branch, which oversaw the work in several East European lands.",
+ "events":[[1959,"Is baptized in Austria","@w14-losch"],[1963,"Begins traveling work in Austria","@w14-losch"],[1967,"Marries Merete","@w14-losch"],[1990,"Moves to headquarters in Brooklyn","@w14-losch",{"p":"brooklyn"}],[1994,"Is added to the Governing Body","@w94-losch"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w14-losch","w94-losch","jwfq-gb"]},
+
+{"id":"samuel-herd","name":"Samuel F. Herd","aka":["Samuel Herd"],"gender":"m","born":1935,"living":true,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Born in a log cabin in Liberty, Indiana, he learned the truth after army service. He and his wife, Gloria, spent over 30 years in the circuit and district work.",
+ "events":[[1957,"Is baptized","@w18-herd"],[1958,"Starts pioneering","@w18-herd"],[1965,"Begins over 30 years of circuit and district work","@w00-gb"],[1999,"Is added to the Governing Body","@w00-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w18-herd","w00-gb","jwfq-gb"]},
+
+{"id":"stephen-lett","name":"M. Stephen Lett","aka":["Stephen Lett"],"gender":"m","born":1948,"living":true,"q":["assumed","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"adult","initial":true},
+ "summary":"He served at Bethel as a young man, then with his wife, Susan, as a special pioneer and for nearly 20 years as a circuit overseer.",
+ "events":[[1966,"Starts pioneering","@w00-gb"],[1971,"Marries Susan and becomes a special pioneer","@w00-gb"],[1979,"Becomes a circuit overseer","@w00-gb"],[1999,"Is added to the Governing Body","@w00-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w00-gb","jwfq-gb"]},
+
+{"id":"guy-pierce","name":"Guy H. Pierce","aka":["Guy Pierce"],"gender":"m","born":1934,"died":2014,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"A family man whose warm smile and humour drew people to him. After raising a family he and his wife, Penny, pioneered and spent 11 years in the circuit work.",
+ "events":[[1955,"Is baptized","@w14-pierce"],[1977,"Marries Penny","@w14-pierce"],[1986,"Begins 11 years as a circuit overseer","@w14-pierce"],[1999,"Is added to the Governing Body","@w14-pierce"],[2014,"Dies at 79","@w14-pierce"]],
+ "src":["w14-pierce"]},
+
+{"id":"david-splane","name":"David H. Splane","aka":["David Splane"],"gender":"m","born":1943,"living":true,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"old","initial":true},
+ "summary":"Born in Calgary, Canada, during World War II, he studied music before choosing the full-time ministry. A Gilead graduate, he served as a missionary in Senegal and for 19 years in the circuit work in Canada.",
+ "events":[[1963,"Starts pioneering","@w00-gb"],[1967,"Serves as a missionary in Senegal","@w26-splane"],[1969,"Marries Linda","@w26-splane"],[1990,"Joins the Bethel family in the United States","@w00-gb"],[1999,"Is added to the Governing Body","@w00-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w00-gb","w26-splane","jwfq-gb"]},
+
+{"id":"geoffrey-jackson","name":"Geoffrey W. Jackson","aka":["Geoffrey Jackson"],"gender":"m","born":1955,"living":true,"q":["history","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"adult","initial":true},
+ "summary":"Born in Queensland, Australia, he pioneered from 15. With his wife, Jenny, he spent 24 years as a missionary in Tuvalu, Samoa and Fiji, where they also translated Bible publications.",
+ "events":[[1968,"Is baptized in the Queensland outback","@w15-jackson"],[1971,"Starts pioneering at 15","@w15-jackson"],[1979,"Begins missionary service in Tuvalu, later Samoa and Fiji","@w15-jackson"],[2003,"Moves to Translation Services in the United States","@w15-jackson"],[2005,"Is added to the Governing Body","@w06-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w15-jackson","w06-gb","jwfq-gb"]},
+
+{"id":"anthony-morris","name":"Anthony Morris III","aka":["Anthony Morris"],"gender":"m","born":1950,"living":true,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"adult","initial":true},
+ "summary":"He served as an operating-room technician in the Vietnam War and fell seriously ill there; later he took up the truth his mother had once studied. He pioneered with his wife, Susan, served where the need was greater, and later did circuit work.",
+ "events":[[1969,"Arrives in Vietnam as an army operating-room technician","@w15-morris"],[1971,"Starts pioneering and marries Susan","@w06-gb"],[2002,"Joins the Bethel family at Patterson","@w15-morris"],[2005,"Is added to the Governing Body","@w06-gb"]],
+ "src":["w15-morris","w06-gb"]},
+
+{"id":"mark-sanderson","name":"Mark Sanderson","gender":"m","born":1962,"living":true,"q":["assumed","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"adult","initial":true},
+ "summary":"Raised in San Diego, California, he pioneered in Canada, served as a special pioneer in Newfoundland and on the Philippines Branch Committee.",
+ "events":[[1975,"Is baptized","@w13-gb"],[1983,"Starts pioneering in Saskatchewan, Canada","@w13-gb"],[2008,"Is appointed to the Philippines Branch Committee","@w13-gb"],[2012,"Is added to the Governing Body","@w13-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w13-gb","jwfq-gb"]},
+
+{"id":"kenneth-cook","name":"Kenneth Cook, Jr.","aka":["Kenneth Cook"],"gender":"m","born":1962,"living":true,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"adult","initial":true},
+ "summary":"From south-central Pennsylvania, he learned the truth from a classmate just before finishing high school. He served at Bethel for over 30 years, in the printery, the office and the Writing Correspondence Department.",
+ "events":[[1980,"Is baptized","@w19-gb"],[1984,"Begins Bethel service at Wallkill, New York","@w19-gb"],[2017,"Becomes a helper to the Writing Committee","@w19-gb"],[2018,"Is added to the Governing Body","@w19-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w19-gb","jwfq-gb"]},
+
+{"id":"gage-fleegle","name":"Gage Fleegle","gender":"m","born":1971,"living":true,"q":["assumed","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"adult","initial":true},
+ "summary":"Raised in western Pennsylvania, he set the goal of Bethel service at 12. He served at Bethel from 1991, in the Bindery, the Service Department and the Teaching and Service committee offices.",
+ "events":[[1988,"Is baptized as a teenager","@w24-gb"],[1991,"Begins Bethel service in Brooklyn","@w24-gb",{"p":"brooklyn"}],[2022,"Becomes a helper to the Service Committee","@w24-gb"],[2023,"Is added to the Governing Body","@w24-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w24-gb","jwfq-gb"]},
+
+{"id":"jeffrey-winder","name":"Jeffrey Winder","gender":"m","born":1970,"living":true,"q":["assumed","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"adult","initial":true},
+ "summary":"Raised in Murrieta, California, he began pioneering months after his baptism. At Bethel he helped build the world headquarters at Warwick.",
+ "events":[[1986,"Is baptized and starts pioneering","@w24-gb"],[1990,"Begins Bethel service at Wallkill, New York","@w24-gb"],[2014,"Helps build the world headquarters at Warwick","@w24-gb"],[2023,"Is added to the Governing Body","@w24-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w24-gb","jwfq-gb"]},
+
+{"id":"jody-jedele","name":"Jody Jedele","gender":"m","born":1971,"living":true,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"adult","initial":true},
+ "summary":"Raised in the truth in Missouri, he served at Bethel, learned Spanish, and later left Bethel for some years to care for his parents.",
+ "events":[[1983,"Is baptized in his early teens","@w25-gb"],[1990,"Begins Bethel service at Wallkill, New York","@w25-gb"],[2013,"Returns to Bethel for the Warwick construction project","@w25-gb"],[2024,"Is added to the Governing Body","@w25-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w25-gb","jwfq-gb"]},
+
+{"id":"jacob-rumph","name":"Jacob Rumph","gender":"m","born":1977,"living":true,"q":["estimated","history"],"tier":4,
+ "role":"Governing Body member","look":{"age":"adult","initial":true},
+ "summary":"Raised in California, he asked for a Bible study at 13. He pioneered from high school and in 2000 moved to Ecuador to serve where the need was greater.",
+ "events":[[1992,"Is baptized as a teenager","@w25-gb"],[1995,"Starts pioneering after high school","@w25-gb"],[2000,"Moves to Ecuador to serve where the need is greater","@w25-gb"],[2024,"Is added to the Governing Body","@w25-gb"],[2025,"Serves on the Governing Body","@jwfq-gb"]],
+ "src":["w25-gb","jwfq-gb"]}
 ],
 
 "patch": {
