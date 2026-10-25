@@ -146,6 +146,8 @@
       { name: "Tudor flat cap", cult: ["reformation"], age: "adult", head: "flatcap", beard: "short", face: "square", eye: "narrow", mouth: "stern", dress: "gown", extras: ["necklace"] },
       { name: "Translator in a skullcap", cult: ["reformation"], age: "adult", head: "skullcap", hair: "short", beard: "full", face: "long", eye: "downcast", dress: "gown" },
       { name: "Reformer with a long beard", cult: ["reformation"], age: "adult", head: "skullcap", hair: "short", beard: "long", bs: "pointed", face: "long", eye: "narrow", dress: "gown" },
+      { name: "Periwig and cravat", cult: ["modern"], age: "adult", head: "bare", hair: "curled", beard: "none", shaven: true, face: "long", eye: "open", mouth: "calm", dress: "coat" },
+      { name: "Orthodox patriarch's tall hat", cult: ["church"], age: "old", head: "tallcap", beard: "long", bs: "pointed", face: "long", eye: "narrow", dress: "gown" },
       { name: "Frock coat and white beard", cult: ["modern"], age: "old", head: "bare", hair: "short", beard: "long", face: "oval", eye: "open", mouth: "calm", dress: "coat" },
       { name: "High collar and glasses", cult: ["modern"], age: "adult", head: "bare", hair: "short", beard: "none", shaven: true, face: "square", mouth: "stern", dress: "coat", extras: ["glasses"] }
     ],

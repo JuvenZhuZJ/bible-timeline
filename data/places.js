@@ -229,7 +229,14 @@ window.BIBLE_PLACES = {
   "amsterdam": {"n":"Amsterdam","ll":[4.9,52.373],"s":"known"},
   "neuchatel": {"n":"Neuchâtel","ll":[6.931,46.99],"s":"known"},
   "nuremberg": {"n":"Nuremberg","ll":[11.077,49.452],"s":"known"},
-  "seville": {"n":"Seville","ll":[-5.984,37.389],"s":"known"}
+  "seville": {"n":"Seville","ll":[-5.984,37.389],"s":"known"},
+  "dublin": {"n":"Dublin","ll":[-6.26,53.35],"s":"known"},
+  "cambridge": {"n":"Cambridge","ll":[0.118,52.205],"s":"known"},
+  "stpetersburg": {"n":"St. Petersburg","ll":[30.316,59.939],"s":"known"},
+  "philadelphia": {"n":"Philadelphia, Pennsylvania","ll":[-75.165,39.953],"s":"known"},
+  "edinboro": {"n":"Edinboro, Pennsylvania","ll":[-80.132,41.874],"s":"known"},
+  "capetown": {"n":"Cape Town","ll":[18.424,-33.925],"s":"known"},
+  "stcatherine": {"n":"St. Catherine's Monastery","ll":[33.976,28.556],"s":"known","note":"At the foot of Jebel Musa, the traditional Mount Sinai"}
 };
 
 window.PERSON_PLACES = {

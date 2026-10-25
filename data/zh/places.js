@@ -605,7 +605,14 @@ window.ZH.places = {
  "amsterdam": {"n":"阿姆斯特丹"},
  "neuchatel": {"n":"納沙泰爾"},
  "nuremberg": {"n":"紐倫堡"},
- "seville": {"n":"塞維利亞"}
+ "seville": {"n":"塞維利亞"},
+ "dublin": {"n":"都柏林"},
+ "cambridge": {"n":"劍橋"},
+ "stpetersburg": {"n":"聖彼得堡"},
+ "philadelphia": {"n":"費拉德爾菲亞"},
+ "edinboro": {"n":"埃丁伯勒"},
+ "capetown": {"n":"開普敦"},
+ "stcatherine": {"n":"聖凱瑟琳修道院"}
 };
 window.ZH.events = {
  "creation": {
