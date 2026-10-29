@@ -14,6 +14,7 @@
   --accent: #d9b56f;
   --male: #86a6c8;
   --female: #d08f9c;
+  --book: #93ad8c;
   --portrait-fill: #050505;
   --serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
   --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -179,25 +180,25 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .event-tip .et-hint { font: 300 10px var(--sans); color: var(--muted); margin-top: 8px; letter-spacing: 0.04em; }
 .event-tip .et-ref { font: 300 10.5px var(--mono); color: var(--muted); margin-top: 6px; }
 
-/* Bible books band (above the main line) and a book's card */
+/* Bible books band (above the main line) and a book's card; books are sage so they stand apart from the cream lifespans and the gold highlight */
 #gBooks, #gBooks:focus, .book { outline: none; }
 .book { cursor: pointer; }
 .book .hit, .book-act .hit { fill: transparent; stroke: none; }
-.book-line { stroke: var(--fg-2); stroke-width: 1.3; stroke-linecap: round; opacity: 0.75; }
-.book-end { stroke: var(--fg-2); stroke-width: 1; opacity: 0.75; }
-.book-tail { stroke: var(--fg-2); stroke-width: 1; stroke-dasharray: 1.5 2.5; opacity: 0.6; }
-.book-done { fill: none; stroke: var(--fg-2); stroke-width: 1; opacity: 0.85; }
+.book-line { stroke: var(--book); stroke-width: 1.5; stroke-linecap: round; opacity: 0.85; }
+.book-end { stroke: var(--book); stroke-width: 1; opacity: 0.85; }
+.book-tail { stroke: var(--book); stroke-width: 1; stroke-dasharray: 1.5 2.5; opacity: 0.7; }
+.book-done { fill: none; stroke: var(--book); stroke-width: 1; opacity: 0.9; }
 .book:hover .book-tail, .book.active .book-tail { stroke: var(--accent); opacity: 1; }
 .book:hover .book-done, .book.active .book-done, .book:focus-visible .book-done { stroke: var(--accent); opacity: 1; }
-.book-name { fill: var(--fg-2); font: italic 500 12px var(--serif); letter-spacing: 0.02em; paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
+.book-name { fill: var(--book); font: italic 500 12px var(--serif); letter-spacing: 0.02em; paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
 .book:hover .book-line, .book:hover .book-end, .book.active .book-line, .book.active .book-end, .book:focus-visible .book-line { stroke: var(--accent); opacity: 1; }
 .book:hover .book-name, .book.active .book-name, .book:focus-visible .book-name { fill: var(--accent); }
-.bm-chip { fill: var(--bg); stroke: var(--fg-2); stroke-width: 1; opacity: 0.85; }
-.bm-n { fill: var(--fg-2); font: 500 9.5px var(--mono); }
+.bm-chip { fill: var(--bg); stroke: var(--book); stroke-width: 1; opacity: 0.85; }
+.bm-n { fill: var(--book); font: 500 9.5px var(--mono); }
 .book-more:hover .bm-chip, .book-more.active .bm-chip, .book-more:focus-visible .bm-chip { stroke: var(--accent); opacity: 1; }
 .book-more:hover .bm-n, .book-more.active .bm-n, .book-more:focus-visible .bm-n { fill: var(--accent); }
 .book-act { cursor: pointer; }
-.book-ev { fill: var(--fg); stroke: var(--bg); stroke-width: 1; transition: r .15s; }
+.book-ev { fill: var(--book); stroke: var(--bg); stroke-width: 1; transition: r .15s; }
 .book-act:hover .book-ev, .book-act.active .book-ev { r: 4.5; fill: var(--accent); }
 :is(.event-tip, .bk-win) .bk-row { display: flex; gap: 8px; font-size: 12px; line-height: 1.5; color: var(--fg-2); }
 :is(.event-tip, .bk-win) .bk-k { flex: 0 0 auto; min-width: 84px; color: var(--muted); font: 300 10.5px/1.75 var(--sans); letter-spacing: 0.04em; }
@@ -216,9 +217,10 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 :is(.event-tip, .bk-win) .bk-y { display: inline-block; flex: none; min-width: 64px; margin-right: 6px; color: var(--muted); font: 300 10px var(--mono); }
 :is(.event-tip, .bk-win) .bk-p { color: var(--muted); }
 :is(.event-tip, .bk-win) .bk-read { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font: 300 11px var(--sans); }
-.lg-book { fill: none; stroke: var(--fg-2); stroke-width: 1.2; stroke-linecap: round; }
-.lg-tail { fill: none; stroke: var(--fg-2); stroke-width: 1.1; stroke-dasharray: 1.5 2.5; }
-.lg-done { fill: none; stroke: var(--fg-2); stroke-width: 1.1; }
+.lg-book { fill: none; stroke: var(--book); stroke-width: 1.2; stroke-linecap: round; }
+.lg-tail { fill: none; stroke: var(--book); stroke-width: 1.1; stroke-dasharray: 1.5 2.5; }
+.lg-done { fill: none; stroke: var(--book); stroke-width: 1.1; }
+.lg-solid.lg-bev { fill: var(--book); }
 .books-btn { position: relative; }
 .books-btn.on { border-color: rgba(217,181,111,0.5); color: var(--accent); }
 .books-btn.on .show-dot { display: block; }
