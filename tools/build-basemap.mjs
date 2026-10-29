@@ -1,4 +1,4 @@
-// Builds data/basemap.js: the land outline (Natural Earth 1:10m, public domain, from the world-atlas npm package)
+// Builds data/basemap.js: the land outline of the whole world (Natural Earth 1:10m, public domain, from the world-atlas npm package)
 // plus the Jordan, Euphrates, Tigris and Nile, the Dead Sea and the Sea of Galilee (OpenBible.info geometry, CC BY 4.0).
 // Usage: node tools/build-basemap.mjs <topojson-client.js> <world-atlas/land-10m.json> <dir of OpenBible geometry/*.geojson> data/basemap.js [tolerance=0.02]
 // Pass - as the geometry dir to keep the rivers and lakes already in data/basemap.js.
@@ -8,27 +8,16 @@ const topo = require(process.argv[2]);           // topojson-client
 const land = JSON.parse(fs.readFileSync(process.argv[3], 'utf8')); // land-10m.json
 const geoDir = process.argv[4]; const out = process.argv[5];
 const TOL = +(process.argv[6] || 0.02);
-const BB = [-102, 8, 62, 56];                    // lon0, lat0, lon1, lat1: the whole map
-// land is kept only inside these boxes: the Bible lands and Europe in full detail, and the eastern
-// United States (for the Bible Students, after the Bible) more coarsely; the ocean between is left empty
+const BB = [-180, -60, 190, 84];                 // lon0, lat0, lon1, lat1: the whole map
+// the coastline is simplified more or less by region: the Bible lands and Europe in full detail, the
+// eastern United States (for the Bible Students, after the Bible) more coarsely, and the rest of the
+// world (for people of modern times) coarser still, with islands under about a third of a degree
+// left out there. Coasts are not cut at the regions' edges, so no straight seams show.
 const REGIONS = [{ bb: [-10, 8, 62, 56], tol: 1 }, { bb: [-102, 24, -66, 50], tol: 3 }];
+const REST = 15;
+const tolAt = ([x, y]) => { for (const rg of REGIONS) if (x >= rg.bb[0] && x <= rg.bb[2] && y >= rg.bb[1] && y <= rg.bb[3]) return rg.tol; return REST; };
 const K = Math.cos(31 * Math.PI / 180), SC = 10;   // x = lon*K*SC, y = -lat*SC
 const P = ([lon, lat]) => [lon * K * SC, -lat * SC];
-function clip(ring, bb) {                        // Sutherland-Hodgman against a box
-  const edges = [[0, bb[0], 1], [0, bb[2], -1], [1, bb[1], 1], [1, bb[3], -1]];
-  let pts = ring;
-  for (const [ax, v, s] of edges) {
-    const res = []; if (!pts.length) break;
-    for (let i = 0; i < pts.length; i++) {
-      const a = pts[i], b = pts[(i + 1) % pts.length];
-      const ina = (a[ax] - v) * s >= 0, inb = (b[ax] - v) * s >= 0;
-      if (ina) res.push(a);
-      if (ina !== inb) { const t = (v - a[ax]) / (b[ax] - a[ax]); res.push([a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]); }
-    }
-    pts = res;
-  }
-  return pts;
-}
 function dp(pts, tol) {                          // Douglas-Peucker
   if (pts.length < 3) return pts;
   const n = pts.length - 1;
@@ -39,7 +28,7 @@ function dp(pts, tol) {                          // Douglas-Peucker
   const st = [[0, pts.length - 1]];
   while (st.length) { const [i, j] = st.pop(); let md = 0, mi = -1;
     const [ax, ay] = pts[i], [bx, by] = pts[j], dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy) || 1e-9;
-    for (let k = i + 1; k < j; k++) { const d = Math.abs(dy * (pts[k][0] - ax) - dx * (pts[k][1] - ay)) / L; if (d > md) { md = d; mi = k; } }
+    for (let k = i + 1; k < j; k++) { const d = Math.abs(dy * (pts[k][0] - ax) - dx * (pts[k][1] - ay)) / L / tolAt(pts[k]); if (d > md) { md = d; mi = k; } }
     if (md > tol) { keep[mi] = 1; st.push([i, mi], [mi, j]); } }
   return pts.filter((_, k) => keep[k]);
 }
@@ -53,7 +42,16 @@ function path(rings, closed) {
 const geo = topo.feature(land, land.objects.land);
 const rings = [];
 for (const ft of geo.features) for (const poly of (ft.geometry.type === 'Polygon' ? [ft.geometry.coordinates] : ft.geometry.coordinates))
-  for (const r of poly) for (const rg of REGIONS) { const c = clip(r, rg.bb); if (c.length > 2) { const d = dp(c, TOL * rg.tol); if (d.length > 3) rings.push(d); } }
+  for (let r0 of poly) {
+    // a ring that crosses 180° (Fiji, Chukotka) is kept in one piece east of it
+    if (r0.some((p, i) => i && Math.abs(p[0] - r0[i - 1][0]) > 180)) r0 = r0.map(([x, y]) => [x < -90 ? x + 360 : x, y]);
+    // Pacific islands just west of 180° (Samoa) are repeated east of it, so the South Pacific is not split by the map's edge
+    for (const r of r0.every(([x]) => x < -168) ? [r0, r0.map(([x, y]) => [x + 360, y])] : [r0]) {
+      const xs = r.map((p) => p[0]), ys = r.map((p) => p[1]);
+      if (r.every((p) => tolAt(p) === REST) && Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) < 0.35) continue;
+      const d = dp(r, TOL); if (d.length > 3) rings.push(d);
+    }
+  }
 const OLD = geoDir === '-' && (() => { const w = {}; new Function('window', fs.readFileSync(out, 'utf8'))(w); return w.BASEMAP; })();
 const g = (id) => JSON.parse(fs.readFileSync(`${geoDir}/${id}.geojson`, 'utf8'));
 function lines(id, role) { const fc = g(id); const fts = fc.features.filter(x => role.test(x.properties.id || ''));

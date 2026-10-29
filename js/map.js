@@ -22,9 +22,9 @@
 
   // sea labels: the first candidate inside the view and clear of the pins is used
   const SEAS = [
-    { t: "Great Sea", at: [[34.35, 32.75], [33.7, 33.2], [32.6, 33.5], [30.5, 33.6], [27.5, 34.6], [20.5, 35.2], [16.5, 38.4]] },
+    { t: "Great Sea", at: [[34.35, 32.75], [33.7, 33.2], [32.6, 33.5], [30.5, 33.6], [27.5, 34.6], [20.5, 35.2], [16.5, 38.4]], max: 40 * KY },
     { t: "Salt Sea", at: [[35.62, 31.38]], max: 3.2 * KY },
-    { t: "Red Sea", at: [[33.35, 28.35], [34.75, 28.75], [37.6, 22.6]] },
+    { t: "Red Sea", at: [[33.35, 28.35], [34.75, 28.75], [37.6, 22.6]], max: 40 * KY },
   ];
   SEAS.forEach((sea) => { sea.t = TR(sea.t); });
 

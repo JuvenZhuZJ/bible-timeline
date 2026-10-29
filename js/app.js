@@ -1826,7 +1826,8 @@
   // Google Maps at the place, satellite view; an uncertain site opens at the spot used here, which the
   // link says is the suggested one
   function gmapLink(pl) {
-    const [lon, lat] = pl.ll, z = pl.r ? 7 : 14;
+    // a Pacific place kept east of 180° on the map (Samoa) is given its usual longitude
+    const lat = pl.ll[1], lon = pl.ll[0] > 180 ? +(pl.ll[0] - 360).toFixed(3) : pl.ll[0], z = pl.r ? 7 : 14;
     const url = `https://www.google.com/maps/place/${lat},${lon}/@${lat},${lon},${z}z/data=!3m1!1e3`;
     const text = pl.s === "known" ? T("gmap", null, "Open in Google Maps") : T("gmap.short", null, "Google Maps");
     return `<a class="bm-gmap" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(T("gmap.title", { place: pl.n }, `${pl.n} in Google Maps (opens a new tab)`))}">${text} ↗</a>`;
