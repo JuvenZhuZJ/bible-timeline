@@ -19,6 +19,14 @@ python3 -m http.server 8000
 
 The logo is a small family tree in line art: a trunk on a horizon line (a nod to the timeline), two branches that split again, and gold dots for the people at each tip. The header copy is inline SVG in `index.html` (`.brand-mark`, styled in `css/style.css`); the browser tab uses the same tree, simplified for 16px, from `img/favicon.svg`. The tab icon has no background circle so the tree fills the space: it is bright gold when the browser is in dark mode and a deeper gold in light mode (a `prefers-color-scheme` rule inside the SVG), so it stays visible on any tab bar.
 
+## First visit and search
+
+The opening view fits the Bible's years, and the key figures already show there (Adam, Noah, Abraham, Moses, David, Jesus and the rest, as many as fit); more people appear as you zoom in.
+
+On a first visit a **Start here** card sits above the timeline in place of the zoom hint: click or tap a name, zoom and drag, the Books and People buttons, and search. **Got it** (or Escape) hides it for good (`bt-welcome` in the browser). A shared link opens straight to what was shared, without the card.
+
+**Search** finds, in this order: a year ("1000 BCE", "33 CE", 公元前1000; a bare number offers both), a verse ("Dan 9:25", "1 Sam 17", 但以理書9:25; a book name may be shortened), people by name, Bible books, major events, places, people by role, then activities. A verse lists every event and activity on the timeline that cites it, plus a link to read it on wol.jw.org; a place lists the activities that happened there. Picking a year marks it with the cursor line; picking an activity opens that person's window at it. Rows from history are in italics. The citation parsing is shared with the scripture links (`Scripture.cites()` and `Scripture.query()` in `js/scripture.js`).
+
 ## Who is shown
 
 The **People** button in the top bar picks who appears:
@@ -233,12 +241,20 @@ Every birth and death year has one of three labels, shown in the legend and in e
 
 Most minor people have no recorded dates. Their place on the timeline is an assumed date, placed by their generation or the period in which they appear, and their window says so. `data/ASSUMED_DATES.md` lists every assumed date. Because each placeholder is set on its own, the build then checks every parent and child: a father or mother whose placeholder life ends before a child is born either lives on to the birth (when the age stays believable for that era), or the parent's or child's placeholder is moved by up to 100 years. Dates from the Bible, the books above, key figures and `overrides.json` never move. Links still left with a gap (22 of them, listed by `node tools/build-people.mjs --gaps`) are mostly 1 Chronicles lists where "son of" means a later descendant (Mica son of Zabdi son of Asaph, Nehemiah 11:17) or "father of" names a town's founder.
 
+Link previews: `index.html` has Open Graph and Twitter tags, so a shared link shows the title, a short description and `img/preview.jpg` (a 1200×630 picture of the opening view) in WhatsApp, LINE, Facebook and X. The preview is the same for every link, since a link-preview reader does not run the site's scripts.
+
+Add to home screen and offline: `manifest.webmanifest` (icons `img/icon-192.png`, `img/icon-512.png`, `img/icon-maskable-512.png`, `img/apple-touch-icon.png`) lets a phone add the site to its home screen. `sw.js`, registered only on the live https site, keeps every stamped file on the device: a stamped file never changes, so it comes from the cache, and an older stamp of the same file is dropped when the new one arrives. The page itself is always fetched first and comes from the cache only offline. So a return visit opens at once, and a visited site works without a connection.
+
 ## Project layout
 
 ```
 index.html                  page
 css/style.css               styles
 img/favicon.svg             browser-tab icon (tree logo)
+img/icon-*.png, img/apple-touch-icon.png   home-screen icons
+img/preview.jpg             link-preview picture
+manifest.webmanifest        add-to-home-screen settings
+sw.js                       keeps the site on the device (offline, quick return visits)
 js/portrait.js              procedural line-art portraits
 js/i18n.js                  language switch (English / 中文) and interface strings
 js/scripture.js             scripture citations → wol.jw.org links (English or Chinese Bible)
