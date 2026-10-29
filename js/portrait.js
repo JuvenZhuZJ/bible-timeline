@@ -149,7 +149,10 @@
       { name: "Periwig and cravat", cult: ["modern"], age: "adult", head: "bare", hair: "curled", beard: "none", shaven: true, face: "long", eye: "open", mouth: "calm", dress: "coat" },
       { name: "Orthodox patriarch's tall hat", cult: ["church"], age: "old", head: "tallcap", beard: "long", bs: "pointed", face: "long", eye: "narrow", dress: "gown" },
       { name: "Frock coat and white beard", cult: ["modern"], age: "old", head: "bare", hair: "short", beard: "long", face: "oval", eye: "open", mouth: "calm", dress: "coat" },
-      { name: "High collar and glasses", cult: ["modern"], age: "adult", head: "bare", hair: "short", beard: "none", shaven: true, face: "square", mouth: "stern", dress: "coat", extras: ["glasses"] }
+      { name: "High collar and glasses", cult: ["modern"], age: "adult", head: "bare", hair: "short", beard: "none", shaven: true, face: "square", mouth: "stern", dress: "coat", extras: ["glasses"] },
+      // twentieth and twenty-first centuries: a lounge suit and tie; each person's
+      // `look` sets hair, glasses and face after their photographs on wol.jw.org
+      { name: "Suit and tie", cult: ["modern"], age: "adult", head: "bare", hair: "short", beard: "none", shaven: true, face: "oval", eye: "open", mouth: "calm", dress: "suit" }
     ],
     f: [
       { name: "Wavy hair", cult: ["israelite", "transjordan"], age: "adult", head: "bare", hair: "wavy" },
@@ -177,7 +180,9 @@
       { name: "Waved hair, parted", cult: ["roman", "herodian", "greek"], age: "adult", head: "bare", hair: "waved", face: "long", extras: ["earrings"] },
       { name: "Waved hair with a fillet", cult: ["herodian", "greek", "roman"], royal: true, age: "adult", head: "band", hair: "waved", brow: "arched", extras: ["earrings", "necklace"] },
       { name: "Close curls and large earrings", cult: ["cushite"], age: "adult", head: "bare", hair: "coils", face: "round", extras: ["earrings", "necklace"] },
-      { name: "Headband and braids", cult: ["desert"], age: "adult", head: "band", hair: "braids", face: "long", extras: ["nosering"] }
+      { name: "Headband and braids", cult: ["desert"], age: "adult", head: "band", hair: "braids", face: "long", extras: ["nosering"] },
+      // nineteenth century: hair parted in the middle and drawn smoothly back, a high collar with a brooch
+      { name: "High collar and brooch", cult: ["modern"], age: "adult", head: "bare", hair: "smooth", face: "long", mouth: "calm", dress: "highcollar" }
     ]
   };
   const group = (c) => (c.gender === "f" ? "f" : "m");
@@ -323,7 +328,13 @@
     if (!hint.beard && look.age === "old" && look.beard === "none" && !look.shaven) look.beard = "full";
     if (look.beard === "none" && (look.bs === "tiered" || look.bs === "false")) look.bs = "plain";
     if (fem) look.beard = "none";
-    if (look.hair === "bald" && look.age !== "old") look.hair = "short";
+    if (look.hair === "bald" && look.age !== "old" && hint.hair !== "bald") look.hair = "short";
+    // a person drawn from a photograph tunes their design: face, mouth, glasses, grey hair
+    if (hint.design) {
+      for (const k of ["face", "mouth", "brow", "eye", "dress"]) if (hint[k]) look[k] = hint[k];
+      if (hint.grey) look.grey = true;
+      if (hint.extras) look.extras = look.extras.concat(hint.extras);
+    }
     return look;
   }
 
@@ -407,18 +418,31 @@
         for (let k = 0; k < 16; k++) curl(cx + sg * r(18, 28), chin + 30 + k * ((240 - chin - 34) / 16), r(1.8, 2.6), 0.6, 0.6);
         for (let k = 0; k < 10; k++) { const t = k / 10; curl(cx + sg * (22 + t * (sh - 14)), chin + 24 + t * 30 + r(-2, 2), r(1.8, 2.6), 0.6, 0.6); }
       }
-    } else if (dress === "coat") {
-      // nineteenth-century coat: turned-down shirt collar, necktie, lapels
-      const y0 = chin + 12;
+    } else if (dress === "coat" || dress === "suit") {
+      // nineteenth-century coat: turned-down shirt collar, necktie, lapels;
+      // a modern suit has a wider tie, plain or patterned, and may add a vest or pocket square
+      const y0 = chin + 12, suit = dress === "suit", tw = suit ? 8.5 : 6.5;
       fillP(`M${cx - 15},${y0} L${cx},${y0 + 62} L${cx + 15},${y0} Z`, 1);
-      fillP(`M${cx - 3.5},${y0 + 10} L${cx + 3.5},${y0 + 10} L${cx + 6.5},${y0 + 48} L${cx},${y0 + 57} L${cx - 6.5},${y0 + 48} Z`, 1);
-      for (let k = 0; k < 6; k++) P(`M${cx - 5},${f(y0 + 16 + k * 6)} l10,-5`, 0.5, 0.55);
+      if (suit && has("vest")) for (const sg of [-1, 1]) S(`M${cx + sg * 13},${y0 + 8} L${cx + sg * 3},${y0 + 60}`, 0.9);
+      fillP(`M${cx - 3.5},${y0 + 10} L${cx + 3.5},${y0 + 10} L${cx + tw},${y0 + 48} L${cx},${y0 + 57} L${cx - tw},${y0 + 48} Z`, 1);
+      if (!suit || has("stripes")) for (let k = 0; k < 6; k++) P(`M${cx - 5},${f(y0 + 16 + k * 6)} l10,-5`, 0.5, 0.55);
+      else if (has("dots")) for (let k = 0; k < 9; k++) ring(cx + ((k % 3) - 1) * 3.2, y0 + 18 + Math.floor(k / 3) * 9 + (k % 2) * 3, 0.7, 0.6, 0.7);
+      if (suit && has("pocketsquare")) fillP(`M${cx + 40},${y0 + 44} l4,-6 l3,4 l3,-5 l3,6 Z`, 0.9);
       fillP(`M${cx - 4.5},${y0 + 3} L${cx + 4.5},${y0 + 3} L${cx + 3.5},${y0 + 10} L${cx - 3.5},${y0 + 10} Z`, 1);
       for (const sg of [-1, 1]) {
         fillP(`M${cx + sg * 15},${y0 - 3} L${cx + sg * 4},${y0 + 3} L${cx + sg * 11},${y0 + 15} Z`, 1);
         S(`M${cx + sg * 17},${y0 + 1} L${cx + sg * 34},${y0 + 16} L${cx + sg * 27},${y0 + 25} L${cx + sg * 37},${y0 + 32} L${cx + sg * 3},${y0 + 74}`, 1.1);
       }
       for (const yy of [y0 + 80, y0 + 96]) ring(cx, yy, 2.2, 0.9, 0, true);
+    } else if (dress === "highcollar") {
+      // a high standing collar fastened at the throat with an oval brooch, buttons down the bodice
+      const y0 = chin - 2;
+      S(`M${cx - 17},${y0} C${cx - 18},${y0 + 10} ${cx - 18},${y0 + 16} ${cx - 20},${y0 + 20} Q${cx},${y0 + 26} ${cx + 20},${y0 + 20} C${cx + 18},${y0 + 16} ${cx + 18},${y0 + 10} ${cx + 17},${y0}`, 1.2);
+      for (let k = 0; k < 4; k++) P(`M${cx - 16},${f(y0 + 4 + k * 4)} Q${cx},${f(y0 + 9 + k * 4)} ${cx + 16},${f(y0 + 4 + k * 4)}`, 0.5, 0.45);
+      out.push(`<ellipse cx="${cx}" cy="${y0 + 28}" rx="5" ry="6.5" stroke-width="1.1" fill="var(--portrait-fill, #050505)"/>`);
+      ring(cx, y0 + 28, 2.2, 0.7, 0.8);
+      for (let k = 0; k < 5; k++) ring(cx, y0 + 46 + k * 13, 1.6, 0.8, 0.85);
+      for (const sg of [-1, 1]) P(`M${cx + sg * 22},${y0 + 24} Q${cx + sg * 30},${y0 + 60} ${cx + sg * 26},240`, 0.7, 0.5);
     } else if (dress === "pallium") {
       // a bishop's woollen band over the shoulders with a strip down the front, marked with crosses
       const y1 = chin + 30;
@@ -598,6 +622,16 @@
     }
 
     // round spectacles
+    if (has("specs") || has("rimless")) {
+      // modern rectangular frames; rimless ones only show their lenses faintly
+      const rim = has("specs"), gw = 10.5, gh = 7.5;
+      for (const s of [-1, 1]) {
+        const gx = cx + s * es;
+        P(`M${f(gx - gw)},${f(ey - gh + 1)} Q${f(gx)},${f(ey - gh - 1)} ${f(gx + gw)},${f(ey - gh + 1)} L${f(gx + gw - 1)},${f(ey + gh - 1)} Q${f(gx)},${f(ey + gh + 1)} ${f(gx - gw + 1)},${f(ey + gh - 1)} Z`, rim ? 1.1 : 0.6, rim ? 0.95 : 0.55);
+        P(`M${f(cx + s * (es + gw))},${f(ey - 3)} L${f(cx + s * rx * 0.97)},${f(ey - 4)}`, 0.9, 0.85);
+      }
+      P(`M${f(cx - es + gw)},${f(ey - 2)} Q${cx},${f(ey - 5)} ${f(cx + es - gw)},${f(ey - 2)}`, 1, 0.9);
+    }
     if (has("glasses")) {
       for (const s of [-1, 1]) {
         ring(cx + s * es, ey, 9.5, 1.1, 0.95);
@@ -616,7 +650,9 @@
       S(`M${cx},${f(my - 7)} C${cx - 8},${f(my - 9)} ${cx - 14},${f(my - 4)} ${cx - 18},${f(my + 3)}`, 1.2);
       S(`M${cx},${f(my - 7)} C${cx + 8},${f(my - 9)} ${cx + 14},${f(my - 4)} ${cx + 18},${f(my + 3)}`, 1.2);
     };
-    if (L.beard !== "none" && L.bs === "false") {
+    if (L.beard === "moustache") {
+      moustache();
+    } else if (L.beard !== "none" && L.bs === "false") {
       // a pharaoh's narrow plaited beard, worn on ceremony, no moustache
       fillP(`M${cx - 5},${f(chin - 3)} L${cx - 6},${f(chin + 22)} Q${cx},${f(chin + 25)} ${cx + 6},${f(chin + 22)} L${cx + 5},${f(chin - 3)} Z`, 1.1);
       for (let y = chin + 1; y < chin + 22; y += 3.5) P(`M${cx - 5},${f(y)} q5,2 10,0`, 0.6, 0.7);
@@ -719,7 +755,7 @@
         }
         P(`M${f(cx - rx + 4)},${f(fy - 3)} Q${cx},${f(fy - 6)} ${f(cx + rx - 4)},${f(fy - 3)}`, 0.7, 0.6);
       } else if (fem) {
-        const pulled = hair === "tied" || hair === "braids" || hair === "sidebraid" || hair === "crownbraid" || hair === "ringlets";
+        const pulled = hair === "tied" || hair === "smooth" || hair === "braids" || hair === "sidebraid" || hair === "crownbraid" || hair === "ringlets";
         const femDome = `M${f(cx - rx - 3)},${f(cy + 6)} C${f(cx - rx - 6)},${f(top - 10)} ${f(cx + rx + 6)},${f(top - 10)} ${f(cx + rx + 3)},${f(cy + 6)} C${f(cx + rx - 4)},${f(hairline - 4)} ${cx + 10},${f(hairline - 8)} ${cx},${f(hairline - 2)} C${cx - 10},${f(hairline - 8)} ${f(cx - rx + 4)},${f(hairline - 4)} ${f(cx - rx - 3)},${f(cy + 6)} Z`;
         S(femDome, 1.3);
         if (hair === "waved") {
@@ -804,9 +840,20 @@
         // balding crown with side hair
         for (const s of [-1, 1]) S(`M${f(cx + s * rx * 0.98)},${f(cy + 4)} C${f(cx + s * (rx + 6))},${f(cy - 14)} ${f(cx + s * (rx + 2))},${f(hairline)} ${f(cx + s * rx * 0.6)},${f(top + 6)}`, 1.4);
         P(`M${cx - 10},${f(top + 8)} q10,-3 20,0`, 0.6, 0.4);
+      } else if (hair === "receding") {
+        // short hair kept at the sides and back, a high bare forehead and thin crown
+        for (const s of [-1, 1]) {
+          const side = `M${f(cx + s * (rx + 0.5))},${f(cy + 4)} C${f(cx + s * (rx + 3.5))},${f(cy - 10)} ${f(cx + s * (rx + 2))},${f(hairline - 4)} ${f(cx + s * rx * 0.72)},${f(top + 8)} C${f(cx + s * (rx - 3))},${f(hairline - 2)} ${f(cx + s * (rx - 2.5))},${f(cy - 10)} ${f(cx + s * (rx - 2.5))},${f(cy + 2)} Z`;
+          L.grey ? S(side, 1) : fillP(side, 1);
+          for (let k = 0; k < 3; k++) P(`M${f(cx + s * (rx - 0.5))},${f(cy - 2 - k * 8)} q${f(s * 1.5)},-4 ${f(s * 0.5)},-7`, 0.5, 0.5);
+        }
+        for (let i = 0; i < 7; i++) { const x = cx + r(-rx * 0.5, rx * 0.5); P(`M${f(x)},${f(top - 1)} q${f(r(-3, 3))},2 ${f(r(-5, 5))},${f(r(3, 6))}`, 0.5, 0.45); }
+        P(`M${cx - 12},${f(top + 12)} q12,-3 24,0`, 0.6, 0.35);
       } else {
         const hairTop = `M${f(cx - rx - 2)},${f(cy + 2)} C${f(cx - rx - 8)},${f(top - 12)} ${f(cx + rx + 8)},${f(top - 12)} ${f(cx + rx + 2)},${f(cy + 2)} C${f(cx + rx - 2)},${f(hairline + 4)} ${f(cx + rx * 0.4)},${f(hairline - r(2, 8))} ${cx},${f(hairline - 4)} C${f(cx - rx * 0.4)},${f(hairline - r(2, 8))} ${f(cx - rx + 2)},${f(hairline + 4)} ${f(cx - rx - 2)},${f(cy + 2)} Z`;
-        fillP(hairTop, 1.3);
+        // grey or white hair is drawn in outline only, dark hair filled
+        L.grey ? S(hairTop, 1.3) : fillP(hairTop, 1.3);
+        const sop = L.grey ? 0.8 : 0.6;
         if (hair === "curly") {
           for (let i = 0; i < 13; i++) {
             const a = Math.PI * i / 12;
@@ -816,10 +863,23 @@
         } else if (hair === "long" || hair === "curled") {
           P(`M${cx + 2},${f(hairline - 4)} Q${cx + 1},${f(top - 2)} ${cx},${f(top - 8)}`, 0.8, 0.7);
           for (const s of [-1, 1]) for (let i = 0; i < 4; i++) P(`M${f(cx + s * 4)},${f(hairline - 3 - i * 2)} q${f(s * (8 + i * 4))},${f(-3 - i)} ${f(s * (rx - i * 3))},${f(8 + i * 3)}`, 0.6, 0.55);
+        } else if (hair === "swept") {
+          // combed back from the forehead: a wave at the front, a few long strands curving back
+          P(`M${f(cx - rx * 0.6)},${f(hairline - 4)} Q${f(cx - rx * 0.2)},${f(hairline - 13)} ${f(cx + rx * 0.15)},${f(hairline - 7)} T${f(cx + rx * 0.7)},${f(hairline - 5)}`, 0.8, sop);
+          for (const i of [-3, -1.5, 0, 1.5, 3]) {
+            const x = cx + i * rx / 5, y0 = hairline - 9 - (3 - Math.abs(i)) * 0.8;
+            P(`M${f(x)},${f(y0)} C${f(x + i * 3 + 3)},${f(y0 - 6)} ${f(x + i * 2 - 2)},${f(top + 4)} ${f(cx + i * rx / 3.8)},${f(top - 2 + Math.abs(i) * 2.4)}`, 0.55, sop * 0.85);
+          }
+        } else if (hair === "parted") {
+          // a side parting, the hair combed across the top from it
+          const ps = hash(c.id) % 2 ? 1 : -1, px = cx + ps * rx * 0.45;
+          P(`M${f(px)},${f(hairline - 2)} Q${f(px + ps * 2)},${f(top + 4)} ${f(px + ps * 4)},${f(top - 2)}`, 0.9, 0.9);
+          for (let i = 0; i < 7; i++) P(`M${f(px - ps * 2)},${f(hairline - 4 - i * 4)} q${f(-ps * (rx * 0.6 + i * 2))},${f(-4 - i)} ${f(-ps * (rx * 1.1 + i))},${f(6 + i * 2)}`, 0.6, sop);
+          for (let i = 0; i < 3; i++) P(`M${f(px + ps * 2)},${f(hairline - 4 - i * 5)} q${f(ps * 6)},-2 ${f(ps * (rx * 0.45 + 2))},${f(6 + i * 3)}`, 0.6, sop);
         } else {
           for (let i = 0; i < 12; i++) {
             const x = cx + r(-rx, rx);
-            P(`M${f(x)},${f(top - 6 + Math.abs(x - cx) * 0.2)} q${f(r(-6, 6))},${f(r(6, 12))} ${f(r(-8, 8))},${f(r(14, 22))}`, 0.6, 0.6);
+            P(`M${f(x)},${f(top - 6 + Math.abs(x - cx) * 0.2)} q${f(r(-6, 6))},${f(r(6, 12))} ${f(r(-8, 8))},${f(r(14, 22))}`, 0.6, sop);
           }
         }
       }
