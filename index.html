@@ -5,7 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#050505">
   <title>Bible Family Tree</title>
-  <meta name="description" content="Bible Family Tree: an interactive timeline of every person in the Bible, from Adam to the apostle John.">
+  <meta name="description" content="Bible Family Tree: an interactive timeline of the people of the Bible, from Adam to the first-century Christians, with their families, the places in their lives and the Bible books.">
+  <!-- link previews (WhatsApp, LINE, Facebook, X): the image needs the full address -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Bible Family Tree">
+  <meta property="og:title" content="Bible Family Tree · 聖經家譜">
+  <meta property="og:description" content="An interactive timeline of the people of the Bible, with their families, the places in their lives and the Bible books. In English and Chinese.">
+  <meta property="og:url" content="https://juvenzhuzj.github.io/bible-timeline/">
+  <meta property="og:image" content="https://juvenzhuzj.github.io/bible-timeline/img/preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Bible Family Tree timeline, from Adam to Jesus">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="Bible Tree">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -58,10 +72,10 @@
     </a>
 
     <div class="search" id="search">
-      <button class="icon-btn search-toggle" id="searchToggle" aria-label="Search people" data-i18n-aria="search.aria">
+      <button class="icon-btn search-toggle" id="searchToggle" aria-label="Search people, places, years or verses" data-i18n-aria="search.aria">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
       </button>
-      <input id="searchInput" type="search" placeholder="Search a person…" autocomplete="off" spellcheck="false" aria-label="Search a person" data-i18n-ph="search.ph" data-i18n-aria="search.aria">
+      <input id="searchInput" type="search" placeholder="Search people, places, years, verses…" autocomplete="off" spellcheck="false" aria-label="Search people, places, years or verses" data-i18n-ph="search.ph" data-i18n-aria="search.aria">
       <ul class="search-results" id="searchResults" role="listbox"></ul>
     </div>
 
@@ -157,6 +171,17 @@
       <span class="zh-desktop" data-i18n="zoom.desktop">Scroll to zoom · Drag to travel through time</span>
       <span class="zh-touch" data-i18n="zoom.touch">Pinch to zoom · Drag to travel through time</span>
     </div>
+    <section class="welcome" id="welcome" hidden aria-labelledby="welcomeTitle">
+      <h2 id="welcomeTitle" data-i18n="welcome.title">Start here</h2>
+      <ul>
+        <li><span class="wl-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg></span><span class="zh-desktop" data-i18n="welcome.open">Click a name to see that person's life, family and verses.</span><span class="zh-touch" data-i18n="welcome.open.t">Tap a name to see that person's life, family and verses.</span></li>
+        <li><span class="wl-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></svg></span><span class="zh-desktop" data-i18n="welcome.zoom">Scroll to zoom in, and more people appear. Drag to travel through time.</span><span class="zh-touch" data-i18n="welcome.zoom.t">Pinch to zoom in, and more people appear. Drag to travel through time.</span></li>
+        <li><span class="wl-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 6.6C10 5.2 7 4.7 3.5 5.1v13c3.5-.4 6.5.1 8.5 1.5 2-1.4 5-1.9 8.5-1.5v-13C17 4.7 14 5.2 12 6.6zM12 6.6v13"/></svg></span><span data-i18n="welcome.books">Books shows when each Bible book was written.</span></li>
+        <li><span class="wl-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.4"/><path d="M2.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M13.5 15.2c.9-.8 1.9-1.2 3-1.2 2.3 0 4.1 1.5 4.6 4.5"/></svg></span><span data-i18n="welcome.show">People picks who is shown: key figures, kings, prophets, the line from Adam to Jesus, and more.</span></li>
+        <li><span class="wl-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg></span><span data-i18n="welcome.search">Search finds people, events, places, years or verses (try "Dan 9:25") and takes you there.</span></li>
+      </ul>
+      <button class="welcome-ok" id="welcomeOk" data-i18n="welcome.ok">Got it</button>
+    </section>
   </main>
 
   <aside class="legend" id="legend">

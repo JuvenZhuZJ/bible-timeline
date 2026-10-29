@@ -25,7 +25,7 @@ jobs:
       - name: Collect site files
         run: |
           mkdir _site
-          cp -r index.html css js data img _site/
+          cp -r index.html sw.js manifest.webmanifest css js data img _site/
           rm -rf _site/data/source
           # GitHub Pages lets browsers cache files for 10 minutes, and a reload only
           # refetches the page itself. Stamping each script and stylesheet link with

@@ -236,5 +236,80 @@
    "2 Kings 15:32, 33",
    "2 Chronicles 27:1"
   ]
+ },
+ {
+  "key": "MAATH",
+  "name": "Maath",
+  "aka": [],
+  "gender": "m",
+  "meaning": "",
+  "role": "Ancestor of Jesus",
+  "summary": "A postexilic forefather of Jesus in Luke's genealogy; son of Mattathias and father of Naggai.",
+  "father": "Mattathias",
+  "mother": "",
+  "spouses": [],
+  "children": [
+   "Naggai"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "Judah",
+  "year": -310,
+  "born": null,
+  "died": null,
+  "dateQ": "assumed",
+  "refs": [
+   "Luke 3:26"
+  ]
+ },
+ {
+  "key": "NAGGAI",
+  "name": "Naggai",
+  "aka": [],
+  "gender": "m",
+  "meaning": "",
+  "role": "Ancestor of Jesus",
+  "summary": "A postexilic forefather of Jesus in Luke's genealogy; son of Maath and father of Esli.",
+  "father": "Maath",
+  "mother": "",
+  "spouses": [],
+  "children": [
+   "Esli"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "Judah",
+  "year": -280,
+  "born": null,
+  "died": null,
+  "dateQ": "assumed",
+  "refs": [
+   "Luke 3:25"
+  ]
+ },
+ {
+  "key": "AMOS#2",
+  "name": "Amos",
+  "aka": [],
+  "gender": "m",
+  "meaning": "",
+  "role": "Ancestor of Jesus",
+  "summary": "A forefather of Jesus in Luke's genealogy, the eighth generation before Mary; son of Nahum and father of Mattathias. Not the prophet Amos.",
+  "father": "Nahum",
+  "mother": "",
+  "spouses": [],
+  "children": [
+   "Mattathias"
+  ],
+  "siblings": [],
+  "relHints": "",
+  "group": "Judah",
+  "year": -190,
+  "born": null,
+  "died": null,
+  "dateQ": "assumed",
+  "refs": [
+   "Luke 3:25"
+  ]
  }
 ]

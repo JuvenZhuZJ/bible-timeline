@@ -19,6 +19,14 @@ python3 -m http.server 8000
 
 The logo is a small family tree in line art: a trunk on a horizon line (a nod to the timeline), two branches that split again, and gold dots for the people at each tip. The header copy is inline SVG in `index.html` (`.brand-mark`, styled in `css/style.css`); the browser tab uses the same tree, simplified for 16px, from `img/favicon.svg`. The tab icon has no background circle so the tree fills the space: it is bright gold when the browser is in dark mode and a deeper gold in light mode (a `prefers-color-scheme` rule inside the SVG), so it stays visible on any tab bar.
 
+## First visit and search
+
+The opening view fits the Bible's years, and the key figures already show there (Adam, Noah, Abraham, Moses, David, Jesus and the rest, as many as fit); more people appear as you zoom in.
+
+On a first visit a **Start here** card sits above the timeline in place of the zoom hint: click or tap a name, zoom and drag, the Books and People buttons, and search. **Got it** (or Escape) hides it for good (`bt-welcome` in the browser). A shared link opens straight to what was shared, without the card.
+
+**Search** finds, in this order: a year ("1000 BCE", "33 CE", 公元前1000; a bare number offers both), a verse ("Dan 9:25", "1 Sam 17", 但以理書9:25; a book name may be shortened), people by name, Bible books, major events, places, people by role, then activities. A verse lists every event and activity on the timeline that cites it, plus a link to read it on wol.jw.org; a place lists the activities that happened there. Picking a year marks it with the cursor line; picking an activity opens that person's window at it. Rows from history are in italics. The citation parsing is shared with the scripture links (`Scripture.cites()` and `Scripture.query()` in `js/scripture.js`).
+
 ## Who is shown
 
 The **People** button in the top bar picks who appears:
@@ -223,7 +231,7 @@ While any window is open, the dock at the bottom of the screen starts with two b
 - **Line of descent:** Luke 3:23-38 and Matthew 1:1-16, from the *New World Translation Study Edition* (nwtsty1_E.pdf) and the matching Insight articles.
 - **Places:** OpenBible.info Bible Geocoding Data (CC BY 4.0) for coordinates, checked against *Insight on the Scriptures* and the maps in the *New World Translation* (nwt_E.pdf). Coastline: Natural Earth (public domain). Roads, routes and landscape: the NWT appendix maps B2, B3, B4, B7, B10 and B13 and the Bible accounts (Acts 13-28 for Paul's voyages), then for the Greek and Roman world ORBIS (Scheidel and Meeks, Stanford; data MIT and CC BY), with common routes where they show none. See [Places map](#places-map).
 - **Unnamed people:** `data/source/unnamed-people.json`, written by hand from the verses each record cites (see [People the Bible does not name](#people-the-bible-does-not-name)).
-- **Added people:** `data/source/added-people.json`, people who have an Insight article that is missing from the extracted list, in the same shape: Azariah (Abednego), Daniel's companion (Daniel 1:6, 7; 3:12-30). `"solo": true` marks a record no other record's relatives may be matched to by name, so a namesake's father is not given to them.
+- **Added people:** `data/source/added-people.json`, people who have an Insight article that is missing from the extracted list, in the same shape: Azariah (Abednego), Daniel's companion (Daniel 1:6, 7; 3:12-30). Maath, Naggai and Amos (not the prophet), Jesus' forefathers in Luke 3:25, 26, are here too, so the line from Adam to Jesus has no gaps. `"solo": true` marks a record no other record's relatives may be matched to by name, so a namesake's father is not given to them.
 - **Key figures and events:** `data/characters.js` and `data/events.js`, written by hand from the same sources.
 - **History between the Testaments:** *Insight on the Scriptures* (articles such as "Herod," "Greece," "Syria," "Rome" and "Festival of Dedication"), *Pay Attention to Daniel's Prophecy!* (chapters 9, 13 and 14), *The Watchtower* (November 15, 1998, "Who Were the Maccabees?", and June 15, 2001, "The Hasmonaeans and Their Legacy") and the NWT study note on John 10:22, all on wol.jw.org. Each item names its own source. *History after the Bible:* *Mankind's Search for God*, *Should You Believe in the Trinity?*, *Jehovah's Witnesses—Proclaimers of God's Kingdom*, *The Watchtower* and *Awake!*. See [History between the Testaments and after the Bible](#history-between-the-testaments-and-after-the-bible).
 - **Dates checked against:** the *New World Translation* (nwt_E.pdf): the table of Bible books (when each book was written and the years it covers), Appendix A6 (chart of the kings and prophets of Judah and Israel) and Appendix A7 (main events of Jesus' life); *Walk Courageously With God* (2025), whose section timelines give approximate life spans for the people in its 54 chapters; *Imitate Their Faith*, whose opening timeline dates Ruth, Hannah, Abigail, Elijah, Jonah, Esther and others; and *"Bearing Thorough Witness" About God's Kingdom* for the dates in Acts. Where a key figure's date is not recorded in the Bible and one of these books gives an approximate year, the site uses that year and the person's window note names the source. Where they differ from older *Insight* dates, the newer NWT chart is followed (Hezekiah died in 716 B.C.E., Manasseh in 661 and Josiah in 628, as in Appendix A6 and *Walk Courageously With God*).
@@ -233,12 +241,20 @@ Every birth and death year has one of three labels, shown in the legend and in e
 
 Most minor people have no recorded dates. Their place on the timeline is an assumed date, placed by their generation or the period in which they appear, and their window says so. `data/ASSUMED_DATES.md` lists every assumed date. Because each placeholder is set on its own, the build then checks every parent and child: a father or mother whose placeholder life ends before a child is born either lives on to the birth (when the age stays believable for that era), or the parent's or child's placeholder is moved by up to 100 years. Dates from the Bible, the books above, key figures and `overrides.json` never move. Links still left with a gap (22 of them, listed by `node tools/build-people.mjs --gaps`) are mostly 1 Chronicles lists where "son of" means a later descendant (Mica son of Zabdi son of Asaph, Nehemiah 11:17) or "father of" names a town's founder.
 
+Link previews: `index.html` has Open Graph and Twitter tags, so a shared link shows the title, a short description and `img/preview.jpg` (a 1200×630 picture of the opening view) in WhatsApp, LINE, Facebook and X. The preview is the same for every link, since a link-preview reader does not run the site's scripts.
+
+Add to home screen and offline: `manifest.webmanifest` (icons `img/icon-192.png`, `img/icon-512.png`, `img/icon-maskable-512.png`, `img/apple-touch-icon.png`) lets a phone add the site to its home screen. `sw.js`, registered only on the live https site, keeps every stamped file on the device: a stamped file never changes, so it comes from the cache, and an older stamp of the same file is dropped when the new one arrives. The page itself is always fetched first and comes from the cache only offline. So a return visit opens at once, and a visited site works without a connection.
+
 ## Project layout
 
 ```
 index.html                  page
 css/style.css               styles
 img/favicon.svg             browser-tab icon (tree logo)
+img/icon-*.png, img/apple-touch-icon.png   home-screen icons
+img/preview.jpg             link-preview picture
+manifest.webmanifest        add-to-home-screen settings
+sw.js                       keeps the site on the device (offline, quick return visits)
 js/portrait.js              procedural line-art portraits
 js/i18n.js                  language switch (English / 中文) and interface strings
 js/scripture.js             scripture citations → wol.jw.org links (English or Chinese Bible)
@@ -280,7 +296,7 @@ The script merges the curated key figures with the Insight records, links relati
 
 - `curated`: `{ "key-figure-id": "INSIGHT#N" }` forces a match, or `null` to stop one.
 - `drop`: Insight keys to leave out (duplicates such as AMMON, the same man as Ben-ammi, and JEDIDIAH, Solomon's other name).
-- `same`: `{ "INSIGHT#N": "INSIGHT#M" }` merges two Insight records of one person into the second, keeping both names (`"MISHAEL#2": "MESHACH"`). Thirteen such pairs are merged, all Insight records of one person under two names: Mishael/Meshach, Saul/Paul, John Mark/Mark, Joseph/Barnabas, Bartholomew/Nathanael, Thaddaeus/Judas, Simon the Zealous One/Simon the Cananaean, Levi/Matthew, Hoshea/Joshua, Hoshea/Hosea, Belteshazzar/Daniel, Chileab/Daniel and Naomi/Mara.
+- `same`: `{ "INSIGHT#N": "INSIGHT#M" }` merges two Insight records of one person into the second, keeping both names (`"MISHAEL#2": "MESHACH"`). Thirteen such pairs are merged, all Insight records of one person under two names: Mishael/Meshach, Saul/Paul, John Mark/Mark, Joseph/Barnabas, Bartholomew/Nathanael, Thaddaeus/Judas, Simon the Zealous One/Simon the Cananaean, Levi/Matthew, Hoshea/Joshua, Hoshea/Hosea, Belteshazzar/Daniel, Chileab/Daniel and Naomi/Mara. Herod the Great's sons Herod Philip, Philip the tetrarch and Herod Antipas each had a second Insight record (under Philip and Antipas), so they are merged too, and Herod's Family row lists each son once.
 - `line`, `notLine`: person ids to add to or remove from the Adam-to-Jesus line.
 - `tier`: `{ "id": 1-4 }` sets how far you must zoom in before a person appears (1 is always shown).
 - `dates`: `{ "id": [born, died] }` replaces a placeholder life span that the generation estimate gets wrong (Ruth's family, for example: Obed is born when Ruth marries Boaz, not a generation later). Jesse is set here too: he must be alive at David's birth (1107 B.C.E.) and while David was a fugitive (1 Samuel 22:3, 4), and his father Obed was born in Ruth's day, so both lives are long.
@@ -309,5 +325,4 @@ While publishing, the workflow adds the commit to every script, stylesheet and i
 ## Known gaps
 
 - Eight key figures are not linked to an Insight article yet (Nimrod, Abraham, Ehud, Barak, Goliath, Jeremiah, Zechariah the priest, Mary Magdalene), so they show only their hand-written family. The extracted Insight records have no entry for the judge Ehud or the prophet Jeremiah, so they are left unlinked rather than tied to a namesake.
-- Three names in Luke's list (Maath, Naggai, Amos) are not on the line yet.
 - The years of the Judges are uncertain: the periods the book of Judges gives add up to more than the time between the entry into Canaan (1473 B.C.E.) and Saul (1117 B.C.E.), so some overlapped. The site keeps Jephthah at about 1173 B.C.E. (Judges 11:26), places Gideon at least 88 years earlier (Judges 8:28; 9:22; 10:2-3) and Deborah 47 years before Gideon, and lets Ehud's 80 years of rest overlap. Ruth, Naomi and Boaz follow *Insight* and *Imitate Their Faith* (about the 14th century B.C.E.), which leaves a long gap from Obed to Jesse.
