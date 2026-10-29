@@ -2576,6 +2576,10 @@
   // names measured with a fallback font are re-measured once the web fonts arrive
   if (document.fonts) document.fonts.ready.then(() => { dotEls.forEach((d) => { d.gap = 0; }); evEls.forEach((o) => { o.mw = 0; }); bookLines.forEach((o) => { o.mw = 0; }); requestRender(); });
 
+  // keep the site on the device for quick return visits and offline use (sw.js); only on the live site,
+  // so a local copy being edited is never served from a cache
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+
   // expose for debugging / tests
   window.Timeline = { setShowMode, view, openWindow: (id) => openWindow(CHAR_BY_ID.get(id)), locate: (id) => locate(CHAR_BY_ID.get(id)), setHover: (id) => setHover(id ? CHAR_BY_ID.get(id) : null), zoomAt, animateTo, A, chars: CHARS, render };
 })();
