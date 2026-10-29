@@ -485,7 +485,8 @@
 
     // characters
     // with a filter on, fewer people compete for space, so they show up sooner
-    const need = (c) => TIER[filtered() ? Math.min(c.zt, 3) : c.zt];
+    // the best-known people show from the opening view on, so a first visit is not an empty line
+    const need = (c) => c.zt === 1 ? Math.min(TIER[1], fitPpy() * 0.98) : TIER[filtered() ? Math.min(c.zt, 3) : c.zt];
     const cands = dotEls.filter((d) => isPinned(d.c) || hoverC === d.c || (inMode(d.c) && view.ppy >= need(d.c)));
     packLanes(cands, packForce); packForce = false;
     const relSet = new Set(hoverC ? hoverC.relIds : []);
@@ -1317,6 +1318,21 @@
   const hint = $("zoomHint");
   function hideHint() { hint.classList.add("hide"); }
   setTimeout(hideHint, 12000);
+
+  /* first visit: a "Start here" card stands in for the zoom hint until it is dismissed.
+     A shared link opens straight to what was shared, so it skips the card. */
+  const welcome = $("welcome");
+  let welcomed = true;
+  try { welcomed = !!localStorage.getItem("bt-welcome"); } catch (_) {}
+  if (!welcomed && location.hash.length < 2) {
+    welcome.hidden = false; hint.hidden = true;
+    const done = () => {
+      welcome.classList.add("hide"); setTimeout(() => { welcome.hidden = true; }, 400);
+      try { localStorage.setItem("bt-welcome", "1"); } catch (_) {}
+    };
+    $("welcomeOk").addEventListener("click", done);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !welcome.hidden) done(); });
+  }
 
   /* ───────────────────────── locate ───────────────────────── */
   function locate(c, then) {

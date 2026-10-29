@@ -264,6 +264,24 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
   white-space: nowrap; transition: opacity .8s; pointer-events: none;
 }
 .zoom-hint.hide { opacity: 0; }
+/* first visit only: a short "Start here" card in place of the zoom hint */
+.welcome {
+  position: absolute; left: 50%; bottom: calc(96px + var(--safe-b)); transform: translateX(-50%); z-index: 15;
+  width: min(440px, calc(100vw - 32px)); padding: 16px 18px 14px; border: 1px solid var(--faint);
+  border-radius: 12px; font-size: 13px; line-height: 1.5; color: var(--fg-2); transition: opacity .4s;
+  background: var(--bg-2); box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+}
+.welcome[hidden] { display: none; }
+.welcome.hide { opacity: 0; pointer-events: none; }
+.welcome h2 { font: 500 22px var(--serif); color: var(--fg); margin: 0 0 8px; }
+.welcome ul { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 7px; }
+.welcome li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; }
+.wl-ic svg { width: 18px; height: 18px; margin-top: 1px; fill: none; stroke: var(--fg-2); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.welcome-ok {
+  display: block; margin-left: auto; padding: 7px 18px; border-radius: 999px; border: 1px solid var(--hair);
+  background: transparent; color: var(--fg); font: 500 12px var(--sans); letter-spacing: 0.12em; cursor: pointer;
+}
+.welcome-ok:hover, .welcome-ok:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
 .zh-touch { display: none; }
 .touch .zh-touch { display: inline; }
 .touch .zh-desktop { display: none; }
