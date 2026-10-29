@@ -309,5 +309,4 @@ While publishing, the workflow adds the commit to every script, stylesheet and i
 ## Known gaps
 
 - Eight key figures are not linked to an Insight article yet (Nimrod, Abraham, Ehud, Barak, Goliath, Jeremiah, Zechariah the priest, Mary Magdalene), so they show only their hand-written family. The extracted Insight records have no entry for the judge Ehud or the prophet Jeremiah, so they are left unlinked rather than tied to a namesake.
-- Three names in Luke's list (Maath, Naggai, Amos) are not on the line yet.
 - The years of the Judges are uncertain: the periods the book of Judges gives add up to more than the time between the entry into Canaan (1473 B.C.E.) and Saul (1117 B.C.E.), so some overlapped. The site keeps Jephthah at about 1173 B.C.E. (Judges 11:26), places Gideon at least 88 years earlier (Judges 8:28; 9:22; 10:2-3) and Deborah 47 years before Gideon, and lets Ehud's 80 years of rest overlap. Ruth, Naomi and Boaz follow *Insight* and *Imitate Their Faith* (about the 14th century B.C.E.), which leaves a long gap from Obed to Jesse.
