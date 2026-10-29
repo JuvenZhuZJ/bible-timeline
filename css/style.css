@@ -605,6 +605,8 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .show-menu .sm-match button[aria-checked="true"] { border-color: rgba(217,181,111,0.6); color: var(--accent); background: rgba(217,181,111,0.08); }
 .sm-match .sm-res { margin-left: auto; font: 300 10px var(--mono); }
 .search-results li .sr-n { min-width: 0; }
+.search-results li .sr-h { font-style: italic; }   /* from history, not the Bible */
+.search-results li.sr-more .sr-y { color: var(--fg-2); }
 .search-results li .sr-n small { display: block; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .search-results { max-height: min(60vh, 520px); overflow-y: auto; }
 @media (max-width: 760px) {

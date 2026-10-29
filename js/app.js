@@ -2176,26 +2176,106 @@
   /* ───────────────────────── search ───────────────────────── */
   const sBox = $("search"), sIn = $("searchInput"), sRes = $("searchResults");
   let sSel = 0, sList = [];
-  function runSearch() {
-    const q = sIn.value.trim().toLowerCase();
-    if (!q) { sRes.classList.remove("open"); sList = []; return; }
+  /* Search finds people first, then (each in its own kind of row) a year, a verse, Bible books,
+     major events, places and the activities in people's lives. A row is { label, sub, tag, go }
+     or, for a place or a verse, { label, sub, tag, kids } that opens a list of its own. */
+  const KIND = {
+    year: T("sr.year", null, "Year"), verse: T("sr.verse", null, "Verse"), book: T("sr.book", null, "Bible book"),
+    event: T("sr.event", null, "Event"), place: T("sr.place", null, "Place"),
+  };
+  const ZH_YEAR = /^(公元前|公元)?\s*(\d{1,4})\s*年?$/;
+  const EN_YEAR = /^(-)?(\d{1,4})\s*(b\.?\s*c\.?\s*e?\.?|c\.?\s*e\.?|a\.?\s*d\.?)?$/i;
+  function yearsIn(q) {
+    let m = q.match(ZH_YEAR), ys = [];
+    if (m && m[1]) ys = [m[1] === "公元前" ? -m[2] : +m[2]];
+    else if ((m = q.match(EN_YEAR))) ys = m[1] || /^b/i.test(m[3] || "") ? [-m[2]] : m[3] ? [+m[2]] : [-m[2], +m[2]];
+    else if ((m = q.match(ZH_YEAR))) ys = [-m[2], +m[2]];
+    return ys.filter((y) => y && A(y) >= A(-4026) && y <= TIMELINE_END);
+  }
+  const goYear = (y) => () => { cursorT = A(y); animateTo(A(y), Math.max(view.ppy, TIER[2] * 1.2), 700); };
+  const actRow = (c, k) => ({
+    label: c.name, sub: c.events[k][1], tag: fmtYear(c.events[k][0]), y: c.events[k][0],
+    go: () => { if (!inMode(c)) setShowMode("all"); locate(c, () => openActivity(c, k)); },
+  });
+  const evRow = (ev) => ({ label: ev.title, sub: KIND.event, tag: fmtYear(ev.year), y: ev.year, go: () => zoomToEvent(ev), hist: ev.hist });
+  const bookOf = new Map(bookLines.flatMap((o) => o.books.map((bk) => [bk.b, o.subj])));
+  const placeIds = Object.keys(window.BIBLE_PLACES || {});
+  function verseRows(r) {
+    const rows = [];
+    for (const ev of EVENTS) if (ev.ref && Scripture.cites(ev.ref, r.b, r.c, r.v)) rows.push(evRow(ev));
+    for (const c of CHARS) c.events.forEach((e, k) => { if (e[2] && Scripture.cites(e[2], r.b, r.c, r.v)) rows.push(actRow(c, k)); });
+    return rows.sort((a, b) => a.y - b.y);
+  }
+  function searchRows(q) {
     // in Chinese, the English name and other names still find the person
     const alts = (c) => (c.aka || []).concat(c.akaZh || [], c.en && c.en !== c.name ? [c.en] : []);
     const named = (c) => c.name.toLowerCase().includes(q) || alts(c).some((n) => n.toLowerCase().includes(q));
     const starts = (c) => (c.name.toLowerCase().startsWith(q) ? 0 : alts(c).some((n) => n.toLowerCase().startsWith(q)) ? 1 : 2);
-    sList = CHARS.filter((c) => named(c) || (c.role || "").toLowerCase().includes(q))
-      .sort((a, b) => (named(b) - named(a)) || starts(a) - starts(b) || prio(a) - prio(b) || a.tb - b.tb)
-      .slice(0, 20);
-    sSel = 0;
-    sRes.innerHTML = sList.length
-      ? sList.map((c, i) => `<li role="option" data-id="${c.id}" aria-selected="${i === sSel}"><span class="sr-n">${esc(c.name)}<small>${esc(c.role || "")}</small></span><span class="sr-y">${esc(fmtYear(c.born))}</span></li>`).join("")
-      : `<li aria-disabled="true"><span>${T("search.none", null, "No match")}</span></li>`;
+    // people found by name come first; people found only by their role come after the books, events and places
+    const pRow = (c) => ({ label: c.name, sub: c.role || "", tag: fmtYear(c.born), go: () => pick(c), hist: c.hist });
+    const byName = CHARS.filter(named).sort((a, b) => starts(a) - starts(b) || prio(a) - prio(b) || a.tb - b.tb).slice(0, 12).map(pRow);
+    const byRole = CHARS.filter((c) => !named(c) && (c.role || "").toLowerCase().includes(q))
+      .sort((a, b) => prio(a) - prio(b) || a.tb - b.tb).slice(0, 12 - byName.length / 2).map(pRow);
+    const rows = [];
+    for (const y of yearsIn(q)) rows.push({ label: fmtYear(y, true), sub: KIND.year, tag: "", go: goYear(y) });
+    const r = Scripture.query(q);
+    if (r) {
+      const name = Scripture.bookName(r.b) + (I18.zh ? "" : " ") + (r.v ? `${r.c}:${r.v}` : r.c);
+      const kids = verseRows(r);
+      kids.unshift({ label: T("sr.read", { ref: name }, `Read ${name}`), sub: "wol.jw.org", tag: "↗", go: () => window.open(Scripture.url(r.b, r.c, r.v), "_blank", "noopener") });
+      rows.push({ label: name, sub: T("sr.found", { n: kids.length - 1 }, `${kids.length - 1} found on the timeline`), tag: KIND.verse, kids });
+    }
+    rows.push(...byName);
+    const seen = new Set();
+    for (const [b, subj] of bookOf) {
+      if (seen.has(subj) || !Scripture.bookName(b).toLowerCase().includes(q)) continue;
+      seen.add(subj);
+      rows.push({ label: subj.name, sub: KIND.book, tag: "", go: () => { closeNotes(); openWindow(subj); locateAny(subj); } });
+    }
+    for (const ev of EVENTS) if (ev.title.toLowerCase().includes(q)) rows.push(evRow(ev));
+    if (q.length >= (I18.zh ? 1 : 3)) {
+      for (const id of placeIds) {
+        const pl = BibleMap.place(id);
+        if (!pl || !pl.n.toLowerCase().includes(q)) continue;
+        const kids = [];
+        for (const c of CHARS) for (const st of c.places || []) if (st.id === id) kids.push(actRow(c, st.k));
+        if (!kids.length) continue;
+        kids.sort((a, b) => a.y - b.y);
+        rows.push({ label: BibleMap.shortName(pl.n), sub: T("sr.people", { n: kids.length }, `${kids.length} activities here`), tag: KIND.place, kids });
+      }
+    }
+    rows.push(...byRole);
+    if (q.length >= (I18.zh ? 2 : 4)) {
+      let n = 0;
+      for (const c of CHARS) {
+        c.events.forEach((e, k) => { if (n < 12 && String(e[1]).toLowerCase().includes(q)) { rows.push(actRow(c, k)); n++; } });
+        if (n >= 12) break;
+      }
+    }
+    return rows.slice(0, 40);
+  }
+  function showRows(rows, back) {
+    sList = rows; sSel = back ? 1 : 0;
+    const li = (o, i) => `<li role="option" data-k="${i}" aria-selected="${i === sSel}"${o.kids ? ' class="sr-more"' : ""}><span class="sr-n${o.hist ? " sr-h" : ""}">${esc(o.label)}<small>${esc(o.sub || "")}</small></span><span class="sr-y">${esc(o.tag || "")}${o.kids ? " ›" : ""}</span></li>`;
+    sRes.innerHTML = rows.length ? rows.map(li).join("") : `<li aria-disabled="true"><span>${T("search.none", null, "No match")}</span></li>`;
+    sRes.scrollTop = 0;
     sRes.classList.add("open");
+  }
+  function runSearch() {
+    const q = sIn.value.trim().toLowerCase();
+    if (!q) { sRes.classList.remove("open"); sList = []; return; }
+    showRows(searchRows(q));
+  }
+  function choose(o) {
+    if (!o) return;
+    if (o.back) { runSearch(); return; }
+    if (o.kids) { showRows([{ label: "‹ " + o.label, sub: o.sub, tag: o.tag, back: true }].concat(o.kids), true); return; }
+    sIn.value = ""; sRes.classList.remove("open"); sIn.blur(); sBox.classList.remove("open");
+    hideHint();
+    o.go();
   }
   function pick(c) {
     if (!c) return;
-    sIn.value = ""; sRes.classList.remove("open"); sIn.blur(); sBox.classList.remove("open");
-    hideHint();
     if (!inMode(c)) setShowMode("all");
     locate(c, () => openWindow(c));
   }
@@ -2207,10 +2287,10 @@
       e.preventDefault();
       sSel = (sSel + (e.key === "ArrowDown" ? 1 : -1) + sList.length) % Math.max(1, sList.length);
       [...sRes.children].forEach((li, i) => li.setAttribute("aria-selected", i === sSel));
-    } else if (e.key === "Enter") pick(sList[sSel]);
+    } else if (e.key === "Enter") choose(sList[sSel]);
     else if (e.key === "Escape") { sIn.value = ""; sIn.blur(); }
   });
-  sRes.addEventListener("pointerdown", (e) => { const li = e.target.closest("li[data-id]"); if (li) { e.preventDefault(); pick(CHAR_BY_ID.get(li.dataset.id)); } });
+  sRes.addEventListener("pointerdown", (e) => { const li = e.target.closest("li[data-k]"); if (li) { e.preventDefault(); choose(sList[+li.dataset.k]); } });
 
   /* ───────────────────────── legend / about ───────────────────────── */
   $("legendToggle").addEventListener("click", () => {
