@@ -168,7 +168,7 @@
 
   /* ───────────────────────── DOM ───────────────────────── */
   const stage = $("stage"), svg = $("timeline");
-  const g = { eras: $("gEras"), cursor: $("gCursor"), axis: $("gAxis"), rels: $("gRels"), life: $("gLife"), main: $("gMain"), books: $("gBooks"), events: $("gEvents"), dots: $("gDots"), tracks: $("gTracks") };
+  const g = { eras: $("gEras"), cursor: $("gCursor"), axis: $("gAxis"), rels: $("gRels"), life: $("gLife"), main: $("gMain"), books: $("gBooks"), events: $("gEvents"), dots: $("gDots"), tracks: $("gTracks"), lifeActs: $("gLifeActs") };
   const eraLabelBox = $("eraLabels");
   const tip = $("eventTip");
 
@@ -585,7 +585,7 @@
 
   /* personal timelines (hover + pinned windows), juxtaposed under the main line */
   function renderTracks() {
-    g.tracks.textContent = "";
+    g.tracks.textContent = g.lifeActs.textContent = "";
     const list = wins.filter((w) => !isBookW(w)).map((w) => ({ c: w.c, color: w.color }));
     if (hoverC && !list.some((o) => o.c === hoverC)) list.push({ c: hoverC, color: "var(--accent)", hover: true });
     const fit = trackFit(list.length);
@@ -649,6 +649,22 @@
         const t2 = el("text", { class: "track-evlabel", x: x + tlen(fmtYear(yr)) * 5.6 + 6, y: ty }, grp);
         t2.textContent = label;
       });
+    });
+
+    // the hovered person's activities also sit on their lifespan in the main window (over the names,
+    // so a dot can be pointed at), and go again when the pointer leaves; those that fall under the
+    // name are left to the track below
+    const d = hoverC && DOT_BY_ID.get(hoverC.id);
+    if (!d || !d.visible) return;
+    const grp = g.lifeActs;
+    hoverC.events.forEach((e, k) => {
+      const x = X(A(e[0]));
+      if (x < d.xb + d.gap - 2 || x > d.xd + 1 || x < 0 || x > W) return;
+      const act = el("g", { class: "track-act" + (tipAct && tipAct.c === hoverC && tipAct.k === k ? " active" : "") }, grp);
+      act.__act = { c: hoverC, k, x, y: d.y, color: "var(--accent)" };
+      el("circle", { class: "hit", cx: x, cy: d.y, r: L.mobile || isTouch ? 9 : 6 }, act);
+      if (isHistRef(e[2])) el("rect", { class: "track-ev sq", x: x - 2.2, y: d.y - 2.2, width: 4.4, height: 4.4, fill: "var(--accent)" }, act);
+      else el("circle", { class: "track-ev", cx: x, cy: d.y, r: 2.4, fill: "var(--accent)" }, act);
     });
   }
 
@@ -768,7 +784,8 @@
     if (n && !(e.relatedTarget && n.contains(e.relatedTarget))) clearHoverSoon();
   });
   g.dots.addEventListener("focusin", (e) => { const n = e.target.closest(".dot"); if (n) setHover(n.__c); });
-  g.dots.addEventListener("focusout", () => clearHoverSoon());
+  // a tap on one of the hovered person's activity dots takes focus from their name, but keeps the hover
+  g.dots.addEventListener("focusout", () => { if (!(tipAct && tipAct.c === hoverC)) clearHoverSoon(); });
   g.dots.addEventListener("keydown", (e) => {
     const n = e.target.closest(".dot");
     if (n && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openWindow(n.__c); }
@@ -826,7 +843,7 @@
     tip.style.left = Math.min(W - 150, Math.max(150, a.x)) + "px";
     tip.style.top = Math.max(L.top, a.y - 14 - tip.offsetHeight) + "px";
     tip.classList.add("show");
-    g.tracks.querySelectorAll(".track-act").forEach((n) => n.classList.toggle("active", n.__act.c === a.c && n.__act.k === a.k));
+    svg.querySelectorAll(".track-act").forEach((n) => n.classList.toggle("active", n.__act.c === a.c && n.__act.k === a.k));
     pointAct(a.c, a.k);
   }
   /* a lifespan dot points at its activity, as the activity's row in the window does: its place lights
@@ -848,7 +865,7 @@
     if (!tipAct) return;
     tipAct = null;
     if (!tipEv) tip.classList.remove("show");
-    g.tracks.querySelectorAll(".track-act.active").forEach((n) => n.classList.remove("active"));
+    svg.querySelectorAll(".track-act.active").forEach((n) => n.classList.remove("active"));
   }
   function openActivity(c, k) {
     hideActTip();
@@ -864,17 +881,19 @@
     if (li.dataset.place) { const id = li.dataset.place.split(" ")[0]; followView(w, id); markPlace(w, id); }
     cursorT = +li.dataset.t; requestRender();
   }
-  g.tracks.addEventListener("pointerover", (e) => {
-    const n = e.target.closest(".track-act"); if (!n || e.pointerType !== "mouse" || dragging) return;
-    if (n.__act.c === hoverC) clearTimeout(hoverTimer);   // keep a hover-only track alive while it is used
-    showActTip(n.__act, false);
-  });
-  g.tracks.addEventListener("pointerout", (e) => {
-    const n = e.target.closest(".track-act"); if (!n || e.pointerType !== "mouse") return;
-    if (e.relatedTarget && n.contains(e.relatedTarget)) return;
-    hideActTip();
-    if (n.__act.c === hoverC && !isPinned(hoverC)) clearHoverSoon();
-  });
+  for (const box of [g.tracks, g.lifeActs]) {
+    box.addEventListener("pointerover", (e) => {
+      const n = e.target.closest(".track-act"); if (!n || e.pointerType !== "mouse" || dragging) return;
+      if (n.__act.c === hoverC) clearTimeout(hoverTimer);   // keep a hover-only track alive while it is used
+      showActTip(n.__act, false);
+    });
+    box.addEventListener("pointerout", (e) => {
+      const n = e.target.closest(".track-act"); if (!n || e.pointerType !== "mouse") return;
+      if (e.relatedTarget && n.contains(e.relatedTarget)) return;
+      hideActTip();
+      if (n.__act.c === hoverC && !isPinned(hoverC)) clearHoverSoon();
+    });
+  }
 
   /* ───────────────────────── Bible books band ─────────────────────────
      data/books.js: each book is a line over the years it covers (from the New World Translation's
