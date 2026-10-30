@@ -29,7 +29,7 @@ On a first visit a **Start here** card sits above the timeline in place of the z
 
 ## Who is shown
 
-The **People** button in the top bar picks who appears:
+The **People** button in the top bar picks who appears. The site opens on **Key figures**; the mode picked last is saved in the browser (`bt-show`, below) and used on the next visit. A plain `all` saved before Key figures became the default (every visit used to save it) is read once as no choice, marked by `bt-show-v`. A shared link to someone outside the current mode switches to Everyone so they show.
 
 | Mode | Shows |
 | --- | --- |

@@ -143,17 +143,22 @@
   GROUP.son = (c) => c.gender === "m" && nRel(c, "father") + nRel(c, "mother") > 0;
   GROUP.daughter = (c) => c.gender === "f" && nRel(c, "father") + nRel(c, "mother") > 0;
   for (const [g, en] of Object.entries(SHOW_FAM)) GROUP_NAME[g] = T("show.fam." + g, null, en);
-  let showMode = "all";             // all | key | line | mine
+  let showMode = "key";             // all | key | line | mine; the site opens on Key figures
   let showGroups = new Set();       // the picked jobs and family roles; they narrow the people of showMode
   let showAll = false;              // with several groups: false = anyone in any of them, true = only people in all of them
   let booksOn = false;              // the Bible books band (the book button in the top bar)
   try { booksOn = localStorage.getItem("bt-books") === "1"; } catch (_) {}
   try {
     // "line;g:wife,husband" (older: "g:king" with no mode before it)
-    const [m, gs] = (localStorage.getItem("bt-show") || "").split(";");
+    // Before Key figures became the default, every visit saved a plain "all", so that
+    // value is read once more as "nothing picked yet" (bt-show-v marks it done).
+    let saved = localStorage.getItem("bt-show") || "";
+    if (!localStorage.getItem("bt-show-v") && saved === "all") saved = "";
+    localStorage.setItem("bt-show-v", "2");
+    const [m, gs] = saved.split(";");
     const g = /^[ga]:/.test(m) ? m : gs || "";
     if (/^[ga]:/.test(g)) { showGroups = new Set(g.slice(2).split(",").filter((k) => GROUP[k])); showAll = g[0] === "a"; }
-    showMode = SHOW_MODES[m] ? m : "all";
+    showMode = SHOW_MODES[m] ? m : /^[ga]:/.test(m) ? "all" : "key";
   } catch (_) {}
   const showKey = () => showMode + (showGroups.size ? ";" + (showAll ? "a:" : "g:") + [...showGroups].join(",") : "");
   const inBase = (c) => showMode === "all" || (showMode === "line" ? !!c.line : showMode === "mine" ? isStarred(c) : !!(c.key || c.line));
