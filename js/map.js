@@ -107,7 +107,7 @@
     const legs = [];      // each leg as drawn, with its length along the way, for its distance label
     if (opt.route && seq.length > 1) {
       const done = new Set();
-      let d = "";
+      let d = "", lit = "";
       for (let i = 1; i < seq.length; i++) {
         const a = seq[i - 1], b = seq[i], key = [a.st.id, b.st.id].sort().join(">");
         if (done.has(key)) continue;
@@ -116,11 +116,13 @@
         const mid = wy.slice(1, -1).map((ll) => { const [mx, my] = proj(ll); return [+X(mx), +Y(my)]; });
         const p = [[a.x, a.y], ...mid, [b.x, b.y]];
         d += smooth(p);
+        // the same leg again, unseen until one of its two places lights up (markPlace() in js/app.js)
+        lit += `<path class="bm-leg" data-place="${a.st.id} ${b.st.id}" d="${smooth(p)}"/>`;
         const c = curve(p);
         legs.push({ a: a.st.id, b: b.st.id, c, km: wy.reduce((t, ll, j) => (j ? t + gcKm(wy[j - 1], ll) : 0), 0) });
         for (let j = 1; j < c.length; j++) segs.push([c[j - 1][0], c[j - 1][1], c[j][0], c[j][1]]);
       }
-      s += `<path class="bm-route" d="${d}"/>`;
+      s += `<path class="bm-route" d="${d}"/>${lit}`;
     }
 
     const boxes = pins.filter((q) => !q.small).map((q) => [q.x - 7, q.y - 7, q.x + 7, q.y + 7]);
@@ -171,7 +173,7 @@
         s += `<text class="bm-label bm-inset-t" data-k="${ins.k}" x="${at[0].toFixed(1)}" y="${at[1].toFixed(1)}">${esc(nm)} ${at[2]}</text>`; labelBoxes.push(box(at)); break;
       }
     });
-    for (const q of pins) if (q.dx != null) marks += `<path class="bm-lead" d="M${q.ax} ${q.ay} L${q.x} ${q.y}"/><circle class="bm-at" cx="${q.ax}" cy="${q.ay}" r="1.5"/>`;
+    for (const q of pins) if (q.dx != null) marks += `<path class="bm-lead" data-place="${esc(q.st.id)}" d="M${q.ax} ${q.ay} L${q.x} ${q.y}"/><circle class="bm-at" data-place="${esc(q.st.id)}" cx="${q.ax}" cy="${q.ay}" r="1.5"/>`;
     for (const { st, x, y, pl, small, dx, dy } of pins) {
       const id = esc(st.id);
       if (small) { marks += `<g class="bm-pin small s-${pl.s}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}</title><circle class="bm-ring" r="2.4"/></g>`; continue; }
@@ -213,7 +215,7 @@
       if (!c) c = cand.filter((k) => !out(k[3]) && !over(k[3], labelBoxes)).sort((k1, k2) => nPins(k1[3]) - nPins(k2[3]))[0];
       if (!c) continue;
       labelBoxes.push(c[3]);
-      if (c[4]) { const [x1, y1, x2, y2] = c[4].map((v) => v.toFixed(1)); labels += `<path class="bm-lead" d="M${x1} ${y1} L${x2} ${y2}"/>`; }
+      if (c[4]) { const [x1, y1, x2, y2] = c[4].map((v) => v.toFixed(1)); labels += `<path class="bm-lead" data-place="${id}" d="M${x1} ${y1} L${x2} ${y2}"/>`; }
       labels += `<text class="bm-label${st.hl ? " hl" : ""}" data-place="${id}" x="${c[0].toFixed(1)}" y="${c[1].toFixed(1)}" text-anchor="${c[2]}">${esc(name)}</text>`;
     }
     for (const sea of SEAS) {
