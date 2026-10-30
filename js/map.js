@@ -107,7 +107,7 @@
     const legs = [];      // each leg as drawn, with its length along the way, for its distance label
     if (opt.route && seq.length > 1) {
       const done = new Set();
-      let d = "";
+      let d = "", lit = "";
       for (let i = 1; i < seq.length; i++) {
         const a = seq[i - 1], b = seq[i], key = [a.st.id, b.st.id].sort().join(">");
         if (done.has(key)) continue;
@@ -116,11 +116,13 @@
         const mid = wy.slice(1, -1).map((ll) => { const [mx, my] = proj(ll); return [+X(mx), +Y(my)]; });
         const p = [[a.x, a.y], ...mid, [b.x, b.y]];
         d += smooth(p);
+        // the same leg again, unseen until one of its two places lights up (markPlace() in js/app.js)
+        lit += `<path class="bm-leg" data-place="${a.st.id} ${b.st.id}" d="${smooth(p)}"/>`;
         const c = curve(p);
         legs.push({ a: a.st.id, b: b.st.id, c, km: wy.reduce((t, ll, j) => (j ? t + gcKm(wy[j - 1], ll) : 0), 0) });
         for (let j = 1; j < c.length; j++) segs.push([c[j - 1][0], c[j - 1][1], c[j][0], c[j][1]]);
       }
-      s += `<path class="bm-route" d="${d}"/>`;
+      s += `<path class="bm-route" d="${d}"/>${lit}`;
     }
 
     const boxes = pins.filter((q) => !q.small).map((q) => [q.x - 7, q.y - 7, q.x + 7, q.y + 7]);

@@ -1848,7 +1848,7 @@
   function markPlace(w, id) {
     if (id) w.capId = id;
     for (const box of mapBoxes(w)) {
-      box.querySelectorAll(".bm-pin, .bm-label, .bm-dist").forEach((n) => n.classList.toggle("hl", !!id && hasId(n, id)));
+      box.querySelectorAll(".bm-pin, .bm-label, .bm-dist, .bm-leg").forEach((n) => n.classList.toggle("hl", !!id && hasId(n, id)));
       const cap = box.querySelector(".bm-cap"), pl = w.capId && BibleMap.place(w.capId);
       if (!cap || cap.dataset.id === (w.capId || "")) continue;   // unchanged: keep the link under the pointer
       cap.dataset.id = w.capId || "";
