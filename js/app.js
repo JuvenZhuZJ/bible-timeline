@@ -1353,6 +1353,9 @@
       welcome.classList.add("hide"); setTimeout(() => { welcome.hidden = true; }, 400);
       try { localStorage.setItem("bt-welcome", "1"); } catch (_) {}
     };
+    // The card sits inside the stage, whose pointerdown captures the pointer for panning; that capture
+    // would send the button's click to the stage instead, so presses on the card stay out of it.
+    welcome.addEventListener("pointerdown", (e) => e.stopPropagation());
     $("welcomeOk").addEventListener("click", done);
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !welcome.hidden) done(); });
   }
