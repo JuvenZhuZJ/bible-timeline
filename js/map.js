@@ -251,17 +251,39 @@
     const placed = [];
     const over = (b) => placed.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
     const onRoute = (b) => segs.some((sg) => cuts(sg, b[0], b[1], b[2], b[3]));
+    // how far a point is from a leg's line
+    const near = (x, y, c) => {
+      let m = Infinity;
+      for (let i = 1; i < c.length; i++) {
+        const [x0, y0] = c[i - 1], dx = c[i][0] - x0, dy = c[i][1] - y0, q = Math.max(0, Math.min(1, ((x - x0) * dx + (y - y0) * dy) / (dx * dx + dy * dy || 1)));
+        m = Math.min(m, Math.hypot(x - x0 - dx * q, y - y0 - dy * q));
+      }
+      return m;
+    };
     for (const lg of legs) {
       const c = lg.c, len = [0];
       for (let i = 1; i < c.length; i++) len.push(len[i - 1] + Math.hypot(c[i][0] - c[i - 1][0], c[i][1] - c[i - 1][1]));
       // only the part of the leg on this map counts (a leg to a place off the map, from a close-up)
-      const vis = c.map(([x, y], i) => (x > 8 && x < w - 8 && y > 8 && y < h - 8 ? len[i] : null)).filter((v) => v != null);
+      const on = c.map(([x, y]) => x > 8 && x < w - 8 && y > 8 && y < h - 8);
+      const vis = len.filter((_, i) => on[i]);
       if (!vis.length) continue;
-      const lo = Math.min(...vis), hi = Math.max(...vis), L = hi - lo;
+      let lo = Math.min(...vis), hi = Math.max(...vis), L = hi - lo;
       if (L < 18) continue;
+      // the legs that light up with this one (they share a place) may run along the same road for a while; the number
+      // goes on the longest stretch this leg has to itself, so it is plainly this leg's, if that stretch has room for it
+      const mates = legs.filter((o) => o !== lg && [o.a, o.b].some((e) => e === lg.a || e === lg.b));
+      let run = null, best = null;
+      const mine = c.map(([x, y], i) => on[i] && !mates.some((o) => near(x, y, o.c) < 4));
+      for (let i = 0; i < c.length; i++) {
+        const own = mine[i];
+        if (own) { if (!run) run = [len[i], len[i]]; run[1] = len[i]; if (!best || run[1] - run[0] > best[1] - best[0]) best = run.slice(); } else run = null;
+      }
+      if (best && best[1] - best[0] >= 18) { lo = best[0]; hi = best[1]; L = hi - lo; }
+      const fs = [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82, 0.1, 0.9];
+      if (best && L !== best[1] - best[0]) fs.push(0.04, 0.96);   // a short stretch of its own may lie near an end
       const t = `~${roundKm(lg.km).toLocaleString("en")} km`, tw = t.length * 4.6 + 2;
       const cand = [];
-      for (const f of [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82, 0.1, 0.9]) {
+      for (const f of fs) {
         const at = lo + f * L;
         let i = 1;
         while (i < c.length - 1 && len[i] < at) i++;
@@ -269,11 +291,15 @@
         const x = x0 + (x1 - x0) * q, y = y0 + (y1 - y0) * q, nx = -(y1 - y0) / sl, ny = (x1 - x0) / sl;
         for (const more of [0, 5, 10]) for (const sd of [1, -1]) {
           const off = Math.abs(nx) * (tw / 2) + Math.abs(ny) * 5 + 2.5 + more, cx = x + nx * sd * off, cy = y + ny * sd * off;
-          cand.push([cx, cy + 3, [cx - tw / 2, cy - 5, cx + tw / 2, cy + 4], f]);
+          cand.push([cx, cy + 3, [cx - tw / 2, cy - 5, cx + tw / 2, cy + 4], f, mine[i - 1] && mine[i]]);
         }
       }
+
       // failing a free spot: over a route, then over a name, but never over a pin or off the map if it can help it
-      const k = cand.find((o) => !hits(o[2]) && !over(o[2]) && !onRoute(o[2])) || cand.find((o) => !hits(o[2]) && !over(o[2]))
+      // beside a part the leg has to itself first, however short, even over a route or a name
+      const own = cand.filter((o) => o[4]);
+      const k = own.find((o) => !hits(o[2]) && !over(o[2]) && !onRoute(o[2])) || own.find((o) => !chk.out(o[2]) && !chk.pins(o[2]) && !over(o[2]))
+        || cand.find((o) => !hits(o[2]) && !over(o[2]) && !onRoute(o[2])) || cand.find((o) => !hits(o[2]) && !over(o[2]))
         || cand.find((o) => !chk.out(o[2]) && !chk.pins(o[2]) && !over(o[2])) || cand.find((o) => !chk.out(o[2]) && !over(o[2])) || cand[0];
       placed.push(k[2]);
       out += `<text class="bm-dist" data-place="${lg.a} ${lg.b}" x="${k[0].toFixed(1)}" y="${k[1].toFixed(1)}" text-anchor="middle">${t}</text>`;
