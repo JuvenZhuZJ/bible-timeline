@@ -1853,7 +1853,11 @@
       const ends = new Set(id ? [id] : []);
       box.querySelectorAll(".bm-leg.hl").forEach((n) => n.dataset.place.split(" ").forEach((e) => ends.add(e)));
       box.querySelectorAll(".bm-pin, .bm-label[data-place], .bm-lead[data-place], .bm-at[data-place]")
-        .forEach((n) => n.classList.toggle("bm-off", !!id && !(n.dataset.place || "").split(" ").some((e) => ends.has(e))));
+        .forEach((n) => {
+          const at = (n.dataset.place || "").split(" ");
+          n.classList.toggle("bm-off", !!id && !at.some((e) => ends.has(e)));
+          n.classList.toggle("end", !!id && !at.includes(id) && at.some((e) => ends.has(e)));
+        });
       const cap = box.querySelector(".bm-cap"), pl = w.capId && BibleMap.place(w.capId);
       if (!cap || cap.dataset.id === (w.capId || "")) continue;   // unchanged: keep the link under the pointer
       cap.dataset.id = w.capId || "";

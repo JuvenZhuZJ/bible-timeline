@@ -176,7 +176,18 @@
     for (const q of pins) if (q.dx != null) marks += `<path class="bm-lead" data-place="${esc(q.st.id)}" d="M${q.ax} ${q.ay} L${q.x} ${q.y}"/><circle class="bm-at" data-place="${esc(q.st.id)}" cx="${q.ax}" cy="${q.ay}" r="1.5"/>`;
     for (const { st, x, y, pl, small, dx, dy } of pins) {
       const id = esc(st.id);
-      if (small) { marks += `<g class="bm-pin small s-${pl.s}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}</title><circle class="bm-ring" r="2.4"/></g>`; continue; }
+      if (small) {
+        marks += `<g class="bm-pin small s-${pl.s}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}</title><circle class="bm-ring" r="2.4"/></g>`;
+        // its name, kept hidden but for when it or a place it has a leg to lights up (markPlace() in js/app.js)
+        if (opt.labels !== false) {
+          const name = shortName(pl.n), tw = tlen(name) * 5.4 + 2;
+          const cand = [[x + 6, y + 3.5, "start", [x + 5, y - 5, x + 6 + tw, y + 5]], [x - 6, y + 3.5, "end", [x - 6 - tw, y - 5, x - 5, y + 5]],
+            [x, y - 6, "middle", [x - tw / 2, y - 14, x + tw / 2, y - 4]], [x, y + 13, "middle", [x - tw / 2, y + 4, x + tw / 2, y + 15]]];
+          const c = cand.find((k) => !hitsR(k[3])) || cand.find((k) => !hits(k[3])) || cand.find((k) => !out(k[3])) || cand[0];
+          labels += `<text class="bm-label bm-small-n" data-place="${id}" x="${c[0].toFixed(1)}" y="${c[1].toFixed(1)}" text-anchor="${c[2]}">${esc(name)}</text>`;
+        }
+        continue;
+      }
       const cls = `bm-pin s-${pl.s}${pl.r ? " region" : ""}${st.hl ? " hl" : ""}`;
       marks += `<g class="${cls}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}${pl.s === "known" ? "" : pl.s === "likely" ? TR(" (likely site)") : TR(" (location uncertain)")}</title>`;
       if (pl.r) marks += `<circle class="bm-area" r="11"/>`;
