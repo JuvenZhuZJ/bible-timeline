@@ -187,6 +187,10 @@ Under the key scriptures, a person's window lists where to read more about them,
 
 The links are in `data/reading.js` (hand-editable): the chapter list says which people each chapter is about, and the Insight list maps a person's id to their article. Chapter numbers and titles were read from the books' contents pages on wol.jw.org (2026-10-20).
 
+## Text size
+
+The same settings menu has **Text size**: four "A" buttons for 90%, 100% (normal), 115% and 130%. The choice is remembered in the browser (`localStorage` key `bt-fs`) and applies at once, without a reload. Every font size in `css/style.css` is written as `calc(<size>px * var(--fs))`, so new text should follow that pattern; only the site name in the top bar keeps its size, as a phone's top bar has no room for it to grow. On the timeline, `FS` in `js/app.js` also scales the row spacing (people, event labels, books band, opened lifespans, era names on a phone) and the label-width estimates, so the bigger names don't collide; at the larger sizes fewer people fit on screen at once.
+
 ## Chinese (中文)
 
 The settings button (the gear in the top bar) switches the whole site between English and Traditional Chinese (繁體中文). The choice is remembered in the browser (`localStorage` key `bt-lang`); a first visit from a browser set to Chinese opens in Chinese. Switching reloads the page.

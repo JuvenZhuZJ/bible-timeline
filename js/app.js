@@ -60,6 +60,9 @@
   };
   const jobIcon = (j) => `<svg class="job-ic" aria-hidden="true"><use href="#job-${j}"/></svg>`;
   const JOB_STEP = 12;   // px per icon after a name on the timeline
+  // text size from the Language menu (1 = normal); the CSS sizes and the timeline's row spacing scale by it
+  let FS = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--fs")) || 1;
+  const labelW = (c) => c.nameW * FS + 16 + (c.jobs.length ? c.jobs.length * JOB_STEP + 2 : 0);
   const ageText = (c) => c.living ? "" : T("age", { a: c.assumed ? T("age.approx") : "", n: c.td - c.tb }, `${c.assumed ? "~" : ""}${c.td - c.tb} yrs`);
 
   CHARS.forEach((c) => {
@@ -86,7 +89,7 @@
     c.events = rawEvents.slice().sort((a, b) => a[0] - b[0]);
     c.places = placesOf(c, visits);
     c.jobs = c.jobs || [];
-    c.labelW = tlen(c.name) * (c.tier === 1 ? 7.6 : 6.3) + 16 + (c.jobs.length ? c.jobs.length * JOB_STEP + 2 : 0);
+    c.nameW = tlen(c.name) * (c.tier === 1 ? 7.6 : 6.3);
     c.rel = c.rel || {};
     c.refs = c.refs || [];
   });
@@ -185,19 +188,20 @@
   function layout() {
     W = stage.clientWidth; H = stage.clientHeight;
     const mobile = W < 760;
-    const top = (mobile ? 56 + (ERA_ROWS - 1) * 15 : 64) + 30;   // room for the era names above the people
+    const eraStep = Math.round(15 * FS);
+    const top = (mobile ? 56 + (ERA_ROWS - 1) * eraStep : 64) + 30;   // room for the era names above the people
     const bottom = mobile ? 104 : 108;
     let lineY = Math.round(top + (H - top - bottom) * (mobile ? 0.5 : 0.55));
-    const laneStep = mobile ? 28 : 31, trackStep = mobile ? 30 : 34;
+    const laneStep = Math.round((mobile ? 28 : 31) * FS), trackStep = Math.round((mobile ? 30 : 34) * FS);
     // event labels sit in a fixed band of rows under the axis; the personal tracks start below it
-    const evRows = mobile ? 2 : 3, evRowStep = 22, under = 40 + (evRows - 1) * evRowStep + 11 + 22;
+    const evRows = mobile ? 2 : 3, evRowStep = Math.round(22 * FS), under = 40 + (evRows - 1) * evRowStep + Math.round(11 * FS) + 22;
     // with the Bible books band on, its rows sit just above the main line and the people move up.
     // So that the top people stay on screen, the line moves down as far as it needs to (keeping room
     // for three opened lifespans under it); where even that is not enough, the band has fewer rows
     // and the books that don't fit go into its "+3" marks
     const lanesFor = (y, band) => Math.floor((y - band - top - 22) / laneStep);
     let bookRows = mobile ? 6 : 7;
-    const bookStep = mobile ? 14 : 15;
+    const bookStep = Math.round((mobile ? 14 : 15) * FS);
     let band = 0;
     if (booksOn) {
       const want = Math.max(1, Math.min(lanesFor(lineY, 0), mobile ? 3 : 4));
@@ -210,7 +214,7 @@
     }
     const evRow0 = lineY + 40;
     L = {
-      mobile, top, bottom, lineY, laneStep, evRows, evRow0, evRowStep, bookRows, bookStep, band,
+      mobile, top, bottom, lineY, laneStep, eraStep, evRows, evRow0, evRowStep, bookRows, bookStep, band,
       maxLanes: booksOn ? Math.max(1, lanesFor(lineY, band)) : Math.max(3, lanesFor(lineY, 0)),
       trackY0: lineY + under,
       trackStep,
@@ -272,7 +276,7 @@
     const lab = document.createElement("div");
     lab.className = "era-label"; lab.textContent = e.name;
     eraLabelBox.appendChild(lab);
-    return { e, rect, lab, w: tlen(e.name) * 7.4 + 24, a: A(e.from), b: A(e.to) };
+    return { e, rect, lab, tw: tlen(e.name) * 7.4, a: A(e.from), b: A(e.to) };
   });
   // dotted lines mark era boundaries only; events inside an era already have their own node and label
   const sepEls = [...new Set(ERAS.flatMap((e) => [A(e.from), A(e.to)]))].map((t) => ({ t, line: el("line", { class: "era-sep" }, g.eras) }));
@@ -314,7 +318,7 @@
       class: `dot tier-${c.tier} q-${c.q[0]}${c.line ? " on-line" : ""}${c.hist ? " hist" : ""}`, tabindex: "0", role: "button",
       "aria-label": `${c.name}, ${fmtRange(c)}`,
     }, g.dots);
-    el("rect", { class: "hit", x: -12, y: -15, width: c.labelW + 10, height: 31 }, node);   // as tall as a lane, so neighbours leave no gap
+    el("rect", { class: "hit", x: -12, y: -L.laneStep / 2, width: labelW(c) + 10, height: L.laneStep }, node);   // as tall as a lane, so neighbours leave no gap
     d.sel = el("circle", { class: "d-sel", r: 10, stroke: "transparent" }, node);
     const r0 = c.tier === 1 ? 5.5 : 4.5, rc = SURE_Q(c.q[0]) ? r0 : 2;
     if (c.hist) {   // known from history, not the Bible: square marks, filled the same way as the round ones
@@ -332,7 +336,7 @@
       d.jobs = el("g", { class: "d-jobs" }, node);
       c.jobs.forEach((j, i) => el("use", { href: `#job-${j}`, x: i * JOB_STEP, y: -5.5, width: 11, height: 11 }, d.jobs));
     }
-    const yr = el("text", { class: "d-year", x: 11, y: 15 }, node);
+    const yr = el("text", { class: "d-year", x: 11, y: 4 + 11 * FS }, node);
     yr.textContent = fmtYear(c.born);
     node.__c = c;
     d.node = node;
@@ -363,7 +367,7 @@
     const lanes = Array.from({ length: L.maxLanes }, () => []);   // per lane: [start, labelEnd, lifeEnd]
     const free = (lane, s, e, idx) => lane.every((iv) => e <= iv[0] || s >= iv[idx]);
     for (const d of list) {
-      const c = d.c, lw = (c.labelW + 14) / view.ppy;
+      const c = d.c, lw = (labelW(c) + 14) / view.ppy;
       const s = c.tb, lbl = c.tb + lw, life = Math.max(c.td, lbl);
       let lane = lanes.findIndex((ln) => ln.every((iv) => life <= iv[0] || s >= iv[2]));
       if (lane < 0) lane = lanes.findIndex((ln) => free(ln, s, lbl, 1));
@@ -392,7 +396,7 @@
       o.rect.setAttribute("x", xa); o.rect.setAttribute("width", Math.max(0, xb - xa)); o.rect.setAttribute("height", H);
       return { o, va: Math.max(xa, 0), vb: Math.min(xb, W) };
     }).forEach(({ o, va, vb }) => {
-      let show = vb - va > o.w, row = 0;
+      let show = vb - va > o.tw * FS + 24, row = 0;
       const cx = (va + vb) / 2;
       if (L.mobile) {
         show = false;
@@ -402,7 +406,7 @@
             if (!(eraRows[row] || []).some(([p, q]) => lx - half < q && lx + half > p)) { (eraRows[row] = eraRows[row] || []).push([lx - half, lx + half]); show = true; break; }
           }
         }
-        if (show) { o.lab.style.left = lx + "px"; o.lab.style.top = ""; o.lab.style.transform = `translate(-50%, ${row * 15}px)`; }
+        if (show) { o.lab.style.left = lx + "px"; o.lab.style.top = ""; o.lab.style.transform = `translate(-50%, ${row * L.eraStep}px)`; }
       } else if (show) { o.lab.style.left = cx + "px"; o.lab.style.transform = ""; }
       o.lab.style.opacity = show ? 1 : 0;
     });
@@ -418,7 +422,7 @@
     // axis
     g.axis.textContent = "";
     const steps = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000];
-    const minPx = L.mobile ? 64 : 84;
+    const minPx = (L.mobile ? 64 : 84) * FS;
     const step = steps.find((s) => s * view.ppy >= minPx) || 2000;
     const minor = steps[Math.max(0, steps.indexOf(step) - 2)];
     const tA = tAt(-40), tB = tAt(W + 40);
@@ -478,8 +482,8 @@
       if (vis) {
         const y = rowY(row);
         o.label.setAttribute("x", lx); o.label.setAttribute("y", y); o.label.setAttribute("text-anchor", "middle");
-        o.year.setAttribute("x", lx); o.year.setAttribute("y", y + 11); o.year.setAttribute("text-anchor", "middle");
-        o.stem.setAttribute("x1", x); o.stem.setAttribute("x2", x); o.stem.setAttribute("y1", lineY + 26); o.stem.setAttribute("y2", y - 10);
+        o.year.setAttribute("x", lx); o.year.setAttribute("y", y + 11 * FS); o.year.setAttribute("text-anchor", "middle");
+        o.stem.setAttribute("x1", x); o.stem.setAttribute("x2", x); o.stem.setAttribute("y1", lineY + 26); o.stem.setAttribute("y2", y - 10 * FS);
       }
     });
 
@@ -614,7 +618,7 @@
       // name label: left of the track if room, otherwise above its start
       const nm = el("text", { class: "track-name", fill: o.color }, grp);
       nm.textContent = c.name;
-      const nw = tlen(c.name) * 7 + 10;
+      const nw = tlen(c.name) * 7 * FS + 10;
       if (xd < 0 || xb > W) {   // whole life off-screen: point toward it
         const left = xd < 0;
         nm.textContent = `${left ? "‹ " : ""}${c.name} · ${fmtYear(c.born)}${left ? "" : " ›"}`;
@@ -638,15 +642,15 @@
         if (!showLabels) return;
         const max = I18.zh ? 20 : 34;   // a Chinese character is about two letters wide
         const label = text.length > max ? text.slice(0, max - 1) + "…" : text;
-        const w = tlen(label) * 5.6 + 50;
+        const w = (tlen(label) * 5.6 + 44) * FS + 6;
         const r = rowsEnd.findIndex((e) => e < x - 4);
         if (r < 0) return;
         rowsEnd[r] = x + w;
-        const ty = y + 16 + r * 13;
+        const ty = y + 16 * FS + r * 13 * FS;
         if (ty > Math.min(H - L.bottom + 18, cardTop - 6)) return;
         const t1 = el("text", { class: "track-evyear", x, y: ty }, grp);
         t1.textContent = fmtYear(yr);
-        const t2 = el("text", { class: "track-evlabel", x: x + tlen(fmtYear(yr)) * 5.6 + 6, y: ty }, grp);
+        const t2 = el("text", { class: "track-evlabel", x: x + tlen(fmtYear(yr)) * 5.6 * FS + 6, y: ty }, grp);
         t2.textContent = label;
       });
     });
@@ -1066,7 +1070,7 @@
       if (!o.mw) {   // measure the name once (again when the web fonts arrive)
         const t = el("text", { class: "book-name" }, g.books);
         t.textContent = o.name;
-        o.mw = t.getComputedTextLength() || tlen(o.name) * 5.6;
+        o.mw = t.getComputedTextLength() || tlen(o.name) * 5.6 * FS;
         t.remove();
       }
       // xd: where the writing was completed, a diamond; most books were finished the year their
@@ -1106,7 +1110,7 @@
       else groups.push({ items: [it], x1: it.xa, x2: it.xd });
     }
     for (const gr of groups) {
-      const label = "+" + gr.items.length, w = tlen(label) * 6.5 + 12;
+      const label = "+" + gr.items.length, w = tlen(label) * 6.5 * FS + 12;
       let cx = Math.min(W - w / 2 - 2, Math.max(w / 2 + 2, (Math.max(gr.x1, 0) + Math.min(gr.x2, W)) / 2));
       // the nearest free spot to the books it stands for, in any row
       let r = -1;
@@ -2576,17 +2580,33 @@
   let resizeT = 0;
   window.addEventListener("resize", () => {
     clearTimeout(resizeT);
-    resizeT = setTimeout(() => {
-      const c = W ? tAt(W / 2) : (T0 + TB) / 2;
-      const rel = W ? view.ppy / fitPpy() : 1;
-      layout();
-      view.ppy = fitPpy() * rel; view.t0 = c - W / 2 / view.ppy; clampView();
-      wins.forEach((w) => place(w, w.x, w.y));
-      if (mapW.placed) place(mapW, mapW.x, mapW.y);
-      syncMap();
-      render();
-    }, 80);
+    resizeT = setTimeout(relayout, 80);
   });
+  function relayout() {
+    const c = W ? tAt(W / 2) : (T0 + TB) / 2;
+    const rel = W ? view.ppy / fitPpy() : 1;
+    layout();
+    view.ppy = fitPpy() * rel; view.t0 = c - W / 2 / view.ppy; clampView();
+    wins.forEach((w) => place(w, w.x, w.y));
+    if (mapW.placed) place(mapW, mapW.x, mapW.y);
+    syncMap();
+    render();
+  }
+  // names measured at the old size are measured again, and the dots are rebuilt for the new row height
+  function remeasure() { dotEls.forEach((d) => { d.gap = 0; }); evEls.forEach((o) => { o.mw = 0; }); bookLines.forEach((o) => { o.mw = 0; }); eraEls.forEach((o) => { o.mw = 0; }); }
+  function setFontSize(f) {
+    FS = f;
+    document.documentElement.style.setProperty("--fs", f);
+    try { localStorage.setItem("bt-fs", String(f)); } catch (_) {}
+    syncFontSize();
+    remeasure();
+    dotEls.forEach((d) => { if (d.node) { d.node.remove(); d.life.remove(); d.node = null; d.visible = false; } });
+    lastPack.key = ""; packForce = true;
+    relayout();
+  }
+  function syncFontSize() { document.querySelectorAll("[data-fs]").forEach((b) => b.setAttribute("aria-checked", +b.dataset.fs === FS)); }
+  document.querySelectorAll("[data-fs]").forEach((b) => b.addEventListener("click", () => { if (+b.dataset.fs !== FS) setFontSize(+b.dataset.fs); }));
+  syncFontSize();
 
   layout();
   fit();
@@ -2594,7 +2614,7 @@
   hashReady = true;
   render();
   // names measured with a fallback font are re-measured once the web fonts arrive
-  if (document.fonts) document.fonts.ready.then(() => { dotEls.forEach((d) => { d.gap = 0; }); evEls.forEach((o) => { o.mw = 0; }); bookLines.forEach((o) => { o.mw = 0; }); requestRender(); });
+  if (document.fonts) document.fonts.ready.then(() => { remeasure(); requestRender(); });
 
   // keep the site on the device for quick return visits and offline use (sw.js); only on the live site,
   // so a local copy being edited is never served from a cache
