@@ -173,7 +173,7 @@
         s += `<text class="bm-label bm-inset-t" data-k="${ins.k}" x="${at[0].toFixed(1)}" y="${at[1].toFixed(1)}">${esc(nm)} ${at[2]}</text>`; labelBoxes.push(box(at)); break;
       }
     });
-    for (const q of pins) if (q.dx != null) marks += `<path class="bm-lead" d="M${q.ax} ${q.ay} L${q.x} ${q.y}"/><circle class="bm-at" cx="${q.ax}" cy="${q.ay}" r="1.5"/>`;
+    for (const q of pins) if (q.dx != null) marks += `<path class="bm-lead" data-place="${esc(q.st.id)}" d="M${q.ax} ${q.ay} L${q.x} ${q.y}"/><circle class="bm-at" data-place="${esc(q.st.id)}" cx="${q.ax}" cy="${q.ay}" r="1.5"/>`;
     for (const { st, x, y, pl, small, dx, dy } of pins) {
       const id = esc(st.id);
       if (small) { marks += `<g class="bm-pin small s-${pl.s}" data-place="${id}" transform="translate(${x} ${y})"><title>${esc(pl.n)}</title><circle class="bm-ring" r="2.4"/></g>`; continue; }
@@ -215,7 +215,7 @@
       if (!c) c = cand.filter((k) => !out(k[3]) && !over(k[3], labelBoxes)).sort((k1, k2) => nPins(k1[3]) - nPins(k2[3]))[0];
       if (!c) continue;
       labelBoxes.push(c[3]);
-      if (c[4]) { const [x1, y1, x2, y2] = c[4].map((v) => v.toFixed(1)); labels += `<path class="bm-lead" d="M${x1} ${y1} L${x2} ${y2}"/>`; }
+      if (c[4]) { const [x1, y1, x2, y2] = c[4].map((v) => v.toFixed(1)); labels += `<path class="bm-lead" data-place="${id}" d="M${x1} ${y1} L${x2} ${y2}"/>`; }
       labels += `<text class="bm-label${st.hl ? " hl" : ""}" data-place="${id}" x="${c[0].toFixed(1)}" y="${c[1].toFixed(1)}" text-anchor="${c[2]}">${esc(name)}</text>`;
     }
     for (const sea of SEAS) {

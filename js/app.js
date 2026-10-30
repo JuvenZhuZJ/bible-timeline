@@ -1844,11 +1844,16 @@
     const text = pl.s === "known" ? T("gmap", null, "Open in Google Maps") : T("gmap.short", null, "Google Maps");
     return `<a class="bm-gmap" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(T("gmap.title", { place: pl.n }, `${pl.n} in Google Maps (opens a new tab)`))}">${text} ↗</a>`;
   }
-  // the caption under the map keeps the last place pointed at, so its Google Maps link can be reached
+  // the caption under the map keeps the last place pointed at, so its Google Maps link can be reached.
+  // While a place is lit, the other pins and names fade out but for the far ends of its legs, so the lit legs run clear
   function markPlace(w, id) {
     if (id) w.capId = id;
     for (const box of mapBoxes(w)) {
       box.querySelectorAll(".bm-pin, .bm-label, .bm-dist, .bm-leg").forEach((n) => n.classList.toggle("hl", !!id && hasId(n, id)));
+      const ends = new Set(id ? [id] : []);
+      box.querySelectorAll(".bm-leg.hl").forEach((n) => n.dataset.place.split(" ").forEach((e) => ends.add(e)));
+      box.querySelectorAll(".bm-pin, .bm-label[data-place], .bm-lead[data-place], .bm-at[data-place]")
+        .forEach((n) => n.classList.toggle("bm-off", !!id && !(n.dataset.place || "").split(" ").some((e) => ends.has(e))));
       const cap = box.querySelector(".bm-cap"), pl = w.capId && BibleMap.place(w.capId);
       if (!cap || cap.dataset.id === (w.capId || "")) continue;   // unchanged: keep the link under the pointer
       cap.dataset.id = w.capId || "";
