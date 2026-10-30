@@ -632,6 +632,11 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 /* the other places while one is lit (markPlace() in js/app.js); still there to point at */
 .bm-pin, .bm-label, .bm-lead, .bm-at { transition: opacity 0.15s; }
 .bm-off { opacity: 0; }
+/* a place too close to its neighbours for a full pin is a small ring with no name, until it or a place it has a leg to is lit */
+.bm-small-n { opacity: 0; transition: opacity 0.15s; pointer-events: none; }
+.bm-small-n.hl, .bm-small-n.end { opacity: 1; }
+.bm-pin.small .bm-ring { transition: r 0.15s; }
+.bm-pin.small.hl .bm-ring, .bm-pin.small.end .bm-ring { r: 3.6px; }
 /* landscape (data/terrain.js): deserts as stipple, mountains as small peaks, names in faint italics */
 .bm-sand { fill: none; stroke: rgba(201, 170, 112, 0.2); stroke-width: 1.1px; stroke-linecap: round; }
 .bm-crest { fill: none; stroke: rgba(201, 170, 112, 0.42); stroke-width: 0.9px; stroke-linejoin: round; }
