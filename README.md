@@ -141,7 +141,7 @@ Small line icons after a person's name, on the timeline and in their window, sho
 | --- | --- | --- |
 | King / queen | crown | anyone whose role is king, queen, Pharaoh, emperor or tetrarch |
 | Prophet | eye (prophets were once called seers, 1 Samuel 9:9) | prophets, prophetesses and seers (not false prophets) |
-| False prophet | snake | false and lying prophets and prophetesses |
+| False prophet | snake head | false and lying prophets and prophetesses |
 | Patriarch | shepherd's staff | the family heads from Adam to Jacob and Jacob's twelve sons (Acts 7:8-9; Hebrews 7:4) |
 | Judge | scales | the judges of Israel |
 | Priest | turban | priests and high priests |
