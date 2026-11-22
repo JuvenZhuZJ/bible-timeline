@@ -1516,15 +1516,22 @@
     const lv = BibleMap.levels(c.places), h0 = phone ? 150 : 210, h1 = phone ? 150 : 230;
     const maps = lv.map((l, k) => {
       const insets = lv.map((m, j) => ({ m, j })).filter(({ m }) => m.parent === k).map(({ m, j }) => ({ ids: [...new Set(m.stops.map((s) => s.id))], name: m.name, k: j }));
-      return `<div class="bm-v" data-k="${k}" data-d="${l.depth}" data-p="${l.parent}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
-        + BibleMap.svg(l.stops, { w: 340, h: k ? h1 : h0, route: true, roman: c.td > ROMAN_FROM, labels: insets.length ? "far" : true, insets, minSpan: l.minSpan || 0,
-          label: k ? T("map.label.k", { map: l.full || l.name, name: c.name }, `${l.full || l.name} map of places in the life of ${c.name}`) : T("map.label", { name: c.name }, `Places in the life of ${c.name}`) }) + ZOOM_BTNS + `</div>`;
+      const opt = { w: 340, h: k ? h1 : h0, route: true, roman: c.td > ROMAN_FROM, labels: insets.length ? "far" : true, insets, minSpan: l.minSpan || 0,
+          label: k ? T("map.label.k", { map: l.full || l.name, name: c.name }, `${l.full || l.name} map of places in the life of ${c.name}`) : T("map.label", { name: c.name }, `Places in the life of ${c.name}`) };
+      const zid = ++zSeq; ZREG.set(zid, { stops: l.stops, opt });
+      if (ZREG.size > 300) for (const id of ZREG.keys()) if (!document.querySelector(`.bm-v[data-zid="${id}"]`)) ZREG.delete(id);
+      return `<div class="bm-v" data-k="${k}" data-d="${l.depth}" data-p="${l.parent}" data-zid="${zid}" data-ids="${esc([...new Set(l.stops.map((s) => s.id))].join(" "))}">`
+        + BibleMap.svg(l.stops, opt) + ZOOM_BTNS + `</div>`;
     }).join("");
     const sw = lv.length > 1 ? lv.map((l, k) => `<button class="bm-sw" data-v="${k}" aria-pressed="${!k}" title="${esc(l.full || l.name)}">${esc(l.name)}</button>`).join("") : "";
     const hide = phone ? `<button class="bm-hide" aria-expanded="true" aria-label="${HIDE_MAP}" title="${HIDE_MAP}">▴</button>` : "";
     return `<div class="bm-views" data-v="0">` + (sw || hide ? `<div class="bm-bar">${sw}${hide}</div>` : "") + maps + `<div class="bm-cap"></div></div>`;
   }
   const HIDE_MAP = T("map.hide", null, "Hide map");
+  // each map's stops and drawing options, by the data-zid of its .bm-v, so a map zoomed by hand can be redrawn
+  // at that zoom (redrawMap()); a person's maps are drawn afresh each time they show, so old entries are dropped
+  const ZREG = new Map();
+  let zSeq = 0;
   const ZOOM_BTNS = `<div class="bm-zc"><button class="bm-zb" data-z="in" aria-label="${T("map.zin", null, "Zoom in")}" title="${T("map.zin", null, "Zoom in")}">+</button>`
     + `<button class="bm-zb" data-z="out" aria-label="${T("map.zout", null, "Zoom out")}" title="${T("map.zout", null, "Zoom out")}" disabled>−</button>`
     + `<button class="bm-zb" data-z="reset" aria-label="${T("map.zreset", null, "Reset the map")}" title="${T("map.zreset", null, "Reset the map")}" hidden>⟲</button></div>`;
@@ -1884,7 +1891,7 @@
     const z = box._zoom;
     if (z && z.to === v) return;                      // already on its way there
     stopZoom(box);
-    views.querySelectorAll(".bmap").forEach((m) => zoomMap(m, 1));   // a map zoomed by hand goes back to its own view first
+    views.querySelectorAll(".bmap").forEach((m) => zoomMap(m, 1, null, null, true));   // a map zoomed by hand goes back to its own view first
     const from = views.dataset.v;
     const show = () => {
       views.dataset.v = v;
@@ -1983,31 +1990,41 @@
     box._zoom = null;
   }
   /* zooming a map by hand: pinch on a phone, the wheel or a trackpad pinch on a computer, or the + and −
-     buttons; once zoomed in, the map is dragged to pan. The map's view (its viewBox) closes in, while the
-     pins, names, marks and lines keep their size on screen, as on a real map (as keep() does for the
-     zoom between maps). m._zm: { z, cx, cy } in the map's own units, plus the marks to keep. */
+     buttons; once zoomed in, the map is dragged to pan. While the hand moves, the map's view (its viewBox)
+     closes in, with the pins, names, marks and lines kept at their size on screen, as on a real map (as
+     keep() does for the zoom between maps). Once the hand stops, the map is drawn afresh for that view
+     (redrawMap()), so it shows the detail of that zoom: the landscape, rivers and sea names chosen for a
+     map that size, names placed for it, a true scale bar, and the other Bible places nearby.
+     m._zm: { z, cx, cy } the view, in the units of the map as first drawn (w by h); dz, dcx, dcy the view
+     the map is drawn at now; marks and lines: what to keep at size on screen. */
   const Z_MAX = 8;
-  function zmState(m) {
-    if (m._zm) return m._zm;
-    const vb = m.viewBox.baseVal, w = vb.width, h = vb.height, f = (n) => n.toFixed(2) + "px";
-    const marks = [];
-    m.querySelectorAll(".bm-pin").forEach((g) => { const t = g.transform.baseVal.consolidate(); if (t) marks.push([g, (q) => `translate(${f(t.matrix.e)}, ${f(t.matrix.f)}) scale(${q})`]); });
+  function zmMarks(s, m) {
+    const f = (n) => n.toFixed(2) + "px";
+    s.marks = []; s.lines = [];
+    m.querySelectorAll(".bm-pin").forEach((g) => { const t = g.transform.baseVal.consolidate(); if (t) s.marks.push([g, (q) => `translate(${f(t.matrix.e)}, ${f(t.matrix.f)}) scale(${q})`]); });
     m.querySelectorAll("text").forEach((t) => {
       if (t.closest(".bm-pin, .bm-scale")) return;
       const x = t.x.baseVal[0]?.value || 0, y = t.y.baseVal[0]?.value || 0;
-      marks.push([t, (q) => `translate(${f(x)}, ${f(y)}) scale(${q}) translate(${f(-x)}, ${f(-y)})`]);
+      s.marks.push([t, (q) => `translate(${f(x)}, ${f(y)}) scale(${q}) translate(${f(-x)}, ${f(-y)})`]);
     });
-    m.querySelectorAll(".bm-peak, .bm-at").forEach((n) => { const b = n.getBBox(), x = b.x + b.width / 2, y = b.y + b.height / 2; marks.push([n, (q) => `translate(${f(x)}, ${f(y)}) scale(${q}) translate(${f(-x)}, ${f(-y)})`]); });
-    const lines = [];
+    m.querySelectorAll(".bm-peak, .bm-at, .bm-ctx circle").forEach((n) => { const b = n.getBBox(), x = b.x + b.width / 2, y = b.y + b.height / 2; s.marks.push([n, (q) => `translate(${f(x)}, ${f(y)}) scale(${q}) translate(${f(-x)}, ${f(-y)})`]); });
     m.querySelectorAll("path, rect, line, circle").forEach((n) => {
       if (n.closest(".bm-pin, .bm-scale") || n.matches(".bm-peak, .bm-at, .bm-sea, .bm-land, .bm-lake, .bm-river")) return;
       const cs = getComputedStyle(n);
       if (cs.stroke === "none") return;
-      lines.push([n, parseFloat(cs.strokeWidth) || 1, cs.strokeDasharray === "none" ? null : cs.strokeDasharray.split(/[ ,]+/).map(parseFloat)]);
+      s.lines.push([n, parseFloat(cs.strokeWidth) || 1, cs.strokeDasharray === "none" ? null : cs.strokeDasharray.split(/[ ,]+/).map(parseFloat)]);
     });
-    return (m._zm = { z: 1, cx: w / 2, cy: h / 2, w, h, marks, lines });
+    s.q = 1;
   }
-  function zoomMap(m, z, cx, cy) {
+  function zmState(m) {
+    if (m._zm) return m._zm;
+    const vb = m.viewBox.baseVal, w = vb.width, h = vb.height;
+    const s = m._zm = { z: 1, cx: w / 2, cy: h / 2, w, h, dz: 1, dcx: w / 2, dcy: h / 2, base: null, t: 0 };
+    zmMarks(s, m);
+    return s;
+  }
+  // now: redraw at once (going back to the map as first drawn, before the zoom between maps)
+  function zoomMap(m, z, cx, cy, now) {
     if (!m._zm && z <= 1) return;
     const s = zmState(m), { w, h } = s;
     z = Math.min(Z_MAX, Math.max(1, z));
@@ -2015,17 +2032,11 @@
     const vw = w / z, vh = h / z;
     s.cx = z === 1 ? w / 2 : Math.min(w - vw / 2, Math.max(vw / 2, cx ?? s.cx));
     s.cy = z === 1 ? h / 2 : Math.min(h - vh / 2, Math.max(vh / 2, cy ?? s.cy));
-    const was = s.z; s.z = z;
-    m.setAttribute("viewBox", `${(s.cx - vw / 2).toFixed(2)} ${(s.cy - vh / 2).toFixed(2)} ${vw.toFixed(2)} ${vh.toFixed(2)}`);
-    m.classList.toggle("zoomed", z > 1);
-    if (z !== was) {
-      const q = 1 / z, px = (n) => (n * q).toFixed(2) + "px";
-      s.marks.forEach(([n, t]) => { n.style.transform = z === 1 ? "" : t(q.toFixed(4)); });
-      s.lines.forEach(([n, sw, dash]) => {
-        n.style.strokeWidth = z === 1 ? "" : px(sw);
-        n.style.strokeDasharray = z === 1 || !dash ? "" : dash.map(px).join(" ");
-      });
-    }
+    s.z = z;
+    clearTimeout(s.t);
+    if (now) { if (s.dz !== z || s.dcx !== s.cx || s.dcy !== s.cy) redrawMap(m); }
+    else s.t = setTimeout(() => settle(m), 260);
+    showView(m);
     const zc = m.parentElement.querySelector(".bm-zc");
     if (zc) {
       zc.querySelector('[data-z="in"]').disabled = z >= Z_MAX;
@@ -2033,12 +2044,62 @@
       zc.querySelector('[data-z="reset"]').hidden = z === 1;
     }
   }
+  // the view s.{z, cx, cy}, shown on the map as drawn at s.{dz, dcx, dcy}
+  function showView(m) {
+    const s = m._zm, { w, h } = s;
+    const x0 = s.dcx - w / (2 * s.dz), y0 = s.dcy - h / (2 * s.dz), k = s.dz / s.z;
+    m.setAttribute("viewBox", `${((s.cx - w / (2 * s.z) - x0) * s.dz).toFixed(2)} ${((s.cy - h / (2 * s.z) - y0) * s.dz).toFixed(2)} ${(w * k).toFixed(2)} ${(h * k).toFixed(2)}`);
+    m.classList.toggle("zoomed", s.z > 1);
+    if (Math.abs(k - s.q) < 1e-4) return;
+    s.q = k;
+    const same = Math.abs(k - 1) < 1e-4, px = (n) => (n * k).toFixed(2) + "px";
+    s.marks.forEach(([n, t]) => { n.style.transform = same ? "" : t(k.toFixed(4)); });
+    s.lines.forEach(([n, sw, dash]) => {
+      n.style.strokeWidth = same ? "" : px(sw);
+      n.style.strokeDasharray = same || !dash ? "" : dash.map(px).join(" ");
+    });
+  }
+  // the hand has stopped: draw the map for its view (not while a finger or the mouse still holds it)
+  let zTouch = 0;
+  function settle(m) {
+    const s = m._zm;
+    if (!s || !m.isConnected) return;
+    if (zTouch || (mapPan && mapPan.m === m)) { s.t = setTimeout(() => settle(m), 200); return; }
+    if (s.dz !== s.z || s.dcx !== s.cx || s.dcy !== s.cy) redrawMap(m);
+  }
+  function redrawMap(m) {
+    const s = m._zm, bv = m.closest(".bm-v"), reg = bv && ZREG.get(+bv.dataset.zid);
+    if (!reg) return;
+    const { w, h } = s, lit = m.querySelector(".bm-pin.hl")?.dataset.place;
+    if (!s.base) s.base = m.innerHTML;
+    if (s.z === 1) m.innerHTML = s.base;
+    else {
+      // the view in the base map's units: data-vb is the view of the map as first drawn
+      const [bx, by, bw, bh] = m.dataset.vb.split(" ").map(Number), k = bw / w;
+      const view = { x: bx + (s.cx - w / (2 * s.z)) * k, y: by + (s.cy - h / (2 * s.z)) * k, w: bw / s.z, h: bh / s.z };
+      // names keep clear of the zoom buttons over the map
+      const zc = bv.querySelector(".bm-zc"), mr = m.getBoundingClientRect(), zr = zc && zc.getBoundingClientRect(), f = w / mr.width;
+      const keepOff = zr && zr.width ? [(zr.left - mr.left) * f - 3, (zr.top - mr.top) * f - 3, (zr.right - mr.left) * f + 3, (zr.bottom - mr.top) * f + 3] : null;
+      const t = document.createElement("template");
+      // zoomed in, every place gets its own numbered pin and name (no dashed boxes for the closer maps)
+      t.innerHTML = BibleMap.svg(reg.stops, { ...reg.opt, view, context: true, keepOff, insets: [], labels: reg.opt.labels === false ? false : true });
+      const svg = t.content.firstElementChild;
+      if (!svg) return;
+      m.replaceChildren(...svg.childNodes);
+    }
+    s.dz = s.z; s.dcx = s.cx; s.dcy = s.cy;
+    zmMarks(s, m);
+    showView(m);
+    // the place lit before is lit again
+    const box = m.closest(".win-map, .mw-body"), who = box && box._who && box._who();
+    if (lit && who) markPlace(who, lit);
+  }
   // zoom by a factor about a point on screen (cx, cy in page pixels; the map's middle if left out)
   function zoomMapAt(m, k, x, y) {
-    const s = zmState(m), r = m.getBoundingClientRect(), vb = m.viewBox.baseVal;
+    const s = zmState(m), r = m.getBoundingClientRect();
     const fx = x == null ? 0.5 : (x - r.left) / r.width, fy = y == null ? 0.5 : (y - r.top) / r.height;
-    const mx = vb.x + fx * vb.width, my = vb.y + fy * vb.height, z = Math.min(Z_MAX, Math.max(1, s.z * k));
-    const nw = s.w / z, nh = s.h / z;
+    const vw = s.w / s.z, vh = s.h / s.z, mx = s.cx - vw / 2 + fx * vw, my = s.cy - vh / 2 + fy * vh;
+    const z = Math.min(Z_MAX, Math.max(1, s.z * k)), nw = s.w / z, nh = s.h / z;
     zoomMap(m, z, mx - fx * nw + nw / 2, my - fy * nh + nh / 2);
   }
   // the + and − buttons zoom smoothly, about the map's middle
@@ -2052,7 +2113,7 @@
     requestAnimationFrame(step);
   }
   // map units per screen pixel, to turn a drag into a pan
-  const upx = (m) => m.viewBox.baseVal.width / m.getBoundingClientRect().width;
+  const upx = (m) => (m._zm ? m._zm.w / m._zm.z : m.viewBox.baseVal.width) / m.getBoundingClientRect().width;
   let mapPan = null;
   function wireZoom(box) {
     const mapOf = (e) => { const m = e.target.closest && e.target.closest(".bmap"); return m && box.contains(m) && !m.closest(".bm-zoom") ? m : null; };
@@ -2080,7 +2141,7 @@
       } else if (p.length === 1 && s.z > 1) tp = { m, pinch: false, x: p[0][0], y: p[0][1], cx: s.cx, cy: s.cy, u: upx(m) };
       else tp = { m, none: true };
     };
-    box.addEventListener("touchstart", startTouch, { passive: true });
+    box.addEventListener("touchstart", (e) => { zTouch = e.touches.length; startTouch(e); }, { passive: true });
     box.addEventListener("touchmove", (e) => {
       if (!tp || tp.none) return;
       const p = pts(e), m = tp.m;
@@ -2098,7 +2159,7 @@
         zoomMap(m, m._zm.z, tp.cx - (p[0][0] - tp.x) * tp.u, tp.cy - (p[0][1] - tp.y) * tp.u);
       }
     }, { passive: false });
-    const endTouch = (e) => { if (!tp) return; if (e.touches.length) startTouch(e); else tp = null; };
+    const endTouch = (e) => { zTouch = e.touches.length; if (!tp) return; if (e.touches.length) startTouch(e); else tp = null; };
     box.addEventListener("touchend", endTouch);
     box.addEventListener("touchcancel", endTouch);
   }
@@ -2204,6 +2265,7 @@
   // the map's own controls and pins, in a window (phone) or in the map window (computer)
   function wireMapBox(box, who) {
     wireBar(box);
+    box._who = who;
     wireZoom(box);
     box.addEventListener("pointerover", (e) => { const n = e.target.closest(".bm-pin, .bm-label"); const w = who(); if (w) markPlace(w, n ? n.dataset.place : null); });
     box.addEventListener("pointerleave", () => { const w = who(); if (w) markPlace(w, null); });

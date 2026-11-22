@@ -57,7 +57,8 @@
     // places in Europe and America (history after the Bible) are inland and far from any river drawn,
     // so a close-up would be plain land: keep enough around them to show the coasts
     if (list.every((s) => P[s.id].ll[1] > 42 || P[s.id].ll[0] < -30)) span = Math.max(span, 9);
-    const v = view(pts, w, h, span && span * KY);
+    // opt.view: a given view (a map zoomed by hand, redrawn at that zoom: see zoomMap() in js/app.js)
+    const v = opt.view || view(pts, w, h, span && span * KY);
     const u = v.w / w;                       // map units per screen pixel
     const X = (x) => ((x - v.x) / u).toFixed(1), Y = (y) => ((y - v.y) / u).toFixed(1);
     let s = `<svg class="bmap ${opt.cls || ""}" viewBox="0 0 ${w} ${h}" data-vb="${[v.x, v.y, v.w, v.h].map((n) => n.toFixed(2)).join(" ")}" role="img" aria-label="${esc(opt.label || "Map")}">`;
@@ -90,7 +91,7 @@
         p2.x += (ddx / d) * push; p2.y += (ddy / d) * push;
         moved = true;
       }
-      for (const q of big) { q.x = Math.min(w - 9, Math.max(9, q.x)); q.y = Math.min(h - 9, Math.max(9, q.y)); }
+      if (!opt.view) for (const q of big) { q.x = Math.min(w - 9, Math.max(9, q.x)); q.y = Math.min(h - 9, Math.max(9, q.y)); }
       if (!moved) break;
     }
     for (const q of big) {
@@ -135,6 +136,7 @@
     const hitsR = (b) => hits(b) || onRoute(b);
     const km = niceKm(v.w / KX * 111 * B.k * 0.25), px = km / (111 * B.k) * KX / u;
     labelBoxes.push([w - 14 - px, h - 22, w - 6, h - 6]);   // the scale bar, bottom right
+    if (opt.keepOff) labelBoxes.push(opt.keepOff);           // e.g. the zoom buttons over the map
 
     let marks = "", labels = "";
     const edges = [];     // the sides of the closer maps' boxes, which distances keep off too
@@ -229,6 +231,7 @@
       if (c[4]) { const [x1, y1, x2, y2] = c[4].map((v) => v.toFixed(1)); labels += `<path class="bm-lead" data-place="${id}" d="M${x1} ${y1} L${x2} ${y2}"/>`; }
       labels += `<text class="bm-label${st.hl ? " hl" : ""}" data-place="${id}" x="${c[0].toFixed(1)}" y="${c[1].toFixed(1)}" text-anchor="${c[2]}">${esc(name)}</text>`;
     }
+    if (opt.context) labels += context(list, X, Y, w, h, hits, hitsR, labelBoxes);
     for (const sea of SEAS) {
       if (sea.max && v.h > sea.max) continue;
       for (const at of sea.at) {
@@ -244,6 +247,33 @@
     // scale bar
     s += `<g class="bm-scale" transform="translate(${w - 10 - px} ${h - 10})"><path d="M0 -3 V0 H${px.toFixed(1)} V-3"/><text x="${(px / 2).toFixed(1)}" y="-5" text-anchor="middle">${km} km</text></g>`;
     return s + `</svg>`;
+  }
+  /* a map zoomed in by hand shows more: the other towns and sites of the Bible lands (data/places.js)
+     that fall in view, as small faint dots with their names, nearest the middle first, where they
+     cover no pin, name or route; at most CTX_MAX, so the map stays readable */
+  const CTX_MAX = 14;
+  function context(list, X, Y, w, h, hits, hitsR, labelBoxes) {
+    const on = new Set(list.map((st) => st.id));
+    const near = Object.keys(P).filter((id) => !on.has(id) && P[id].ll && !P[id].r && P[id].s !== "possible").map((id) => {
+      const [mx, my] = proj(P[id].ll);
+      return { id, pl: P[id], x: +X(mx), y: +Y(my) };
+    }).filter((q) => q.x > 6 && q.x < w - 6 && q.y > 6 && q.y < h - 6)
+      .sort((a, b) => Math.hypot(a.x - w / 2, a.y - h / 2) - Math.hypot(b.x - w / 2, b.y - h / 2));
+    let out = "", n = 0;
+    for (const q of near) {
+      if (n >= CTX_MAX) break;
+      const dot = [q.x - 2.5, q.y - 2.5, q.x + 2.5, q.y + 2.5];
+      if (hits(dot)) continue;
+      const name = shortName(q.pl.n), tw = tlen(name) * 4.9 + 2;
+      const cand = [[q.x + 5, q.y + 3, "start", [q.x + 4, q.y - 5, q.x + 5 + tw, q.y + 4]], [q.x - 5, q.y + 3, "end", [q.x - 5 - tw, q.y - 5, q.x - 4, q.y + 4]],
+        [q.x, q.y - 5, "middle", [q.x - tw / 2, q.y - 13, q.x + tw / 2, q.y - 4]], [q.x, q.y + 11, "middle", [q.x - tw / 2, q.y + 3, q.x + tw / 2, q.y + 12]]];
+      const c = cand.find((k) => !hitsR(k[3]) && !hits(k[3]));
+      if (!c) continue;
+      labelBoxes.push(dot, c[3]);
+      out += `<g class="bm-ctx"><title>${esc(q.pl.n)}</title><circle cx="${q.x}" cy="${q.y}" r="1.6"/><text x="${c[0].toFixed(1)}" y="${c[1].toFixed(1)}" text-anchor="${c[2]}">${esc(name)}</text></g>`;
+      n++;
+    }
+    return out;
   }
   // km along the earth's surface between two [lon, lat] points
   function gcKm([lon1, lat1], [lon2, lat2]) {
