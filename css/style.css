@@ -709,7 +709,23 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 @keyframes pin-ping { 0%, 45% { stroke: var(--fg); stroke-width: 3.5; } 100% { stroke-width: 1.2; } }
 .bm-inset-t { cursor: pointer; }
 .bm-inset-t:hover { fill: var(--fg); }
-.mapwin { width: 372px; }
+.mapwin { width: 372px; max-height: calc(100vh - 72px); }
+.mw-grip { position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; cursor: nwse-resize; touch-action: none; z-index: 4;
+  background: linear-gradient(135deg, transparent 50%, var(--faint) 50%, var(--faint) 58%, transparent 58%, transparent 70%, var(--faint) 70%, var(--faint) 78%, transparent 78%); }
+.mw-grip:hover { background: linear-gradient(135deg, transparent 50%, var(--fg-2) 50%, var(--fg-2) 58%, transparent 58%, transparent 70%, var(--fg-2) 70%, var(--fg-2) 78%, transparent 78%); }
+/* zooming a map by hand: + and − in its corner; a zoomed map is dragged to pan */
+.bm-v { position: relative; }
+.bmap.zoomed { cursor: grab; touch-action: none; }
+.bmap.zoomed.panning { cursor: grabbing; }
+.bmap.zoomed .bm-scale { display: none; }
+.bm-zc { position: absolute; top: 6px; right: 6px; display: flex; flex-direction: column; gap: 4px; z-index: 3; }
+.bm-zb { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--faint); background: rgba(10, 12, 14, 0.78); color: var(--fg-2);
+  font: 400 calc(16px * var(--fs))/1 var(--sans); display: grid; place-items: center; padding: 0; cursor: pointer; }
+.bm-zb[data-z="reset"] { font-size: calc(14px * var(--fs)); }
+.bm-zb:hover, .bm-zb:focus-visible { color: var(--fg); border-color: var(--wc, var(--accent)); outline: none; }
+.bm-zb:disabled { opacity: 0.35; cursor: default; border-color: var(--faint); color: var(--fg-2); }
+.bm-zb[hidden] { display: none; }
+@media (max-width: 760px) { .bm-zc { flex-direction: row; } .bm-zb { width: 28px; height: 28px; } }
 .mapwin[hidden] { display: none; }
 .mw-ic { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--faint); flex: none; display: grid; place-items: center; color: var(--wc); }
 .mw-ic svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.4; }
