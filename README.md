@@ -2,7 +2,7 @@
 
 An interactive timeline of every named person in the Bible, from Adam to the apostles. Zoom and drag along the years, hover over a person to see lines to their family, and open a person's window for their dates, relatives and key scriptures.
 
-The ⓘ button opens **About this timeline**, a short guide for visitors: moving around, opening a person, who is shown, how to read the three kinds of date, the map and the sources. It is written for people using the site, so it names no files or code; the text is in `index.html` (English) and `js/i18n.js` (Chinese, `about.*` keys).
+The ⓘ button opens **About this timeline**, a short visual guide for visitors. At the top is a small drawing of the timeline (a book line, a major event, a person with family links, the three kinds of date, a history square, a map route, a star); each part of it opens the topic that explains it. Under the figures (people, events, assumed dates, history) are nine topic tiles: Getting around, A person, Who is shown, Bible books, Dates, Places, History, My notes and Credits. Each topic is a short list with icons, and some have pictures (the three date markers, the job icons, a book line, a numbered map route, the periods of history) and a button that closes the card and opens what it describes (search, the people menu, the Bible books, the legend, My notes). **Credits** thanks Jehovah's Witnesses first, whose publications on jw.org and wol.jw.org (the *New World Translation*, *Insight on the Scriptures*, *God's Word Is Truth*, the study books, *The Watchtower* and *Awake!*, and their Chinese editions) the content comes from, and then OpenBible.info (place locations), ORBIS (Roman roads and sea lanes), Natural Earth (coastlines), OpenStreetMap (rivers and lakes) and Google Fonts. The card is written for people using the site, so it names no files or code. The text is in `index.html` (English) and `js/i18n.js` (Chinese, `about.*` and `ab.*` keys); the tiles, the drawing, the figure chips and the buttons are run by `js/about.js`, and the styles are under "about card" in `css/style.css`.
 
 The site is plain HTML, CSS and JavaScript. There is no build step and nothing to install to view it.
 
@@ -270,6 +270,7 @@ js/i18n.js                  language switch (English / 中文) and interface str
 js/scripture.js             scripture citations → wol.jw.org links (English or Chinese Bible)
 js/map.js                   the small place maps in windows and event tooltips
 js/app.js                   timeline, windows, search, People filter
+js/about.js                 the About this timeline card (topic tiles, drawing, try-it buttons)
 data/characters.js          140 key figures (hand-written)
 data/events.js              events and eras
 data/history.js             events and sources from history, not the Bible (hand-written)
