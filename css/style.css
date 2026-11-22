@@ -720,8 +720,8 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .bmap.zoomed .bm-scale { display: none; }
 .bm-zc { position: absolute; top: 6px; right: 6px; display: flex; flex-direction: column; gap: 4px; z-index: 3; }
 .bm-zb { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--faint); background: rgba(10, 12, 14, 0.78); color: var(--fg-2);
-  font: 400 16px/1 var(--sans); display: grid; place-items: center; padding: 0; cursor: pointer; }
-.bm-zb[data-z="reset"] { font-size: 14px; }
+  font: 400 calc(16px * var(--fs))/1 var(--sans); display: grid; place-items: center; padding: 0; cursor: pointer; }
+.bm-zb[data-z="reset"] { font-size: calc(14px * var(--fs)); }
 .bm-zb:hover, .bm-zb:focus-visible { color: var(--fg); border-color: var(--wc, var(--accent)); outline: none; }
 .bm-zb:disabled { opacity: 0.35; cursor: default; border-color: var(--faint); color: var(--fg-2); }
 .bm-zb[hidden] { display: none; }
