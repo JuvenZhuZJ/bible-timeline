@@ -847,6 +847,10 @@ code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
 .et-map { margin-top: 10px; }
 .et-map .bmap { border-radius: 6px; }
 .et-place { font: 300 calc(10.5px * var(--fs)) var(--sans); color: var(--fg-2); margin-top: 5px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+/* other Bible places, shown on a map zoomed in by hand */
+.bm-ctx { pointer-events: none; }
+.bm-ctx circle { fill: var(--muted); opacity: 0.8; }
+.bm-ctx text { font: italic 400 calc(8.5px * var(--fs)) var(--serif); fill: var(--muted); paint-order: stroke; stroke: #0b0a08; stroke-width: 2.5px; stroke-linejoin: round; }
 .bm-inset { fill: none; stroke: var(--wc, var(--accent)); stroke-width: 0.8; stroke-dasharray: 2 2; opacity: 0.7; }
 .bm-inset-t { font-size: calc(9px * var(--fs)); fill: var(--muted); }
 
