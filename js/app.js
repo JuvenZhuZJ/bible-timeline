@@ -2034,7 +2034,7 @@
     }
   }
   // zoom by a factor about a point on screen (cx, cy in page pixels; the map's middle if left out)
-  function zoomAt(m, k, x, y) {
+  function zoomMapAt(m, k, x, y) {
     const s = zmState(m), r = m.getBoundingClientRect(), vb = m.viewBox.baseVal;
     const fx = x == null ? 0.5 : (x - r.left) / r.width, fy = y == null ? 0.5 : (y - r.top) / r.height;
     const mx = vb.x + fx * vb.width, my = vb.y + fy * vb.height, z = Math.min(Z_MAX, Math.max(1, s.z * k));
@@ -2060,7 +2060,7 @@
       const m = mapOf(e); if (!m) return;
       e.preventDefault();
       const d = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1);
-      zoomAt(m, Math.exp(-d * (e.ctrlKey ? 0.01 : 0.0025)), e.clientX, e.clientY);
+      zoomMapAt(m, Math.exp(-d * (e.ctrlKey ? 0.01 : 0.0025)), e.clientX, e.clientY);
     }, { passive: false });
     // the mouse drags a zoomed map
     box.addEventListener("pointerdown", (e) => {
